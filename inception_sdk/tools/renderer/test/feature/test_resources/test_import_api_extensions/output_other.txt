@@ -1,0 +1,28 @@
+# Code auto-generated
+
+# Objects below have been imported from:
+#    import_api_extensions_typing_other.py
+# md5:9694482ccc919c67174570f199455170
+
+from typing import Any
+
+api = "4.0.0"
+
+# Objects below have been imported from:
+#    module_1.py
+# md5:e97f279bd64d919a50f4d891862b4256
+
+
+def module_1_my_helper(vault: Any, vaults: list[Any], vault_mapping: dict[str, Any]) -> Any:
+    ...
+
+
+# Objects below have been imported from:
+#    import_api_extensions_typing_other.py
+# md5:9694482ccc919c67174570f199455170
+
+test = module_1_my_helper
+
+
+def my_helper(my_arg: str | None, vaults: list[Any], vault_mapping: dict[str, Any]) -> Any:
+    ...

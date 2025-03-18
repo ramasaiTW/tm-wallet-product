@@ -1,0 +1,4 @@
+from .types.natives import ALLOWED_NATIVES as ALLOWED_NATIVES
+from typing import Any
+ALLOWED_NATIVES = ALLOWED_NATIVES
+ALLOWED_BUILTINS: Any
