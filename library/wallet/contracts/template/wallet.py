@@ -626,31 +626,19 @@ def _update_tracked_spend(
     if amount == Decimal("0"):
         return []
 
-    from_address = DUPLICATION if amount > 0 else TODAYS_SPENDING
-    to_address = TODAYS_SPENDING if amount > 0 else DUPLICATION
-
-    amount = abs(amount)
-
+    # Directly post to TODAYS_SPENDING
     postings = [
         Posting(
-            credit=True,
-            amount=amount,
+            credit=True if amount > 0 else False,
+            amount=abs(amount),
             denomination=denomination,
             account_id=account_id,
-            account_address=to_address,
+            account_address=TODAYS_SPENDING,
             asset=DEFAULT_ASSET,
             phase=Phase.COMMITTED,
-        ),
-        Posting(
-            credit=False,
-            amount=amount,
-            denomination=denomination,
-            account_id=account_id,
-            account_address=from_address,
-            asset=DEFAULT_ASSET,
-            phase=Phase.COMMITTED,
-        ),
+        )
     ]
+
     custom_instruction = CustomInstruction(
         postings=postings,
         instruction_details={"event_type": "ZERO_OUT_DAILY_SPENDING"}
