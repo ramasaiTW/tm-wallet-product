@@ -3,7 +3,7 @@
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:def45c8a6bbaeb753a1b195357354a89
+# md5:e23e68c282cc41f4fac75d1b34d82398
 
 from contracts_api import (
     BalancesObservationFetcher,
@@ -76,7 +76,7 @@ from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo
 
 api = "4.0.0"
-version = "3.0.3"
+version = "3.0.4"
 tside = Tside.LIABILITY
 supported_denominations = ["GBP", "SGD", "USD"]
 
@@ -472,10 +472,10 @@ def utils_get_available_balance(
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:def45c8a6bbaeb753a1b195357354a89
+# md5:e23e68c282cc41f4fac75d1b34d82398
 
 DUPLICATION = "duplication"
-TODAYS_SPENDING = "todays_spending"
+TODAYS_SPENDING = "TODAY_SPENDING"
 LIMIT_SHAPE_MIN_VALUE = 0
 LIMIT_SHAPE_MAX_VALUE = 2000
 LIMIT_SHAPE_STEP_VALUE = Decimal("0.01")

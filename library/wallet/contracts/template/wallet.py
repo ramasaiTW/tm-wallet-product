@@ -51,13 +51,13 @@ from contracts_api import (  # Enums
 from inception_sdk.vault.contracts.extensions.contracts_api_extensions import SmartContractVault
 
 api = "4.0.0"
-version = "3.0.3"
+version = "3.0.4"
 tside = Tside.LIABILITY
 supported_denominations = ["GBP", "SGD", "USD"]
 
 # Balances
 DUPLICATION = "duplication"
-TODAYS_SPENDING = "todays_spending"
+TODAYS_SPENDING = "TODAY_SPENDING"
 
 # Limit Shape
 LIMIT_SHAPE_MIN_VALUE = 0
