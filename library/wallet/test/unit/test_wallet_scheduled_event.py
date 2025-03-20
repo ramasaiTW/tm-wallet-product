@@ -5,8 +5,8 @@ from decimal import Decimal
 import library.wallet.contracts.template.wallet as contract
 from library.wallet.test.unit.test_wallet_common import (
     DEFAULT_DATETIME,
-    DUPLICATION,
-    TODAYS_SPENDING,
+    INTERNAL_CONTRA,
+    TODAY_SPENDING,
     WalletTestBase,
 )
 
@@ -33,7 +33,7 @@ class ScheduledEventHookTest(WalletTestBase):
         todays_spending = Decimal("-100")
         balance_dict = {
             self.balance_coordinate(
-                account_address=TODAYS_SPENDING,
+                account_address=TODAY_SPENDING,
             ): self.balance(net=todays_spending),
             self.balance_coordinate(account_address=DEFAULT_ADDRESS): self.balance(
                 net=-default_committed
@@ -53,7 +53,7 @@ class ScheduledEventHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=TODAYS_SPENDING,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),
@@ -62,7 +62,7 @@ class ScheduledEventHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=DUPLICATION,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),

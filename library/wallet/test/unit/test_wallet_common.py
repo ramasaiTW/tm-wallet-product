@@ -23,8 +23,8 @@ DEFAULT_NOMINATED_ACCOUNT = "Some Account"
 DEFAULT_INTERNAL_ACCOUNT = "1"
 DEFAULT_DAILY_SPENDING_LIMIT = Decimal("100")
 
-DUPLICATION = "duplication"
-TODAYS_SPENDING = "todays_spending"
+INTERNAL_CONTRA = "INTERNAL_CONTRA"
+TODAY_SPENDING = "TODAY_SPENDING"
 
 default_parameters = {
     "zero_out_daily_spend_hour": 23,

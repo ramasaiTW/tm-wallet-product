@@ -6,8 +6,8 @@ import library.wallet.contracts.template.wallet as contract
 from library.wallet.test.unit.test_wallet_common import (
     DEFAULT_ACCOUNT_ID,
     DEFAULT_NOMINATED_ACCOUNT,
-    DUPLICATION,
-    TODAYS_SPENDING,
+    INTERNAL_CONTRA,
+    TODAY_SPENDING,
     WalletTestBase,
 )
 
@@ -124,7 +124,7 @@ class HelpersTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=DEFAULT_ACCOUNT_ID,
-                account_address=DUPLICATION,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 credit=True,
                 amount=abs(spend_amount),
@@ -133,7 +133,7 @@ class HelpersTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=DEFAULT_ACCOUNT_ID,
-                account_address=TODAYS_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 credit=False,
                 amount=abs(spend_amount),
@@ -167,7 +167,7 @@ class HelpersTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=DEFAULT_ACCOUNT_ID,
-                account_address=TODAYS_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 credit=True,
                 amount=abs(spend_amount),
@@ -176,7 +176,7 @@ class HelpersTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=DEFAULT_ACCOUNT_ID,
-                account_address=DUPLICATION,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 credit=False,
                 amount=abs(spend_amount),
@@ -213,7 +213,7 @@ class HelpersTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=DEFAULT_ACCOUNT_ID,
-                account_address=TODAYS_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 credit=True,
                 amount=spend_amount,
@@ -222,7 +222,7 @@ class HelpersTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=DEFAULT_ACCOUNT_ID,
-                account_address=DUPLICATION,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 credit=False,
                 amount=spend_amount,

@@ -8,8 +8,8 @@ import library.wallet.contracts.template.wallet as contract
 from library.wallet.test.unit.test_wallet_common import (
     DEFAULT_DATETIME,
     DEFAULT_NOMINATED_ACCOUNT,
-    DUPLICATION,
-    TODAYS_SPENDING,
+    INTERNAL_CONTRA,
+    TODAY_SPENDING,
     WalletTestBase,
 )
 
@@ -80,7 +80,7 @@ class PostPostingHookTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=DUPLICATION,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 credit=True,
                 amount=initial_balance_amount,
@@ -89,7 +89,7 @@ class PostPostingHookTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=TODAYS_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 credit=False,
                 amount=initial_balance_amount,
@@ -211,7 +211,7 @@ class PostPostingHookTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=TODAYS_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 credit=True,
                 amount=small_amount,
@@ -220,7 +220,7 @@ class PostPostingHookTest(WalletTestBase):
             Posting(
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=DUPLICATION,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 credit=False,
                 amount=small_amount,
@@ -415,7 +415,7 @@ class PostPostingHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=mock_vault.account_id,
-                account_address=TODAYS_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 phase=Phase.COMMITTED,
             ),
@@ -424,7 +424,7 @@ class PostPostingHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=mock_vault.account_id,
-                account_address=DUPLICATION,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 phase=Phase.COMMITTED,
             ),

@@ -5,8 +5,8 @@ from decimal import Decimal
 import library.wallet.contracts.template.wallet as contract
 from library.wallet.test.unit.test_wallet_common import (
     DEFAULT_DATETIME,
-    DUPLICATION,
-    TODAYS_SPENDING,
+    INTERNAL_CONTRA,
+    TODAY_SPENDING,
     WalletTestBase,
 )
 
@@ -29,12 +29,14 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_extension import 
 
 class DeactivationHookTest(WalletTestBase):
     def test_deactivation_hook_zeros_daily_spend_amount(self):
-        balance_amount = Decimal("-100")
+        balance_amount = Decimal("100")
         balance_dict = {
             self.balance_coordinate(
-                account_address=TODAYS_SPENDING,
+                account_address=TODAY_SPENDING,
             ): self.balance(net=balance_amount),
-            self.balance_coordinate(account_address=DUPLICATION): self.balance(net=-balance_amount),
+            self.balance_coordinate(
+                account_address=INTERNAL_CONTRA
+            ): self.balance(net=-balance_amount),
         }
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping=balance_dict),
@@ -57,7 +59,7 @@ class DeactivationHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=TODAYS_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),
@@ -66,7 +68,7 @@ class DeactivationHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=DUPLICATION,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),
