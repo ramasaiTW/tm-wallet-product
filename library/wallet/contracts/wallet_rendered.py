@@ -3,7 +3,7 @@
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:def45c8a6bbaeb753a1b195357354a89
+# md5:26f6f0b2130b683100b3b64826501bbc
 
 from contracts_api import (
     BalancesObservationFetcher,
@@ -76,7 +76,7 @@ from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo
 
 api = "4.0.0"
-version = "3.0.3"
+version = "3.0.6"
 tside = Tside.LIABILITY
 supported_denominations = ["GBP", "SGD", "USD"]
 
@@ -244,7 +244,7 @@ def pre_posting_hook(
         fetcher_id=fetchers_LIVE_BALANCES_BOF_ID
     ).balances
     todays_spending_balance_coordinate = BalanceCoordinate(
-        account_address=TODAYS_SPENDING,
+        account_address=TODAY_SPENDING,
         asset=DEFAULT_ASSET,
         denomination=default_denomination,
         phase=Phase.COMMITTED,
@@ -280,7 +280,7 @@ def pre_posting_hook(
     if any(extract_bool_from_postings(posting_instructions, "withdrawal_override")):
         return None
     if proposed_spend < 0:
-        if proposed_spend + todays_spending < -spending_limit and (
+        if abs(proposed_spend) + todays_spending > spending_limit and (
             not any(
                 extract_value_from_postings(posting_instructions, "withdrawal_to_nominated_account")
             )
@@ -472,10 +472,10 @@ def utils_get_available_balance(
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:def45c8a6bbaeb753a1b195357354a89
+# md5:26f6f0b2130b683100b3b64826501bbc
 
-DUPLICATION = "duplication"
-TODAYS_SPENDING = "todays_spending"
+INTERNAL_CONTRA = "INTERNAL_CONTRA"
+TODAY_SPENDING = "TODAY_SPENDING"
 LIMIT_SHAPE_MIN_VALUE = 0
 LIMIT_SHAPE_MAX_VALUE = 2000
 LIMIT_SHAPE_STEP_VALUE = Decimal("0.01")
@@ -599,14 +599,14 @@ def _get_zero_out_daily_spend_instructions(
     denomination: str = utils_get_parameter(vault=vault, name=PARAM_DENOMINATION)
     todays_spending = (
         vault.get_balances_observation(fetcher_id=balance_fetcher)
-        .balances[TODAYS_SPENDING, DEFAULT_ASSET, denomination, Phase.COMMITTED]
+        .balances[TODAY_SPENDING, DEFAULT_ASSET, denomination, Phase.COMMITTED]
         .net
     )
-    if todays_spending >= 0:
+    if todays_spending <= 0:
         return []
     posting_instructions = _update_tracked_spend(
         account_id=vault.account_id,
-        amount=-todays_spending,
+        amount=todays_spending,
         denomination=denomination,
         zero_out_daily_spend=True,
     )
@@ -709,8 +709,8 @@ def _update_tracked_spend(
     """
     if amount == Decimal("0"):
         return []
-    from_address = DUPLICATION if amount > 0 else TODAYS_SPENDING
-    to_address = TODAYS_SPENDING if amount > 0 else DUPLICATION
+    from_address = INTERNAL_CONTRA if amount < 0 else TODAY_SPENDING
+    to_address = TODAY_SPENDING if amount < 0 else INTERNAL_CONTRA
     amount = abs(amount)
     postings = [
         Posting(

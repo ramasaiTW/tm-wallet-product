@@ -51,13 +51,13 @@ from contracts_api import (  # Enums
 from inception_sdk.vault.contracts.extensions.contracts_api_extensions import SmartContractVault
 
 api = "4.0.0"
-version = "3.0.3"
+version = "3.0.6"
 tside = Tside.LIABILITY
 supported_denominations = ["GBP", "SGD", "USD"]
 
 # Balances
-DUPLICATION = "duplication"
-TODAYS_SPENDING = "todays_spending"
+INTERNAL_CONTRA = "INTERNAL_CONTRA"
+TODAY_SPENDING = "TODAY_SPENDING"
 
 # Limit Shape
 LIMIT_SHAPE_MIN_VALUE = 0
@@ -251,15 +251,15 @@ def _get_zero_out_daily_spend_instructions(
     denomination: str = utils.get_parameter(vault=vault, name=PARAM_DENOMINATION)
     todays_spending = (
         vault.get_balances_observation(fetcher_id=balance_fetcher)
-        .balances[(TODAYS_SPENDING, DEFAULT_ASSET, denomination, Phase.COMMITTED)]
+        .balances[(TODAY_SPENDING, DEFAULT_ASSET, denomination, Phase.COMMITTED)]
         .net
     )
-    if todays_spending >= 0:
+    if todays_spending <= 0:
         return []
 
     posting_instructions = _update_tracked_spend(
         account_id=vault.account_id,
-        amount=-todays_spending,
+        amount=todays_spending,
         denomination=denomination,
         zero_out_daily_spend=True,
     )
@@ -337,7 +337,7 @@ def pre_posting_hook(
         fetcher_id=fetchers.LIVE_BALANCES_BOF_ID
     ).balances
     todays_spending_balance_coordinate = BalanceCoordinate(
-        account_address=TODAYS_SPENDING,
+        account_address=TODAY_SPENDING,
         asset=DEFAULT_ASSET,
         denomination=default_denomination,
         phase=Phase.COMMITTED,
@@ -375,7 +375,7 @@ def pre_posting_hook(
         return None
 
     if proposed_spend < 0:
-        if proposed_spend + todays_spending < -spending_limit and not any(
+        if abs(proposed_spend) + todays_spending > spending_limit and not any(
             extract_value_from_postings(posting_instructions, "withdrawal_to_nominated_account")
         ):
             return PrePostingHookResult(
@@ -626,8 +626,8 @@ def _update_tracked_spend(
     if amount == Decimal("0"):
         return []
 
-    from_address = DUPLICATION if amount > 0 else TODAYS_SPENDING
-    to_address = TODAYS_SPENDING if amount > 0 else DUPLICATION
+    from_address = INTERNAL_CONTRA if amount < 0 else TODAY_SPENDING
+    to_address = TODAY_SPENDING if amount < 0 else INTERNAL_CONTRA
 
     amount = abs(amount)
 
