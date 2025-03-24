@@ -3,7 +3,7 @@
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:26f6f0b2130b683100b3b64826501bbc
+# md5:ee7eb8f2a7f8f7b0dc96a97662d72220
 
 from contracts_api import (
     BalancesObservationFetcher,
@@ -240,6 +240,7 @@ def pre_posting_hook(
     posting_instructions: utils_PostingInstructionListAlias = hook_arguments.posting_instructions
     spending_limit = utils_get_parameter(vault, name=PARAM_SPENDING_LIMIT)
     default_denomination = utils_get_parameter(vault, name=PARAM_DENOMINATION)
+    nominee_account = utils_get_parameter(vault, name=PARAM_NOMINATED_ACCOUNT)
     account_balances = vault.get_balances_observation(
         fetcher_id=fetchers_LIVE_BALANCES_BOF_ID
     ).balances
@@ -316,6 +317,21 @@ def pre_posting_hook(
                         reason_code=RejectionReason.INSUFFICIENT_FUNDS,
                     )
                 )
+    nominee_balance_coordinate = BalanceCoordinate(
+        account_address=nominee_account,
+        asset=DEFAULT_ASSET,
+        denomination=default_denomination,
+        phase=Phase.COMMITTED,
+    )
+    nominee_balance = account_balances.get(nominee_balance_coordinate, Decimal(0))
+    nominee_balance = nominee_balance.net if hasattr(nominee_balance, "net") else nominee_balance
+    if proposed_spend < 0 and abs(proposed_spend) > nominee_balance:
+        return PrePostingHookResult(
+            rejection=Rejection(
+                message="Insufficient balance in Nominee account",
+                reason_code=RejectionReason.INSUFFICIENT_FUNDS,
+            )
+        )
     return None
 
 
@@ -472,7 +488,7 @@ def utils_get_available_balance(
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:26f6f0b2130b683100b3b64826501bbc
+# md5:ee7eb8f2a7f8f7b0dc96a97662d72220
 
 INTERNAL_CONTRA = "INTERNAL_CONTRA"
 TODAY_SPENDING = "TODAY_SPENDING"
