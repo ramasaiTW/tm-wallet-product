@@ -31,7 +31,7 @@ class PrePostingHookTest(WalletTestBase):
             parameters={
                 "denomination": sentinel.denomination,
                 "daily_spending_limit": Decimal("100"),
-                "nominated_account": "Some Account",
+                "nominated_account": "SETTLEMENT",
                 "additional_denominations": [
                     sentinel.add_denomination_1,
                     sentinel.add_denomination_2,
@@ -260,6 +260,7 @@ class PrePostingHookTest(WalletTestBase):
         )
         hook_result = contract.pre_posting_hook(mock_vault, hook_arguments)
         self.assertIsNone(hook_result)
+        self.assertEqual(hook_result.rejection.reason_code, RejectionReason.INSUFFICIENT_FUNDS)
 
     def test_pre_posting_code_rejects_if_over_limit(self):
         posting = self.outbound_hard_settlement(
