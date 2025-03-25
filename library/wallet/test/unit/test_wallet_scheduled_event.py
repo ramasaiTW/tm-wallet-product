@@ -58,7 +58,7 @@ class ScheduledEventHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=TODAY_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),
@@ -67,7 +67,7 @@ class ScheduledEventHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=INTERNAL_CONTRA,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),
@@ -97,7 +97,7 @@ class ScheduledEventHookTest(WalletTestBase):
         )
 
         hook_result = contract.scheduled_event_hook(mock_vault, hook_arguments)
-        result_pid_list = hook_result.posting_instructions_directives if hook_result else []
+        result_pid_list = hook_result.posting_instructions_directives
         for result_pid, expected_pid in list(zip(result_pid_list, expected_pid_list)):
             self.assertEqual(result_pid, expected_pid)
 
