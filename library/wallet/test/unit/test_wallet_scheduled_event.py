@@ -30,7 +30,7 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_extension import 
 class ScheduledEventHookTest(WalletTestBase):
     def test_scheduled_event_hook_zeros_out_daily_spend(self):
         default_committed = Decimal("200")
-        todays_spending = Decimal("-100")
+        todays_spending = Decimal("100")
         balance_dict = {
             self.balance_coordinate(
                 account_address=TODAY_SPENDING,
@@ -53,7 +53,7 @@ class ScheduledEventHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=TODAY_SPENDING,
+                account_address=INTERNAL_CONTRA,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),
@@ -62,7 +62,7 @@ class ScheduledEventHookTest(WalletTestBase):
                 amount=Decimal("100"),
                 denomination=self.default_denomination,
                 account_id=ACCOUNT_ID,
-                account_address=INTERNAL_CONTRA,
+                account_address=TODAY_SPENDING,
                 asset=DEFAULT_ASSET,
                 phase=DEFAULT_PHASE,
             ),
@@ -92,6 +92,7 @@ class ScheduledEventHookTest(WalletTestBase):
         )
 
         hook_result = contract.scheduled_event_hook(mock_vault, hook_arguments)
+
 
     def test_scheduled_event_hook_event_type_not_found(self):
         mock_vault = self.create_mock()

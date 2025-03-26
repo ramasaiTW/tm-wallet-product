@@ -353,6 +353,10 @@ def pre_posting_hook(
         for balances in postings_balances
     )
 
+    nominee_balance = utils.get_available_balance(balances=account_balances, denomination=default_denomination, address=nominee_account,
+                                    asset=DEFAULT_ASSET)
+
+
     auto_top_up_status = vault.get_flag_timeseries(flag=AUTO_TOP_UP_FLAG).latest()
     additional_denominations = utils.get_parameter(
         vault, name=PARAM_ADDITIONAL_DENOMINATIONS, is_json=True
@@ -387,7 +391,13 @@ def pre_posting_hook(
                     reason_code=RejectionReason.AGAINST_TNC,
                 )
             )
-
+    if utils.is_from_nominated_account(posting_instructions) and proposed_spend < 0 and abs(proposed_spend) > nominee_balance:
+        return PrePostingHookResult(
+            rejection=Rejection(
+                message="Insufficient balance in Nominee account",
+                reason_code=RejectionReason.INSUFFICIENT_FUNDS,
+            )
+        )
     # Check available balance across each denomination
     for denomination in posting_denominations:
         available_balance = utils.get_available_balance(
@@ -417,24 +427,6 @@ def pre_posting_hook(
                         reason_code=RejectionReason.INSUFFICIENT_FUNDS,
                     )
                 )
-
-    nominee_balance_coordinate = BalanceCoordinate(
-        account_address=nominee_account,
-        asset=DEFAULT_ASSET,
-        denomination=default_denomination,
-        phase=Phase.COMMITTED,
-    )
-
-    nominee_balance = account_balances.get(nominee_balance_coordinate, Decimal(0))
-    nominee_balance = nominee_balance.net if hasattr(nominee_balance, "net") else nominee_balance
-
-    if proposed_spend < 0 and abs(proposed_spend) > nominee_balance:
-        return PrePostingHookResult(
-            rejection=Rejection(
-                message="Insufficient balance in Nominee account",
-                reason_code=RejectionReason.INSUFFICIENT_FUNDS,
-            )
-        )
     return None
 
 
