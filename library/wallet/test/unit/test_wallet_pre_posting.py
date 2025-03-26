@@ -29,7 +29,7 @@ class PrePostingHookTest(WalletTestBase):
         self.mock_get_parameter = patch_get_parameter.start()
         self.mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
-                "denomination": sentinel.denomination_param,
+                "denomination": sentinel.denomination,
                 "daily_spending_limit": Decimal("100"),
                 "nominated_account": "Some Account",
                 "additional_denominations": [
@@ -211,7 +211,7 @@ class PrePostingHookTest(WalletTestBase):
 
     def test_pre_posting_no_money_flag_false(self):
         posting = self.outbound_hard_settlement(
-            denomination=sentinel.denomination_param, amount=Decimal("100")
+            denomination=sentinel.denomination, amount=Decimal("100")
         )
 
         balances_observation = BalancesObservation(
@@ -237,7 +237,7 @@ class PrePostingHookTest(WalletTestBase):
 
     def test_pre_posting_no_money_flag_true(self):
         posting = self.outbound_hard_settlement(
-            denomination=sentinel.denomination_param, amount=Decimal("100")
+            denomination=sentinel.denomination, amount=Decimal("100")
         )
 
         balances_observation = BalancesObservation(
@@ -263,12 +263,12 @@ class PrePostingHookTest(WalletTestBase):
 
     def test_pre_posting_code_rejects_if_over_limit(self):
         posting = self.outbound_hard_settlement(
-            denomination=sentinel.denomination_param, amount=Decimal("200")
+            denomination=sentinel.denomination, amount=Decimal("200")
         )
 
         balance_dict = {
             self.balance_coordinate(
-                denomination=sentinel.denomination_param,
+                denomination=sentinel.denomination,
             ): self.balance(net=Decimal(200)),
         }
         balances_observation = BalancesObservation(
@@ -294,14 +294,14 @@ class PrePostingHookTest(WalletTestBase):
 
     def test_pre_posting_code_ignores_limits_with_withdrawal_override_true(self):
         posting = self.outbound_hard_settlement(
-            denomination=sentinel.denomination_param,
+            denomination=sentinel.denomination,
             amount=Decimal("99"),
             instruction_details={"withdrawal_override": "true"},
         )
 
         balance_dict = {
             self.balance_coordinate(
-                denomination=sentinel.denomination_param,
+                denomination=sentinel.denomination,
             ): self.balance(net=Decimal(98)),
         }
         balances_observation = BalancesObservation(
@@ -327,12 +327,12 @@ class PrePostingHookTest(WalletTestBase):
     def test_pre_posting_code_is_force_override_true(self):
         posting = self.outbound_hard_settlement(
             amount=Decimal("10"),
-            denomination=sentinel.denomination_param,
+            denomination=sentinel.denomination,
             instruction_details={"force_override": "true"},
         )
 
         balance_dict = {
-            self.balance_coordinate(denomination=sentinel.denomination_param): self.balance(
+            self.balance_coordinate(denomination=sentinel.denomination): self.balance(
                 net=Decimal("5")
             ),
         }
