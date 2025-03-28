@@ -17,6 +17,8 @@ from contracts_api import (  # Enums
     ActivationHookResult,
     BalanceCoordinate,
     CustomInstruction,
+    ConversionHookArguments,
+    ConversionHookResult,
     DeactivationHookArguments,
     DeactivationHookResult,
     DenominationShape,
@@ -190,7 +192,6 @@ def activation_hook(
 
     return ActivationHookResult(scheduled_events_return_value=scheduled_events)
 
-
 # Activation hook helpers
 def _get_zero_out_daily_spend_schedule(vault: SmartContractVault) -> ScheduleExpression:
     """
@@ -274,6 +275,31 @@ def _get_zero_out_daily_spend_instructions(
 
 
 @requires(parameters=True)
+@fetch_account_data(balances=[fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID]
+)
+def conversion_hook(
+    vault: SmartContractVault, hook_arguments: ConversionHookArguments
+) -> ConversionHookResult | None:
+    effective_datetime = hook_arguments.effective_datetime
+
+    existing_scheduled_events = hook_arguments.existing_schedules
+    scheduled_events={}
+    existing_conversion_schedule=existing_scheduled_events.get(ZERO_OUT_DAILY_SPEND_EVENT)
+
+    if existing_conversion_schedule:
+        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT]=existing_conversion_schedule
+
+    else:
+        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(
+        start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
+    )
+
+    return ConversionHookResult(
+        scheduled_events_return_value=scheduled_events
+    )
+
+
+@requires(parameters=True)
 @fetch_account_data(balances=[fetchers.LIVE_BALANCES_BOF_ID])
 def post_parameter_change_hook(
     vault: SmartContractVault, hook_arguments: PostParameterChangeHookArguments
@@ -354,6 +380,7 @@ def pre_posting_hook(
     additional_denominations = utils.get_parameter(
         vault, name=PARAM_ADDITIONAL_DENOMINATIONS, is_json=True
     )
+
     posting_denominations = set(
         coord.denomination
         for posting in posting_instructions
