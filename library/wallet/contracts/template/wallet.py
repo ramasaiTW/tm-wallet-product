@@ -45,6 +45,9 @@ from contracts_api import (  # Enums
     Tside,
     fetch_account_data,
     requires,
+    ConversionHookArguments,
+    ConversionHookResult
+
 )
 
 # inception sdk
@@ -537,6 +540,24 @@ def deactivation_hook(
             posting_instructions_directives=zero_out_daily_spend_directives
         )
     return None
+
+@requires(parameters=True)
+@fetch_account_data(balances=[fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID])
+def conversion_hook(
+    vault: SmartContractVault, hook_arguments: ConversionHookArguments
+) -> ConversionHookResult | None:
+    effective_datetime = hook_arguments.effective_datetime
+    scheduled_events = hook_arguments.existing_schedules
+    if not scheduled_events:
+        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(
+            start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
+        )
+    return ConversionHookResult(
+        scheduled_events_return_value=scheduled_events,
+        posting_instructions_directives=[]
+    )
+
+
 
 
 def _get_release_and_decreased_auth_amount(
