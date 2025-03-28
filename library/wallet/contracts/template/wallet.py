@@ -45,6 +45,9 @@ from contracts_api import (  # Enums
     Tside,
     fetch_account_data,
     requires,
+    ConversionHookArguments,
+    ConversionHookResult
+
 )
 
 # inception sdk
@@ -327,15 +330,18 @@ def post_parameter_change_hook(
 def pre_posting_hook(
     vault: SmartContractVault, hook_arguments: PrePostingHookArguments
 ) -> PrePostingHookResult | None:
+
     if utils.is_force_override(posting_instructions=hook_arguments.posting_instructions):
         return None
     posting_instructions: utils.PostingInstructionListAlias = hook_arguments.posting_instructions
     spending_limit = utils.get_parameter(vault, name=PARAM_SPENDING_LIMIT)
     default_denomination = utils.get_parameter(vault, name=PARAM_DENOMINATION)
+    nominee_account = utils.get_parameter(vault, name = PARAM_NOMINATED_ACCOUNT)
 
     account_balances = vault.get_balances_observation(
         fetcher_id=fetchers.LIVE_BALANCES_BOF_ID
     ).balances
+
     todays_spending_balance_coordinate = BalanceCoordinate(
         account_address=TODAY_SPENDING,
         asset=DEFAULT_ASSET,
@@ -349,6 +355,10 @@ def pre_posting_hook(
         utils.get_available_balance(balances=balances, denomination=default_denomination)
         for balances in postings_balances
     )
+
+    nominee_balance = utils.get_available_balance(balances=account_balances, denomination=default_denomination, address=nominee_account,
+                                    asset=DEFAULT_ASSET)
+
 
     auto_top_up_status = vault.get_flag_timeseries(flag=AUTO_TOP_UP_FLAG).latest()
     additional_denominations = utils.get_parameter(
@@ -384,7 +394,13 @@ def pre_posting_hook(
                     reason_code=RejectionReason.AGAINST_TNC,
                 )
             )
-
+    if utils.is_from_nominated_account(posting_instructions) and proposed_spend < 0 and abs(proposed_spend) > nominee_balance:
+        return PrePostingHookResult(
+            rejection=Rejection(
+                message="Insufficient balance in Nominee account",
+                reason_code=RejectionReason.INSUFFICIENT_FUNDS,
+            )
+        )
     # Check available balance across each denomination
     for denomination in posting_denominations:
         available_balance = utils.get_available_balance(
@@ -524,6 +540,24 @@ def deactivation_hook(
             posting_instructions_directives=zero_out_daily_spend_directives
         )
     return None
+
+@requires(parameters=True)
+@fetch_account_data(balances=[fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID])
+def conversion_hook(
+    vault: SmartContractVault, hook_arguments: ConversionHookArguments
+) -> ConversionHookResult | None:
+    effective_datetime = hook_arguments.effective_datetime
+    scheduled_events = hook_arguments.existing_schedules
+    if not scheduled_events:
+        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(
+            start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
+        )
+    return ConversionHookResult(
+        scheduled_events_return_value=scheduled_events,
+        posting_instructions_directives=[]
+    )
+
+
 
 
 def _get_release_and_decreased_auth_amount(
