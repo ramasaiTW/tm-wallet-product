@@ -3,7 +3,7 @@
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:cca4b74d98d9e9d7dd2cf00b3ad7e9a5
+# md5:35ebc8bc7be01863bdcb7e0e41351f41
 
 from contracts_api import (
     BalancesObservationFetcher,
@@ -46,8 +46,6 @@ from contracts_api import (
     AccountIdShape,
     ActivationHookArguments,
     ActivationHookResult,
-    ConversionHookArguments,
-    ConversionHookResult,
     DeactivationHookArguments,
     DeactivationHookResult,
     DenominationShape,
@@ -93,24 +91,6 @@ def activation_hook(
         start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
     )
     return ActivationHookResult(scheduled_events_return_value=scheduled_events)
-
-
-@requires(parameters=True)
-@fetch_account_data(balances=["EFFECTIVE_FETCHER"])
-def conversion_hook(
-    vault: Any, hook_arguments: ConversionHookArguments
-) -> ConversionHookResult | None:
-    effective_datetime = hook_arguments.effective_datetime
-    existing_scheduled_events = hook_arguments.existing_schedules
-    scheduled_events = {}
-    existing_conversion_schedule = existing_scheduled_events.get(ZERO_OUT_DAILY_SPEND_EVENT)
-    if existing_conversion_schedule:
-        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = existing_conversion_schedule
-    else:
-        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(
-            start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
-        )
-    return ConversionHookResult(scheduled_events_return_value=scheduled_events)
 
 
 @requires(parameters=True)
@@ -492,7 +472,7 @@ def utils_get_available_balance(
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:cca4b74d98d9e9d7dd2cf00b3ad7e9a5
+# md5:35ebc8bc7be01863bdcb7e0e41351f41
 
 INTERNAL_CONTRA = "INTERNAL_CONTRA"
 TODAY_SPENDING = "TODAY_SPENDING"
