@@ -6,7 +6,6 @@ from .time_operations import RelativeDateTime
 from .....utils import exceptions, symbols, types_utils
 from .filters import (
     BalancesFilter,
-    
 )
 
 
@@ -111,7 +110,6 @@ def _fetch_account_data(
     *,
     balances: Optional[Union[list[str], dict[str, list[str]]]] = None,
     event_type: Optional[str] = None,
-    
     postings: Optional[list[str]] = None,
 ):
     def wrapper(func):
@@ -444,6 +442,3 @@ class PostingsIntervalFetcher(IntervalFetcher):
                 args=cls._public_attributes(language_code),
             ),
         )
-
-
-

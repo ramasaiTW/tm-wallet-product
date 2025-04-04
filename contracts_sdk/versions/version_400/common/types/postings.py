@@ -389,7 +389,6 @@ class PostingInstructionBase:
         account_id: Optional[str] = None,
         tside: Optional[Tside] = None,
     ) -> BalanceDefaultDict:
-
         account_id = account_id or self._own_account_id
         tside = tside or self._tside
         if not account_id:

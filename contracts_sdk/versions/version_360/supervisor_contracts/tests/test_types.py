@@ -6,6 +6,6 @@ from .....utils.tools import SupervisorContracts360TestCase
 class PublicSupervisorContractsV360TypesTestCase(
     SupervisorContracts360TestCase,
     PublicCommonV360TypesTestCase,
-    test_types.PublicSupervisorContractsV350TypesTestCase
+    test_types.PublicSupervisorContractsV350TypesTestCase,
 ):
     pass

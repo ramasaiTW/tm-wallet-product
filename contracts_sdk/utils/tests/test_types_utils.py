@@ -47,7 +47,6 @@ class PublicTypesUtilsTest(unittest.TestCase):
         self.assertRaises(AttributeError, getattr, ContractParameterLevel, "INSTANCE")
 
     def test_typed_lists(self):
-
         x = ListOfInts()
         self.assertEqual(len(x), 0)
         self.assertTrue(not x)

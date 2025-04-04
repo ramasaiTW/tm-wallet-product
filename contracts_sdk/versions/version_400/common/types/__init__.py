@@ -15,7 +15,6 @@ from .constants import (  # noqa: F401
     DEFAULT_ADDRESS,
 )
 from .enums import (  # noqa: F401
-    
     Phase,
     PostingInstructionType,
     RejectionReason,
@@ -36,13 +35,11 @@ from .fetchers import (  # noqa: F401
     BalancesIntervalFetcher,
     BalancesObservationFetcher,
     fetch_account_data,
-    
     PostingsIntervalFetcher,
     requires,
 )
 from .filters import (  # noqa: F401
     BalancesFilter,
-    
 )
 from .hook_arguments import (  # noqa: F401
     DeactivationHookArguments,

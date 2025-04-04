@@ -9,6 +9,7 @@ from ..common.types import (
 )
 from functools import lru_cache
 
+
 class UpdatePlanEventTypeDirective(types3100.UpdatePlanEventTypeDirective):
     def __init__(
         self,
@@ -44,7 +45,6 @@ class UpdatePlanEventTypeDirective(types3100.UpdatePlanEventTypeDirective):
 
     @classmethod
     @lru_cache()
-
     def _public_attributes(cls, language_code=symbols.Languages.ENGLISH):
         attributes = super()._public_attributes(language_code=language_code)
         attributes.append(

@@ -40,9 +40,7 @@ class ScheduledEventHookTest(WalletTestBase):
             self.balance_coordinate(
                 account_address=DEFAULT_ADDRESS,
                 denomination=self.default_denomination,
-            ): self.balance(
-                net=-default_committed
-            ),
+            ): self.balance(net=-default_committed),
         }
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping=balance_dict),

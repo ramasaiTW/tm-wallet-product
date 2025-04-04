@@ -922,7 +922,6 @@ class ClientTransactionStateChangesTests(unittest.TestCase):
         )
 
     def test_custom_client_transaction_supported(self):
-
         client_transaction = posting_logic.SingleAccountClientTransaction(
             _CLIENT_TRANSACTION_ID, _ACCOUNT_ID
         )

@@ -434,7 +434,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 ),
             ),
         ]
-        
+
         public_methods += get_parameter_methods
         public_methods += [
             types_utils.MethodSpec(

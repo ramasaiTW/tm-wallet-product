@@ -1078,7 +1078,7 @@ def _has_parameter_value_changed(parameter_name, old_parameter_values, updated_p
 def _count_client_transactions(client_transactions, denomination):
     # count withdrawal transactions only, excludes 'APPLY_ACCRUED_' transaction ids
     txns_this_month = []
-    for (client_id, client_txn_id) in client_transactions:
+    for client_id, client_txn_id in client_transactions:
         client_txn = client_transactions.get((client_id, client_txn_id))
         if client_txn.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled:
             if client_txn.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled < 0:
