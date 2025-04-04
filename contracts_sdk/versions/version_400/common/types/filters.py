@@ -51,6 +51,3 @@ class BalancesFilter:
                 name="addresses", type="List[str]", docstring="A list of balance addresses."
             ),
         ]
-
-
-

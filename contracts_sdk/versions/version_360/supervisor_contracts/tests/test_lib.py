@@ -1,5 +1,5 @@
 from ....version_350.supervisor_contracts.tests.test_lib import (
-    PublicSupervisorV350VaultFunctionsTestCase
+    PublicSupervisorV350VaultFunctionsTestCase,
 )
 
 

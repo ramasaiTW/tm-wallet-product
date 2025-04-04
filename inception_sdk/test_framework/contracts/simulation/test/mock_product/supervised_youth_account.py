@@ -407,7 +407,7 @@ def close_code(effective_date):
         is_visible_to_customer=True,
         date=datetime.utcnow(),
     )
-    for ((address, asset, denom, phase), balance) in latest_balance_dict.items():
+    for (address, asset, denom, phase), balance in latest_balance_dict.items():
         if address == DEFAULT_ADDRESS:
             continue
         if balance.net > 0:  # Transfer to DEFAULT
@@ -466,7 +466,7 @@ def _total_ringfenced_for_category(balances, category, phase, denomination, clie
     Returns the amount of ringfenced funds for the category as a negative number.
     """
     total_pending = Decimal(0)
-    for (client_id, client_txn_id) in client_transactions:
+    for client_id, client_txn_id in client_transactions:
         client_txn = client_transactions.get((client_id, client_txn_id))
         if "category" not in client_txn[0].instruction_details:
             raise Rejected(
@@ -487,7 +487,6 @@ def _total_ringfenced_for_category(balances, category, phase, denomination, clie
 
 
 def _is_zero_balance(balances, denomination):
-
     posting_pending_outbound_amount = balances[
         DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT
     ].net

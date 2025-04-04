@@ -6,7 +6,6 @@ from io import StringIO
 from zoneinfo import ZoneInfo
 
 from ..types import (
-    
     AccountIdShape,
     AddressDetails,
     AdjustmentAmount,
@@ -27,7 +26,6 @@ from ..types import (
     DeactivationHookResult,
     CustomInstruction,
     DateShape,
-    
     DEFAULT_ADDRESS,
     DEFAULT_ASSET,
     DefinedDateTime,
@@ -35,9 +33,7 @@ from ..types import (
     DerivedParameterHookArguments,
     DerivedParameterHookResult,
     EndOfMonthSchedule,
-    
     EventTypesGroup,
-    
     fetch_account_data,
     FlagTimeseries,
     InboundAuthorisation,
@@ -45,7 +41,6 @@ from ..types import (
     AccountNotificationDirective,
     ParameterLevel,
     Logger,
-    
     Next,
     NumberShape,
     OptionalShape,
@@ -55,7 +50,6 @@ from ..types import (
     Override,
     Parameter,
     ParameterTimeseries,
-    
     Phase,
     PlanNotificationDirective,
     ActivationHookArguments,
@@ -88,7 +82,6 @@ from ..types import (
     Shift,
     SmartContractDescriptor,
     SmartContractEventType,
-    
     StringShape,
     SupervisedHooks,
     SupervisionExecutionMode,
@@ -2420,17 +2413,13 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEquals(old_param_vals_attr.name, "old_parameter_values")
         self.assertEquals(
             old_param_vals_attr.type,
-            "Dict[str, Union["
-            
-            + "datetime, Decimal, int, OptionalValue, str, UnionItemValue]",
+            "Dict[str, Union[" + "datetime, Decimal, int, OptionalValue, str, UnionItemValue]",
         )
 
         self.assertEquals(updated_param_vals_attr.name, "updated_parameter_values")
         self.assertEquals(
             updated_param_vals_attr.type,
-            "Dict[str, Union["
-            
-            + "datetime, Decimal, int, OptionalValue, str, UnionItemValue]",
+            "Dict[str, Union[" + "datetime, Decimal, int, OptionalValue, str, UnionItemValue]",
         )
 
     def test_post_parameter_change_hook_arguments_raises_with_naive_effective_datetime(self):
@@ -3483,9 +3472,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEquals(parameters_attr.name, "updated_parameter_values")
         self.assertEquals(
             parameters_attr.type,
-            "Dict[str, Union["
-            
-            + "datetime, Decimal, int, OptionalValue, str, UnionItemValue]",
+            "Dict[str, Union[" + "datetime, Decimal, int, OptionalValue, str, UnionItemValue]",
         )
 
     # ScheduledEventHookArguments
@@ -9857,7 +9844,6 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(DefinedDateTime.INTERVAL_START, relative_date_time_native_object.origin)
 
     def test_relative_date_time_with_origin_using_illegal_live_value(self):
-
         with self.assertRaises(InvalidSmartContractError) as ex:
             RelativeDateTime(
                 shift=Shift(years=4, months=1, days=2, hours=-10, minutes=25, seconds=-45),
@@ -9872,7 +9858,6 @@ class PublicCommonV400TypesTestCase(TestCase):
     # PostingsIntervalFetcher
 
     def test_postings_interval_fetcher_with_relative_datetime_start(self):
-
         postings_interval_fetcher = PostingsIntervalFetcher(
             fetcher_id="fetcher_id",
             start=RelativeDateTime(
@@ -10394,8 +10379,6 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(None, balances_observation.value_datetime)
         self.assertEqual(balance_dict, balances_observation.balances)
 
-    
-
     # ScheduledEvent
 
     def test_scheduled_event(self):
@@ -10698,8 +10681,6 @@ class PublicCommonV400TypesTestCase(TestCase):
                 f"Argument {time_component} of EndOfMonthSchedule"
                 f" object is out of range({low}-{high}).",
             )
-
-    
 
     # SupervisedHooks
 
@@ -12046,7 +12027,6 @@ class PublicCommonV400TypesTestCase(TestCase):
         @fetch_account_data(
             balances=["fetcher_1"],
             event_type="EVENT",
-            
             postings=["fetcher_3"],
         )
         def hook(*args, **kwargs):

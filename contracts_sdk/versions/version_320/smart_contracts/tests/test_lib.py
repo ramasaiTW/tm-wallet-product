@@ -2,8 +2,5 @@ from ....version_310.smart_contracts.tests.test_lib import PublicV310VaultFuncti
 from .....utils.tools import SmartContracts320TestCase
 
 
-class PublicV320VaultFunctionsTestCase(
-        SmartContracts320TestCase,
-        PublicV310VaultFunctionsTestCase
-):
+class PublicV320VaultFunctionsTestCase(SmartContracts320TestCase, PublicV310VaultFunctionsTestCase):
     pass

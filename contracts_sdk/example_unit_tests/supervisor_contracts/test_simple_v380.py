@@ -7,7 +7,6 @@ from ...versions.version_380.supervisor_contracts import types
 
 
 class SimpleTestCase(SupervisorContracts380TestCase):
-
     filepath = os.environ.get(
         "DATA_SIMPLE_V380", "contracts_sdk/example_unit_tests/supervisor_contracts/simple_v380.py"
     )

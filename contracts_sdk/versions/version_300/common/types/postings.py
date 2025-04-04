@@ -7,7 +7,6 @@ from .....utils import types_utils
 
 
 class PostingInstruction:
-
     value_timestamp = NotImplementedError("Missing implementation")
     client_batch_id = NotImplementedError("Missing implementation")
     batch_details = NotImplementedError("Missing implementation")

@@ -104,6 +104,3 @@ class ScheduleFailover:
 class SupervisionExecutionMode:
     OVERRIDE = 1
     INVOKED = 2
-
-
-

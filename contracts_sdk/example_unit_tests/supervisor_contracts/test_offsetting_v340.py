@@ -8,7 +8,6 @@ from ...versions.version_340.supervisor_contracts import types
 
 
 class OffsettingTestCase(SupervisorContracts340TestCase):
-
     filepath = os.environ.get(
         "DATA_OFFSETTING_V340",
         "contracts_sdk/example_unit_tests/supervisor_contracts/offsetting_v340.py",

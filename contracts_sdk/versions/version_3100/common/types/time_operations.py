@@ -6,7 +6,6 @@ from .....utils import exceptions, symbols, types_utils
 
 class Override:
     def __init__(self, *, year=None, month=None, day=None, hour=None, minute=None, second=None):
-
         self._spec().assert_constructor_args(
             self._registry,
             {
@@ -100,7 +99,6 @@ class Shift:
     def __init__(
         self, *, years=None, months=None, days=None, hours=None, minutes=None, seconds=None
     ):
-
         self._spec().assert_constructor_args(
             self._registry,
             {
@@ -186,7 +184,6 @@ class Shift:
 
 class Next:
     def __init__(self, *, month=None, day=None, hour=None, minute=None, second=None):
-
         self._spec().assert_constructor_args(
             self._registry,
             {
@@ -267,7 +264,6 @@ class Next:
 
 class Previous:
     def __init__(self, *, month=None, day=None, hour=None, minute=None, second=None):
-
         self._spec().assert_constructor_args(
             self._registry,
             {
@@ -350,7 +346,6 @@ class Previous:
 
 class RelativeDateTime:
     def __init__(self, *, shift=None, find=None, origin=None):
-
         self._spec().assert_constructor_args(
             self._registry,
             {

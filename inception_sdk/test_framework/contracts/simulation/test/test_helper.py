@@ -49,10 +49,8 @@ class SimulationHelperTest(TestCase):
         ]
 
         for test_case in test_cases:
-
             if "expected_error" in test_case:
                 with self.assertRaises(ValueError) as ex:
-
                     simulation_helper.create_template_parameter_change_event(**test_case["input"])
 
                     self.assertIn(

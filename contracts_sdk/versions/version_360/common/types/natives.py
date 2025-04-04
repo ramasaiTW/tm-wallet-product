@@ -4,113 +4,113 @@ from .....utils import types_utils
 
 
 anyObject = types_utils.NativeObjectSpec(
-    name='Any',
+    name="Any",
     object=typing.Any,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Any'
+    docs="https://docs.python.org/3/library/typing.html#typing.Any",
 )
 
 callableObject = types_utils.NativeObjectSpec(
-    name='Callable',
+    name="Callable",
     object=typing.Callable,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Callable'
+    docs="https://docs.python.org/3/library/typing.html#typing.Callable",
 )
 
 defaultDictObject = types_utils.NativeObjectSpec(
-    name='DefaultDict',
+    name="DefaultDict",
     object=typing.DefaultDict,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.DefaultDict'
+    docs="https://docs.python.org/3/library/typing.html#typing.DefaultDict",
 )
 
 dictObject = types_utils.NativeObjectSpec(
-    name='Dict',
+    name="Dict",
     object=typing.Dict,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Dict'
+    docs="https://docs.python.org/3/library/typing.html#typing.Dict",
 )
 
 iterableObject = types_utils.NativeObjectSpec(
-    name='Iterable',
+    name="Iterable",
     object=typing.Iterable,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Iterable'
+    docs="https://docs.python.org/3/library/typing.html#typing.Iterable",
 )
 
 iteratorObject = types_utils.NativeObjectSpec(
-    name='Iterator',
+    name="Iterator",
     object=typing.Iterator,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Iterator'
+    docs="https://docs.python.org/3/library/typing.html#typing.Iterator",
 )
 
 listObject = types_utils.NativeObjectSpec(
-    name='List',
+    name="List",
     object=typing.List,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.List'
+    docs="https://docs.python.org/3/library/typing.html#typing.List",
 )
 
 mappingObject = types_utils.NativeObjectSpec(
-    name='Mapping',
+    name="Mapping",
     object=typing.Mapping,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Mapping'
+    docs="https://docs.python.org/3/library/typing.html#typing.Mapping",
 )
 
 namedTupleObject = types_utils.NativeObjectSpec(
-    name='NamedTuple',
+    name="NamedTuple",
     object=typing.NamedTuple,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.NamedTuple'
+    docs="https://docs.python.org/3/library/typing.html#typing.NamedTuple",
 )
 
 newTypeObject = types_utils.NativeObjectSpec(
-    name='NewType',
+    name="NewType",
     object=typing.NewType,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.NewType'
+    docs="https://docs.python.org/3/library/typing.html#typing.NewType",
 )
 
 noReturnObject = types_utils.NativeObjectSpec(
-    name='NoReturn',
+    name="NoReturn",
     object=typing.NoReturn,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.NoReturn'
+    docs="https://docs.python.org/3/library/typing.html#typing.NoReturn",
 )
 
 optionalObject = types_utils.NativeObjectSpec(
-    name='Optional',
+    name="Optional",
     object=typing.Optional,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Optional'
+    docs="https://docs.python.org/3/library/typing.html#typing.Optional",
 )
 
 setObject = types_utils.NativeObjectSpec(
-    name='Set',
+    name="Set",
     object=typing.Set,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Set'
+    docs="https://docs.python.org/3/library/typing.html#typing.Set",
 )
 
 typeObject = types_utils.NativeObjectSpec(
-    name='Type',
+    name="Type",
     object=typing.Type,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Type'
+    docs="https://docs.python.org/3/library/typing.html#typing.Type",
 )
 
 tupleObject = types_utils.NativeObjectSpec(
-    name='Tuple',
+    name="Tuple",
     object=typing.Tuple,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Tuple'
+    docs="https://docs.python.org/3/library/typing.html#typing.Tuple",
 )
 
 unionObject = types_utils.NativeObjectSpec(
-    name='Union',
+    name="Union",
     object=typing.Union,
     package=typing,
-    docs='https://docs.python.org/3/library/typing.html#typing.Union'
+    docs="https://docs.python.org/3/library/typing.html#typing.Union",
 )

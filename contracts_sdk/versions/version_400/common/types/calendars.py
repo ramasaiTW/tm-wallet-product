@@ -17,7 +17,6 @@ class CalendarEvent:
         end_datetime: datetime,
         _from_proto: bool = False
     ):
-
         self.id = id
         self.calendar_id = calendar_id
         self.start_datetime = start_datetime

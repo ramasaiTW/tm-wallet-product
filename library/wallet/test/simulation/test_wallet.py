@@ -1799,7 +1799,6 @@ class WalletTest(SimulationTestCase):
         self.run_test_scenario(test_scenario)
 
     def test_auto_top_up_triggered_when_flag_is_set(self):
-
         start_datetime = datetime(year=2019, month=1, day=1, tzinfo=timezone.utc)
         end_datetime = datetime(year=2019, month=1, day=1, hour=3, tzinfo=timezone.utc)
 
@@ -1863,7 +1862,6 @@ class WalletTest(SimulationTestCase):
         self.run_test_scenario(test_scenario)
 
     def test_auto_top_up_triggered_when_flag_is_set_for_auth_and_settle(self):
-
         start_datetime = datetime(year=2019, month=1, day=1, tzinfo=timezone.utc)
         end_datetime = datetime(year=2019, month=1, day=1, hour=6, tzinfo=timezone.utc)
 

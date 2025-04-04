@@ -28,7 +28,6 @@ class VaultFunctionsABC(v3100_lib.VaultFunctionsABC):
 
     @classmethod
     @lru_cache()
-
     def _spec(cls, language_code=symbols.Languages.ENGLISH):
         spec = super()._spec(language_code)
 

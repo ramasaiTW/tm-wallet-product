@@ -49,7 +49,6 @@ class SendAndWaitForPIBTest(TestCase):
         mock_create_and_produce_posting_request: Mock,
         mock_wait_for_posting_responses: Mock,
     ):
-
         type(mock_testhandle).use_kafka = PropertyMock(return_value=True)
         mock_create_and_produce_posting_request.return_value = "test_request_id"
         mock_wait_for_posting_responses.return_value = ([], {})
@@ -105,7 +104,6 @@ class WaitForPostingResponseTest(TestCase):
         mock_wait_for_messages: Mock,
         mock_BatchCompletionRecorder: MagicMock,
     ):
-
         mock_batch_completion_recorder = MagicMock(
             spec=postings_helper.BatchCompletionRecorder,
             pib_ids=["a"],

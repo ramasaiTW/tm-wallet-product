@@ -80,7 +80,6 @@ class TimeseriesItem:
 
 
 class Timeseries(list):
-
     return_on_empty = None
 
     def __init__(
@@ -324,7 +323,6 @@ class BalanceTimeseries(Timeseries):
 
 
 class FlagTimeseries(Timeseries):
-
     return_on_empty = lambda *_: False  # type:ignore
 
     def __init__(self, iterable: Optional[List[Tuple[datetime, bool]]] = None) -> None:
@@ -411,7 +409,6 @@ class FlagTimeseries(Timeseries):
 
 
 class ParameterTimeseries(Timeseries):
-
     return_on_empty = None
 
     def __init__(

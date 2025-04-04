@@ -59,7 +59,7 @@ def extract_framework_environments_from_config(
             default_environment_name = framework_config.get(environment_purpose.value, {}).get(
                 "environment_name"
             )
-        except (IOError):
+        except IOError:
             log.warning(
                 f"Could not load framework default config. File at {FLAGS.framework_config_path}"
                 " not found"

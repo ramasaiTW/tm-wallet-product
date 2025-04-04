@@ -6,7 +6,6 @@ from .....utils import types_utils
 
 
 class InvalidContractParameter(utils_exceptions.InvalidContractParameter):
-
     # (TM-21728): Move full declaration of exception classes into versions
     @classmethod
     @lru_cache()
@@ -22,7 +21,6 @@ class InvalidContractParameter(utils_exceptions.InvalidContractParameter):
 
 
 class Rejected(utils_exceptions.Rejected):
-
     # (TM-21728): Move full declaration of exception classes into versions
     @classmethod
     @lru_cache()

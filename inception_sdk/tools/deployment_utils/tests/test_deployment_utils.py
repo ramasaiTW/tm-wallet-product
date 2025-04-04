@@ -12,7 +12,6 @@ class FlagParsingTest(TestCase):
         return super().tearDown()
 
     def test_standard_validate(self):
-
         args = [
             "binary",  # dummy arg to represent the binary in normal CLI command
             "--validate_manifest",
@@ -21,7 +20,6 @@ class FlagParsingTest(TestCase):
         self.assertTrue(FLAGS.validate_manifest)
 
     def test_standard_import(self):
-
         args = [
             "binary",  # dummy arg to represent the binary in normal CLI command
             "--import_manifest",
@@ -36,7 +34,6 @@ class FlagParsingTest(TestCase):
         self.assertEqual(FLAGS.auth_cookie, "abc")
 
     def test_additional_positional_args_passed_through(self):
-
         args = [
             "binary",  # dummy arg to represent the binary in normal CLI command
             "--import_manifest",
@@ -47,7 +44,6 @@ class FlagParsingTest(TestCase):
         self.assertListEqual(unknown_args, ["bla"])
 
     def test_additional_kwargs_rejected(self):
-
         args = [
             "binary",  # dummy arg to represent the binary in normal CLI command
             "--import_manifest",
@@ -57,7 +53,6 @@ class FlagParsingTest(TestCase):
             parse_flags(args)
 
     def test_validate_manifest_and_import_manifest_are_mutually_exclusive(self):
-
         args = [
             "binary",  # dummy arg to represent the binary in normal CLI command
             "--validate_manifest",
@@ -70,7 +65,6 @@ class FlagParsingTest(TestCase):
             parse_flags(args)
 
     def test_one_of_validate_manifest_and_import_manifest_is_required(self):
-
         args = [
             "binary",  # dummy arg to represent the binary in normal CLI command
         ]

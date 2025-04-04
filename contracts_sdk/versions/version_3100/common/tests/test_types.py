@@ -372,7 +372,6 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         self.assertEqual(DefinedDateTime.INTERVAL_START, relative_date_time_native_object.origin)
 
     def test_relative_date_time_with_origin_using_illegal_live_value(self):
-
         with self.assertRaises(InvalidSmartContractError) as ex:
             RelativeDateTime(
                 shift=Shift(years=4, months=1, days=2, hours=-10, minutes=25, seconds=-45),
@@ -385,7 +384,6 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         )
 
     def test_postings_interval_fetcher_with_relative_datetime_start(self):
-
         postings_interval_fetcher = PostingsIntervalFetcher(
             fetcher_id="fetcher_id",
             start=RelativeDateTime(

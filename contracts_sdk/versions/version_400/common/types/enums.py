@@ -171,6 +171,3 @@ class PostingInstructionType(EnumRepr, Enum):
             members=enum_members(cls),
             show_values=False,
         )
-
-
-

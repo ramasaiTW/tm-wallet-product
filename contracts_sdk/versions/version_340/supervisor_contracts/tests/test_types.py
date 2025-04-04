@@ -5,15 +5,14 @@ from .....utils.tools import SupervisorContracts340TestCase
 
 
 class PublicSupervisorContractsV340TypesTestCase(
-    SupervisorContracts340TestCase,
-    PublicCommonV340TypesTestCase
+    SupervisorContracts340TestCase, PublicCommonV340TypesTestCase
 ):
     def test_event_type_object(self):
-        event_type_name = 'TEST_EVENT_1'
-        scheduler_tag_ids = ['TEST_TAG_1', 'TEST_TAG_2']
+        event_type_name = "TEST_EVENT_1"
+        scheduler_tag_ids = ["TEST_TAG_1", "TEST_TAG_2"]
         overrides_event_types = [
-            ('S1', 'TEST_EVENT_2'),
-            ('S2', 'TEST_EVENT_3'),
+            ("S1", "TEST_EVENT_2"),
+            ("S2", "TEST_EVENT_3"),
         ]
 
         event_type = EventType(
@@ -27,33 +26,28 @@ class PublicSupervisorContractsV340TypesTestCase(
         self.assertEqual(overrides_event_types, event_type.overrides_event_types)
 
     def test_event_type_attributes_are_verified(self):
-        illegal_overrides_event_types_value = [{'key': 'value'}]
+        illegal_overrides_event_types_value = [{"key": "value"}]
         with self.assertRaises(StrongTypingError) as ex:
             EventType(
-                name='TEST_EVENT_1',
-                scheduler_tag_ids=['TEST_TAG_1', 'TEST_TAG_2'],
+                name="TEST_EVENT_1",
+                scheduler_tag_ids=["TEST_TAG_1", "TEST_TAG_2"],
                 overrides_event_types=illegal_overrides_event_types_value,
             )
         self.assertIn(
-            f"overrides_event_types\' expected Optional[List[Tuple[str, str]]] but got value "
-            f'{illegal_overrides_event_types_value}',
-            str(ex.exception)
+            f"overrides_event_types' expected Optional[List[Tuple[str, str]]] but got value "
+            f"{illegal_overrides_event_types_value}",
+            str(ex.exception),
         )
 
     def test_smart_contract_descriptor(self):
         supervised_smart_contract = SmartContractDescriptor(
-            alias='test1',
-            smart_contract_version_id='test_smart_contract_version_id'
+            alias="test1", smart_contract_version_id="test_smart_contract_version_id"
         )
-        self.assertEqual('test1', supervised_smart_contract.alias)
+        self.assertEqual("test1", supervised_smart_contract.alias)
 
     def test_smart_contract_descriptor_attributes_are_verified(self):
         with self.assertRaises(StrongTypingError) as ex:
             SmartContractDescriptor(
-                alias=None,
-                smart_contract_version_id='test_smart_contract_version_id'
+                alias=None, smart_contract_version_id="test_smart_contract_version_id"
             )
-        self.assertIn(
-            "\'alias\' expected str but got value None",
-            str(ex.exception)
-        )
+        self.assertIn("'alias' expected str but got value None", str(ex.exception))

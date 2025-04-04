@@ -1,8 +1,11 @@
 from typing import List, Optional
 
 from . import (
-    AddAccountNoteDirective, AmendScheduleDirective, PostingInstructionBatchDirective,
-    RemoveSchedulesDirective, WorkflowStartDirective
+    AddAccountNoteDirective,
+    AmendScheduleDirective,
+    PostingInstructionBatchDirective,
+    RemoveSchedulesDirective,
+    WorkflowStartDirective,
 )
 from ....version_360.common.types import hook_directives as hook_directives360
 
@@ -20,13 +23,14 @@ class HookDirectives(hook_directives360.HookDirectives):
     ):
         if not _from_proto:
             self._spec().assert_constructor_args(
-                self._registry, {
-                    'add_account_note_directives': add_account_note_directives,
-                    'amend_schedule_directives': amend_schedule_directives,
-                    'remove_schedules_directives': remove_schedules_directives,
-                    'workflow_start_directives': workflow_start_directives,
-                    'posting_instruction_batch_directives': posting_instruction_batch_directives
-                }
+                self._registry,
+                {
+                    "add_account_note_directives": add_account_note_directives,
+                    "amend_schedule_directives": amend_schedule_directives,
+                    "remove_schedules_directives": remove_schedules_directives,
+                    "workflow_start_directives": workflow_start_directives,
+                    "posting_instruction_batch_directives": posting_instruction_batch_directives,
+                },
             )
 
         self.add_account_note_directives = add_account_note_directives

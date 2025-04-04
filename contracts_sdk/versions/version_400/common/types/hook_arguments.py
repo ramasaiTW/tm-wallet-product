@@ -187,7 +187,6 @@ class PostParameterChangeHookArguments(HookArguments):
         old_parameter_values: Dict[
             str,
             Union[
-                
                 datetime,
                 Decimal,
                 int,
@@ -199,7 +198,6 @@ class PostParameterChangeHookArguments(HookArguments):
         updated_parameter_values: Dict[
             str,
             Union[
-                
                 datetime,
                 Decimal,
                 int,
@@ -414,7 +412,6 @@ class PreParameterChangeHookArguments(HookArguments):
         updated_parameter_values: Dict[
             str,
             Union[
-                
                 datetime,
                 Decimal,
                 int,
@@ -424,7 +421,6 @@ class PreParameterChangeHookArguments(HookArguments):
             ],
         ],
     ):
-
         super().__init__(effective_datetime)
         self.updated_parameter_values = updated_parameter_values
 

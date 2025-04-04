@@ -111,7 +111,6 @@ class ScheduleExpression:
         month: Optional[Union[str, int]] = None,
         year: Optional[Union[str, int]] = None,
     ):
-
         self.day = day
         self.day_of_week = day_of_week
         self.hour = hour

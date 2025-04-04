@@ -325,7 +325,6 @@ class BalancesObservation:
         value_datetime: Optional[datetime] = None,
         _from_proto: bool = False,
     ):
-
         self.value_datetime = value_datetime
         self.balances = balances
         if not _from_proto:

@@ -39,7 +39,6 @@ TEST_DEPENDENCY_GROUPS = [
 def resource_extractors(
     request: dict,
 ) -> tuple[Generator, Generator, Generator, Generator]:
-
     customer_extractor = (
         resource
         for resource in request["resource_batch"]["resources"]
@@ -75,7 +74,6 @@ class DataLoaderHelperTests(TestCase):
         return super().setUp()
 
     def test_resource_ids_populated_with_customer_ids(self):
-
         customer_ids = []
         for (
             _,
@@ -89,7 +87,6 @@ class DataLoaderHelperTests(TestCase):
         self.assertListEqual(customer_ids, [["1000", "1001", "1002"]])
 
     def test_resource_ids_populated_with_account_ids(self):
-
         account_ids: list[list[str]] = []
         for (
             _,
@@ -106,7 +103,6 @@ class DataLoaderHelperTests(TestCase):
 
     @patch.object(data_loader_helper, "get_flag_resource")
     def test_resource_ids_populated_with_customer_flag_ids(self, get_flag_resource: Mock):
-
         expected_customer_flag_ids = [
             "1000_CUSTOMER_FLAG_DEFINITION_1",
             "1000_CUSTOMER_FLAG_DEFINITION_2",
@@ -133,7 +129,6 @@ class DataLoaderHelperTests(TestCase):
 
     @patch.object(data_loader_helper, "get_flag_resource")
     def test_resource_ids_populated_with_account_flag_ids(self, get_flag_resource: Mock):
-
         expected_account_flag_ids = [
             "0_ACCOUNT_FLAG_DEFINITION_1",
             "0_ACCOUNT_FLAG_DEFINITION_2",
@@ -160,7 +155,6 @@ class DataLoaderHelperTests(TestCase):
 
     @patch.object(data_loader_helper, "get_flag_resource")
     def test_resource_ids_segregated_by_batch(self, get_flag_resource: Mock):
-
         expected_account_flag_ids = [
             [
                 "0_ACCOUNT_FLAG_DEFINITION_1",
@@ -197,8 +191,10 @@ class DataLoaderHelperTests(TestCase):
         self.assertListEqual(flag_ids, expected_account_flag_ids)
 
     def test_batch_size_greater_than_batch_still_results_in_request(self):
-
-        for (request, _,) in data_loader_helper.create_dataloader_resource_batch_requests(
+        for (
+            request,
+            _,
+        ) in data_loader_helper.create_dataloader_resource_batch_requests(
             dependency_groups=self.dependency_groups,
             product_version_id="1",
             batch_size=1000,
@@ -211,8 +207,10 @@ class DataLoaderHelperTests(TestCase):
             )
 
     def test_resources_from_same_instance_not_split_across_batches(self):
-
-        for (request, _,) in data_loader_helper.create_dataloader_resource_batch_requests(
+        for (
+            request,
+            _,
+        ) in data_loader_helper.create_dataloader_resource_batch_requests(
             dependency_groups=self.dependency_groups,
             product_version_id="1",
             batch_size=1,
@@ -222,9 +220,11 @@ class DataLoaderHelperTests(TestCase):
             self.assertEqual(len(request["resource_batch"]["resources"]), 6)
 
     def test_resources_split_across_batches(self):
-
         all_requests = []
-        for (request, _,) in data_loader_helper.create_dataloader_resource_batch_requests(
+        for (
+            request,
+            _,
+        ) in data_loader_helper.create_dataloader_resource_batch_requests(
             dependency_groups=self.dependency_groups,
             product_version_id="1",
             # this batch size will result in two batches, one with 12 resources and the other 6
@@ -238,12 +238,14 @@ class DataLoaderHelperTests(TestCase):
         self.assertListEqual(batch_resource_counts, [12, 6])
 
     def test_account_customer_dependencies_set_correctly(self):
-
         self.dependency_groups[0]["instances"] = 1
         self.dependency_groups[0]["customer"]["flags"] = []
         self.dependency_groups[0]["accounts"][0]["flags"] = []
         all_requests = []
-        for (request, _,) in data_loader_helper.create_dataloader_resource_batch_requests(
+        for (
+            request,
+            _,
+        ) in data_loader_helper.create_dataloader_resource_batch_requests(
             dependency_groups=self.dependency_groups,
             product_version_id="1",
         ):
@@ -257,10 +259,12 @@ class DataLoaderHelperTests(TestCase):
         self.assertListEqual([customer_resource["id"]], account_resource["dependencies"])
 
     def test_customer_flags_dependencies_set_correctly(self):
-
         self.dependency_groups[0]["instances"] = 1
         all_requests = []
-        for (request, _,) in data_loader_helper.create_dataloader_resource_batch_requests(
+        for (
+            request,
+            _,
+        ) in data_loader_helper.create_dataloader_resource_batch_requests(
             dependency_groups=self.dependency_groups,
             product_version_id="1",
         ):
@@ -289,10 +293,12 @@ class DataLoaderHelperTests(TestCase):
         )
 
     def test_account_flags_dependencies_set_correctly(self):
-
         self.dependency_groups[0]["instances"] = 1
         all_requests = []
-        for (request, _,) in data_loader_helper.create_dataloader_resource_batch_requests(
+        for (
+            request,
+            _,
+        ) in data_loader_helper.create_dataloader_resource_batch_requests(
             dependency_groups=self.dependency_groups,
             product_version_id="1",
         ):

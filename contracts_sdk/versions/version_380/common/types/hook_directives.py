@@ -2,8 +2,11 @@ from functools import lru_cache
 from typing import List, Optional
 
 from . import (
-    AddAccountNoteDirective, AmendScheduleDirective, PostingInstructionBatchDirective,
-    RemoveSchedulesDirective, WorkflowStartDirective
+    AddAccountNoteDirective,
+    AmendScheduleDirective,
+    PostingInstructionBatchDirective,
+    RemoveSchedulesDirective,
+    WorkflowStartDirective,
 )
 from .update_account_event_type_directive import UpdateAccountEventTypeDirective
 from ....version_370.common import types as types370
@@ -34,9 +37,8 @@ class HookDirectives(types370.HookDirectives):
 
         if not _from_proto:
             self._spec().assert_constructor_args(
-                self._registry, {
-                    'update_account_event_type_directives': update_account_event_type_directives
-                }
+                self._registry,
+                {"update_account_event_type_directives": update_account_event_type_directives},
             )
 
         self.update_account_event_type_directives = update_account_event_type_directives
@@ -47,12 +49,13 @@ class HookDirectives(types370.HookDirectives):
         public_attributes = super()._public_attributes(language_code)
         public_attributes.append(
             types_utils.ValueSpec(
-                name='update_account_event_type_directives',
-                type='List[UpdateAccountEventTypeDirective]',
+                name="update_account_event_type_directives",
+                type="List[UpdateAccountEventTypeDirective]",
                 docstring=(
-                    'A list of '
-                    '[UpdateAccountEventTypeDirectives](#classes-UpdateAccountEventTypeDirective). '
-                    '**Only available in version 3.8.0+**')
+                    "A list of "
+                    "[UpdateAccountEventTypeDirectives](#classes-UpdateAccountEventTypeDirective). "
+                    "**Only available in version 3.8.0+**"
+                ),
             )
         )
 
