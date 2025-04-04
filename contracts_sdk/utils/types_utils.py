@@ -18,7 +18,6 @@ class StrictInterface(ABC):
     """
 
     def __new__(cls, *args, **kwargs):
-
         abstract_methods = set()
         allow_non_abstract = ["get_posting_batches"]
         for base in inspect.getmro(cls):
@@ -524,7 +523,6 @@ def Enum(
     docstring: Optional[str] = None,
     show_values: bool = False,
 ) -> type:
-
     valid_values = set(v for v in key_value_dict.values())
 
     def _type_check(value) -> bool:
@@ -558,7 +556,6 @@ def Enum(
 
 
 def Timeseries(_item_type, _item_desc, _return_on_empty=None):
-
     base_class = TypedList(f"Tuple[datetime, {_item_type}]")
 
     class _Timeseries(base_class):

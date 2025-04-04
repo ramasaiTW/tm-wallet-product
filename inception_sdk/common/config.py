@@ -74,7 +74,7 @@ def extract_environments_from_config(
     if FLAGS.environment_config_path:
         try:
             available_environments = load_environments(FLAGS.environment_config_path)
-        except (IOError):
+        except IOError:
             log.warning(f"File at {FLAGS.environment_config_path} not found")
 
     if not available_environments or environment_name not in available_environments:

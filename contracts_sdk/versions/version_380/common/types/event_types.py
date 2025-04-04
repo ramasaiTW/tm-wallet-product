@@ -18,7 +18,6 @@ class EventTypeSchedule:
         year=None,
         _from_proto=False
     ):
-
         if not _from_proto:
             if not any([day, day_of_week, hour, minute, second, month, year]):
                 raise InvalidSmartContractError("Empty EventTypeSchedule object created")

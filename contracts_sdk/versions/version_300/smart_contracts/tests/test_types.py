@@ -3,7 +3,6 @@ from .....utils.tools import SmartContracts300TestCase
 
 
 class PublicSmartContractsV300TypesTestCase(
-    SmartContracts300TestCase,
-    PublicCommonV300TypesTestCase
+    SmartContracts300TestCase, PublicCommonV300TypesTestCase
 ):
     pass

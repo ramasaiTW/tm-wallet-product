@@ -34,9 +34,9 @@ class DeactivationHookTest(WalletTestBase):
             self.balance_coordinate(
                 account_address=TODAY_SPENDING,
             ): self.balance(net=balance_amount),
-            self.balance_coordinate(
-                account_address=INTERNAL_CONTRA
-            ): self.balance(net=-balance_amount),
+            self.balance_coordinate(account_address=INTERNAL_CONTRA): self.balance(
+                net=-balance_amount
+            ),
         }
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping=balance_dict),
