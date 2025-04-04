@@ -3,7 +3,7 @@
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:26f6f0b2130b683100b3b64826501bbc
+# md5:35ebc8bc7be01863bdcb7e0e41351f41
 
 from contracts_api import (
     BalancesObservationFetcher,
@@ -472,7 +472,7 @@ def utils_get_available_balance(
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:26f6f0b2130b683100b3b64826501bbc
+# md5:35ebc8bc7be01863bdcb7e0e41351f41
 
 INTERNAL_CONTRA = "INTERNAL_CONTRA"
 TODAY_SPENDING = "TODAY_SPENDING"
