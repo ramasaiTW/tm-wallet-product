@@ -5,7 +5,6 @@ from .....utils import symbols, types_utils
 
 class InstructAccountNotificationDirective:
     def __init__(self, *, account_id, notification_type, notification_details, _from_proto=False):
-
         if not _from_proto:
             self._spec().assert_constructor_args(
                 self._registry,

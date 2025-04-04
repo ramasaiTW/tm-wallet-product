@@ -1,5 +1,6 @@
 # inception sdk
 import inception_sdk.tools.renderer.test.feature.test_resources.test_import.module_1 as m1
+
 api = "4.0.0"
 attribute_1 = m1.attribute_1
 

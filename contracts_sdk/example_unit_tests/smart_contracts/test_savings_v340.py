@@ -8,7 +8,6 @@ from ...versions.version_340.smart_contracts import types
 
 
 class SavingsAccountTestCase(SmartContracts340TestCase):
-
     filepath = os.environ.get(
         "DATA_SAVINGS_V340", "contracts_sdk/example_unit_tests/smart_contracts/savings_v340.py"
     )

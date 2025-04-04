@@ -150,7 +150,6 @@ class CoreApiHelperTest(TestCase):
 
     @patch.object(endtoend.helper, "send_request")
     def test_create_product_version_retries(self, mock_send_request: Mock):
-
         url = "/v1/product-versions"
         data = json.dumps(
             {
@@ -209,7 +208,6 @@ class CoreApiHelperTest(TestCase):
         ]
 
         for test_case in test_cases:
-
             status_code = int(test_case["response_msg"].split()[0])
 
             if test_case["exception_type"] is not None:

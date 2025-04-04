@@ -129,7 +129,6 @@ def scheduled_code(event_type, effective_date):
 
 @requires(parameters=True, balances="1 day")
 def derived_parameters(effective_date):
-
     # The logic is simplified just for testing return of derived parameter
     return {"days_past_due": Decimal("10"), "expected_end_date": "2020-12-22"}
 

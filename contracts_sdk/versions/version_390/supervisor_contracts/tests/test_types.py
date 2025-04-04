@@ -8,7 +8,7 @@ from .....utils.tools import SupervisorContracts390TestCase
 class PublicSupervisorContractsV390TypesTestCase(
     SupervisorContracts390TestCase,
     PublicCommonV390TypesTestCase,
-    test_types.PublicSupervisorContractsV380TypesTestCase
+    test_types.PublicSupervisorContractsV380TypesTestCase,
 ):
     TS_390 = datetime(year=2020, month=1, day=1)
-    plan_id_390 = 'test_plan_id'
+    plan_id_390 = "test_plan_id"

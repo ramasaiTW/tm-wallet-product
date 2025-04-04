@@ -34,7 +34,6 @@ class SupervisorsHelperTest(TestCase):
 
     @patch.object(supervisors_helper, "get_plan_associations")
     def test_check_plan_associations_passes_with_list_input(self, get_plan_associations: Mock):
-
         get_plan_associations.return_value = self.normal_plan_associations
 
         expected_associations = [
@@ -53,7 +52,6 @@ class SupervisorsHelperTest(TestCase):
 
     @patch.object(supervisors_helper, "get_plan_associations")
     def test_check_plan_associations_passes_with_dict_input(self, get_plan_associations: Mock):
-
         get_plan_associations.return_value = self.normal_plan_associations
 
         expected_associations = {
@@ -73,7 +71,6 @@ class SupervisorsHelperTest(TestCase):
 
     @patch.object(supervisors_helper, "get_plan_associations")
     def test_check_plan_associations_fails_with_incorrect_status(self, get_plan_associations: Mock):
-
         get_plan_associations.return_value = self.normal_plan_associations
 
         expected_associations = {
@@ -92,7 +89,6 @@ class SupervisorsHelperTest(TestCase):
     def test_check_plan_associations_fails_with_incorrect_account_id(
         self, get_plan_associations: Mock
     ):
-
         get_plan_associations.return_value = self.normal_plan_associations
 
         expected_associations = [
@@ -109,7 +105,6 @@ class SupervisorsHelperTest(TestCase):
 
     @patch.object(supervisors_helper, "get_plan_associations")
     def test_check_plan_associations_uses_latest_association(self, get_plan_associations: Mock):
-
         get_plan_associations.return_value = self.multi_plan_associations
 
         # the multiple associations has an active and inactive entry for 1e3f7...
@@ -134,7 +129,6 @@ class SupervisorsHelperTest(TestCase):
     def test_disassociate_account_from_plan(
         self, get_plan_associations: Mock, create_and_wait_for_plan_update: Mock
     ):
-
         get_plan_associations.return_value = [self.normal_plan_associations[0]]
 
         supervisors_helper.disassociate_account_from_plan(
