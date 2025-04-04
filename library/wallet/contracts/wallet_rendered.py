@@ -3,7 +3,7 @@
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:de5154045acc511eda778bb86fd7b95b
+# md5:f8f3919f4dba55ea9979d2d6d4c03a06
 
 from contracts_api import (
     BalancesObservationFetcher,
@@ -258,7 +258,6 @@ def pre_posting_hook(
     posting_instructions: utils_PostingInstructionListAlias = hook_arguments.posting_instructions
     spending_limit = utils_get_parameter(vault, name=PARAM_SPENDING_LIMIT)
     default_denomination = utils_get_parameter(vault, name=PARAM_DENOMINATION)
-    nominee_account = utils_get_parameter(vault, name=PARAM_NOMINATED_ACCOUNT)
     account_balances = vault.get_balances_observation(
         fetcher_id=fetchers_LIVE_BALANCES_BOF_ID
     ).balances
@@ -275,12 +274,6 @@ def pre_posting_hook(
             utils_get_available_balance(balances=balances, denomination=default_denomination)
             for balances in postings_balances
         )
-    )
-    nominee_balance = utils_get_available_balance(
-        balances=account_balances,
-        denomination=default_denomination,
-        address=nominee_account,
-        asset=DEFAULT_ASSET,
     )
     auto_top_up_status = vault.get_flag_timeseries(flag=AUTO_TOP_UP_FLAG).latest()
     additional_denominations = utils_get_parameter(
@@ -316,17 +309,6 @@ def pre_posting_hook(
                     reason_code=RejectionReason.AGAINST_TNC,
                 )
             )
-    if (
-        utils_is_from_nominated_account(posting_instructions)
-        and proposed_spend < 0
-        and (abs(proposed_spend) > nominee_balance)
-    ):
-        return PrePostingHookResult(
-            rejection=Rejection(
-                message="Insufficient balance in Nominee account",
-                reason_code=RejectionReason.INSUFFICIENT_FUNDS,
-            )
-        )
     for denomination in posting_denominations:
         available_balance = utils_get_available_balance(
             balances=account_balances, denomination=denomination
@@ -390,7 +372,7 @@ fetchers_LIVE_BALANCES_BOF = BalancesObservationFetcher(
 
 # Objects below have been imported from:
 #    library/features/common/utils.py
-# md5:4d7a592d381fbf1c8c133d0edf91369c
+# md5:f40b03d6c37bca725037346032ef0728
 
 utils_PostingInstructionTypeAlias = (
     AuthorisationAdjustment
@@ -474,14 +456,6 @@ def utils_is_force_override(posting_instructions: utils_PostingInstructionListAl
     )
 
 
-def utils_is_from_nominated_account(
-    posting_instructions: utils_PostingInstructionListAlias,
-) -> bool:
-    return utils_is_key_in_instruction_details(
-        key="from_nominated_account", posting_instructions=posting_instructions
-    )
-
-
 def utils_get_available_balance(
     *,
     balances: BalanceDefaultDict,
@@ -516,7 +490,7 @@ def utils_get_available_balance(
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:de5154045acc511eda778bb86fd7b95b
+# md5:f8f3919f4dba55ea9979d2d6d4c03a06
 
 INTERNAL_CONTRA = "INTERNAL_CONTRA"
 TODAY_SPENDING = "TODAY_SPENDING"

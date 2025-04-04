@@ -673,10 +673,6 @@ def is_force_override(posting_instructions: PostingInstructionListAlias) -> bool
         key="force_override", posting_instructions=posting_instructions
     )
 
-def is_from_nominated_account(posting_instructions: PostingInstructionListAlias) -> bool:
-    return is_key_in_instruction_details(
-        key="from_nominated_account", posting_instructions=posting_instructions
-    )
 
 def is_withdrawal_override(posting_instructions: PostingInstructionListAlias) -> bool:
     return is_key_in_instruction_details(
