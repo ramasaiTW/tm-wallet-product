@@ -26,5 +26,5 @@ jobs:
 
     - name: Run All Tests with pytest
       run: |
-        export PYTHONPATH=$PYTHONPATH:./tm-wallet-product
-        pytest tm-wallet-product
+        export PYTHONPATH=$PYTHONPATH:.
+        pytest
