@@ -3,6 +3,7 @@ from decimal import Decimal
 
 # library
 import library.wallet.contracts.template.wallet as contract
+from library.wallet.contracts.wallet_rendered import ZERO_OUT_DAILY_SPEND_EVENT
 from library.wallet.test.unit.test_wallet_common import (
     DEFAULT_DATETIME,
     INTERNAL_CONTRA,
@@ -97,7 +98,6 @@ class ScheduledEventHookTest(WalletTestBase):
         result_pid_list = hook_result.posting_instructions_directives
         for result_pid, expected_pid in list(zip(result_pid_list, expected_pid_list)):
             self.assertEqual(result_pid, expected_pid)
-
 
     def test_scheduled_event_hook_event_type_not_found(self):
         mock_vault = self.create_mock()
