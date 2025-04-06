@@ -31,7 +31,6 @@ class ScheduledEventHookTest(WalletTestBase):
     def test_scheduled_event_hook_zeros_out_daily_spend(self):
         default_committed = Decimal("200")
         todays_spending = Decimal("100")
-        ZERO_OUT_DAILY_SPEND_EVENT = "ZERO_OUT_DAILY_SPEND"
         balance_dict = {
             self.balance_coordinate(
                 account_address=TODAY_SPENDING,
@@ -98,6 +97,7 @@ class ScheduledEventHookTest(WalletTestBase):
         result_pid_list = hook_result.posting_instructions_directives
         for result_pid, expected_pid in list(zip(result_pid_list, expected_pid_list)):
             self.assertEqual(result_pid, expected_pid)
+
 
     def test_scheduled_event_hook_event_type_not_found(self):
         mock_vault = self.create_mock()

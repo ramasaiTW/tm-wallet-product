@@ -45,13 +45,15 @@ from contracts_api import (  # Enums
     Tside,
     fetch_account_data,
     requires,
+    ConversionHookArguments,
+    ConversionHookResult,
 )
 
 # inception sdk
 from inception_sdk.vault.contracts.extensions.contracts_api_extensions import SmartContractVault
 
 api = "4.0.0"
-version = "3.0.6"
+version = "3.0.7"
 tside = Tside.LIABILITY
 supported_denominations = ["GBP", "SGD", "USD"]
 
@@ -336,6 +338,7 @@ def pre_posting_hook(
     account_balances = vault.get_balances_observation(
         fetcher_id=fetchers.LIVE_BALANCES_BOF_ID
     ).balances
+
     todays_spending_balance_coordinate = BalanceCoordinate(
         account_address=TODAY_SPENDING,
         asset=DEFAULT_ASSET,
@@ -384,7 +387,6 @@ def pre_posting_hook(
                     reason_code=RejectionReason.AGAINST_TNC,
                 )
             )
-
     # Check available balance across each denomination
     for denomination in posting_denominations:
         available_balance = utils.get_available_balance(
@@ -524,6 +526,22 @@ def deactivation_hook(
             posting_instructions_directives=zero_out_daily_spend_directives
         )
     return None
+
+
+@requires(parameters=True)
+@fetch_account_data(balances=[fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID])
+def conversion_hook(
+    vault: SmartContractVault, hook_arguments: ConversionHookArguments
+) -> ConversionHookResult | None:
+    effective_datetime = hook_arguments.effective_datetime
+    scheduled_events = hook_arguments.existing_schedules
+    if not scheduled_events:
+        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(
+            start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
+        )
+    return ConversionHookResult(
+        scheduled_events_return_value=scheduled_events, posting_instructions_directives=[]
+    )
 
 
 def _get_release_and_decreased_auth_amount(
