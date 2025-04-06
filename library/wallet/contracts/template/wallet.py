@@ -53,7 +53,7 @@ from contracts_api import (  # Enums
 from inception_sdk.vault.contracts.extensions.contracts_api_extensions import SmartContractVault
 
 api = "4.0.0"
-version = "3.0.6"
+version = "3.0.7"
 tside = Tside.LIABILITY
 supported_denominations = ["GBP", "SGD", "USD"]
 
