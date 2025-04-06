@@ -357,6 +357,7 @@ def pre_posting_hook(
     additional_denominations = utils.get_parameter(
         vault, name=PARAM_ADDITIONAL_DENOMINATIONS, is_json=True
     )
+
     posting_denominations = set(
         coord.denomination
         for posting in posting_instructions

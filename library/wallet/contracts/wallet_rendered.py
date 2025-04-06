@@ -5,6 +5,7 @@
 #    library/wallet/contracts/template/wallet.py
 # md5:cd5419229b2c3cc8ca8b4d59f4c0395e
 
+
 from contracts_api import (
     BalancesObservationFetcher,
     DefinedDateTime,
