@@ -1,22 +1,24 @@
 name: Code Quality
 
-on: [pull_request]
+on: pull_request
 
 jobs:
   super-lint:
-    name: Lint code base
+    name: lint code base
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: checkout repo
+        uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: set up python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
 
-      - name: Run Super-Linter
-        uses: github/super-linter@v4
+      - name: run super-linter
         run: |
           python3 -m flake8 .
