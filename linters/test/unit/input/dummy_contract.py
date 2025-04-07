@@ -1,8 +1,6 @@
 # Copyright @ 2021 Thought Machine Group Limited. All rights reserved.
 # standard libs
 from datetime import datetime
-from decimal import Decimal
-from typing import Optional
 
 # contracts api
 from contracts_api import (

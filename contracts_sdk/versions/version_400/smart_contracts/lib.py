@@ -6,10 +6,6 @@ from typing import Dict, List, Optional, Union
 
 from ..common import lib as common_lib, types as common_types
 from ....utils import symbols, types_utils
-from ....utils.feature_flags import (
-    is_fflag_enabled,
-    ACCOUNTS_V2,
-)
 
 
 ALLOWED_BUILTINS = common_lib.ALLOWED_BUILTINS

@@ -329,13 +329,12 @@ def post_parameter_change_hook(
 def pre_posting_hook(
     vault: SmartContractVault, hook_arguments: PrePostingHookArguments
 ) -> PrePostingHookResult | None:
-
     if utils.is_force_override(posting_instructions=hook_arguments.posting_instructions):
         return None
     posting_instructions: utils.PostingInstructionListAlias = hook_arguments.posting_instructions
     spending_limit = utils.get_parameter(vault, name=PARAM_SPENDING_LIMIT)
     default_denomination = utils.get_parameter(vault, name=PARAM_DENOMINATION)
-    nominee_account = utils.get_parameter(vault, name = PARAM_NOMINATED_ACCOUNT)
+    nominee_account = utils.get_parameter(vault, name=PARAM_NOMINATED_ACCOUNT)
 
     account_balances = vault.get_balances_observation(
         fetcher_id=fetchers.LIVE_BALANCES_BOF_ID

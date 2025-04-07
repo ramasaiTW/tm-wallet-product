@@ -7,16 +7,12 @@ class ContractException(Exception):
     documentation attributes.
     """
 
-    pass
-
 
 class InvalidSmartContractError(ContractException):
     """
     A special exception thrown when a smart contract is invalid. These errors should not be logged
     at error level.
     """
-
-    pass
 
 
 class AmbiguousDatetimeProvided(ContractException):
@@ -27,8 +23,6 @@ class AmbiguousDatetimeProvided(ContractException):
     interpreted as both 8:30AM and 9:30AM UTC.
     """
 
-    pass
-
 
 class InvalidPostingInstructionException(Exception):
     """
@@ -36,16 +30,12 @@ class InvalidPostingInstructionException(Exception):
     or fail ClientTransaction validation rules.
     """
 
-    pass
-
 
 class InvalidContractParameter(ContractException):
     """
     An exception to be raised when there is a logical error in the content of a hook argument
     or one or more ``[../types/ContractParameter]`` objects.
     """
-
-    pass
 
 
 class Rejected(ContractException):
@@ -69,8 +59,6 @@ class IllegalPython(Exception):
     in the user's contract.
     """
 
-    pass
-
 
 class UnsupportedApiVersion(Exception):
     """
@@ -80,8 +68,6 @@ class UnsupportedApiVersion(Exception):
      e.g `UnsupportedApiVersion: (9, 9, 9)`.
     """
 
-    pass
-
 
 class InDevelopmentApiVersion(UnsupportedApiVersion):
     """
@@ -89,8 +75,6 @@ class InDevelopmentApiVersion(UnsupportedApiVersion):
     which is currently in development. The exception wrapper returns a corresponding error
     message. e.g `InDevelopmentApiVersion: (9, 9, 9)`.
     """
-
-    pass
 
 
 class StrongTypingError(ValueError):
@@ -100,5 +84,3 @@ class StrongTypingError(ValueError):
     For v4+, this error is raised in native to proto conversion if there is a type error.
     If possible, the stack trace is adjusted to show that the error is raised in the user code.
     """
-
-    pass
