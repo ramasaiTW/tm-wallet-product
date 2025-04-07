@@ -89,7 +89,7 @@ class ScheduledEventHookTest(WalletTestBase):
 
         hook_arguments = ScheduledEventHookArguments(
             effective_datetime=DEFAULT_DATETIME,
-            event_type=ZERO_OUT_DAILY_SPEND_EVENT,
+            event_type=contract.ZERO_OUT_DAILY_SPEND_EVENT,
             pause_at_datetime=None,
         )
 
