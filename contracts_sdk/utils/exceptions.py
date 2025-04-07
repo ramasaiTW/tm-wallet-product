@@ -7,7 +7,6 @@ class ContractException(Exception):
     documentation attributes.
     """
 
-    pass
 
 
 class InvalidSmartContractError(ContractException):
@@ -16,7 +15,6 @@ class InvalidSmartContractError(ContractException):
     at error level.
     """
 
-    pass
 
 
 class AmbiguousDatetimeProvided(ContractException):
@@ -27,7 +25,6 @@ class AmbiguousDatetimeProvided(ContractException):
     interpreted as both 8:30AM and 9:30AM UTC.
     """
 
-    pass
 
 
 class InvalidPostingInstructionException(Exception):
@@ -36,7 +33,6 @@ class InvalidPostingInstructionException(Exception):
     or fail ClientTransaction validation rules.
     """
 
-    pass
 
 
 class InvalidContractParameter(ContractException):
@@ -45,7 +41,6 @@ class InvalidContractParameter(ContractException):
     or one or more ``[../types/ContractParameter]`` objects.
     """
 
-    pass
 
 
 class Rejected(ContractException):
@@ -69,7 +64,6 @@ class IllegalPython(Exception):
     in the user's contract.
     """
 
-    pass
 
 
 class UnsupportedApiVersion(Exception):
@@ -80,7 +74,6 @@ class UnsupportedApiVersion(Exception):
      e.g `UnsupportedApiVersion: (9, 9, 9)`.
     """
 
-    pass
 
 
 class InDevelopmentApiVersion(UnsupportedApiVersion):
@@ -90,7 +83,6 @@ class InDevelopmentApiVersion(UnsupportedApiVersion):
     message. e.g `InDevelopmentApiVersion: (9, 9, 9)`.
     """
 
-    pass
 
 
 class StrongTypingError(ValueError):
@@ -101,4 +93,3 @@ class StrongTypingError(ValueError):
     If possible, the stack trace is adjusted to show that the error is raised in the user code.
     """
 
-    pass

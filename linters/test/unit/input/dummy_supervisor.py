@@ -1,7 +1,6 @@
 # Copyright @ 2023 Thought Machine Group Limited. All rights reserved.
 # standard libs
 from datetime import datetime
-from typing import Optional
 
 # features
 import library.features.common.utils as utils

@@ -12,7 +12,6 @@ from contracts_api import (
     SupervisorContractEventType,
     SupervisorScheduledEventHookArguments,
     SupervisorScheduledEventHookResult,
-    fetch_account_data,
 )
 
 # inception sdk

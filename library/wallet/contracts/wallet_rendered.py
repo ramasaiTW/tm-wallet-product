@@ -8,24 +8,14 @@
 from contracts_api import (
     BalancesObservationFetcher,
     DefinedDateTime,
-    Override,
-    PostingsIntervalFetcher,
-    RelativeDateTime,
-    Shift,
     DEFAULT_ADDRESS,
     DEFAULT_ASSET,
     AuthorisationAdjustment,
-    Balance,
     BalanceCoordinate,
     BalanceDefaultDict,
-    BalanceTimeseries,
-    CalendarEvents,
     CustomInstruction,
-    EndOfMonthSchedule,
-    FlagTimeseries,
     InboundAuthorisation,
     InboundHardSettlement,
-    OptionalValue,
     OutboundAuthorisation,
     OutboundHardSettlement,
     Phase,
@@ -36,13 +26,9 @@ from contracts_api import (
     Release,
     ScheduledEvent,
     ScheduleExpression,
-    ScheduleFailover,
-    ScheduleSkip,
     Settlement,
     Transfer,
     Tside,
-    UnionItemValue,
-    UpdateAccountEventTypeDirective,
     AccountIdShape,
     ActivationHookArguments,
     ActivationHookResult,
@@ -69,13 +55,10 @@ from contracts_api import (
     ConversionHookArguments,
     ConversionHookResult,
 )
-from calendar import isleap
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal
 from json import dumps, loads
-from typing import Any, Iterable, Mapping
-from zoneinfo import ZoneInfo
+from typing import Any
 
 api = "4.0.0"
 version = "3.0.7"
