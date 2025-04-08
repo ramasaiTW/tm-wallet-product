@@ -56,7 +56,7 @@ from contracts_api import (
     ConversionHookResult,
 )
 from datetime import datetime
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal
 from json import dumps, loads
 from typing import Any
 from inception_sdk.vault.contracts.extensions.contracts_api_extensions import SmartContractVault

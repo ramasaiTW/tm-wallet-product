@@ -58,7 +58,8 @@ class HookDirectives(types3110.HookDirectives):
                 type="List[InstructAccountNotificationDirective]",
                 docstring="""
                         A list of
-                        [InstructAccountNotificationDirective](#classes-InstructAccountNotificationDirective) objects.
+                        [InstructAccountNotificationDirective]
+                        (#classes-InstructAccountNotificationDirective) objects.
                         **Only available in version 3.12+**
                     """,  # noqa: E501
             )

@@ -1,6 +1,3 @@
-# standard libs
-from decimal import Decimal
-
 # library
 import library.wallet.contracts.template.wallet as contract
 from library.wallet.test.unit.test_wallet_common import (

@@ -49,7 +49,8 @@ class EventType:
                 type="str",
                 docstring="""
                     The name of the [EventType](#classes-EventType). This name will be the same as
-                    the name defined in the [execution_schedules](../../smart_contracts_api_reference3xx/hooks/#execution_schedules)
+                    the name defined in the [execution_schedules]
+                    (../../smart_contracts_api_reference3xx/hooks/#execution_schedules)
                     hook.
                 """,
             ),

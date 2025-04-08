@@ -82,12 +82,16 @@ class VaultFunctionsABC(types_utils.StrictInterface):
         spec.public_methods["get_calendar_events"] = types_utils.MethodSpec(
             name="get_calendar_events",
             docstring="""
-                Returns a [CalendarEvents](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvents) object with the
-                chronologically ordered list of [CalendarEvent](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent)
+                Returns a [CalendarEvents]
+                (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvents) object with the
+                chronologically ordered list of [CalendarEvent]
+                (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent)
                 that exist in the Vault calendars with the given `calendar_ids`. These
                 `calendar_ids` have to be requested using the hook '@requires' decorator.
                 For information about the time range of events returned,
-                see [calendar](/reference/contracts/contracts_api_4xx/supervisor_contracts_api_reference4xx/hook_requirements/#calendar)
+                see [calendar]
+                (/reference/contracts/contracts_api_4xx/supervisor_contracts_api_reference4xx/
+                hook_requirements/#calendar)
             """,  # noqa: E501
             args=[
                 types_utils.ValueSpec(
@@ -97,7 +101,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
             return_value=types_utils.ReturnValueSpec(
                 docstring="""
                     The chronologically ordered list of
-                    [CalendarEvent](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent) objects.
+                    [CalendarEvent](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent) 
+                    objects.
                 """,  # noqa: E501
                 type="CalendarEvents",
             ),

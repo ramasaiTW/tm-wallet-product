@@ -167,7 +167,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     `@fetch_account_data` decorator and passed as an argument in the
                     `get_posting_instructions` function call, then the time window is specified in
                     the definition of the
-                    [PostingsIntervalFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher) with the
+                    [PostingsIntervalFetcher]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher) with the
                     specified `fetcher_id` in the
                     [data_fetchers](../../smart_contracts_api_reference4xx/metadata/#data_fetchers)
                     list of the Contract metadata. The default ordering of the list is by
@@ -180,7 +181,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         type="Optional[str]",
                         docstring="""
                             The id of the
-                            [PostingsIntervalFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher).
+                            [PostingsIntervalFetcher]
+                            (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher).
                             1. Define the fetcher in the [Contract Metadata](../metadata/)
                             [data_fetchers](../../smart_contracts_api_reference4xx/metadata/#data_fetchers)
                             list. 2. Define the fetcher
@@ -228,7 +230,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 name="get_client_transactions",
                 docstring="""
                     Gets a map of the `unique_client_transaction_id` to
-                    [ClientTransaction](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ClientTransaction) objects,
+                    [ClientTransaction]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ClientTransaction) objects,
                     with the `value_datetime` of at least one of its posting instructions falling
                     in the requested time window. Note that each posting instruction class instance
                     has the read-only `unique_client_transaction_id` attribute, representing
@@ -244,12 +247,14 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     `@fetch_account_data` decorator and passed as an argument in the
                     `get_client_transactions` function call, then the time window is specified in
                     the definition of the
-                    [PostingsIntervalFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher) with the
+                    [PostingsIntervalFetcher]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher) with the
                     specified `fetcher_id` in the
                     [data_fetchers](../../smart_contracts_api_reference4xx/metadata/#data_fetchers)
                     list of the Contract metadata. The default ordering of the list of
                     posting instructions in each
-                    [ClientTransaction](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ClientTransaction), is by
+                    [ClientTransaction]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ClientTransaction), is by
                     `value_datetime`; you can order/filter further using the sorted builtin and
                     other builtin mechanisms.
                 """,  # noqa: E501
@@ -259,7 +264,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         type="Optional[str]",
                         docstring="""
                             The id of the
-                            [PostingsIntervalFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher).
+                            [PostingsIntervalFetcher]
+                            (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#PostingsIntervalFetcher).
                             1. Define the fetcher in the [Contract Metadata](../metadata/)
                             [data_fetchers](../../smart_contracts_api_reference4xx/metadata/#data_fetchers)
                             list. 2. Define the fetcher id in the postings argument in the
@@ -271,7 +277,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 ],
                 return_value=types_utils.ReturnValueSpec(
                     docstring="""
-                        The [ClientTransaction](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ClientTransaction) dictionary,
+                        The [ClientTransaction]
+                        (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ClientTransaction) dictionary,
                         keyed by the `unique_client_transaction_id`.
                     """,  # noqa: E501
                     type="Dict[str, ClientTransaction]",
@@ -304,8 +311,10 @@ class VaultFunctionsABC(types_utils.StrictInterface):
             types_utils.MethodSpec(
                 name="get_balances_timeseries",
                 docstring="""
-                    Returns a Python mapping object, mapping [BalanceCoordinate](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalanceCoordinate)
-                    to [BalanceTimeseries](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalanceTimeseries) covering
+                    Returns a Python mapping object, mapping [BalanceCoordinate]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalanceCoordinate)
+                    to [BalanceTimeseries]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalanceTimeseries) covering
                     all balances over the time period specified by the hook decorator. If a
                     duration is specified in the `@requires` decorator, the time window
                     size is in the range
@@ -314,7 +323,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     [balances](../account_fetcher_requirements/#balances) argument of the
                     `@fetch_account_data` decorator and passed as an argument in the function call,
                     then the time window is specified in the definition of the
-                    [BalancesIntervalFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesIntervalFetcher) with the
+                    [BalancesIntervalFetcher]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesIntervalFetcher) with the
                     specified `fetcher_id` in the
                     [data_fetchers](../../smart_contracts_api_reference4xx/metadata/#data_fetchers)
                     list of the Contract metadata. If no hook decorator is provided, then an empty
@@ -331,7 +341,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         type="Optional[str]",
                         docstring="""
                             The id of the
-                            [BalancesIntervalFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesIntervalFetcher).
+                            [BalancesIntervalFetcher]
+                            (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesIntervalFetcher).
                             1. Define the fetcher in the [Contract Metadata](../metadata/)
                             [data_fetchers](../../smart_contracts_api_reference4xx/metadata/#data_fetchers)
                             list. 2. Define the fetcher id in the balances argument in the
@@ -426,7 +437,9 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     types_utils.ValueSpec(
                         name="name",
                         type="str",
-                        docstring="The name of the [ContractParameter](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ContractParameter].",  # noqa: E501
+                        docstring="The name of the [ContractParameter]"
+                                  "(/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ContractParameter]"
+                                  ".",  # noqa: E501
                     ),
                 ],
                 return_value=types_utils.ReturnValueSpec(
@@ -522,7 +535,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 name="get_alias",
                 docstring="""
                     Returns the alias value set for the Smart Contract Version in the Supervisor
-                    [SmartContractDescriptor](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#SmartContractDescriptor)
+                    [SmartContractDescriptor]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#SmartContractDescriptor)
                     object. Available in Supervisor Contract code for use on the Supervisee's
                     [Vault](/reference/contracts/contracts_api_4xx/smart_contracts_api_reference4xx/vault/)
                     object only. If no aliases are defined in the
@@ -547,12 +561,16 @@ class VaultFunctionsABC(types_utils.StrictInterface):
             types_utils.MethodSpec(
                 name="get_calendar_events",
                 docstring="""
-                    Returns a [CalendarEvents](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvents) object with the
-                    chronologically ordered list of [CalendarEvent](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent)
+                    Returns a [CalendarEvents]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvents) object with the
+                    chronologically ordered list of [CalendarEvent]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent)
                     that exist in the Vault calendars with the given `calendar_ids`. These
                     `calendar_ids` have to be requested using the hook '@requires' decorator.
                     For information about the time range of events returned,
-                    see [calendar](/reference/contracts/contracts_api_4xx/smart_contracts_api_reference4xx/hook_requirements/#calendar)
+                    see [calendar]
+                    (/reference/contracts/contracts_api_4xx/smart_contracts_api_reference4xx/hook_requirements/#calendar
+                    )
                 """,  # noqa: E501
                 args=[
                     types_utils.ValueSpec(
@@ -562,7 +580,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 return_value=types_utils.ReturnValueSpec(
                     docstring="""
                         The chronologically ordered list of
-                        [CalendarEvent](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent) objects.
+                        [CalendarEvent](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#CalendarEvent) 
+                        objects.
                     """,  # noqa: E501
                     type="CalendarEvents",
                 ),
@@ -580,9 +599,11 @@ class VaultFunctionsABC(types_utils.StrictInterface):
             types_utils.MethodSpec(
                 name="get_balances_observation",
                 docstring="""
-                    Returns the [BalancesObservation](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesObservation) at the
+                    Returns the [BalancesObservation]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesObservation) at the
                     datetime defined by the
-                    [BalancesObservationFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesObservationFetcher)
+                    [BalancesObservationFetcher]
+                    (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesObservationFetcher)
                     whose id is provided in the
                     [balances](../account_fetcher_requirements/#balances) argument of the
                     `@fetch_account_data` decorator.
@@ -593,7 +614,9 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         type="str",
                         docstring="""
                             The id of the
-                            [BalancesObservationFetcher](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesObservationFetcher).
+                            [BalancesObservationFetcher]
+                            (/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#BalancesObservationFetcher
+                            ).
                             1. Define the fetcher in the [Contract Metadata](../metadata/)
                             [data_fetchers](../../smart_contracts_api_reference4xx/metadata/#data_fetchers)
                             list. 2. Define the fetcher id in the balances argument in the

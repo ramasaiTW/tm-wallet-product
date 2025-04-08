@@ -44,12 +44,19 @@ class VaultFunctionsABC(v360_lib.VaultFunctionsABC):
         spec.public_methods["get_calendar_events"] = types_utils.MethodSpec(
             name="get_calendar_events",
             docstring="""
-                    Returns a [CalendarEvents](/reference/contracts/contracts_api_3xx/contract_modules_api_reference3xx/types/#classes-CalendarEvents) object with the
-                    chronologically ordered list of [CalendarEvent](/reference/contracts/contracts_api_3xx/contract_modules_api_reference3xx/types/#classes-CalendarEvent)
+                    Returns a [CalendarEvents]
+                    (/reference/contracts/contracts_api_3xx/contract_modules_api_reference3xx/types/
+                    #classes-CalendarEvents) 
+                    object with the
+                    chronologically ordered list of [CalendarEvent]
+                    (/reference/contracts/contracts_api_3xx/contract_modules_api_reference3xx/types/
+                    #classes-CalendarEvent)
                     that exist in the Vault calendars with the given `calendar_ids`. These
                     `calendar_ids` have to be requested using the hook '@requires' decorator.
                     For information about the time range of events returned,
-                    see [calendar](/reference/contracts/contracts_api_3xx/smart_contracts_api_reference3xx/hook_requirements/#calendar)
+                    see [calendar]
+                    (/reference/contracts/contracts_api_3xx/smart_contracts_api_reference3xx/hook_requirements/
+                    #calendar)
                     **Only available in version 3.7+.**
             """,
             args=[

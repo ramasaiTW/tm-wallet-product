@@ -164,7 +164,8 @@ def get_supervisee_directives_mapping(
     :param vault: supervisee vault account
     :return: dictionary mapping of a tuple of vault account id to their respective directive.
     """
-    supervisee_hook_results: (PostPostingHookResult | ScheduledEventHookResult) = vault.get_hook_result()  # type: ignore
+    supervisee_hook_results: (PostPostingHookResult | ScheduledEventHookResult) = vault.get_hook_result()
+    # type: ignore
     supervisee_notification_directives = supervisee_hook_results.account_notification_directives
     supervisee_notification_directives_dict = (
         {vault.account_id: supervisee_notification_directives}
