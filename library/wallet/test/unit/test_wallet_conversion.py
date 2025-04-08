@@ -5,11 +5,9 @@ from decimal import Decimal
 import library.wallet.contracts.template.wallet as contract
 from library.wallet.test.unit.test_wallet_common import (
     DEFAULT_DATETIME,
-    INTERNAL_CONTRA,
-    TODAY_SPENDING,
     WalletTestBase,
 )
-from contracts_api import DEFAULT_ADDRESS, DEFAULT_ASSET, ScheduledEvent, ConversionHookArguments, ScheduleExpression
+from contracts_api import ScheduledEvent, ConversionHookArguments, ScheduleExpression
 
 
 class ConversionHookTest(WalletTestBase):
@@ -17,20 +15,11 @@ class ConversionHookTest(WalletTestBase):
         ZERO_OUT_DAILY_SPEND_EVENT = "ZERO_OUT_DAILY_SPEND"
 
         # Create a ScheduleExpression instance
-        existing_schedule_expression = ScheduleExpression(
-            second="0",
-            minute="0",
-            hour="0"
-        )
+        existing_schedule_expression = ScheduleExpression(second="0", minute="0", hour="0")
 
         # Mock existing scheduled event with the ScheduleExpression
-        existing_scheduled_event = ScheduledEvent(
-            start_datetime=DEFAULT_DATETIME,
-            expression=existing_schedule_expression
-        )
-        existing_schedules = {
-            ZERO_OUT_DAILY_SPEND_EVENT: existing_scheduled_event
-        }
+        existing_scheduled_event = ScheduledEvent(start_datetime=DEFAULT_DATETIME, expression=existing_schedule_expression)
+        existing_schedules = {ZERO_OUT_DAILY_SPEND_EVENT: existing_scheduled_event}
 
         hook_arguments = ConversionHookArguments(
             effective_datetime=DEFAULT_DATETIME,
@@ -46,7 +35,7 @@ class ConversionHookTest(WalletTestBase):
         self.assertIn(ZERO_OUT_DAILY_SPEND_EVENT, hook_result.scheduled_events_return_value)
         self.assertEqual(
             hook_result.scheduled_events_return_value[ZERO_OUT_DAILY_SPEND_EVENT],
-            existing_scheduled_event
+            existing_scheduled_event,
         )
 
     def test_conversion_hook_without_existing_schedule(self):
@@ -77,4 +66,3 @@ class ConversionHookTest(WalletTestBase):
         self.assertEqual(actual_expression.hour, expected_expression.hour)
         self.assertEqual(actual_expression.minute, expected_expression.minute)
         self.assertEqual(actual_expression.second, expected_expression.second)
-

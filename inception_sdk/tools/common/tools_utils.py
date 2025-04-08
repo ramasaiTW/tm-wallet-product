@@ -20,10 +20,7 @@ markers = ["library"]
 def check_banking_layer_repo() -> None:
     for testpath in markers:
         if not os.path.exists(testpath):
-            raise Exception(
-                "This doesn't look like a valid Banking Layer repo. "
-                "Please rerun at the root of the repo"
-            )
+            raise Exception("This doesn't look like a valid Banking Layer repo. " "Please rerun at the root of the repo")
 
 
 def init_logger(name: str, log_levels: list[str]) -> logging.Logger:
@@ -94,9 +91,7 @@ def parse_product_manifests(
             split_end = split_start[1].split(base)
             product_manifest[resource] = yaml.safe_load(split_end[0])
         # last resource has no closing header
-        product_manifest[resources[-1]] = yaml.safe_load(
-            product_manifest_yaml.split(base + resources[-1])[1]
-        )
+        product_manifest[resources[-1]] = yaml.safe_load(product_manifest_yaml.split(base + resources[-1])[1])
         product_manifests[product] = product_manifest
     return product_manifests
 

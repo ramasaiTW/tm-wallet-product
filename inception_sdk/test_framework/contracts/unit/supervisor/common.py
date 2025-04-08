@@ -23,12 +23,7 @@ DEFAULT_PLAN_ID = "MOCK_PLAN"
 
 class SupervisorContractTest(ContractTest):
     def create_supervisee_mock(
-        self,
-        supervisee_alias: str | None = None,
-        supervisee_hook_result: (
-            PostPostingHookResult | PrePostingHookResult | ScheduledEventHookResult | None
-        ) = None,
-        **kwargs
+        self, supervisee_alias: str | None = None, supervisee_hook_result: (PostPostingHookResult | PrePostingHookResult | ScheduledEventHookResult | None) = None, **kwargs
     ) -> Mock:
         """_summary_
         # supervisee specific arguments - these following arguments should only used on supervisee
@@ -49,11 +44,7 @@ class SupervisorContractTest(ContractTest):
         """
         if "is_supervisee_vault" not in kwargs:
             kwargs["is_supervisee_vault"] = True
-        return super().create_mock(
-            supervisee_alias=supervisee_alias,
-            supervisee_hook_result=supervisee_hook_result,
-            **kwargs
-        )
+        return super().create_mock(supervisee_alias=supervisee_alias, supervisee_hook_result=supervisee_hook_result, **kwargs)
 
     def create_supervisor_mock(
         self,
@@ -82,9 +73,7 @@ class SupervisorContractTest(ContractTest):
             # replace CLU dependency syntax from flag definitions. This allows for consistency
             # between the contract and the tests since unit tests run the contract directly as
             # a python module, these aren't removed in any class setup or rendering
-            calendar_ids = [
-                calendar_id.replace("&{", "").replace("}", "") for calendar_id in calendar_ids
-            ]
+            calendar_ids = [calendar_id.replace("&{", "").replace("}", "") for calendar_id in calendar_ids]
             events = [event for event in calendar_events if event.calendar_id in calendar_ids]
             return CalendarEvents(calendar_events=events) if events else None
 

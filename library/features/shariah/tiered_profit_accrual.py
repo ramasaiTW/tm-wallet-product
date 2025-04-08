@@ -57,8 +57,7 @@ days_in_year_parameter = Parameter(
         ]
     ),
     level=ParameterLevel.TEMPLATE,
-    description="The days in the year for profit accrual calculation."
-    ' Valid values are "actual", "366", "365", "360"',
+    description="The days in the year for profit accrual calculation." ' Valid values are "actual", "366", "365", "360"',
     display_name="Profit Accrual Days In Year",
     default_value=UnionItemValue(key="365"),
 )
@@ -147,14 +146,8 @@ def event_types(product_name: str) -> list[SmartContractEventType]:
     ]
 
 
-def scheduled_events(
-    vault: SmartContractVault, start_datetime: datetime
-) -> dict[str, ScheduledEvent]:
-    return {
-        ACCRUAL_EVENT: utils.daily_scheduled_event(
-            vault=vault, start_datetime=start_datetime, parameter_prefix=PROFIT_ACCRUAL_PREFIX
-        )
-    }
+def scheduled_events(vault: SmartContractVault, start_datetime: datetime) -> dict[str, ScheduledEvent]:
+    return {ACCRUAL_EVENT: utils.daily_scheduled_event(vault=vault, start_datetime=start_datetime, parameter_prefix=PROFIT_ACCRUAL_PREFIX)}
 
 
 def accrue_profit(
@@ -174,9 +167,7 @@ def accrue_profit(
     :return: the accrual posting custom instructions
     """
     denomination = utils.get_parameter(vault, name="denomination")
-    accrued_profit_payable_account: str = utils.get_parameter(
-        vault, name=PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT
-    )
+    accrued_profit_payable_account: str = utils.get_parameter(vault, name=PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT)
     days_in_year: str = utils.get_parameter(vault, name=PARAM_DAYS_IN_YEAR, is_union=True)
     rounding_precision: int = utils.get_parameter(vault, name=PARAM_ACCRUAL_PRECISION)
     # these rates are tiered by account tier _and_ balance tier
@@ -250,9 +241,7 @@ def get_tiered_accrual_amount(
         # Tier max is next tier 'min value' if exists
         tier_max = determine_tier_max(list(tiered_profit_rates.keys()), index)
 
-        tier_balances = determine_tier_balance(
-            effective_balance=effective_balance, tier_min=Decimal(tier_min), tier_max=tier_max
-        )
+        tier_balances = determine_tier_balance(effective_balance=effective_balance, tier_min=Decimal(tier_min), tier_max=tier_max)
         if tier_balances != Decimal(0):
             daily_rate = utils.yearly_to_daily_rate(
                 effective_date=effective_datetime,
@@ -261,10 +250,7 @@ def get_tiered_accrual_amount(
             )
 
             daily_accrual_amount += tier_balances * daily_rate
-            instruction_detail = (
-                f"{instruction_detail}Accrual on {tier_balances:.2f} "
-                f"at annual rate of {rate*100:.2f}%. "
-            )
+            instruction_detail = f"{instruction_detail}Accrual on {tier_balances:.2f} " f"at annual rate of {rate*100:.2f}%. "
 
     return (
         utils.round_decimal(amount=daily_accrual_amount, decimal_places=precision),
@@ -351,9 +337,7 @@ def get_accrual_capital(
     return accrual_balance if accrual_balance > 0 else Decimal(0)
 
 
-def get_daily_profit_rate(
-    *, annual_rate: str, days_in_year: str, effective_datetime: datetime
-) -> Decimal:
+def get_daily_profit_rate(*, annual_rate: str, days_in_year: str, effective_datetime: datetime) -> Decimal:
     return utils.yearly_to_daily_rate(
         effective_date=effective_datetime,
         yearly_rate=Decimal(annual_rate),
@@ -374,9 +358,7 @@ def get_accrued_profit(
     :param accrued_profit_address: the address name in which we are storing the accrued profit
     :return: the value of the balance at the requested time
     """
-    return utils.balance_at_coordinates(
-        balances=balances, address=accrued_profit_address, denomination=denomination
-    )
+    return utils.balance_at_coordinates(balances=balances, address=accrued_profit_address, denomination=denomination)
 
 
 def get_profit_reversal_postings(
@@ -401,9 +383,7 @@ def get_profit_reversal_postings(
     :param account_type: the account type to be populated on posting instruction details
     :return: the accrued profit reversal posting instructions
     """
-    accrued_profit_payable_account: str = utils.get_parameter(
-        vault, name=PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT
-    )
+    accrued_profit_payable_account: str = utils.get_parameter(vault, name=PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT)
     if denomination is None:
         denomination = str(utils.get_parameter(vault, name="denomination"))
     if balances is None:
@@ -416,8 +396,7 @@ def get_profit_reversal_postings(
     )
 
     instruction_details = utils.standard_instruction_details(
-        description=f"Reversal of accrued profit of value {accrued_profit} {denomination}"
-        " due to account closure.",
+        description=f"Reversal of accrued profit of value {accrued_profit} {denomination}" " due to account closure.",
         event_type=f"{event_name}",
         gl_impacted=True,
         account_type=account_type or "",

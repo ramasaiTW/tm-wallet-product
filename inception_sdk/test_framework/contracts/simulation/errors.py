@@ -10,10 +10,7 @@ def generic_error(message: str):
 
 
 def missing_parameter(missing_param: str):
-    message = (
-        f"value was not provided for non-derived, "
-        f'non-optional instance parameter with name "{missing_param}"'
-    )
+    message = f"value was not provided for non-derived, " f'non-optional instance parameter with name "{missing_param}"'
     return generic_error(message=message)
 
 

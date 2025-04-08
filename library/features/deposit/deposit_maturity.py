@@ -61,8 +61,7 @@ maturity_notice_period = Parameter(
     name=PARAM_MATURITY_NOTICE_PERIOD,
     level=ParameterLevel.TEMPLATE,
     shape=NumberShape(min_value=1, step=1),
-    description="The number of days prior to the account maturing"
-    "to send a notification regarding upcoming maturity.",
+    description="The number of days prior to the account maturing" "to send a notification regarding upcoming maturity.",
     display_name="Maturity Notification Days",
     default_value=1,
 )
@@ -128,9 +127,7 @@ def scheduled_events(*, vault: SmartContractVault) -> dict[str, ScheduledEvent]:
     )
     notify_upcoming_maturity_scheduled_event = ScheduledEvent(
         start_datetime=notify_upcoming_maturity_datetime - relativedelta(seconds=1),
-        expression=utils.one_off_schedule_expression(
-            schedule_datetime=notify_upcoming_maturity_datetime
-        ),
+        expression=utils.one_off_schedule_expression(schedule_datetime=notify_upcoming_maturity_datetime),
         end_datetime=notify_upcoming_maturity_datetime,
     )
 
@@ -161,9 +158,7 @@ def handle_account_maturity_event(
     updated_schedules: list[UpdateAccountEventTypeDirective] = []
 
     if schedules_to_skip_indefinitely:
-        updated_schedules = _handle_skipping_schedules_indefinitely_at_maturity(
-            schedules_to_skip_indefinitely=schedules_to_skip_indefinitely
-        )
+        updated_schedules = _handle_skipping_schedules_indefinitely_at_maturity(schedules_to_skip_indefinitely=schedules_to_skip_indefinitely)
 
     maturity_notification: list[AccountNotificationDirective] = [
         AccountNotificationDirective(
@@ -200,14 +195,10 @@ def handle_notify_upcoming_maturity_event(
     updated_maturity_schedule: list[UpdateAccountEventTypeDirective] = []
 
     maturity_datetime_without_calendars = get_maturity_datetime_without_calendars(vault=vault)
-    maturity_datetime_with_calendars = get_maturity_datetime_with_calendars(
-        vault=vault, maturity_datetime=maturity_datetime_without_calendars
-    )
+    maturity_datetime_with_calendars = get_maturity_datetime_with_calendars(vault=vault, maturity_datetime=maturity_datetime_without_calendars)
 
     if maturity_datetime_with_calendars != maturity_datetime_without_calendars:
-        updated_maturity_schedule = [
-            _update_account_maturity_schedule(maturity_datetime=maturity_datetime_with_calendars)
-        ]
+        updated_maturity_schedule = [_update_account_maturity_schedule(maturity_datetime=maturity_datetime_with_calendars)]
 
     notification_maturity_notice_period: list[AccountNotificationDirective] = [
         AccountNotificationDirective(
@@ -235,9 +226,7 @@ def _handle_skipping_schedules_indefinitely_at_maturity(
 
 
 # Datetime helpers
-def get_account_maturity_and_notify_upcoming_maturity_datetimes(
-    *, vault: SmartContractVault
-) -> tuple[datetime, datetime]:
+def get_account_maturity_and_notify_upcoming_maturity_datetimes(*, vault: SmartContractVault) -> tuple[datetime, datetime]:
     """
     Get the datetimes for the account maturity and notify account maturity events.
 
@@ -245,12 +234,8 @@ def get_account_maturity_and_notify_upcoming_maturity_datetimes(
     :return: tuple of account maturity datetime and notify account maturity datetime
     """
     maturity_datetime_without_calendars = get_maturity_datetime_without_calendars(vault=vault)
-    maturity_datetime = get_maturity_datetime_with_calendars(
-        vault=vault, maturity_datetime=maturity_datetime_without_calendars
-    )
-    notify_upcoming_maturity_datetime = _get_notify_upcoming_maturity_datetime(
-        vault=vault, maturity_datetime=maturity_datetime
-    )
+    maturity_datetime = get_maturity_datetime_with_calendars(vault=vault, maturity_datetime=maturity_datetime_without_calendars)
+    notify_upcoming_maturity_datetime = _get_notify_upcoming_maturity_datetime(vault=vault, maturity_datetime=maturity_datetime)
 
     return maturity_datetime, notify_upcoming_maturity_datetime
 
@@ -297,18 +282,12 @@ def get_maturity_datetime_from_term_and_unit(
     if term_unit is None:
         term_unit = deposit_parameters.get_term_unit_parameter(vault=vault)
 
-    add_timedelta = (
-        relativedelta(days=term)
-        if term_unit == deposit_parameters.DAYS
-        else relativedelta(months=term)
-    )
+    add_timedelta = relativedelta(days=term) if term_unit == deposit_parameters.DAYS else relativedelta(months=term)
 
     return account_creation_datetime + add_timedelta
 
 
-def get_maturity_datetime_with_calendars(
-    vault: SmartContractVault, maturity_datetime: datetime
-) -> datetime:
+def get_maturity_datetime_with_calendars(vault: SmartContractVault, maturity_datetime: datetime) -> datetime:
     """
     Get maturity datetime, adjusting for calendar events
 
@@ -317,14 +296,10 @@ def get_maturity_datetime_with_calendars(
     :return: maturity datetime
     """
     calendar_events = vault.get_calendar_events(calendar_ids=["&{PUBLIC_HOLIDAYS}"])
-    return utils.get_next_datetime_after_calendar_events(
-        effective_datetime=maturity_datetime, calendar_events=calendar_events
-    )
+    return utils.get_next_datetime_after_calendar_events(effective_datetime=maturity_datetime, calendar_events=calendar_events)
 
 
-def _get_notify_upcoming_maturity_datetime(
-    *, vault: SmartContractVault, maturity_datetime: datetime
-) -> datetime:
+def _get_notify_upcoming_maturity_datetime(*, vault: SmartContractVault, maturity_datetime: datetime) -> datetime:
     """
      Get notify upcoming maturity datetime, which is the start of the notice period before
      the maturity datetime, which is defined by the `maturity_notice_period` parameter.
@@ -337,9 +312,7 @@ def _get_notify_upcoming_maturity_datetime(
     return maturity_datetime - relativedelta(days=maturity_notice_period)
 
 
-def validate_postings(
-    *, vault: SmartContractVault, effective_datetime: datetime
-) -> Rejection | None:
+def validate_postings(*, vault: SmartContractVault, effective_datetime: datetime) -> Rejection | None:
     """
     Reject any postings after the account has matured
 
@@ -348,9 +321,7 @@ def validate_postings(
     :return Rejection: no transaction after account maturity
     """
     maturity_datetime_without_calendars = get_maturity_datetime_without_calendars(vault=vault)
-    maturity_datetime = get_maturity_datetime_with_calendars(
-        vault=vault, maturity_datetime=maturity_datetime_without_calendars
-    )
+    maturity_datetime = get_maturity_datetime_with_calendars(vault=vault, maturity_datetime=maturity_datetime_without_calendars)
     if effective_datetime >= maturity_datetime:
         return Rejection(
             message="No transactions are allowed at or after account maturity",
@@ -359,9 +330,7 @@ def validate_postings(
     return None
 
 
-def _update_account_maturity_schedule(
-    *, maturity_datetime: datetime
-) -> UpdateAccountEventTypeDirective:
+def _update_account_maturity_schedule(*, maturity_datetime: datetime) -> UpdateAccountEventTypeDirective:
     """
     Updates account maturity schedule based on the provided maturity datetime
 
@@ -377,9 +346,7 @@ def _update_account_maturity_schedule(
 
 
 # Parameter change helpers
-def validate_term_parameter_change(
-    *, vault: SmartContractVault, effective_datetime: datetime, proposed_term_value: int
-) -> Rejection | None:
+def validate_term_parameter_change(*, vault: SmartContractVault, effective_datetime: datetime, proposed_term_value: int) -> Rejection | None:
     """
     Accepts a change to the 'term' parameter if it satisfies:
     - the `desired_maturity_date` parameter is not set, since this takes precedence if set
@@ -391,10 +358,7 @@ def validate_term_parameter_change(
     :param proposed_term_value: the proposed value for the `term` value
     :return: a Rejection if the change is invalid
     """
-    if (
-        get_desired_maturity_datetime(vault=vault, effective_datetime=effective_datetime)
-        is not None
-    ):
+    if get_desired_maturity_datetime(vault=vault, effective_datetime=effective_datetime) is not None:
         return Rejection(
             message="Term length cannot be changed if the desired maturity datetime is set.",
             reason_code=RejectionReason.AGAINST_TNC,
@@ -406,29 +370,20 @@ def validate_term_parameter_change(
         return None
 
     else:
-        maturity_datetime_without_calendars = get_maturity_datetime_from_term_and_unit(
-            vault=vault, term=proposed_term_value
-        )
-        maturity_datetime = get_maturity_datetime_with_calendars(
-            vault=vault, maturity_datetime=maturity_datetime_without_calendars
-        )
-        notify_upcoming_maturity_datetime = _get_notify_upcoming_maturity_datetime(
-            vault=vault, maturity_datetime=maturity_datetime
-        )
+        maturity_datetime_without_calendars = get_maturity_datetime_from_term_and_unit(vault=vault, term=proposed_term_value)
+        maturity_datetime = get_maturity_datetime_with_calendars(vault=vault, maturity_datetime=maturity_datetime_without_calendars)
+        notify_upcoming_maturity_datetime = _get_notify_upcoming_maturity_datetime(vault=vault, maturity_datetime=maturity_datetime)
 
         if notify_upcoming_maturity_datetime < effective_datetime:
             return Rejection(
-                message="Term length cannot be changed such that the maturity notification"
-                " period starts in the past.",
+                message="Term length cannot be changed such that the maturity notification" " period starts in the past.",
                 reason_code=RejectionReason.AGAINST_TNC,
             )
 
     return None
 
 
-def handle_term_parameter_change(
-    *, vault: SmartContractVault
-) -> list[UpdateAccountEventTypeDirective]:
+def handle_term_parameter_change(*, vault: SmartContractVault) -> list[UpdateAccountEventTypeDirective]:
     """
     Update the ACCOUNT_MATURITY_EVENT and NOTIFY_UPCOMING_MATURITY_EVENT schedules after the term
     length has changed. The pre-parameter-change validation ensures that the notice period begins
@@ -449,23 +404,15 @@ def handle_term_parameter_change(
     )
     notify_upcoming_maturity_update_event = UpdateAccountEventTypeDirective(
         event_type=NOTIFY_UPCOMING_MATURITY_EVENT,
-        expression=utils.one_off_schedule_expression(
-            schedule_datetime=notify_upcoming_maturity_datetime
-        ),
+        expression=utils.one_off_schedule_expression(schedule_datetime=notify_upcoming_maturity_datetime),
         end_datetime=notify_upcoming_maturity_datetime,
     )
     return [account_maturity_update_event, notify_upcoming_maturity_update_event]
 
 
 # Parameter getters
-def get_maturity_notice_period_parameter(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> int:
-    return int(
-        utils.get_parameter(
-            vault=vault, name=PARAM_MATURITY_NOTICE_PERIOD, at_datetime=effective_datetime
-        )
-    )
+def get_maturity_notice_period_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> int:
+    return int(utils.get_parameter(vault=vault, name=PARAM_MATURITY_NOTICE_PERIOD, at_datetime=effective_datetime))
 
 
 def get_desired_maturity_datetime(

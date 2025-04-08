@@ -57,17 +57,11 @@ basepath = "inception_sdk/test_framework/contracts/simulation/test"
 contract_modules_basepath = "inception_sdk/test_framework/common/contract_modules_examples"
 CONTRACT_FULL_FILE = basepath + "/mock_product/full_contract.py"
 CONTRACT_FULL_UPDATED_VERSION_FILE = basepath + "/mock_product/full_contract_updated_version.py"
-CONTRACT_WITH_SHARED_FUNCTION_FILE = (
-    contract_modules_basepath + "/full_contract_with_shared_function.py"
-)
+CONTRACT_WITH_SHARED_FUNCTION_FILE = contract_modules_basepath + "/full_contract_with_shared_function.py"
 CHECKING_CONTRACT_FILE = basepath + "/mock_product/supervised_checking_account.py"
-CHECKING_CONTRACT_WITH_MODULES_FILE = (
-    basepath + "/mock_product/supervised_checking_account_with_contract_modules.py"
-)
+CHECKING_CONTRACT_WITH_MODULES_FILE = basepath + "/mock_product/supervised_checking_account_with_contract_modules.py"
 SAVINGS_CONTRACT_FILE = basepath + "/mock_product/supervised_savings_deposit_account.py"
-SAVINGS_CONTRACT_WITH_MODULES_FILE = (
-    basepath + "/mock_product/supervised_savings_deposit_account_with_contract_modules.py"
-)
+SAVINGS_CONTRACT_WITH_MODULES_FILE = basepath + "/mock_product/supervised_savings_deposit_account_with_contract_modules.py"
 YOUTH_CONTRACT_FILE = basepath + "/mock_product/supervised_youth_account.py"
 SUPERVISOR_CONTRACT_FILE = basepath + "/mock_product/supervisor_contract.py"
 DEFAULT_CLIENT_BATCH_ID = str(uuid.uuid4())
@@ -269,9 +263,7 @@ class ClientTest(SimulationTestCase):
         savings_template_params = {
             "denomination": "USD",
             # 'gross_interest_rate': '0.149',
-            "gross_interest_rate_tiers": json.dumps(
-                {"high": "0.15", "medium": "0.10", "low": "0.01", "DEFAULT": "0.149"}
-            ),
+            "gross_interest_rate_tiers": json.dumps({"high": "0.15", "medium": "0.10", "low": "0.01", "DEFAULT": "0.149"}),
             "minimum_deposit": "0.01",
             "maximum_daily_deposit": "1000",
             "minimum_withdrawal": "0.01",
@@ -399,8 +391,7 @@ class ClientTest(SimulationTestCase):
             )
         self.assertEqual(
             ctx.exception.args[0],
-            "supervisee_version_id_mapping missing or empty for a test using "
-            "supervisor_contract_code",
+            "supervisee_version_id_mapping missing or empty for a test using " "supervisor_contract_code",
         )
 
     def test_wrong_denomination_deposit(self):
@@ -446,9 +437,7 @@ class ClientTest(SimulationTestCase):
         self.assertEqual(get_num_postings(res), 0)
         # The event log contains the error we expect to be raised by an invalid currency
         self.assertIn(
-            'account "Main account" rejected with rejection type "WrongDenomination"'
-            ' and reason "Cannot make transactions in given denomination;'
-            ' transactions must be in GBP"',
+            'account "Main account" rejected with rejection type "WrongDenomination"' ' and reason "Cannot make transactions in given denomination;' ' transactions must be in GBP"',
             get_account_logs(res),
         )
 
@@ -1018,9 +1007,7 @@ class ClientTest(SimulationTestCase):
         rejection_time = start + timedelta(hours=1)
         account_id = "Main account"
         rejection_type = "WrongDenomination"
-        rejection_reason = (
-            "Cannot make transactions in given denomination; " "transactions must be in GBP"
-        )
+        rejection_reason = "Cannot make transactions in given denomination; " "transactions must be in GBP"
         msg = "cannot find rejected postings with"
 
         expected_rejections = [
@@ -1194,11 +1181,7 @@ class ClientTest(SimulationTestCase):
             )
         )
 
-        events.append(
-            update_account_status_pending_closure(
-                timestamp=(start + timedelta(minutes=10)), account_id="Main account"
-            )
-        )
+        events.append(update_account_status_pending_closure(timestamp=(start + timedelta(minutes=10)), account_id="Main account"))
 
         with self.assertRaises(ValueError) as ex:
             self.client.simulate_smart_contract(
@@ -1318,8 +1301,7 @@ class ClientTest(SimulationTestCase):
 
         # successfully initiated global parameter value
         self.assertIn(
-            'created value "2021-01-01 05:00:00+00:00"'
-            ' for global parameter "example_date_parameter"',
+            'created value "2021-01-01 05:00:00+00:00"' ' for global parameter "example_date_parameter"',
             result_logs,
         )
 
@@ -1383,10 +1365,7 @@ class ClientTest(SimulationTestCase):
             template_params=template_params,
         )
 
-        contract_modules = [
-            ContractModuleConfig(alias, file_path)
-            for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_MULTIPLE.items()
-        ]
+        contract_modules = [ContractModuleConfig(alias, file_path) for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_MULTIPLE.items()]
 
         contract_config = ContractConfig(
             contract_file_path=self.contract_with_contract_module,
@@ -1442,10 +1421,7 @@ class ClientTest(SimulationTestCase):
         smart_contract_version_id = "1"
         internal_accounts = {"1": "LIABILITY"}
 
-        contract_modules = [
-            ContractModuleConfig(alias, file_path)
-            for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_MULTIPLE.items()
-        ]
+        contract_modules = [ContractModuleConfig(alias, file_path) for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_MULTIPLE.items()]
 
         contract_config = ContractConfig(
             contract_file_path=self.contract_with_contract_module,
@@ -1460,9 +1436,7 @@ class ClientTest(SimulationTestCase):
             linked_contract_modules=contract_modules,
         )
 
-        deposit_event = create_inbound_hard_settlement_instruction(
-            "1000.00", start + timedelta(hours=1), denomination="GBP"
-        )
+        deposit_event = create_inbound_hard_settlement_instruction("1000.00", start + timedelta(hours=1), denomination="GBP")
 
         sub_tests = [
             # if interest gets accrued correctly, the accrued value should be
@@ -1471,9 +1445,7 @@ class ClientTest(SimulationTestCase):
             SubTest(
                 description="accrual check",
                 events=[deposit_event],
-                expected_balances_at_ts={
-                    end: {"1": [(BalanceDimensions(denomination="GBP"), "-997.00")]}
-                },
+                expected_balances_at_ts={end: {"1": [(BalanceDimensions(denomination="GBP"), "-997.00")]}},
             )
         ]
 
@@ -1524,9 +1496,7 @@ class ClientTest(SimulationTestCase):
         savings_template_params = {
             "denomination": "USD",
             # 'gross_interest_rate': '0.149',
-            "gross_interest_rate_tiers": json.dumps(
-                {"high": "0.15", "medium": "0.10", "low": "0.01", "DEFAULT": "0.149"}
-            ),
+            "gross_interest_rate_tiers": json.dumps({"high": "0.15", "medium": "0.10", "low": "0.01", "DEFAULT": "0.149"}),
             "minimum_deposit": "0.01",
             "maximum_daily_deposit": "1000",
             "minimum_withdrawal": "0.01",
@@ -1547,10 +1517,7 @@ class ClientTest(SimulationTestCase):
             ),
         }
 
-        contract_modules = [
-            ContractModuleConfig(alias, file_path)
-            for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_SINGLE.items()
-        ]
+        contract_modules = [ContractModuleConfig(alias, file_path) for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_SINGLE.items()]
 
         ca_account_configs = [
             AccountConfig(
@@ -1639,8 +1606,7 @@ class ClientTest(SimulationTestCase):
                         start + timedelta(days=10),
                         account_id="checking 0",
                         rejection_type="WrongDenomination",
-                        rejection_reason="Cannot make transactions in given denomination; "
-                        "transactions must be in USD",
+                        rejection_reason="Cannot make transactions in given denomination; " "transactions must be in USD",
                     )
                 ],
             ),
@@ -1691,9 +1657,7 @@ class ClientTest(SimulationTestCase):
         savings_template_params = {
             "denomination": "USD",
             # 'gross_interest_rate': '0.149',
-            "gross_interest_rate_tiers": json.dumps(
-                {"high": "0.15", "medium": "0.10", "low": "0.01", "DEFAULT": "0.149"}
-            ),
+            "gross_interest_rate_tiers": json.dumps({"high": "0.15", "medium": "0.10", "low": "0.01", "DEFAULT": "0.149"}),
             "minimum_deposit": "0.01",
             "maximum_daily_deposit": "1000",
             "minimum_withdrawal": "0.01",
@@ -1714,14 +1678,8 @@ class ClientTest(SimulationTestCase):
             ),
         }
 
-        contract_modules_savings = [
-            ContractModuleConfig(alias, file_path)
-            for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_MULTIPLE.items()
-        ]
-        contract_modules_checking = [
-            ContractModuleConfig(alias, file_path)
-            for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_SINGLE.items()
-        ]
+        contract_modules_savings = [ContractModuleConfig(alias, file_path) for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_MULTIPLE.items()]
+        contract_modules_checking = [ContractModuleConfig(alias, file_path) for (alias, file_path) in CONTRACT_MODULES_ALIAS_FILE_MAP_SINGLE.items()]
 
         ca_account_configs = [
             AccountConfig(
@@ -1827,22 +1785,19 @@ class ClientTest(SimulationTestCase):
                         start + timedelta(days=10),
                         account_id="checking 0",
                         rejection_type="WrongDenomination",
-                        rejection_reason="Cannot make transactions in given denomination; "
-                        "transactions must be in USD",
+                        rejection_reason="Cannot make transactions in given denomination; " "transactions must be in USD",
                     ),
                     ExpectedRejection(
                         start + timedelta(days=10),
                         account_id="checking 1",
                         rejection_type="WrongDenomination",
-                        rejection_reason="Cannot make transactions in given denomination; "
-                        "transactions must be in USD",
+                        rejection_reason="Cannot make transactions in given denomination; " "transactions must be in USD",
                     ),
                     ExpectedRejection(
                         start + timedelta(days=10),
                         account_id="savings 0",
                         rejection_type="WrongDenomination",
-                        rejection_reason="Cannot make transactions in given denomination; "
-                        "transactions must be in USD",
+                        rejection_reason="Cannot make transactions in given denomination; " "transactions must be in USD",
                     ),
                 ],
             ),
@@ -1864,6 +1819,4 @@ class ClientTest(SimulationTestCase):
         self.assertTrue(get_plan_assoc_created(res, plan_id="1", account_id="youth 0"))
 
         self.assertTrue(get_module_link_created(res, ["interest"], smart_contract_version_id="1"))
-        self.assertTrue(
-            get_module_link_created(res, ["interest", "module_2"], smart_contract_version_id="2")
-        )
+        self.assertTrue(get_module_link_created(res, ["interest", "module_2"], smart_contract_version_id="2"))

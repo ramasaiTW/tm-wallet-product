@@ -42,8 +42,7 @@ logging.basicConfig(
 flags.DEFINE_boolean(
     name="use_kafka",
     default=True,
-    help="Indicates whether the framework will attempt to use kafka helpers, where available."
-    " This may be forced to true for certain test types",
+    help="Indicates whether the framework will attempt to use kafka helpers, where available." " This may be forced to true for certain test types",
 )
 
 testhandle = endtoend.helper.TestInstance()
@@ -75,11 +74,7 @@ def kafka_setup(
 ) -> None:
     try:
         if endtoend.testhandle.use_kafka != True:
-            raise Exception(
-                "To enable Kafka, please set the TestInstance.use_kafka flag to"
-                "True. This can be done by passing the command line argument "
-                "'--use_kafka'."
-            )
+            raise Exception("To enable Kafka, please set the TestInstance.use_kafka flag to" "True. This can be done by passing the command line argument " "'--use_kafka'.")
 
         kafka_config = endtoend.testhandle.environment.kafka_config
 
@@ -91,9 +86,7 @@ def kafka_setup(
         # Initialise producer
         kafka_producer_config = kafka_config.copy()
         kafka_producer_config.update(producer_config or {})
-        endtoend.testhandle.kafka_producer = endtoend.kafka_helper.initialise_producer(
-            kafka_producer_config
-        )
+        endtoend.testhandle.kafka_producer = endtoend.kafka_helper.initialise_producer(kafka_producer_config)
 
     except:
         # tearDown/tearDownClass isn't called if setUp/setUpClass fails, respectively
@@ -104,18 +97,14 @@ def kafka_setup(
 def standard_setup(environment_purpose: EnvironmentPurpose = EnvironmentPurpose.E2E):
     try:
         endtoend.helper.setup_environments(environment_purpose)
-        endtoend.contracts_helper.create_account_schedule_tags(
-            endtoend.testhandle.CONTROLLED_SCHEDULES
-        )
+        endtoend.contracts_helper.create_account_schedule_tags(endtoend.testhandle.CONTROLLED_SCHEDULES)
         endtoend.contracts_helper.create_flag_definitions(testhandle.FLAG_DEFINITIONS)
         endtoend.contracts_helper.create_calendars(testhandle.CALENDARS)
         # There is a circular dependency between workflows and contracts/supervisors due to our
         # e2e id replacement approach, but we can generate the workflow definition ids before
         # uploading them
         endtoend.workflows_helper.create_workflow_definition_id_mapping()
-        endtoend.contracts_helper.create_required_internal_accounts(
-            testhandle.TSIDE_TO_INTERNAL_ACCOUNT_ID
-        )
+        endtoend.contracts_helper.create_required_internal_accounts(testhandle.TSIDE_TO_INTERNAL_ACCOUNT_ID)
 
         # At this point we know the resource ids used in CLU references for contracts, so
         # we create a merged dictionary for CLU replacement later on. This excludes supervisors
@@ -136,17 +125,14 @@ def standard_setup(environment_purpose: EnvironmentPurpose = EnvironmentPurpose.
                 testhandle.contract_pid_to_uploaded_product_version_id,
             )
         )
-        endtoend.supervisors_helper.upload_supervisor_contracts(
-            supervisor_contracts=testhandle.SUPERVISORCONTRACTS
-        )
+        endtoend.supervisors_helper.upload_supervisor_contracts(supervisor_contracts=testhandle.SUPERVISORCONTRACTS)
         endtoend.contract_modules_helper.upload_contract_modules(testhandle.CONTRACT_MODULES)
 
         # Our CLU ids are like `offset_mortgage_supervisor_contract_version` but within our tests
         # it is much nicer to use `offset_mortgage` as the supervisor contract's id. This interim
         # step gives us implicit support for the former and the latter
         supervisor_contract_version_id_mapping = {
-            supervisor_contract_name
-            + "_supervisor_contract_version": supervisor_contract_version_id
+            supervisor_contract_name + "_supervisor_contract_version": supervisor_contract_version_id
             for (
                 supervisor_contract_name,
                 supervisor_contract_version_id,

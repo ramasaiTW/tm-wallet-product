@@ -19,10 +19,7 @@ VAULT_CALLER_PREFIX = "inception_sdk.test_framework.contracts.simulation.vault_c
 class DebuggerTest(SimulationTestCase):
     def setUp(self):
         # store original state of loggers
-        self._logger_original_state = {
-            suffix: {"level": logging.INFO, "handlers": [], "propagate": True}
-            for suffix in LOGGER_NAME_SUFFIX_TO_FILE_SUFFIX_MAPPING
-        }
+        self._logger_original_state = {suffix: {"level": logging.INFO, "handlers": [], "propagate": True} for suffix in LOGGER_NAME_SUFFIX_TO_FILE_SUFFIX_MAPPING}
         self._logfile_prefix = uuid.uuid4().hex
         self._files_before_start = os.listdir("/tmp/")
         return super().setUp()
@@ -45,12 +42,7 @@ class DebuggerTest(SimulationTestCase):
         _files_after_test = os.listdir("/tmp/")
         difference_in_files = set(self._files_before_start).difference(set(_files_after_test))
         for new_filename in difference_in_files:
-            if any(
-                [
-                    new_filename.endswith(log_filename_suffix)
-                    for log_filename_suffix in LOGGER_NAME_SUFFIX_TO_FILE_SUFFIX_MAPPING.values()
-                ]
-            ):
+            if any([new_filename.endswith(log_filename_suffix) for log_filename_suffix in LOGGER_NAME_SUFFIX_TO_FILE_SUFFIX_MAPPING.values()]):
                 os.remove(f"/tmp/{new_filename}")
         return super().tearDown()
 
@@ -88,9 +80,7 @@ class DebuggerTest(SimulationTestCase):
 
         # assert that if there are log files, they are empty
         for suffix in LOGGER_NAME_SUFFIX_TO_FILE_SUFFIX_MAPPING.values():
-            relevant_files = [
-                filename for filename in difference_in_files if filename.endswith(suffix)
-            ]
+            relevant_files = [filename for filename in difference_in_files if filename.endswith(suffix)]
             for filename in relevant_files:
                 with open("/tmp/" + filename, "r") as f:
                     file_contents = f.read()
@@ -114,9 +104,7 @@ class DebuggerTest(SimulationTestCase):
             for old_handler in logger.handlers:
                 logger.removeHandler(old_handler)
 
-            file_handler = logging.FileHandler(
-                f"/tmp/{self._logfile_prefix}{logfile_suffix}", mode="w"
-            )  # can be set to any path the user wants, but we use /tmp/ in this case
+            file_handler = logging.FileHandler(f"/tmp/{self._logfile_prefix}{logfile_suffix}", mode="w")  # can be set to any path the user wants, but we use /tmp/ in this case
 
             # set log levels of filehandler to DEBUG to trigger logging to file
             logger.setLevel(logging.DEBUG)
@@ -136,9 +124,7 @@ class DebuggerTest(SimulationTestCase):
         difference_in_files = set(dumpfiles_after).difference(set(dumpfiles_before))
 
         for suffix in LOGGER_NAME_SUFFIX_TO_FILE_SUFFIX_MAPPING.values():
-            relevant_files = [
-                filename for filename in difference_in_files if filename.endswith(suffix)
-            ]
+            relevant_files = [filename for filename in difference_in_files if filename.endswith(suffix)]
             for filename in relevant_files:
                 with open("/tmp/" + filename, "r") as f:
                     file_contents = f.read().strip().split("\n")

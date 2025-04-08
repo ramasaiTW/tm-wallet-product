@@ -53,8 +53,7 @@ parameters = [
     Parameter(
         name=PARAM_ROUNDUP_AUTOSAVE_TRANSACTION_TYPES,
         level=ParameterLevel.TEMPLATE,
-        description="The list of transaction types eligible for autosave. "
-        "Expects a JSON-encoded list",
+        description="The list of transaction types eligible for autosave. " "Expects a JSON-encoded list",
         display_name="Autosave Transaction Types",
         shape=OptionalShape(shape=StringShape()),
         default_value=OptionalValue(dumps([DEFAULT_TRANSACTION_TYPE])),
@@ -99,9 +98,7 @@ def apply(
     """
 
     # if roundup_autosave_flag is False the feature is disabled
-    if not utils.str_to_bool(
-        utils.get_parameter(vault=vault, name=PARAM_ROUNDUP_AUTOSAVE_ACTIVE, is_union=True)
-    ):
+    if not utils.str_to_bool(utils.get_parameter(vault=vault, name=PARAM_ROUNDUP_AUTOSAVE_ACTIVE, is_union=True)):
         return []
 
     # roundup_autosave_transaction_types is not validate as it defaults to PURCHASE.
@@ -117,18 +114,12 @@ def apply(
     if balances is None:
         balances = vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
 
-    available_balance: Decimal = utils.get_available_balance(
-        balances=balances, denomination=denomination
-    )
+    available_balance: Decimal = utils.get_available_balance(balances=balances, denomination=denomination)
     if available_balance <= 0:
         return []
 
-    autosave_rounding_amount: Decimal = utils.get_parameter(
-        name=PARAM_ROUNDUP_AUTOSAVE_ROUNDING_AMOUNT, vault=vault, is_optional=True
-    )
-    autosave_savings_account: str = utils.get_parameter(
-        name=PARAM_ROUNDUP_AUTOSAVE_ACCOUNT, vault=vault, is_optional=True
-    )
+    autosave_rounding_amount: Decimal = utils.get_parameter(name=PARAM_ROUNDUP_AUTOSAVE_ROUNDING_AMOUNT, vault=vault, is_optional=True)
+    autosave_savings_account: str = utils.get_parameter(name=PARAM_ROUNDUP_AUTOSAVE_ACCOUNT, vault=vault, is_optional=True)
     autosave_transaction_types: list[str] = utils.get_parameter(
         name=PARAM_ROUNDUP_AUTOSAVE_TRANSACTION_TYPES,
         vault=vault,
@@ -172,9 +163,7 @@ def apply(
                     )
                 )
                 instruction_description += (
-                    f"Roundup Autosave: {denomination} {debit_amount} "
-                    f"using round up to {denomination} {autosave_rounding_amount} for transfer of "
-                    f"{denomination} {posting_balance}\n "
+                    f"Roundup Autosave: {denomination} {debit_amount} " f"using round up to {denomination} {autosave_rounding_amount} for transfer of " f"{denomination} {posting_balance}\n "
                 )
 
     if posting_result:

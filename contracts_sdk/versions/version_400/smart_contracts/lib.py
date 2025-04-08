@@ -22,15 +22,11 @@ class VaultFunctionsABC(types_utils.StrictInterface):
         pass
 
     @abstractmethod
-    def get_posting_instructions(
-        self, *, fetcher_id: Optional[str] = None
-    ) -> common_types.postings.PITypes:
+    def get_posting_instructions(self, *, fetcher_id: Optional[str] = None) -> common_types.postings.PITypes:
         pass
 
     @abstractmethod
-    def get_client_transactions(
-        self, *, fetcher_id: Optional[str] = None
-    ) -> Dict[str, common_types.ClientTransaction]:
+    def get_client_transactions(self, *, fetcher_id: Optional[str] = None) -> Dict[str, common_types.ClientTransaction]:
         pass
 
     @abstractmethod
@@ -38,9 +34,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
         pass
 
     @abstractmethod
-    def get_balances_timeseries(
-        self, *, fetcher_id: Optional[str] = None
-    ) -> Mapping[common_types.BalanceCoordinate, common_types.BalanceTimeseries]:
+    def get_balances_timeseries(self, *, fetcher_id: Optional[str] = None) -> Mapping[common_types.BalanceCoordinate, common_types.BalanceTimeseries]:
         pass
 
     @abstractmethod
@@ -58,11 +52,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
     @abstractmethod
     def get_hook_result(
         self,
-    ) -> Union[
-        common_types.PostPostingHookResult,
-        common_types.PrePostingHookResult,
-        common_types.ScheduledEventHookResult,
-    ]:
+    ) -> Union[common_types.PostPostingHookResult, common_types.PrePostingHookResult, common_types.ScheduledEventHookResult,]:
         pass
 
     @abstractmethod
@@ -405,9 +395,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     account_id, hook, and effective_datetime.
                 """,
                 args=[],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The unique-enough id.", type="str"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The unique-enough id.", type="str"),
             ),
         ]
         get_parameter_methods = [
@@ -429,9 +417,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         docstring="The name of the [ContractParameter](/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ContractParameter].",  # noqa: E501
                     ),
                 ],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The timeseries of parameters.", type="ParameterTimeseries"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The timeseries of parameters.", type="ParameterTimeseries"),
             ),
         ]
 
@@ -452,9 +438,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         docstring="The `flag_definition_id` to get the timeseries for.",
                     ),
                 ],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The timeseries of flags.", type="FlagTimeseries"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The timeseries of flags.", type="FlagTimeseries"),
             ),
             types_utils.MethodSpec(
                 name="get_hook_result",
@@ -467,8 +451,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 args=[],
                 return_value=types_utils.ReturnValueSpec(
                     docstring="The Supervisee Hook Result",
-                    type="Union[PostPostingHookResult, PrePostingHookResult, "
-                    "ScheduledEventHookResult]",
+                    type="Union[PostPostingHookResult, PrePostingHookResult, " "ScheduledEventHookResult]",
                 ),
                 examples=[
                     types_utils.Example(
@@ -530,9 +513,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     non-supervised Vault object.
                 """,  # noqa: E501
                 args=[],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The Supervisee Smart Contract Version alias.", type="str"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The Supervisee Smart Contract Version alias.", type="str"),
             ),
             types_utils.MethodSpec(
                 name="get_permitted_denominations",
@@ -540,9 +521,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     Returns the permitted denominations of the account.
                 """,
                 args=[],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="A list of denominations.", type="List[str]"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="A list of denominations.", type="List[str]"),
             ),
             types_utils.MethodSpec(
                 name="get_calendar_events",
@@ -555,9 +534,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     see [calendar](/reference/contracts/contracts_api_4xx/smart_contracts_api_reference4xx/hook_requirements/#calendar)
                 """,  # noqa: E501
                 args=[
-                    types_utils.ValueSpec(
-                        name="calendar_ids", type="List[str]", docstring="List of Calendar Ids"
-                    ),
+                    types_utils.ValueSpec(name="calendar_ids", type="List[str]", docstring="List of Calendar Ids"),
                 ],
                 return_value=types_utils.ReturnValueSpec(
                     docstring="""

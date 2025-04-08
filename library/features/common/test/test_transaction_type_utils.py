@@ -45,9 +45,7 @@ class TestMatchTransactionType(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -65,9 +63,7 @@ class TestMatchTransactionType(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -85,9 +81,7 @@ class TestMatchTransactionType(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -105,9 +99,7 @@ class TestMatchTransactionType(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -128,9 +120,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -147,9 +137,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -170,9 +158,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -192,9 +178,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -215,9 +199,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -237,9 +219,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -256,9 +236,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -275,9 +253,7 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)
 
@@ -297,8 +273,6 @@ class TestMatchTransactionTypeAliases(TestTransactionUtils):
             },
         )
 
-        match_result = transaction_type_utils.match_transaction_type(
-            posting_instruction=instruction, values=types_to_match
-        )
+        match_result = transaction_type_utils.match_transaction_type(posting_instruction=instruction, values=types_to_match)
 
         self.assertEqual(expected_match, match_result)

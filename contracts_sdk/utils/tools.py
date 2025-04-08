@@ -40,43 +40,29 @@ class ContractsTestCase(TestCase):
         allowedNatives = {name: name for name in self._contract_lib.ALLOWED_NATIVES}
         return {"__builtins__": {**importBuiltin, **allowedBuiltins, **allowedNatives, **types}}
 
-    def _execute_function_in_sandbox(
-        self, contract_code: str, function_name: str, sandbox: Dict[str, Any], *args, **kwargs
-    ) -> FunctionType:
+    def _execute_function_in_sandbox(self, contract_code: str, function_name: str, sandbox: Dict[str, Any], *args, **kwargs) -> FunctionType:
         exec(contract_code, sandbox, sandbox)
         func = sandbox.get(function_name)
         if func is None:
-            raise ValueError(
-                f'Function "{function_name}" does not exist in provided {self.module_desc} code'
-            )
+            raise ValueError(f'Function "{function_name}" does not exist in provided {self.module_desc} code')
 
         function_globals = {**sandbox}
         if function_name in self.supported_hook_names:
             function_globals["vault"] = self.vault
-        func = FunctionType(
-            func.__code__, function_globals, func.__name__, func.__defaults__, func.__closure__
-        )
+        func = FunctionType(func.__code__, function_globals, func.__name__, func.__defaults__, func.__closure__)
         return func(*args, **kwargs)
 
-    def run_contract_function(
-        self, contract_code: str, function_name: str, *args, **kwargs
-    ) -> FunctionType:
+    def run_contract_function(self, contract_code: str, function_name: str, *args, **kwargs) -> FunctionType:
         types = {name: func for name, func in self._registry.items() if name != "__builtins__"}
         sandbox = self.create_sandbox(types)
 
-        return self._execute_function_in_sandbox(
-            contract_code, function_name, sandbox, *args, **kwargs
-        )
+        return self._execute_function_in_sandbox(contract_code, function_name, sandbox, *args, **kwargs)
 
-    def run_contract_function_with_imports(
-        self, contract_code: str, function_name: str, *args, **kwargs
-    ) -> FunctionType:
+    def run_contract_function_with_imports(self, contract_code: str, function_name: str, *args, **kwargs) -> FunctionType:
         types = {name: func for name, func in self._registry.items() if name != "__builtins__"}
         sandbox = self.create_sandbox_with_imports(types)
 
-        return self._execute_function_in_sandbox(
-            contract_code, function_name, sandbox, *args, **kwargs
-        )
+        return self._execute_function_in_sandbox(contract_code, function_name, sandbox, *args, **kwargs)
 
 
 class SmartContractsTestCase(ContractsTestCase):

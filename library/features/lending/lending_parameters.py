@@ -15,8 +15,7 @@ total_repayment_count_parameter = Parameter(
     name=PARAM_TOTAL_REPAYMENT_COUNT,
     shape=NumberShape(min_value=Decimal(1), step=Decimal(1)),
     level=ParameterLevel.INSTANCE,
-    description="The total number of repayments to be made, at a monthly frequency"
-    " unless a repayment_frequency parameter is present.",
+    description="The total number of repayments to be made, at a monthly frequency" " unless a repayment_frequency parameter is present.",
     display_name="Total Repayment Count",
     default_value=Decimal(12),
     # editable to support loan top-ups

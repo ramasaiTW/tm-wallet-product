@@ -35,9 +35,7 @@ class AnnualInterestRateTest(VariableTest):
         ),
     ]
 
-    def test_get_annual_interest_rate_no_adjustment_no_floor_or_cap(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_annual_interest_rate_no_adjustment_no_floor_or_cap(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "variable_interest_rate": Decimal("0.0120"),
@@ -50,9 +48,7 @@ class AnnualInterestRateTest(VariableTest):
         mock_get_parameter.assert_has_calls(calls=self.expected_parameter_calls)
         self.assertEqual(mock_get_parameter.call_count, 4)
 
-    def test_get_annual_interest_rate_with_adjustment_no_floor_or_cap(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_annual_interest_rate_with_adjustment_no_floor_or_cap(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "variable_interest_rate": Decimal("0.0120"),
@@ -65,9 +61,7 @@ class AnnualInterestRateTest(VariableTest):
         mock_get_parameter.assert_has_calls(calls=self.expected_parameter_calls)
         self.assertEqual(mock_get_parameter.call_count, 4)
 
-    def test_get_annual_interest_rate_with_adjustment_cap_less_than_interest_rate(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_annual_interest_rate_with_adjustment_cap_less_than_interest_rate(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "variable_interest_rate": Decimal("0.0120"),
@@ -80,9 +74,7 @@ class AnnualInterestRateTest(VariableTest):
         mock_get_parameter.assert_has_calls(calls=self.expected_parameter_calls)
         self.assertEqual(mock_get_parameter.call_count, 4)
 
-    def test_get_annual_interest_rate_with_adjustment_cap_greater_than_interest_rate(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_annual_interest_rate_with_adjustment_cap_greater_than_interest_rate(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "variable_interest_rate": Decimal("0.0120"),
@@ -95,9 +87,7 @@ class AnnualInterestRateTest(VariableTest):
         mock_get_parameter.assert_has_calls(calls=self.expected_parameter_calls)
         self.assertEqual(mock_get_parameter.call_count, 4)
 
-    def test_get_annual_interest_rate_with_adjustment_floor_greater_than_interest_rate(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_annual_interest_rate_with_adjustment_floor_greater_than_interest_rate(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "variable_interest_rate": Decimal("0.0120"),
@@ -110,9 +100,7 @@ class AnnualInterestRateTest(VariableTest):
         mock_get_parameter.assert_has_calls(calls=self.expected_parameter_calls)
         self.assertEqual(mock_get_parameter.call_count, 4)
 
-    def test_get_annual_interest_rate_with_adjustment_floor_less_than_interest_rate(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_annual_interest_rate_with_adjustment_floor_less_than_interest_rate(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "variable_interest_rate": Decimal("0.0120"),
@@ -125,9 +113,7 @@ class AnnualInterestRateTest(VariableTest):
         mock_get_parameter.assert_has_calls(calls=self.expected_parameter_calls)
         self.assertEqual(mock_get_parameter.call_count, 4)
 
-    def test_get_annual_interest_rate_with_adjustment_interest_rate_inside_floor_and_cap(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_annual_interest_rate_with_adjustment_interest_rate_inside_floor_and_cap(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "variable_interest_rate": Decimal("0.0120"),
@@ -150,9 +136,7 @@ class AnnualInterestRateTest(VariableTest):
             }
         )
         self.assertEqual(
-            variable.get_annual_interest_rate(
-                vault=sentinel.vault, effective_datetime=sentinel.datetime
-            ),
+            variable.get_annual_interest_rate(vault=sentinel.vault, effective_datetime=sentinel.datetime),
             Decimal("0.0240"),
         )
         mock_get_parameter.assert_has_calls(
@@ -189,33 +173,19 @@ class AnnualInterestRateTest(VariableTest):
 @patch.object(variable.utils, "yearly_to_monthly_rate")
 @patch.object(variable, "get_annual_interest_rate")
 class MonthlyInterestRateTest(VariableTest):
-    def test_get_monthly_interest_rate_no_datetime(
-        self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock
-    ):
+    def test_get_monthly_interest_rate_no_datetime(self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock):
         mock_get_annual_interest_rate.return_value = sentinel.annual_rate
         variable.get_monthly_interest_rate(vault=sentinel.vault)
 
-        mock_get_annual_interest_rate.assert_called_once_with(
-            vault=sentinel.vault, effective_datetime=None
-        )
-        mock_yearly_to_monthly_rate.assert_called_once_with(
-            mock_get_annual_interest_rate.return_value
-        )
+        mock_get_annual_interest_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=None)
+        mock_yearly_to_monthly_rate.assert_called_once_with(mock_get_annual_interest_rate.return_value)
 
-    def test_get_monthly_interest_rate_with_datetime(
-        self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock
-    ):
+    def test_get_monthly_interest_rate_with_datetime(self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock):
         mock_get_annual_interest_rate.return_value = sentinel.annual_rate
-        variable.get_monthly_interest_rate(
-            vault=sentinel.vault, effective_datetime=sentinel.datetime
-        )
+        variable.get_monthly_interest_rate(vault=sentinel.vault, effective_datetime=sentinel.datetime)
 
-        mock_get_annual_interest_rate.assert_called_once_with(
-            vault=sentinel.vault, effective_datetime=sentinel.datetime
-        )
-        mock_yearly_to_monthly_rate.assert_called_once_with(
-            mock_get_annual_interest_rate.return_value
-        )
+        mock_get_annual_interest_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.datetime)
+        mock_yearly_to_monthly_rate.assert_called_once_with(mock_get_annual_interest_rate.return_value)
 
 
 @patch.object(variable.utils, "yearly_to_daily_rate")
@@ -236,12 +206,8 @@ class DailyInterestRateTest(VariableTest):
         mock_get_annual_interest_rate.return_value = sentinel.annual_rate
         variable.get_daily_interest_rate(vault=sentinel.vault, effective_datetime=sentinel.datetime)
 
-        mock_get_annual_interest_rate.assert_called_once_with(
-            vault=sentinel.vault, effective_datetime=sentinel.datetime
-        )
-        mock_yearly_to_daily_rate.assert_called_once_with(
-            sentinel.datetime, sentinel.annual_rate, sentinel.days_in_year
-        )
+        mock_get_annual_interest_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.datetime)
+        mock_yearly_to_daily_rate.assert_called_once_with(sentinel.datetime, sentinel.annual_rate, sentinel.days_in_year)
 
 
 @patch.object(variable, "get_monthly_interest_rate")

@@ -20,22 +20,12 @@ from inception_sdk.test_framework.endtoend.contracts_helper import (
     prepare_parameters_for_e2e,
 )
 
-EXAMPLE_CONTRACT_CONTENTS = load_file_contents(
-    "inception_sdk/test_framework/common/tests/input/example_contract.py"
-)
-EXPECTED_E2E_CONTRACT_CONTENTS = load_file_contents(
-    "inception_sdk/test_framework/common/tests/output/contract_clu_references_replaced.py"
-)
+EXAMPLE_CONTRACT_CONTENTS = load_file_contents("inception_sdk/test_framework/common/tests/input/example_contract.py")
+EXPECTED_E2E_CONTRACT_CONTENTS = load_file_contents("inception_sdk/test_framework/common/tests/output/contract_clu_references_replaced.py")
 
-EXAMPLE_RENDERED_TEMPLATE = load_file_contents(
-    "inception_sdk/test_framework/endtoend/test/unit/input/dummy_rendered_template.txt"
-)
-EXAMPLE_CONTRACT_NOTIFICATION = load_file_contents(
-    "inception_sdk/test_framework/endtoend/test/unit/input/contract_notification.json"
-)
-EXPECTED_EVENT_TYPES = load_file_contents(
-    "inception_sdk/test_framework/endtoend/test/unit/output/event_types.txt"
-)
+EXAMPLE_RENDERED_TEMPLATE = load_file_contents("inception_sdk/test_framework/endtoend/test/unit/input/dummy_rendered_template.txt")
+EXAMPLE_CONTRACT_NOTIFICATION = load_file_contents("inception_sdk/test_framework/endtoend/test/unit/input/contract_notification.json")
+EXPECTED_EVENT_TYPES = load_file_contents("inception_sdk/test_framework/endtoend/test/unit/output/event_types.txt")
 
 
 class TestContractsHelper(TestCase):
@@ -63,9 +53,7 @@ class TestContractsHelper(TestCase):
         mock_renderer_instance.rendered_contract = expected_content
         mock_is_file_renderable.return_value = True
 
-        actual_content = get_contract_content_for_e2e(
-            self.test_product_id, test_contract_properties
-        )
+        actual_content = get_contract_content_for_e2e(self.test_product_id, test_contract_properties)
         mock_renderer_config.assert_called_once_with(
             autogen_warning="# Code auto-generated for e2e testing",
             apply_formatting=False,
@@ -78,9 +66,7 @@ class TestContractsHelper(TestCase):
     @patch("inception_sdk.test_framework.endtoend.contracts_helper.SmartContractRenderer")
     @patch("inception_sdk.test_framework.endtoend.contracts_helper.RendererConfig")
     @patch("inception_sdk.test_framework.endtoend.contracts_helper.load_file_contents")
-    def test_renderer_not_called_if_source_contract_absent(
-        self, mock_load_file_contents_method: Mock, mock_renderer_config: Mock, mock_renderer: Mock
-    ):
+    def test_renderer_not_called_if_source_contract_absent(self, mock_load_file_contents_method: Mock, mock_renderer_config: Mock, mock_renderer: Mock):
         expected_content = "expected_content"
 
         test_contract_properties = {
@@ -92,9 +78,7 @@ class TestContractsHelper(TestCase):
         mock_renderer.return_value = mock_renderer_instance
         mock_load_file_contents_method.return_value = expected_content
 
-        actual_content = get_contract_content_for_e2e(
-            self.test_product_id, test_contract_properties
-        )
+        actual_content = get_contract_content_for_e2e(self.test_product_id, test_contract_properties)
 
         mock_renderer_config.assert_not_called()
         mock_renderer.assert_not_called()
@@ -116,11 +100,7 @@ class TestContractsHelper(TestCase):
 
     @patch.dict(
         "inception_sdk.test_framework.endtoend.testhandle.kafka_consumers",
-        {
-            contracts_helper.CONTRACT_NOTIFICATIONS_TOPIC: MockConsumer(
-                [MockMessage(value=EXAMPLE_CONTRACT_NOTIFICATION)]
-            )
-        },
+        {contracts_helper.CONTRACT_NOTIFICATIONS_TOPIC: MockConsumer([MockMessage(value=EXAMPLE_CONTRACT_NOTIFICATION)])},
     )
     def test_wait_for_contract_notification_with_match(self):
         result = contracts_helper.wait_for_contract_notification(
@@ -133,11 +113,7 @@ class TestContractsHelper(TestCase):
 
     @patch.dict(
         "inception_sdk.test_framework.endtoend.testhandle.kafka_consumers",
-        {
-            contracts_helper.CONTRACT_NOTIFICATIONS_TOPIC: MockConsumer(
-                [MockMessage(value=EXAMPLE_CONTRACT_NOTIFICATION)]
-            )
-        },
+        {contracts_helper.CONTRACT_NOTIFICATIONS_TOPIC: MockConsumer([MockMessage(value=EXAMPLE_CONTRACT_NOTIFICATION)])},
     )
     @patch.object(
         contracts_helper,
@@ -154,8 +130,7 @@ class TestContractsHelper(TestCase):
             )
         self.assertEqual(
             e.exception.args[0],
-            "Failed to retrieve 1 notifications "
-            "with following id and type: another_resource_id_my_notification_type",
+            "Failed to retrieve 1 notifications " "with following id and type: another_resource_id_my_notification_type",
         )
 
 
@@ -165,13 +140,9 @@ class UpdateContractTest(TestCase):
     @patch.object(endtoend, "testhandle")
     @patch("builtins.open", mock_open(read_data=EXAMPLE_CONTRACT_CONTENTS))
     @patch.object(endtoend.core_api_helper, "create_product_version")
-    def test_external_resource_ids_updated(
-        self, create_product_version_mock: Mock, mock_testhandle: MagicMock
-    ):
+    def test_external_resource_ids_updated(self, create_product_version_mock: Mock, mock_testhandle: MagicMock):
         type(mock_testhandle).default_paused_tag_id = PropertyMock(return_value="E2E_PAUSED_TAG")
-        type(mock_testhandle).controlled_schedule_tags = PropertyMock(
-            return_value={"TEST_CONTRACT": {"EVENT_WITH_SINGLE_TAG": "E2E_AST_1"}}
-        )
+        type(mock_testhandle).controlled_schedule_tags = PropertyMock(return_value={"TEST_CONTRACT": {"EVENT_WITH_SINGLE_TAG": "E2E_AST_1"}})
         type(mock_testhandle).clu_reference_mappings = PropertyMock(
             return_value={
                 # Calendar Id
@@ -184,9 +155,7 @@ class UpdateContractTest(TestCase):
             },
         )
 
-        contracts_helper.upload_contracts(
-            contracts={"TEST_CONTRACT": {"path": "dummy_path", "template_params": {}}}
-        )
+        contracts_helper.upload_contracts(contracts={"TEST_CONTRACT": {"path": "dummy_path", "template_params": {}}})
         updated_contract = create_product_version_mock.call_args_list[0].kwargs["code"]
         self.assertEqual(updated_contract, EXPECTED_E2E_CONTRACT_CONTENTS)
 
@@ -220,8 +189,7 @@ class UpdateRenderedContractTest(TestCase):
         contracts_helper.upload_contracts(
             contracts={
                 "TEST_CONTRACT": {
-                    "path": "inception_sdk/test_framework/endtoend/test/unit/input/"
-                    "dummy_template.py",
+                    "path": "inception_sdk/test_framework/endtoend/test/unit/input/" "dummy_template.py",
                     "template_params": {},
                 }
             }
@@ -243,9 +211,7 @@ class CreateAccountScheduleTagsTest(TestCase):
     maxDiff = None
 
     def create_account_schedule_tags(self) -> Callable[..., dict[str, str]]:
-        return lambda account_schedule_tag_id, **kwargs: {
-            "id": f"{account_schedule_tag_id}_uploaded_tag"
-        }
+        return lambda account_schedule_tag_id, **kwargs: {"id": f"{account_schedule_tag_id}_uploaded_tag"}
 
     def test_only_create_default_paused_tag_if_no_controlled_schedules(
         self,
@@ -299,9 +265,7 @@ class CreateAccountScheduleTagsTest(TestCase):
                 "product_2": {"schedule_1": "PAUSED_E2E_TAG_schedule_1_uuid_3_uploaded_tag"},
             },
         )
-        self.assertEquals(
-            mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_4_uploaded_tag"
-        )
+        self.assertEquals(mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_4_uploaded_tag")
 
     def test_upgraded_products_preserve_schedule_tags_by_default(
         self,
@@ -330,9 +294,7 @@ class CreateAccountScheduleTagsTest(TestCase):
                 "to_product": expected_product_schedule_tags,
             },
         )
-        self.assertEquals(
-            mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_3_uploaded_tag"
-        )
+        self.assertEquals(mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_3_uploaded_tag")
 
     def test_upgraded_products_schedules_can_still_be_controlled_separately(
         self,
@@ -364,9 +326,7 @@ class CreateAccountScheduleTagsTest(TestCase):
                 },
             },
         )
-        self.assertEquals(
-            mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_4_uploaded_tag"
-        )
+        self.assertEquals(mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_4_uploaded_tag")
 
     @patch.object(endtoend.core_api_helper, "batch_get_account_schedule_tags")
     def test_create_tags_with_conflicting_previously_updated_tag(
@@ -376,16 +336,12 @@ class CreateAccountScheduleTagsTest(TestCase):
         mock_create_account_schedule_tag: MagicMock,
         mock_uuid4: MagicMock,
     ):
-        mock_create_account_schedule_tag.side_effect = requests.HTTPError(
-            "409 Client Error: Conflict"
-        )
+        mock_create_account_schedule_tag.side_effect = requests.HTTPError("409 Client Error: Conflict")
         mock_batch_get_account_schedule_tags.return_value = {}
         mock_uuid4.side_effect = ["uuid_1", "uuid_2", "uuid_3", "uuid_4"]
 
         with self.assertRaisesRegex(ValueError, r"Found existing tag"):
-            contracts_helper.create_account_schedule_tags(
-                controlled_schedules={"product_1": ["schedule_1"]}
-            )
+            contracts_helper.create_account_schedule_tags(controlled_schedules={"product_1": ["schedule_1"]})
 
     @patch.object(endtoend.core_api_helper, "batch_get_account_schedule_tags")
     def test_create_tags_with_matching_previously_updated_tag(
@@ -400,16 +356,10 @@ class CreateAccountScheduleTagsTest(TestCase):
             requests.HTTPError("409 Client Error: Conflict"),
             {"id": "PAUSED_E2E_TAG_DEFAULT_uuid_2_uploaded_tag"},
         ]
-        mock_batch_get_account_schedule_tags.return_value = {
-            "PAUSED_E2E_TAG_schedule_1_uuid_1": contracts_helper.extract_resource(
-                COMMON_ACCOUNT_SCHEDULE_TAG_PATH, "account_schedule_tag"
-            )
-        }
+        mock_batch_get_account_schedule_tags.return_value = {"PAUSED_E2E_TAG_schedule_1_uuid_1": contracts_helper.extract_resource(COMMON_ACCOUNT_SCHEDULE_TAG_PATH, "account_schedule_tag")}
         mock_uuid4.side_effect = ["uuid_1", "uuid_2"]
 
-        contracts_helper.create_account_schedule_tags(
-            controlled_schedules={"product_1": ["schedule_1"]}
-        )
+        contracts_helper.create_account_schedule_tags(controlled_schedules={"product_1": ["schedule_1"]})
 
         self.assertDictEqual(
             mock_testhandle.controlled_schedule_tags,
@@ -421,9 +371,7 @@ class CreateAccountScheduleTagsTest(TestCase):
                 },
             },
         )
-        self.assertEquals(
-            mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_2_uploaded_tag"
-        )
+        self.assertEquals(mock_testhandle.default_paused_tag_id, "PAUSED_E2E_TAG_DEFAULT_uuid_2_uploaded_tag")
 
     def test_create_tags_with_unknown_error(
         self,
@@ -435,9 +383,7 @@ class CreateAccountScheduleTagsTest(TestCase):
         mock_uuid4.side_effect = ["uuid_1", "uuid_2", "uuid_3", "uuid_4"]
 
         with self.assertRaises(Exception) as ctx:
-            contracts_helper.create_account_schedule_tags(
-                controlled_schedules={"product_1": ["schedule_1"]}
-            )
+            contracts_helper.create_account_schedule_tags(controlled_schedules={"product_1": ["schedule_1"]})
         self.assertEquals(ctx.exception.args[0], "Unknown")
 
 
@@ -445,9 +391,7 @@ class CreateContractNotificationTest(TestCase):
     @patch.object(contracts_helper.uuid, "uuid4")
     @patch.object(contracts_helper, "produce_message")
     @patch.object(endtoend.testhandle, "kafka_producer")
-    def test_create_contract_notification(
-        self, mock_producer: MagicMock, mock_produce_message: MagicMock, mock_uuid_4: MagicMock
-    ):
+    def test_create_contract_notification(self, mock_producer: MagicMock, mock_produce_message: MagicMock, mock_uuid_4: MagicMock):
         # we're ultimately mocking uuid.uuid4().hex, so we need uuid.uuid() to return a mock
         # with a property mock for the .hex property
         # can't use sentinels because they're not json serialisable
@@ -471,9 +415,7 @@ class CreateContractNotificationTest(TestCase):
                     "event_id": "my_uuid",
                     "notification_type": "type",
                     "resource_id": "id",
-                    "resource_type": (
-                        contracts_helper.ContractNotificationResourceType.RESOURCE_ACCOUNT.value
-                    ),
+                    "resource_type": (contracts_helper.ContractNotificationResourceType.RESOURCE_ACCOUNT.value),
                     "notification_details": {"my": "details"},
                 }
             ),
@@ -489,9 +431,7 @@ class CreateContractNotificationTest(TestCase):
 class CreateInternalAccountTest(TestCase):
     maxDiff = None
 
-    def test_create_internal_account_with_composite_id_over_length_limit(
-        self, mock_create_internal_account: MagicMock
-    ):
+    def test_create_internal_account_with_composite_id_over_length_limit(self, mock_create_internal_account: MagicMock):
         with self.assertRaises(SetupError) as e:
             contracts_helper.create_internal_account(
                 account_id="TEST_INTERNAL_NAME_OVER_30_CHARS",
@@ -501,16 +441,13 @@ class CreateInternalAccountTest(TestCase):
             )
 
         self.assertIn(
-            "Internal account id e2e_A_TEST_INTERNAL_NAME_OVER_30_CHARS is longer than 36 "
-            "characters.",
+            "Internal account id e2e_A_TEST_INTERNAL_NAME_OVER_30_CHARS is longer than 36 " "characters.",
             str(e.exception),
         )
 
         mock_create_internal_account.assert_not_called()
 
-    def test_create_internal_account_without_composite_id_over_length_limit(
-        self, mock_create_internal_account: MagicMock
-    ):
+    def test_create_internal_account_without_composite_id_over_length_limit(self, mock_create_internal_account: MagicMock):
         with self.assertRaises(SetupError) as e:
             contracts_helper.create_internal_account(
                 account_id="TEST_INTERNAL_NAME_OVER_36_CHARS12345",
@@ -521,19 +458,14 @@ class CreateInternalAccountTest(TestCase):
             )
 
         self.assertIn(
-            "Internal account id TEST_INTERNAL_NAME_OVER_36_CHARS12345 is longer than 36 "
-            "characters.",
+            "Internal account id TEST_INTERNAL_NAME_OVER_36_CHARS12345 is longer than 36 " "characters.",
             str(e.exception),
         )
 
         mock_create_internal_account.assert_not_called()
 
-    @patch.dict(
-        "inception_sdk.test_framework.endtoend.testhandle.internal_account_id_to_uploaded_id", {}
-    )
-    def test_create_internal_account_under_length_limit_with_composite_id(
-        self, mock_create_internal_account: MagicMock
-    ):
+    @patch.dict("inception_sdk.test_framework.endtoend.testhandle.internal_account_id_to_uploaded_id", {})
+    def test_create_internal_account_under_length_limit_with_composite_id(self, mock_create_internal_account: MagicMock):
         mock_create_internal_account.return_value = sentinel.account
         result = contracts_helper.create_internal_account(
             account_id="TEST_INTERNAL_NAME_EQUAL_MAX_L",
@@ -554,9 +486,7 @@ class CreateInternalAccountTest(TestCase):
             {"TEST_INTERNAL_NAME_EQUAL_MAX_L": "e2e_A_TEST_INTERNAL_NAME_EQUAL_MAX_L"},
         )
 
-    @patch.dict(
-        "inception_sdk.test_framework.endtoend.testhandle.internal_account_id_to_uploaded_id", {}
-    )
+    @patch.dict("inception_sdk.test_framework.endtoend.testhandle.internal_account_id_to_uploaded_id", {})
     def test_create_internal_account_under_length_limit_without_composite_id(
         self,
         mock_create_internal_account: MagicMock,
@@ -620,9 +550,7 @@ class PrepareParametersForE2ETest(TestCase):
         self.assertDictEqual(
             prepare_parameters_for_e2e(
                 parameters=self.parameters,
-                nested_internal_account_param_mapping={
-                    "param_3": {"key_1": "e2e_value_1", "key_2": "e2e_value_2"}
-                },
+                nested_internal_account_param_mapping={"param_3": {"key_1": "e2e_value_1", "key_2": "e2e_value_2"}},
             ),
             {
                 "param_1": "value_1",
@@ -641,9 +569,7 @@ class PrepareParametersForE2ETest(TestCase):
             prepare_parameters_for_e2e(
                 parameters=self.parameters,
                 internal_account_param_mapping={"param_1": "e2e_value_1"},
-                nested_internal_account_param_mapping={
-                    "param_3": {"key_1": "e2e_value_1", "key_2": "e2e_value_2"}
-                },
+                nested_internal_account_param_mapping={"param_3": {"key_1": "e2e_value_1", "key_2": "e2e_value_2"}},
                 flag_param_mapping={"param_2": ["e2e_value_2"]},
             ),
             {

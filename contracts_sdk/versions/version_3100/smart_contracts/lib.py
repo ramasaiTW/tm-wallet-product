@@ -382,9 +382,7 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                     """,
                 ),
             ],
-            return_value=types_utils.ReturnValueSpec(
-                docstring="The Timeseries of the Balances.", type="BalanceTimeseries"
-            ),
+            return_value=types_utils.ReturnValueSpec(docstring="The Timeseries of the Balances.", type="BalanceTimeseries"),
             examples=[
                 types_utils.Example(
                     title="An example with no decorator",
@@ -425,11 +423,7 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
 
         spec.public_methods["get_scheduled_job_details"] = types_utils.MethodSpec(
             name="get_scheduled_job_details",
-            docstring=(
-                "Retrieves the details of an account [EventType]"
-                "(../types/#classes-EventType) scheduled job. "
-                "**Only available in version 3.10.0+**."
-            ),
+            docstring=("Retrieves the details of an account [EventType]" "(../types/#classes-EventType) scheduled job. " "**Only available in version 3.10.0+**."),
             return_value=types_utils.ReturnValueSpec(
                 docstring="""
                     The [ScheduledJob](../types/#classes-ScheduledJob) details for the current
@@ -533,9 +527,7 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                 'None' is returned. It cannot be used on a non-supervised Vault object.
             """,
             args=[],
-            return_value=types_utils.ReturnValueSpec(
-                docstring="The Supervisee Smart Contract Version alias.", type="str"
-            ),
+            return_value=types_utils.ReturnValueSpec(docstring="The Supervisee Smart Contract Version alias.", type="str"),
         )
 
         return spec

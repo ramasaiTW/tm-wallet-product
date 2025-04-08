@@ -52,9 +52,7 @@ class AmendScheduleDirective:
                 type="str",
                 docstring="The event_type to change the schedule for.",
             ),
-            types_utils.ValueSpec(
-                name="new_schedule", type="Dict[str, str]", docstring="The new schedule."
-            ),
+            types_utils.ValueSpec(name="new_schedule", type="Dict[str, str]", docstring="The new schedule."),
             types_utils.ValueSpec(
                 name="request_id",
                 type="str",

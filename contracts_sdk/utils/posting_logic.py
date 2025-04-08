@@ -105,10 +105,7 @@ class SingleAccountClientTransaction:
         self._validate_committed_postings(committed_postings, instruction_type, final=final)
         # Validate that datetime is set - None is not supported
         if not at_datetime:
-            raise InvalidPostingInstructionException(
-                "All posting instructions within a ClientTransaction have to "
-                "have a value_datetime set."
-            )
+            raise InvalidPostingInstructionException("All posting instructions within a ClientTransaction have to " "have a value_datetime set.")
 
         if self.last_update:
             # We already have at least one instruction for the same client transaction
@@ -119,9 +116,7 @@ class SingleAccountClientTransaction:
             # First instruction within the Client Transaction
             self._validate_primary_instruction(instruction_type)
 
-        balances_diff, completed, released = self._process_committed_postings(
-            committed_postings, instruction_type, final
-        )
+        balances_diff, completed, released = self._process_committed_postings(committed_postings, instruction_type, final)
 
         self._updates.append(
             ClientTransactionUpdate(
@@ -133,57 +128,38 @@ class SingleAccountClientTransaction:
             )
         )
 
-    def _validate_committed_postings(
-        self, committed_postings: List[CommittedPosting], instruction_type: str, final: bool = False
-    ):
+    def _validate_committed_postings(self, committed_postings: List[CommittedPosting], instruction_type: str, final: bool = False):
         if not committed_postings:
             raise InvalidPostingInstructionException("Committed Postings required")
         for committed_posting in committed_postings:
             if committed_posting.account_id != self._account_id:
                 raise InvalidPostingInstructionException(
-                    "Cannot add this Committed Posting with account ID "
-                    f"{committed_posting.account_id} to the Client Transaction "
-                    f"for account ID {self._account_id}"
+                    "Cannot add this Committed Posting with account ID " f"{committed_posting.account_id} to the Client Transaction " f"for account ID {self._account_id}"
                 )
 
         if final and instruction_type != PostingInstructionType.SETTLEMENT:
-            raise InvalidPostingInstructionException(
-                "Final flag can only be used with Settlement Posting Instructions"
-            )
+            raise InvalidPostingInstructionException("Final flag can only be used with Settlement Posting Instructions")
 
     @staticmethod
     def _validate_primary_instruction(instruction_type: str) -> None:
         if instruction_type in SECONDARY_POSTING_INSTRUCTIONS:
-            raise InvalidPostingInstructionException(
-                f"A ClientTransaction cannot start with {instruction_type}"
-            )
-        elif instruction_type not in (
-            PRIMARY_POSTING_INSTRUCTIONS + NON_CHAINABLE_INSTRUCTIONS + [CUSTOM_INSTRUCTIONS]
-        ):
+            raise InvalidPostingInstructionException(f"A ClientTransaction cannot start with {instruction_type}")
+        elif instruction_type not in (PRIMARY_POSTING_INSTRUCTIONS + NON_CHAINABLE_INSTRUCTIONS + [CUSTOM_INSTRUCTIONS]):
             raise InvalidPostingInstructionException(f"Unknown instruction type {instruction_type}")
 
     def _validate_secondary_instruction(self, at_datetime: datetime, instruction_type: str) -> None:
         last_state = self.last_update
         if not last_state:
-            raise InvalidPostingInstructionException(
-                "Secondary instruction cannot be added to an empty ClientTransaction"
-            )
+            raise InvalidPostingInstructionException("Secondary instruction cannot be added to an empty ClientTransaction")
 
         if at_datetime < last_state.at_datetime:
-            raise InvalidPostingInstructionException(
-                "ClientTransaction does not support backdating"
-            )
+            raise InvalidPostingInstructionException("ClientTransaction does not support backdating")
 
         if last_state.completed or last_state.released:
-            raise InvalidPostingInstructionException(
-                f"Client Transaction (id {self._client_transaction_id}) has already been finalised"
-            )
+            raise InvalidPostingInstructionException(f"Client Transaction (id {self._client_transaction_id}) has already been finalised")
 
         if instruction_type in PRIMARY_POSTING_INSTRUCTIONS + NON_CHAINABLE_INSTRUCTIONS:
-            raise InvalidPostingInstructionException(
-                f"Cannot add {instruction_type} to existing "
-                f"ClientTransaction (id {self._client_transaction_id})"
-            )
+            raise InvalidPostingInstructionException(f"Cannot add {instruction_type} to existing " f"ClientTransaction (id {self._client_transaction_id})")
         elif instruction_type in SECONDARY_POSTING_INSTRUCTIONS:
             if self._first_type not in PRIMARY_POSTING_INSTRUCTIONS:
                 raise InvalidPostingInstructionException(
@@ -195,16 +171,12 @@ class SingleAccountClientTransaction:
         elif instruction_type == CUSTOM_INSTRUCTIONS:
             if self._first_type != CUSTOM_INSTRUCTIONS:
                 raise InvalidPostingInstructionException(
-                    f"Cannot add {instruction_type} "
-                    f"for an existing ClientTransaction (id {self._client_transaction_id}) "
-                    f"that did not start with a {PostingInstructionType.CUSTOM_INSTRUCTION}"
+                    f"Cannot add {instruction_type} " f"for an existing ClientTransaction (id {self._client_transaction_id}) " f"that did not start with a {PostingInstructionType.CUSTOM_INSTRUCTION}"
                 )
         else:
             raise InvalidPostingInstructionException(f"Unknown instruction type {instruction_type}")
 
-    def _process_committed_postings(
-        self, committed_postings: List[CommittedPosting], instruction_type: str, final: bool = False
-    ) -> Tuple[Dict[BalanceKey, BalanceValue], bool, bool]:
+    def _process_committed_postings(self, committed_postings: List[CommittedPosting], instruction_type: str, final: bool = False) -> Tuple[Dict[BalanceKey, BalanceValue], bool, bool]:
         # Postings are validated - so the type is consistent
         completed = released = False
         if instruction_type == PostingInstructionType.SETTLEMENT:

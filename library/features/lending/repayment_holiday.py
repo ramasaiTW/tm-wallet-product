@@ -45,8 +45,7 @@ delinquency_blocking_param = Parameter(
     name=PARAM_DELINQUENCY_BLOCKING_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that block an account becoming delinquent. "
-    "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that block an account becoming delinquent. " "Expects a string representation of a JSON list.",
     display_name="Delinquency Blocking Flags",
     default_value=dumps([REPAYMENT_HOLIDAY]),
 )
@@ -54,8 +53,7 @@ due_amount_calculation_blocking_param = Parameter(
     name=PARAM_DUE_AMOUNT_CALCULATION_BLOCKING_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that block due amount calculation. "
-    "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that block due amount calculation. " "Expects a string representation of a JSON list.",
     display_name="Due Amount Calculation Blocking Flags",
     default_value=dumps([REPAYMENT_HOLIDAY]),
 )
@@ -63,8 +61,7 @@ interest_accrual_blocking_param = Parameter(
     name=PARAM_INTEREST_ACCRUAL_BLOCKING_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that block interest accruals. "
-    "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that block interest accruals. " "Expects a string representation of a JSON list.",
     display_name="Interest Accrual Blocking Flags",
     default_value=dumps([REPAYMENT_HOLIDAY]),
 )
@@ -72,8 +69,7 @@ notification_blocking_param = Parameter(
     name=PARAM_NOTIFICATION_BLOCKING_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that block notifications. "
-    "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that block notifications. " "Expects a string representation of a JSON list.",
     display_name="Notification Blocking Flags",
     default_value=dumps([REPAYMENT_HOLIDAY]),
 )
@@ -81,8 +77,7 @@ overdue_amount_calculation_blocking_param = Parameter(
     name=PARAM_OVERDUE_AMOUNT_CALCULATION_BLOCKING_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that block overdue amount calculation. "
-    "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that block overdue amount calculation. " "Expects a string representation of a JSON list.",
     display_name="Overdue Amount Calculation Blocking Flags",
     default_value=dumps([REPAYMENT_HOLIDAY]),
 )
@@ -90,8 +85,7 @@ penalty_blocking_param = Parameter(
     name=PARAM_PENALTY_BLOCKING_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that block penalty interest accrual. "
-    "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that block penalty interest accrual. " "Expects a string representation of a JSON list.",
     display_name="Penalty Blocking Flags",
     default_value=dumps([REPAYMENT_HOLIDAY]),
 )
@@ -99,8 +93,7 @@ repayment_blocking_param = Parameter(
     name=PARAM_REPAYMENT_BLOCKING_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that block repayments. "
-    "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that block repayments. " "Expects a string representation of a JSON list.",
     display_name="Repayment Blocking Flag",
     default_value=dumps([REPAYMENT_HOLIDAY]),
 )
@@ -113,9 +106,7 @@ repayment_holiday_impact_preference_param = Parameter(
         ]
     ),
     level=ParameterLevel.INSTANCE,
-    description="Defines how to handle a repayment holiday: "
-    "Increase EMI but keep the term of the loan the same. "
-    "Increase term but keep the monthly repayments the same. ",
+    description="Defines how to handle a repayment holiday: " "Increase EMI but keep the term of the loan the same. " "Increase term but keep the monthly repayments the same. ",
     display_name="Repayment Holiday Impact Preference",
     update_permission=ParameterUpdatePermission.OPS_EDITABLE,
     default_value=UnionItemValue(key="increase_emi"),
@@ -273,9 +264,7 @@ def should_trigger_reamortisation_with_impact_preference(
     :param elapsed_term: Not used but required for the interface
     :return bool: Whether reamortisation is required
     """
-    return is_repayment_holiday_impact_increase_emi(
-        vault=vault, effective_datetime=period_end_datetime
-    ) and _has_repayment_holiday_ended(
+    return is_repayment_holiday_impact_increase_emi(vault=vault, effective_datetime=period_end_datetime) and _has_repayment_holiday_ended(
         vault=vault,
         period_start_datetime=period_start_datetime,
         period_end_datetime=period_end_datetime,
@@ -314,9 +303,7 @@ def supervisor_should_trigger_reamortisation_no_impact_preference(
     )
 
 
-def is_repayment_holiday_impact_increase_emi(
-    vault: SmartContractVault, effective_datetime: datetime
-) -> bool:
+def is_repayment_holiday_impact_increase_emi(vault: SmartContractVault, effective_datetime: datetime) -> bool:
     return (
         utils.get_parameter(
             vault=vault,
@@ -348,8 +335,6 @@ ReamortisationConditionWithoutPreference = lending_interfaces.ReamortisationCond
 ReamortisationConditionWithPreference = lending_interfaces.ReamortisationCondition(
     should_trigger_reamortisation=should_trigger_reamortisation_with_impact_preference,
 )
-SupervisorReamortisationConditionWithoutPreference = (
-    lending_interfaces.SupervisorReamortisationCondition(
-        should_trigger_reamortisation=supervisor_should_trigger_reamortisation_no_impact_preference,
-    )
+SupervisorReamortisationConditionWithoutPreference = lending_interfaces.SupervisorReamortisationCondition(
+    should_trigger_reamortisation=supervisor_should_trigger_reamortisation_no_impact_preference,
 )

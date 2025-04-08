@@ -5,9 +5,7 @@ from .....utils.exceptions import InvalidSmartContractError, StrongTypingError
 
 class PublicCommonV330TypesTestCase(PublicCommonV320TypesTestCase):
     def test_event_types_group_can_be_created(self):
-        event_types_group = EventTypesGroup(
-            name="TestEvenTypesGroup", event_types_order=["EVENT_TYPE1", "EVENT_TYPE2"]
-        )
+        event_types_group = EventTypesGroup(name="TestEvenTypesGroup", event_types_order=["EVENT_TYPE1", "EVENT_TYPE2"])
         self.assertEqual(event_types_group.name, "TestEvenTypesGroup")
         self.assertEqual(event_types_group.event_types_order, ["EVENT_TYPE1", "EVENT_TYPE2"])
 
@@ -19,6 +17,4 @@ class PublicCommonV330TypesTestCase(PublicCommonV320TypesTestCase):
     def test_event_types_group_attributes_are_verified(self):
         with self.assertRaises(StrongTypingError) as ex:
             EventTypesGroup(name="TestEvenTypesGroup", event_types_order=None)
-        self.assertIn(
-            "'event_types_order' expected List[str] but got value None", str(ex.exception)
-        )
+        self.assertIn("'event_types_order' expected List[str] but got value None", str(ex.exception))

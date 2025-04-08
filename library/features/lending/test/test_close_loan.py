@@ -193,13 +193,7 @@ class TestDoesRepaymentFullyRepayLoan(CloseLoanTestCommon):
             self.custom_instruction(postings=postings_for_instruction_2),
         ]
 
-        balances = BalanceDefaultDict(
-            mapping={
-                self.balance_coordinate(denomination=self.default_denomination): self.balance(
-                    net=Decimal("30")
-                )
-            }
-        )
+        balances = BalanceDefaultDict(mapping={self.balance_coordinate(denomination=self.default_denomination): self.balance(net=Decimal("30"))})
 
         close_loan.does_repayment_fully_repay_loan(
             repayment_posting_instructions=posting_instructions,
@@ -213,15 +207,9 @@ class TestDoesRepaymentFullyRepayLoan(CloseLoanTestCommon):
         # assertions
         expected_merged_balances = BalanceDefaultDict(
             mapping={
-                self.balance_coordinate(denomination=self.default_denomination): self.balance(
-                    net=Decimal("23.25")
-                ),
-                self.balance_coordinate(
-                    account_address="PRINCIPAL_DUE", denomination=self.default_denomination
-                ): self.balance(net=Decimal("-13.25")),
-                self.balance_coordinate(
-                    account_address="INTEREST_DUE", denomination=self.default_denomination
-                ): self.balance(net=Decimal("-10")),
+                self.balance_coordinate(denomination=self.default_denomination): self.balance(net=Decimal("23.25")),
+                self.balance_coordinate(account_address="PRINCIPAL_DUE", denomination=self.default_denomination): self.balance(net=Decimal("-13.25")),
+                self.balance_coordinate(account_address="INTEREST_DUE", denomination=self.default_denomination): self.balance(net=Decimal("-10")),
             }
         )
         mock_sum_balances.assert_has_calls(
@@ -242,9 +230,7 @@ class TestDoesRepaymentFullyRepayLoan(CloseLoanTestCommon):
         )
 
     @patch.object(close_loan.utils, "sum_balances")
-    def test_outstanding_debt_greater_than_repayment_amount_returns_false(
-        self, mock_sum_balances: MagicMock
-    ):
+    def test_outstanding_debt_greater_than_repayment_amount_returns_false(self, mock_sum_balances: MagicMock):
         # Outstanding debt amt, followed by the repayment amt
         # (there are no excess funds in this scenario)
         mock_sum_balances.side_effect = [Decimal("100"), Decimal("0")]
@@ -260,9 +246,7 @@ class TestDoesRepaymentFullyRepayLoan(CloseLoanTestCommon):
         self.assertFalse(result)
 
     @patch.object(close_loan.utils, "sum_balances")
-    def test_outstanding_debt_equal_to_the_repayment_amount_returns_true(
-        self, mock_sum_balances: MagicMock
-    ):
+    def test_outstanding_debt_equal_to_the_repayment_amount_returns_true(self, mock_sum_balances: MagicMock):
         # Outstanding debt amt, followed by the repayment amt
         mock_sum_balances.side_effect = [Decimal("100"), Decimal("100")]
 
@@ -277,9 +261,7 @@ class TestDoesRepaymentFullyRepayLoan(CloseLoanTestCommon):
         self.assertTrue(result)
 
     @patch.object(close_loan.utils, "sum_balances")
-    def test_outstanding_debt_less_than_the_repayment_amount_returns_true(
-        self, mock_sum_balances: MagicMock
-    ):
+    def test_outstanding_debt_less_than_the_repayment_amount_returns_true(self, mock_sum_balances: MagicMock):
         # Outstanding debt, followed by the repayment amount
         mock_sum_balances.side_effect = [Decimal("100"), Decimal("125")]
 
@@ -297,9 +279,7 @@ class TestDoesRepaymentFullyRepayLoan(CloseLoanTestCommon):
 @patch.object(close_loan.utils, "balance_at_coordinates")
 class TestNetBalances(CloseLoanTestCommon):
     @patch.object(close_loan.utils, "create_postings")
-    def test_creates_net_postings_for_positive_emi_amount(
-        self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_creates_net_postings_for_positive_emi_amount(self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("24")
         balances = sentinel.balances
         mock_postings: list[Posting] = [SentinelPosting("dummy_posting")] * 2  # type: ignore
@@ -312,9 +292,7 @@ class TestNetBalances(CloseLoanTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=balances, address="EMI", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=balances, address="EMI", denomination=self.default_denomination)
         mock_create_postings.assert_called_once_with(
             amount=Decimal("24"),
             debit_account=sentinel.account_id,
@@ -335,20 +313,14 @@ class TestNetBalances(CloseLoanTestCommon):
         self.assertEqual(net_posting_instructions, expected_posting_instructions)
 
     @patch.object(close_loan.utils, "create_postings")
-    def test_creates_net_postings_for_positive_emi_amount_with_cleanup_feature(
-        self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_creates_net_postings_for_positive_emi_amount_with_cleanup_feature(self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("24")
         balances = sentinel.balances
         mock_emi_postings: list[Posting] = [SentinelPosting("emi_posting")] * 2  # type: ignore
-        mock_feature_postings: list[Posting] = [
-            SentinelPosting("feature_posting")
-        ] * 2  # type: ignore
+        mock_feature_postings: list[Posting] = [SentinelPosting("feature_posting")] * 2  # type: ignore
         mock_create_postings.return_value = mock_emi_postings
 
-        residual_cleanup_feature = Mock(
-            get_residual_cleanup_postings=Mock(return_value=mock_feature_postings)
-        )
+        residual_cleanup_feature = Mock(get_residual_cleanup_postings=Mock(return_value=mock_feature_postings))
 
         net_posting_instructions = close_loan.net_balances(
             balances=balances,
@@ -358,9 +330,7 @@ class TestNetBalances(CloseLoanTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=balances, address="EMI", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=balances, address="EMI", denomination=self.default_denomination)
         mock_create_postings.assert_called_once_with(
             amount=Decimal("24"),
             debit_account=sentinel.account_id,
@@ -390,9 +360,7 @@ class TestNetBalances(CloseLoanTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=balances, address="EMI", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=balances, address="EMI", denomination=self.default_denomination)
         self.assertEqual(net_posting_instructions, [])
 
 
@@ -414,9 +382,7 @@ class TestRejectClosureWhenOutstandingDebt(CloseLoanTestCommon):
     def test_rejects_if_sum_of_balances_is_positive(self, mock_sum_balances: MagicMock):
         mock_sum_balances.return_value = Decimal("1.25")
 
-        outstanding_debt_rejection = close_loan.reject_closure_when_outstanding_debt(
-            balances=sentinel.balances, denomination=self.default_denomination
-        )
+        outstanding_debt_rejection = close_loan.reject_closure_when_outstanding_debt(balances=sentinel.balances, denomination=self.default_denomination)
 
         # assertions
         mock_sum_balances.assert_called_once_with(
@@ -429,9 +395,7 @@ class TestRejectClosureWhenOutstandingDebt(CloseLoanTestCommon):
     def test_rejects_if_sum_of_balances_is_negative(self, mock_sum_balances: MagicMock):
         mock_sum_balances.return_value = Decimal("-1.03")
 
-        outstanding_debt_rejection = close_loan.reject_closure_when_outstanding_debt(
-            balances=sentinel.balances, denomination=self.default_denomination
-        )
+        outstanding_debt_rejection = close_loan.reject_closure_when_outstanding_debt(balances=sentinel.balances, denomination=self.default_denomination)
 
         # assertions
         mock_sum_balances.assert_called_once_with(
@@ -444,9 +408,7 @@ class TestRejectClosureWhenOutstandingDebt(CloseLoanTestCommon):
     def test_does_not_reject_if_sum_of_balances_is_zero(self, mock_sum_balances: MagicMock):
         mock_sum_balances.return_value = Decimal("0.00")
 
-        outstanding_debt_rejection = close_loan.reject_closure_when_outstanding_debt(
-            balances=sentinel.balances, denomination=self.default_denomination
-        )
+        outstanding_debt_rejection = close_loan.reject_closure_when_outstanding_debt(balances=sentinel.balances, denomination=self.default_denomination)
 
         # assertions
         mock_sum_balances.assert_called_once_with(

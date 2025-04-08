@@ -4,9 +4,7 @@ from typing import Any
 
 from linters.flake8.common import ErrorType
 
-ERRORS_CTR006 = (
-    "CTR006 Call 'utils.get_parameter()' with the parameter constant rather than hard-coded string"
-)
+ERRORS_CTR006 = "CTR006 Call 'utils.get_parameter()' with the parameter constant rather than hard-coded string"
 # This can be removed when we update get_parameter to use * to enforce kwargs
 ERRORS_CTR006B = "CTR006B Pass parameter name as kwarg into 'utils.get_parameter()'"
 
@@ -21,11 +19,7 @@ class GetParameterVisitor(ast.NodeVisitor):
         self.violations: list[ErrorType] = []
 
     def attribute_is_utils_get_parameter(self, attribute_obj: ast.Attribute):
-        return (
-            isinstance(attribute_obj.value, ast.Name)
-            and attribute_obj.value.id == "utils"
-            and attribute_obj.attr == "get_parameter"
-        )
+        return isinstance(attribute_obj.value, ast.Name) and attribute_obj.value.id == "utils" and attribute_obj.attr == "get_parameter"
 
     def get_name_arg_from_kwargs(self, keywords: list[ast.keyword]) -> ast.keyword | None:
         for keyword in keywords:
@@ -34,9 +28,7 @@ class GetParameterVisitor(ast.NodeVisitor):
         return None
 
     def visit_Call(self, node: ast.Call) -> Any:
-        if isinstance(node.func, ast.Attribute) and self.attribute_is_utils_get_parameter(
-            node.func
-        ):
+        if isinstance(node.func, ast.Attribute) and self.attribute_is_utils_get_parameter(node.func):
             if name_kwargs := self.get_name_arg_from_kwargs(node.keywords):
                 if isinstance(name_kwargs.value, ast.Constant):
                     self.violations.append((node.lineno, node.col_offset, ERRORS_CTR006))

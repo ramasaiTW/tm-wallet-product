@@ -135,9 +135,7 @@ class AccountNotificationDirective(_AccountNotificationDirective):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -157,9 +155,7 @@ class ActivationHookResult(_ActivationHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -179,9 +175,7 @@ class AdjustmentAmount(_AdjustmentAmount):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -201,9 +195,7 @@ class AuthorisationAdjustment(_AuthorisationAdjustment):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -223,9 +215,7 @@ class BalanceDefaultDict(_BalanceDefaultDict):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -245,9 +235,7 @@ class BalanceTimeseries(_BalanceTimeseries):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -267,9 +255,7 @@ class BalancesFilter(_BalancesFilter):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -289,9 +275,7 @@ class BalancesIntervalFetcher(_BalancesIntervalFetcher):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -311,9 +295,7 @@ class BalancesObservation(_BalancesObservation):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -333,9 +315,7 @@ class BalancesObservationFetcher(_BalancesObservationFetcher):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -355,9 +335,7 @@ class CalendarEvent(_CalendarEvent):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -370,16 +348,11 @@ class CalendarEvents(_CalendarEvents):
             # The length of each list needs to be checked since zip() returns an object of length
             # equal to the shortest list.
             if len(self) != len(other):
-                print(
-                    f"Objects are of different length, len(self)={len(self)}, len(other)={len(other)}"
-                )
+                print(f"Objects are of different length, len(self)={len(self)}, len(other)={len(other)}")
                 return False
             # cast the internal _CalendarEvent objects to the extended
             # CalendarEvent object to get the difference information
-            calendar_events = [
-                (CalendarEvent(**x.__dict__), CalendarEvent(**y.__dict__))
-                for (x, y) in zip(self, other)
-            ]
+            calendar_events = [(CalendarEvent(**x.__dict__), CalendarEvent(**y.__dict__)) for (x, y) in zip(self, other)]
             return all(x == y for x, y in calendar_events)
         return False
 
@@ -400,9 +373,7 @@ class ClientTransaction(_ClientTransaction):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -422,9 +393,7 @@ class ConversionHookResult(_ConversionHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -455,9 +424,7 @@ class CustomInstruction(_CustomInstruction):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -477,9 +444,7 @@ class DateShape(_DateShape):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -499,9 +464,7 @@ class DeactivationHookResult(_DeactivationHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -521,9 +484,7 @@ class DenominationShape(_DenominationShape):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -543,9 +504,7 @@ class DerivedParameterHookResult(_DerivedParameterHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -565,9 +524,7 @@ class EndOfMonthSchedule(_EndOfMonthSchedule):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -587,9 +544,7 @@ class EventTypesGroup(_EventTypesGroup):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -601,9 +556,7 @@ class FlagTimeseries(_FlagTimeseries):
             # The length of each list needs to be checked since zip() returns an object of length
             # equal to the shortest list.
             if len(self) != len(other):
-                print(
-                    f"Objects are of different length, len(self)={len(self)}, len(other)={len(other)}"
-                )
+                print(f"Objects are of different length, len(self)={len(self)}, len(other)={len(other)}")
                 return False
 
             if not all(x == y for x, y in zip(self, other)):
@@ -612,9 +565,7 @@ class FlagTimeseries(_FlagTimeseries):
             else:
                 return True
 
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -632,9 +583,7 @@ class InboundAuthorisation(_InboundAuthorisation):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -654,9 +603,7 @@ class Logger(_Logger):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -676,9 +623,7 @@ class Next(_Next):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -698,9 +643,7 @@ class NumberShape(_NumberShape):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -720,9 +663,7 @@ class OptionalShape(_OptionalShape):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -742,9 +683,7 @@ class OptionalValue(_OptionalValue):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -762,9 +701,7 @@ class OutboundAuthorisation(_OutboundAuthorisation):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -784,9 +721,7 @@ class Override(_Override):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -806,9 +741,7 @@ class Parameter(_Parameter):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -820,9 +753,7 @@ class ParameterTimeseries(_ParameterTimeseries):
             # The length of each list needs to be checked since zip() returns an object of length
             # equal to the shortest list.
             if len(self) != len(other):
-                print(
-                    f"Objects are of different length, len(self)={len(self)}, len(other)={len(other)}"
-                )
+                print(f"Objects are of different length, len(self)={len(self)}, len(other)={len(other)}")
                 return False
 
             if not all(x == y for x, y in zip(self, other)):
@@ -831,9 +762,7 @@ class ParameterTimeseries(_ParameterTimeseries):
             else:
                 return True
 
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -853,9 +782,7 @@ class PlanNotificationDirective(_PlanNotificationDirective):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -873,9 +800,7 @@ class Posting(_Posting):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
     def __repr__(self):
@@ -898,9 +823,7 @@ class PostParameterChangeHookResult(_PostParameterChangeHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -920,9 +843,7 @@ class PostPostingHookResult(_PostPostingHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -942,9 +863,7 @@ class PostingInstructionsDirective(_PostingInstructionsDirective):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -964,9 +883,7 @@ class PostingsIntervalFetcher(_PostingsIntervalFetcher):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -986,9 +903,7 @@ class PreParameterChangeHookResult(_PreParameterChangeHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1008,9 +923,7 @@ class PrePostingHookResult(_PrePostingHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1030,9 +943,7 @@ class Previous(_Previous):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1052,9 +963,7 @@ class Rejection(_Rejection):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1074,9 +983,7 @@ class RelativeDateTime(_RelativeDateTime):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1096,9 +1003,7 @@ class ScheduleExpression(_ScheduleExpression):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1118,9 +1023,7 @@ class ScheduleSkip(_ScheduleSkip):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1138,9 +1041,7 @@ class Release(_Release):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1158,9 +1059,7 @@ class Settlement(_Settlement):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1180,9 +1079,7 @@ class ScheduledEvent(_ScheduledEvent):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1202,9 +1099,7 @@ class ScheduledEventHookResult(_ScheduledEventHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1224,9 +1119,7 @@ class Shift(_Shift):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1246,9 +1139,7 @@ class SmartContractDescriptor(_SmartContractDescriptor):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1268,9 +1159,7 @@ class SmartContractEventType(_SmartContractEventType):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1290,9 +1179,7 @@ class SupervisedHooks(_SupervisedHooks):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1312,9 +1199,7 @@ class SupervisorActivationHookResult(_SupervisorActivationHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1334,9 +1219,7 @@ class SupervisorContractEventType(_SupervisorContractEventType):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1356,9 +1239,7 @@ class SupervisorConversionHookResult(_SupervisorConversionHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1378,9 +1259,7 @@ class SupervisorPostPostingHookResult(_SupervisorPostPostingHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1400,9 +1279,7 @@ class SupervisorPrePostingHookResult(_SupervisorPrePostingHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1422,9 +1299,7 @@ class SupervisorScheduledEventHookResult(_SupervisorScheduledEventHookResult):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1444,9 +1319,7 @@ class TimeseriesItem(_TimeseriesItem):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1466,9 +1339,7 @@ class TransactionCode(_TransactionCode):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1488,9 +1359,7 @@ class Transfer(_Transfer):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1510,9 +1379,7 @@ class UnionItem(_UnionItem):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1532,9 +1399,7 @@ class UnionItemValue(_UnionItemValue):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1554,9 +1419,7 @@ class UnionShape(_UnionShape):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1576,9 +1439,7 @@ class UpdateAccountEventTypeDirective(_UpdateAccountEventTypeDirective):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False
 
 
@@ -1598,7 +1459,5 @@ class UpdatePlanEventTypeDirective(_UpdatePlanEventTypeDirective):
                 print(f"Object: {self.__class__.__name__} \nAttributes differ: {difference_dict}")
                 return False
             return True
-        print(
-            f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}"
-        )
+        print(f"Objects are of different type, type(self)={self.__class__.__name__}, type(other)={other.__class__.__name__}")
         return False

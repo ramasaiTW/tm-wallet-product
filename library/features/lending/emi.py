@@ -75,15 +75,11 @@ def amortise(
         balances=balances,
     )
 
-    denomination: str = utils.get_parameter(
-        vault, name="denomination", at_datetime=effective_datetime
-    )
+    denomination: str = utils.get_parameter(vault, name="denomination", at_datetime=effective_datetime)
     if balances is None:
         current_emi = Decimal("0")
     else:
-        current_emi = utils.balance_at_coordinates(
-            balances=balances, address=lending_addresses.EMI, denomination=denomination
-        )
+        current_emi = utils.balance_at_coordinates(balances=balances, address=lending_addresses.EMI, denomination=denomination)
 
     update_emi_postings = update_emi(
         account_id=vault.account_id,
@@ -105,9 +101,7 @@ def amortise(
     ]
 
 
-def update_emi(
-    account_id: str, denomination: str, current_emi: Decimal, updated_emi: Decimal
-) -> list[Posting]:
+def update_emi(account_id: str, denomination: str, current_emi: Decimal, updated_emi: Decimal) -> list[Posting]:
     emi_delta = current_emi - updated_emi
     if emi_delta == Decimal("0"):
         return []
@@ -130,9 +124,7 @@ def update_emi(
     )
 
 
-def get_expected_emi(
-    balances: BalanceDefaultDict, denomination: str, decimal_places: int | None = 2
-) -> Decimal:
+def get_expected_emi(balances: BalanceDefaultDict, denomination: str, decimal_places: int | None = 2) -> Decimal:
     return utils.balance_at_coordinates(
         balances=balances,
         address=lending_addresses.EMI,

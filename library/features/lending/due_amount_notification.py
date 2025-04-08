@@ -41,8 +41,7 @@ due_amount_notification_period_parameter = Parameter(
     name=PARAM_NOTIFICATION_PERIOD,
     shape=NumberShape(min_value=1, max_value=28, step=1),
     level=ParameterLevel.TEMPLATE,
-    description="The number of days prior to a payment becoming due,"
-    " send a due notification reminder to the user.",
+    description="The number of days prior to a payment becoming due," " send a due notification reminder to the user.",
     display_name="Due Notification Days",
     default_value=Decimal("2"),
     update_permission=ParameterUpdatePermission.OPS_EDITABLE,
@@ -107,17 +106,11 @@ def notification_type(product_name: str) -> str:
     return f"{product_name.upper()}{REPAYMENT_NOTIFICATION_SUFFIX}"
 
 
-def get_next_due_amount_notification_schedule(
-    vault: SmartContractVault, next_due_amount_calc_datetime: datetime
-) -> datetime:
+def get_next_due_amount_notification_schedule(vault: SmartContractVault, next_due_amount_calc_datetime: datetime) -> datetime:
     notification_period = int(utils.get_parameter(vault, name=PARAM_NOTIFICATION_PERIOD))
-    hour, minute, second = utils.get_schedule_time_from_parameters(
-        vault, parameter_prefix=DUE_AMOUNT_NOTIFICATION_PREFIX
-    )
+    hour, minute, second = utils.get_schedule_time_from_parameters(vault, parameter_prefix=DUE_AMOUNT_NOTIFICATION_PREFIX)
 
-    return next_due_amount_calc_datetime - relativedelta(
-        days=notification_period, hour=hour, minute=minute, second=second
-    )
+    return next_due_amount_calc_datetime - relativedelta(days=notification_period, hour=hour, minute=minute, second=second)
 
 
 def get_next_due_amount_notification_datetime(
@@ -135,21 +128,15 @@ def get_next_due_amount_notification_datetime(
     """
     notification_period = int(utils.get_parameter(vault, name=PARAM_NOTIFICATION_PERIOD))
     # get the due_amount_calc for previous date.
-    current_due_amount_calc_date_time = current_due_amount_notification_datetime + relativedelta(
-        days=notification_period
-    )
+    current_due_amount_calc_date_time = current_due_amount_notification_datetime + relativedelta(days=notification_period)
     # get next_due_amount_calc
     next_due_amount_calc_datetime = current_due_amount_calc_date_time + repayment_frequency_delta
 
-    next_due_amount_notification_datetime = get_next_due_amount_notification_schedule(
-        vault=vault, next_due_amount_calc_datetime=next_due_amount_calc_datetime
-    )
+    next_due_amount_notification_datetime = get_next_due_amount_notification_schedule(vault=vault, next_due_amount_calc_datetime=next_due_amount_calc_datetime)
     return next_due_amount_notification_datetime
 
 
-def scheduled_events(
-    vault: SmartContractVault, next_due_amount_calc_datetime: datetime
-) -> dict[str, ScheduledEvent]:
+def scheduled_events(vault: SmartContractVault, next_due_amount_calc_datetime: datetime) -> dict[str, ScheduledEvent]:
     """
     Creates execution schedule for NOTIFY_DUE_AMOUNT schedule to run `notification_period` days
     before the first due amount calculation date
@@ -160,9 +147,7 @@ def scheduled_events(
     :return: list[SmartContractEventType]
     """
     scheduled_events: dict[str, ScheduledEvent] = {}
-    notification_datetime = get_next_due_amount_notification_schedule(
-        vault=vault, next_due_amount_calc_datetime=next_due_amount_calc_datetime
-    )
+    notification_datetime = get_next_due_amount_notification_schedule(vault=vault, next_due_amount_calc_datetime=next_due_amount_calc_datetime)
     scheduled_events = {
         NOTIFY_DUE_AMOUNT_EVENT: ScheduledEvent(
             start_datetime=notification_datetime - relativedelta(seconds=1),

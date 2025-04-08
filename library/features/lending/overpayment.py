@@ -57,9 +57,7 @@ EXPECTED_PRINCIPAL = [lending_addresses.PRINCIPAL, OVERPAYMENT, EMI_PRINCIPAL_EX
 EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID = "EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER"
 expected_interest_eod_fetcher = BalancesObservationFetcher(
     fetcher_id=EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID,
-    at=RelativeDateTime(
-        origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)
-    ),
+    at=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)),
     filter=BalancesFilter(
         addresses=EXPECTED_PRINCIPAL
         + [
@@ -116,9 +114,7 @@ overpayment_impact_preference_param = Parameter(
         ]
     ),
     level=ParameterLevel.TEMPLATE,
-    description="Defines how to handle an overpayment: "
-    "Reduce EMI but preserve the term."
-    "Reduce term but preserve monthly repayment amount.",
+    description="Defines how to handle an overpayment: " "Reduce EMI but preserve the term." "Reduce term but preserve monthly repayment amount.",
     display_name="Overpayment Impact Preference",
     default_value=UnionItemValue(key=REDUCE_TERM),
 )
@@ -155,12 +151,8 @@ def get_max_overpayment_fee(
     if fee_rate >= 1:
         return Decimal("0")
 
-    principal = utils.balance_at_coordinates(
-        balances=balances, address=principal_address, denomination=denomination
-    )
-    maximum_overpayment = utils.round_decimal(
-        amount=(principal / (1 - fee_rate)), decimal_places=precision
-    )
+    principal = utils.balance_at_coordinates(balances=balances, address=principal_address, denomination=denomination)
+    maximum_overpayment = utils.round_decimal(amount=(principal / (1 - fee_rate)), decimal_places=precision)
 
     overpayment_fee = get_overpayment_fee(
         principal_repaid=maximum_overpayment,
@@ -171,9 +163,7 @@ def get_max_overpayment_fee(
     return overpayment_fee
 
 
-def get_overpayment_fee(
-    principal_repaid: Decimal, overpayment_fee_rate: Decimal, precision: int
-) -> Decimal:
+def get_overpayment_fee(principal_repaid: Decimal, overpayment_fee_rate: Decimal, precision: int) -> Decimal:
     """Determines the overpayment fee for a given amount of principal being repaid
 
     :param principal_repaid: the amount of principal repaid by the repayment
@@ -184,14 +174,10 @@ def get_overpayment_fee(
     """
     if overpayment_fee_rate >= 1:
         return Decimal("0")
-    return utils.round_decimal(
-        amount=(principal_repaid * overpayment_fee_rate), decimal_places=precision
-    )
+    return utils.round_decimal(amount=(principal_repaid * overpayment_fee_rate), decimal_places=precision)
 
 
-def charge_overpayment_fee_as_penalty(
-    vault: SmartContractVault, overpayment_amount: Decimal, denomination: str, precision: int
-) -> list[CustomInstruction]:
+def charge_overpayment_fee_as_penalty(vault: SmartContractVault, overpayment_amount: Decimal, denomination: str, precision: int) -> list[CustomInstruction]:
     overpayment_fee_rate = get_overpayment_fee_rate_parameter(vault=vault)
     overpayment_fee_income_account = get_overpayment_fee_income_account_parameter(vault=vault)
 
@@ -294,15 +280,11 @@ def validate_overpayment_across_supervisees(
         decimal_places=rounding_precision,
     )
 
-    max_overpayment_amount = utils.round_decimal(
-        amount=max_overpayment_fee + total_outstanding_amount, decimal_places=rounding_precision
-    )
+    max_overpayment_amount = utils.round_decimal(amount=max_overpayment_fee + total_outstanding_amount, decimal_places=rounding_precision)
 
     if repayment_amount > max_overpayment_amount:
         return Rejection(
-            message=f"The repayment amount {repayment_amount} {denomination} "
-            "exceeds the total maximum repayment amount of "
-            f"{max_overpayment_amount} {denomination}.",
+            message=f"The repayment amount {repayment_amount} {denomination} " "exceeds the total maximum repayment amount of " f"{max_overpayment_amount} {denomination}.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
@@ -353,9 +335,7 @@ def get_max_overpayment_amount(
 ) -> Decimal:
     overpayment_fee_rate = get_overpayment_fee_rate_parameter(vault=vault)
     balances: BalanceDefaultDict = vault.get_balances_observation(fetcher_id=fetcher_id).balances
-    total_outstanding_debt = get_total_outstanding_debt(
-        balances=balances, denomination=denomination
-    )
+    total_outstanding_debt = get_total_outstanding_debt(balances=balances, denomination=denomination)
     max_overpayment_fee = get_max_overpayment_fee(
         fee_rate=overpayment_fee_rate,
         balances=balances,
@@ -366,9 +346,7 @@ def get_max_overpayment_amount(
 
 # TODO: this is duplicated within derived params as well. We may want to extract to
 # an aggregated balances module
-def get_total_outstanding_debt(
-    balances: BalanceDefaultDict, denomination: str, precision: int = 2
-) -> Decimal:
+def get_total_outstanding_debt(balances: BalanceDefaultDict, denomination: str, precision: int = 2) -> Decimal:
     return utils.sum_balances(
         balances=balances,
         addresses=lending_addresses.ALL_OUTSTANDING,
@@ -499,9 +477,7 @@ def track_emi_principal_excess(
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=OVERPAYMENT_TRACKER_EFF_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=OVERPAYMENT_TRACKER_EFF_FETCHER_ID).balances
     precision = interest_application_feature.get_application_precision(vault=vault)
 
     # expected interest includes emi and non-emi, so we must use total_rounded
@@ -538,10 +514,7 @@ def track_emi_principal_excess(
             CustomInstruction(
                 postings=postings,
                 override_all_restrictions=True,
-                instruction_details={
-                    "description": f"Increase principal excess due to {expected_interest_to_apply=}"
-                    f" being larger than {actual_interest_to_apply=}"
-                },
+                instruction_details={"description": f"Increase principal excess due to {expected_interest_to_apply=}" f" being larger than {actual_interest_to_apply=}"},
             )
         ]
 
@@ -575,27 +548,17 @@ def track_interest_on_expected_principal(
     """
 
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID).balances
 
     if denomination is None:
         denomination = str(utils.get_parameter(vault=vault, name="denomination"))
 
-    precision = int(
-        utils.get_parameter(vault=vault, name=interest_accrual_common.PARAM_ACCRUAL_PRECISION)
-    )
-    days_in_year: str = utils.get_parameter(
-        vault=vault, name=interest_accrual_common.PARAM_DAYS_IN_YEAR, is_union=True
-    )
+    precision = int(utils.get_parameter(vault=vault, name=interest_accrual_common.PARAM_ACCRUAL_PRECISION))
+    days_in_year: str = utils.get_parameter(vault=vault, name=interest_accrual_common.PARAM_DAYS_IN_YEAR, is_union=True)
 
     # the non-principal addresses are removed from principal during the lifecycle
-    expected_principal = utils.sum_balances(
-        balances=balances, denomination=denomination, addresses=EXPECTED_PRINCIPAL
-    )
-    yearly_rate = interest_rate_feature.get_annual_interest_rate(
-        vault, hook_arguments.effective_datetime, balances=balances, denomination=denomination
-    )
+    expected_principal = utils.sum_balances(balances=balances, denomination=denomination, addresses=EXPECTED_PRINCIPAL)
+    yearly_rate = interest_rate_feature.get_annual_interest_rate(vault, hook_arguments.effective_datetime, balances=balances, denomination=denomination)
     accrual = interest_accrual_common.calculate_daily_accrual(
         effective_balance=expected_principal,
         effective_datetime=hook_arguments.effective_datetime,
@@ -615,10 +578,7 @@ def track_interest_on_expected_principal(
                     credit_address=lending_addresses.INTERNAL_CONTRA,
                     denomination=denomination,
                 ),
-                instruction_details={
-                    "description": f"Tracking expected interest at yearly rate {yearly_rate} on "
-                    f"expected principal {expected_principal}"
-                },
+                instruction_details={"description": f"Tracking expected interest at yearly rate {yearly_rate} on " f"expected principal {expected_principal}"},
                 override_all_restrictions=True,
             )
         ]
@@ -642,9 +602,7 @@ def reset_due_amount_calc_overpayment_trackers(
     """
 
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=OVERPAYMENT_TRACKER_EFF_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=OVERPAYMENT_TRACKER_EFF_FETCHER_ID).balances
 
     if denomination is None:
         denomination = str(utils.get_parameter(vault=vault, name="denomination"))
@@ -673,9 +631,7 @@ def reset_due_amount_calc_overpayment_trackers(
     return []
 
 
-def get_residual_cleanup_postings(
-    balances: BalanceDefaultDict, account_id: str, denomination: str
-) -> list[Posting]:
+def get_residual_cleanup_postings(balances: BalanceDefaultDict, account_id: str, denomination: str) -> list[Posting]:
     return utils.reset_tracker_balances(
         balances=balances,  # type: ignore
         account_id=account_id,
@@ -708,9 +664,7 @@ def should_trigger_reamortisation(
     :param elapsed_term: elapsed term on the loan. Unused in this implementation
     :return: boolean indicating whether reamortisation is required (True) or not (False).
     """
-    balances = vault.get_balances_observation(
-        fetcher_id=OVERPAYMENT_TRACKER_EFF_FETCHER_ID
-    ).balances
+    balances = vault.get_balances_observation(fetcher_id=OVERPAYMENT_TRACKER_EFF_FETCHER_ID).balances
     denomination: str = utils.get_parameter(vault=vault, name="denomination")
 
     overpayment_impact_preference_param = get_overpayment_preference_parameter(vault=vault)
@@ -790,9 +744,7 @@ def calculate_principal_adjustment(
     :param denomination: denomination to track in. Defaults to the `denomination` parameter
     """
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID).balances
 
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
@@ -836,9 +788,7 @@ def supervisor_calculate_principal_adjustment(
     :param denomination: denomination to track in. Defaults to the `denomination` parameter
     """
     if balances is None:
-        balances = loan_vault.get_balances_observation(
-            fetcher_id=EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID
-        ).balances
+        balances = loan_vault.get_balances_observation(fetcher_id=EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID).balances
 
     if denomination is None:
         denomination = utils.get_parameter(vault=loan_vault, name="denomination")
@@ -867,22 +817,16 @@ def supervisor_calculate_principal_adjustment(
 
 
 def get_overpayment_preference_parameter(vault: SmartContractVault) -> str:
-    return str(
-        utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_IMPACT_PREFERENCE, is_union=True)
-    )
+    return str(utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_IMPACT_PREFERENCE, is_union=True))
 
 
 def get_overpayment_fee_rate_parameter(vault: SmartContractVault) -> Decimal:
-    overpayment_fee_rate: Decimal = utils.get_parameter(
-        vault=vault, name=PARAM_OVERPAYMENT_FEE_RATE
-    )
+    overpayment_fee_rate: Decimal = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_FEE_RATE)
     return overpayment_fee_rate
 
 
 def get_overpayment_fee_income_account_parameter(vault: SmartContractVault) -> str:
-    overpayment_fee_income_account: str = utils.get_parameter(
-        vault=vault, name=PARAM_OVERPAYMENT_FEE_INCOME_ACCOUNT
-    )
+    overpayment_fee_income_account: str = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_FEE_INCOME_ACCOUNT)
     return overpayment_fee_income_account
 
 
@@ -890,21 +834,13 @@ OverpaymentFeature = lending_interfaces.Overpayment(
     handle_overpayment=handle_overpayment,
 )
 
-OverpaymentReamortisationCondition = lending_interfaces.ReamortisationCondition(
-    should_trigger_reamortisation=should_trigger_reamortisation
-)
+OverpaymentReamortisationCondition = lending_interfaces.ReamortisationCondition(should_trigger_reamortisation=should_trigger_reamortisation)
 
-SupervisorOverpaymentReamortisationCondition = lending_interfaces.SupervisorReamortisationCondition(
-    should_trigger_reamortisation=supervisor_should_trigger_reamortisation
-)
+SupervisorOverpaymentReamortisationCondition = lending_interfaces.SupervisorReamortisationCondition(should_trigger_reamortisation=supervisor_should_trigger_reamortisation)
 
-OverpaymentPrincipalAdjustment = lending_interfaces.PrincipalAdjustment(
-    calculate_principal_adjustment=calculate_principal_adjustment
-)
+OverpaymentPrincipalAdjustment = lending_interfaces.PrincipalAdjustment(calculate_principal_adjustment=calculate_principal_adjustment)
 
-SupervisorOverpaymentPrincipalAdjustment = lending_interfaces.SupervisorPrincipalAdjustment(
-    calculate_principal_adjustment=supervisor_calculate_principal_adjustment
-)
+SupervisorOverpaymentPrincipalAdjustment = lending_interfaces.SupervisorPrincipalAdjustment(calculate_principal_adjustment=supervisor_calculate_principal_adjustment)
 
 OverpaymentResidualCleanupFeature = lending_interfaces.ResidualCleanup(
     get_residual_cleanup_postings=get_residual_cleanup_postings,
@@ -927,16 +863,8 @@ def get_early_repayment_overpayment_fee(
     :param precision: the number of decimal places to round to
     :return: the flat fee amount
     """
-    balances = (
-        vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
-        if balances is None
-        else balances
-    )
-    denomination = (
-        utils.get_parameter(vault=vault, name="denomination")
-        if denomination is None
-        else denomination
-    )
+    balances = vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances if balances is None else balances
+    denomination = utils.get_parameter(vault=vault, name="denomination") if denomination is None else denomination
     overpayment_fee_rate = get_overpayment_fee_rate_parameter(vault=vault)
     max_overpayment_fee = get_max_overpayment_fee(
         fee_rate=overpayment_fee_rate,

@@ -26,9 +26,7 @@ from inception_sdk.test_framework.contracts.simulation.helper import (
 from inception_sdk.test_framework.contracts.simulation.utils import SimulationTestCase
 
 default_simulation_start_date = datetime(year=2021, month=1, day=11, tzinfo=timezone.utc)
-CONTRACT_FILE = (
-    "inception_sdk/test_framework/contracts/simulation/test/mock_product/global_params_sc.py"
-)
+CONTRACT_FILE = "inception_sdk/test_framework/contracts/simulation/test/mock_product/global_params_sc.py"
 DENOMINATION = "GBP"
 # Internal account addresses
 ACCRUED_INTEREST_PAYABLE = "ACCRUED_INTEREST_PAYABLE"
@@ -39,9 +37,7 @@ INTERNAL_ACCOUNTS_TSIDE: dict = {
     _1: "LIABILITY",
 }
 DEFAULT_DIMENSIONS = BalanceDimensions()
-ACCRUED_INTEREST_PAYABLE_DIMENSION = BalanceDimensions(
-    address=ACCRUED_INTEREST_PAYABLE, denomination=DENOMINATION
-)
+ACCRUED_INTEREST_PAYABLE_DIMENSION = BalanceDimensions(address=ACCRUED_INTEREST_PAYABLE, denomination=DENOMINATION)
 CASH_RATE_PARAM = "cash_rate"
 
 

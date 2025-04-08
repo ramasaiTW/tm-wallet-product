@@ -99,8 +99,7 @@ class VaultFunctionsABC(v3110_lib.VaultFunctionsABC):
             ),
             examples=[
                 types_utils.Example(
-                    title="Convert Supervisor postings argument to a mapping of "
-                    "accountID -> PostingInstructionBatch",
+                    title="Convert Supervisor postings argument to a mapping of " "accountID -> PostingInstructionBatch",
                     code="""
                         # Supervisor supervises accounts A, B, C.
                         # Supervisor invoked with postings argument containing

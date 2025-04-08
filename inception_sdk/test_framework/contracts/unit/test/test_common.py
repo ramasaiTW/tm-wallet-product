@@ -63,9 +63,7 @@ class TestCreateMock(TestCase):
     def test_get_account_creation_datetime_custom_datetime(self):
         test_case = ContractTest()
         test_case.tside = Tside.ASSET
-        mock_vault = test_case.create_mock(
-            creation_date=datetime(2019, 1, 2, tzinfo=ZoneInfo("UTC"))
-        )
+        mock_vault = test_case.create_mock(creation_date=datetime(2019, 1, 2, tzinfo=ZoneInfo("UTC")))
         result = mock_vault.get_account_creation_datetime()
         expected = datetime(2019, 1, 2, tzinfo=ZoneInfo("UTC"))
         self.assertEqual(result, expected)
@@ -85,8 +83,7 @@ class TestCreateMock(TestCase):
             mock_vault.get_alias()
         self.assertEqual(
             err.exception.args[0],
-            "get_alias method cannot be called on a non-supervisee Vault object, "
-            "make sure the create_mock argument is set correctly",
+            "get_alias method cannot be called on a non-supervisee Vault object, " "make sure the create_mock argument is set correctly",
         )
 
     def test_supervisee_mock_raises_on_get_alias_if_not_set(self):
@@ -111,8 +108,7 @@ class TestCreateMock(TestCase):
             mock_vault.get_hook_result()
         self.assertEqual(
             err.exception.args[0],
-            "get_hook_result method cannot be called on a non-supervisee Vault object, "
-            "make sure the create_mock argument is set correctly",
+            "get_hook_result method cannot be called on a non-supervisee Vault object, " "make sure the create_mock argument is set correctly",
         )
 
     def test_supervisee_mock_raises_without_result_on_get_hook_result(self):
@@ -123,25 +119,20 @@ class TestCreateMock(TestCase):
             mock_vault.get_hook_result()
         self.assertEqual(
             err.exception.args[0],
-            "get_hook_result must return one of PrePostingHookResult, "
-            "PostPostingHookResult, ScheduledEventHookResult",
+            "get_hook_result must return one of PrePostingHookResult, " "PostPostingHookResult, ScheduledEventHookResult",
         )
 
     def test_supervisee_mock_returns_result_get_hook_result(self):
         test_case = ContractTest()
         test_case.tside = Tside.ASSET
-        mock_vault = test_case.create_mock(
-            is_supervisee_vault=True, supervisee_hook_result=ScheduledEventHookResult()
-        )
+        mock_vault = test_case.create_mock(is_supervisee_vault=True, supervisee_hook_result=ScheduledEventHookResult())
 
         self.assertEqual(mock_vault.get_hook_result(), ExtendedScheduledEventHookResult())
 
     def test_supervisee_mock_returns_requires_fetched_postings(self):
         test_case = ContractTest()
         test_case.tside = Tside.ASSET
-        mock_vault = test_case.create_mock(
-            is_supervisee_vault=True, requires_fetched_postings=[sentinel.postings]
-        )
+        mock_vault = test_case.create_mock(is_supervisee_vault=True, requires_fetched_postings=[sentinel.postings])
 
         self.assertListEqual(mock_vault.get_posting_instructions(), [sentinel.postings])
 
@@ -187,9 +178,7 @@ class TestCreateMock(TestCase):
             requires_fetched_client_transactions={sentinel.unique_id: sentinel.client_transaction},
         )
 
-        self.assertDictEqual(
-            mock_vault.get_client_transactions(), {sentinel.unique_id: sentinel.client_transaction}
-        )
+        self.assertDictEqual(mock_vault.get_client_transactions(), {sentinel.unique_id: sentinel.client_transaction})
 
     def test_supervisee_mock_raises_if_fetcher_id_in_get_client_transactions(self):
         test_case = ContractTest()
@@ -223,9 +212,7 @@ class TestCreateMock(TestCase):
         test_case = ContractTest()
         test_case.tside = Tside.ASSET
         mock_vault = test_case.create_mock(
-            client_transactions_mapping={
-                "some_fetcher_id": {sentinel.unique_id: sentinel.client_transaction}
-            },
+            client_transactions_mapping={"some_fetcher_id": {sentinel.unique_id: sentinel.client_transaction}},
         )
         with self.assertRaises(ValueError) as err:
             mock_vault.get_client_transactions()
@@ -246,9 +233,7 @@ class TestCreateMock(TestCase):
         test_case = ContractTest()
         test_case.tside = Tside.ASSET
         mock_vault = test_case.create_mock(
-            client_transactions_mapping={
-                "some_fetcher_id": {sentinel.unique_id: sentinel.client_transaction}
-            },
+            client_transactions_mapping={"some_fetcher_id": {sentinel.unique_id: sentinel.client_transaction}},
         )
         self.assertDictEqual(
             mock_vault.get_client_transactions(fetcher_id="some_fetcher_id"),
@@ -271,9 +256,7 @@ class TestCreateMock(TestCase):
     def test_supervisee_mock_returns_requires_fetched_balances(self):
         test_case = ContractTest()
         test_case.tside = Tside.ASSET
-        mock_vault = test_case.create_mock(
-            is_supervisee_vault=True, requires_fetched_balances=sentinel.balances
-        )
+        mock_vault = test_case.create_mock(is_supervisee_vault=True, requires_fetched_balances=sentinel.balances)
 
         self.assertEqual(mock_vault.get_balances_timeseries(), sentinel.balances)
 
@@ -285,9 +268,7 @@ class TestCreateMock(TestCase):
             balances_interval_fetchers_mapping={"some_fetcher_id": sentinel.balances},
         )
 
-        self.assertEqual(
-            mock_vault.get_balances_timeseries(fetcher_id="some_fetcher_id"), sentinel.balances
-        )
+        self.assertEqual(mock_vault.get_balances_timeseries(fetcher_id="some_fetcher_id"), sentinel.balances)
 
     def test_non_supervisee_mock_raises_fetched_balances_without_fetcher_id(self):
         test_case = ContractTest()
@@ -305,9 +286,7 @@ class TestCreateMock(TestCase):
     def test_non_supervisee_mock_raises_fetched_balances_with_incorrect_fetcher_id(self):
         test_case = ContractTest()
         test_case.tside = Tside.ASSET
-        mock_vault = test_case.create_mock(
-            postings_interval_mapping={"some_fetcher_id": sentinel.balances}
-        )
+        mock_vault = test_case.create_mock(postings_interval_mapping={"some_fetcher_id": sentinel.balances})
         with self.assertRaises(ValueError) as err:
             mock_vault.get_balances_timeseries("another_fetcher_id")
         self.assertEqual(
@@ -402,9 +381,7 @@ class TestPostingHelpers(TestCase):
 
     def test_can_create_zero_amount_outbound_settlement_with_from_proto(self):
         self.assertIsInstance(
-            self.contract_test.settle_outbound_auth(
-                unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True
-            ),
+            self.contract_test.settle_outbound_auth(unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True),
             Settlement,
         )
 
@@ -418,9 +395,7 @@ class TestPostingHelpers(TestCase):
 
     def test_can_create_zero_amount_inbound_settlement_with_from_proto(self):
         self.assertIsInstance(
-            self.contract_test.settle_inbound_auth(
-                unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True
-            ),
+            self.contract_test.settle_inbound_auth(unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True),
             Settlement,
         )
 
@@ -434,9 +409,7 @@ class TestPostingHelpers(TestCase):
 
     def test_can_create_zero_amount_outbound_release_with_from_proto(self):
         self.assertIsInstance(
-            self.contract_test.release_outbound_auth(
-                unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True
-            ),
+            self.contract_test.release_outbound_auth(unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True),
             Release,
         )
 
@@ -450,9 +423,7 @@ class TestPostingHelpers(TestCase):
 
     def test_can_create_zero_amount_inbound_release_with_from_proto(self):
         self.assertIsInstance(
-            self.contract_test.release_inbound_auth(
-                unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True
-            ),
+            self.contract_test.release_inbound_auth(unsettled_amount=Decimal("0"), amount=Decimal("0"), _from_proto=True),
             Release,
         )
 

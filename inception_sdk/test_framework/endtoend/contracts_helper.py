@@ -81,10 +81,7 @@ DEFAULT_REQUIRED_INTERNAL_ACCOUNTS_DICT: dict[str, list[str]] = {
 
 def get_contract_content_for_e2e(product_id: str, contract_properties: dict[str, Any]) -> str:
     if not contract_properties.get("path"):
-        raise NameError(
-            f"Contract: {product_id} was not specified with a valid 'path' property. "
-            f"Specified with {str(contract_properties)}"
-        )
+        raise NameError(f"Contract: {product_id} was not specified with a valid 'path' property. " f"Specified with {str(contract_properties)}")
 
     contract_path = Path(contract_properties.get("path", ""))
     if is_file_renderable(contract_path):
@@ -115,9 +112,7 @@ def get_contract_content_for_e2e(product_id: str, contract_properties: dict[str,
                 + "]"
             )
 
-            scr.rendered_contract = _replace_event_types_with_repr(
-                scr.rendered_contract, event_types_repr
-            )
+            scr.rendered_contract = _replace_event_types_with_repr(scr.rendered_contract, event_types_repr)
 
         return scr.rendered_contract
     else:
@@ -140,9 +135,7 @@ def upload_contracts(contracts: dict[str, dict[str, Any]]) -> None:
 
         # All resource types that can be contract dependencies and for which we use CLU syntax
         # should have their mapping adding to clu_reference_mappings
-        e2e_contract_data = replace_clu_dependencies(
-            product_id, e2e_contract_data, endtoend.testhandle.clu_reference_mappings
-        )
+        e2e_contract_data = replace_clu_dependencies(product_id, e2e_contract_data, endtoend.testhandle.clu_reference_mappings)
 
         # Inception contracts do not use CLU syntax for schedule tags (INC-5281)
         e2e_contract_data = replace_schedule_tag_ids_in_contract(
@@ -171,42 +164,24 @@ def upload_contracts(contracts: dict[str, dict[str, Any]]) -> None:
 
             if type(param_value) is dict:
                 if param_value.get("internal_account_key"):
-                    parameters[param_name] = endtoend.testhandle.internal_account_id_to_uploaded_id[
-                        param_value["internal_account_key"]
-                    ]
+                    parameters[param_name] = endtoend.testhandle.internal_account_id_to_uploaded_id[param_value["internal_account_key"]]
 
                 # check for nested internal accounts
                 if nested_internal_accounts := param_value.get("nested_internal_account_keys"):
                     parameters[param_name] = json.dumps(
                         {
-                            key: endtoend.testhandle.internal_account_id_to_uploaded_id[
-                                param_value["nested_internal_account_keys"][key][
-                                    "internal_account_key"
-                                ]
-                            ]
+                            key: endtoend.testhandle.internal_account_id_to_uploaded_id[param_value["nested_internal_account_keys"][key]["internal_account_key"]]
                             for key in nested_internal_accounts.keys()
                         }
                     )
                 # check for flags in json params
                 if any(key == "flag_key" for key in _get_nested_dict_keys(param_value)):
-                    parameters[param_name] = json.dumps(
-                        replace_flags_in_parameter(
-                            param_value, endtoend.testhandle.flag_definition_id_mapping
-                        )
-                    )
+                    parameters[param_name] = json.dumps(replace_flags_in_parameter(param_value, endtoend.testhandle.flag_definition_id_mapping))
 
-        new_params = [
-            {"name": param_name, "value": param_value}
-            for param_name, param_value in parameters.items()
-        ]
+        new_params = [{"name": param_name, "value": param_value} for param_name, param_value in parameters.items()]
         ordered_params = str(collections.OrderedDict(sorted(parameters.items())))
 
-        code_hash = hashlib.md5(
-            (
-                e2e_contract_data + str(supported_denominations) + display_name + ordered_params
-                or ""
-            ).encode("utf-8")
-        ).hexdigest()
+        code_hash = hashlib.md5((e2e_contract_data + str(supported_denominations) + display_name + ordered_params or "").encode("utf-8")).hexdigest()
         e2e_unique_product_id = "e2e_" + product_id + "_" + code_hash
 
         resp = endtoend.core_api_helper.create_product_version(
@@ -224,9 +199,7 @@ def upload_contracts(contracts: dict[str, dict[str, Any]]) -> None:
         # Vault may have already seen this code with a different product id
         log.info("Contract %s uploaded.", resp["product_id"])
         if is_internal:
-            endtoend.testhandle.internal_contract_pid_to_uploaded_pid[
-                product_id
-            ] = e2e_unique_product_id
+            endtoend.testhandle.internal_contract_pid_to_uploaded_pid[product_id] = e2e_unique_product_id
         else:
             # We need to store both the product id and the product version id as supervisor syntax
             # depends on the latter
@@ -267,16 +240,12 @@ def create_account(
     request_id = uuid.uuid4().hex
     permitted_denominations = permitted_denominations or ["GBP"]
     if contract not in endtoend.testhandle.contract_pid_to_uploaded_pid and not force_contract_id:
-        raise NameError(
-            "Contract ID: {} not found. " "Is it specified in the testfile?".format(contract)
-        )
+        raise NameError("Contract ID: {} not found. " "Is it specified in the testfile?".format(contract))
 
     post_body = {
         "request_id": request_id,
         "account": {
-            "product_id": contract
-            if force_contract_id
-            else (endtoend.testhandle.contract_pid_to_uploaded_pid[contract]),
+            "product_id": contract if force_contract_id else (endtoend.testhandle.contract_pid_to_uploaded_pid[contract]),
             "stakeholder_ids": [customer] if type(customer) is not list else customer,
             "instance_param_vals": instance_param_vals,
             "permitted_denominations": permitted_denominations,
@@ -292,9 +261,7 @@ def create_account(
     account = endtoend.helper.send_request("post", "/v1/accounts", data=json.dumps(post_body))
     created_account_id = account["id"]
     endtoend.testhandle.accounts.add(created_account_id)
-    log.info(
-        f"Created account {created_account_id} for customer {customer} with product {contract}"
-    )
+    log.info(f"Created account {created_account_id} for customer {customer} with product {contract}")
     if wait_for_activation:
         endtoend.accounts_helper.wait_for_account_update(created_account_id, "activation_update")
 
@@ -332,23 +299,15 @@ def create_internal_account(
     multiple teams
     :return: the created internal account resource
     """
-    e2e_account_id = (
-        _composite_internal_account_id(account_id=account_id, tside=accounting_tside)
-        if use_composite_id
-        else account_id
-    )
+    e2e_account_id = _composite_internal_account_id(account_id=account_id, tside=accounting_tside) if use_composite_id else account_id
 
     if len(e2e_account_id) > 36:
         raise SetupError(
-            f"Internal account id {e2e_account_id} is longer than 36 characters."
-            " Please use an internal account id that is up to 30 characters long if using"
-            " a composite id or 36 otherwise"
+            f"Internal account id {e2e_account_id} is longer than 36 characters." " Please use an internal account id that is up to 30 characters long if using" " a composite id or 36 otherwise"
         )
 
     if contract not in endtoend.testhandle.internal_contract_pid_to_uploaded_pid:
-        raise NameError(
-            "Contract ID: {} not found. " "Is it specified in the testfile?".format(contract)
-        )
+        raise NameError("Contract ID: {} not found. " "Is it specified in the testfile?".format(contract))
 
     # idempotent requests help handle scenarios where concurrent tests try to create the same
     # accounts, but in 5.0 onwards idempotency is only guaranteed for a 7d window so we still
@@ -384,12 +343,7 @@ def get_specific_balance(
     balances = endtoend.core_api_helper.get_live_balances(account_id)
 
     for balance in balances:
-        if (
-            balance["account_address"] == address
-            and balance["asset"] == asset
-            and balance["phase"] == phase
-            and balance["denomination"] == denomination
-        ):
+        if balance["account_address"] == address and balance["asset"] == asset and balance["phase"] == phase and balance["denomination"] == denomination:
             return balance["amount"]
 
     return "0"
@@ -435,9 +389,7 @@ def clear_balances(account_handle):
             )
             postings.append(
                 endtoend.postings_helper.create_posting(
-                    account_id=endtoend.testhandle.internal_account_id_to_uploaded_id[
-                        endtoend.testhandle.internal_account
-                    ],
+                    account_id=endtoend.testhandle.internal_account_id_to_uploaded_id[endtoend.testhandle.internal_account],
                     amount=str(abs(amount)),
                     denomination=balance["denomination"],
                     asset=balance["asset"],
@@ -490,9 +442,7 @@ def clear_account_balances(account):
         )
 
 
-def clear_specific_address_balance(
-    account_handle: dict[str, Any], address: str, denomination: str = "GBP"
-) -> bool:
+def clear_specific_address_balance(account_handle: dict[str, Any], address: str, denomination: str = "GBP") -> bool:
     """
     Asserts balance of provided address, sends posting DEFAULT to negate that amount
     :param account_handle: the account resource
@@ -567,15 +517,11 @@ def terminate_account(account: dict[str, Any]) -> dict[str, Any]:
 
     elif account_status is AccountStatus.ACCOUNT_STATUS_PENDING:
         # Unactivated accounts should be cancelled instead of closed
-        return endtoend.core_api_helper.update_account(
-            account_id, AccountStatus.ACCOUNT_STATUS_CANCELLED
-        )
+        return endtoend.core_api_helper.update_account(account_id, AccountStatus.ACCOUNT_STATUS_CANCELLED)
 
     elif account_status is not AccountStatus.ACCOUNT_STATUS_PENDING_CLOSURE:
         clear_account_balances(account)
-        account = endtoend.core_api_helper.update_account(
-            account["id"], AccountStatus.ACCOUNT_STATUS_PENDING_CLOSURE
-        )
+        account = endtoend.core_api_helper.update_account(account["id"], AccountStatus.ACCOUNT_STATUS_PENDING_CLOSURE)
         endtoend.accounts_helper.wait_for_account_update(account_id, "closure_update")
 
     return endtoend.core_api_helper.update_account(account_id, AccountStatus.ACCOUNT_STATUS_CLOSED)
@@ -600,10 +546,7 @@ def teardown_all_accounts():
 def update_product_parameter(product_id: str, params_to_update: dict[str, str]) -> dict[str, str]:
     product_version_id = get_current_product_version_id(product_id)
 
-    items_to_add = [
-        {"name": param_name, "value": param_value}
-        for param_name, param_value in params_to_update.items()
-    ]
+    items_to_add = [{"name": param_name, "value": param_value} for param_name, param_value in params_to_update.items()]
     data = {"request_id": str(uuid.uuid4()), "items_to_add": items_to_add}
 
     resp = endtoend.helper.send_request(
@@ -653,9 +596,7 @@ def create_account_schedule_tags(controlled_schedules: dict[str, list[str]]) -> 
             uploaded_tag = endtoend.core_api_helper.create_account_schedule_tag(
                 account_schedule_tag_id=e2e_tag_id,
                 description=tag.get("description", ""),
-                sends_scheduled_operation_reports=tag.get(
-                    "sends_scheduled_operation_reports", False
-                ),
+                sends_scheduled_operation_reports=tag.get("sends_scheduled_operation_reports", False),
                 schedule_status_override=tag.get(
                     "schedule_status_override",
                     "ACCOUNT_SCHEDULE_TAG_SCHEDULE_STATUS_OVERRIDE_NO_OVERRIDE",
@@ -663,24 +604,17 @@ def create_account_schedule_tags(controlled_schedules: dict[str, list[str]]) -> 
                 schedule_status_override_start_timestamp=tag.get(
                     "schedule_status_override_start_timestamp",
                 ),
-                schedule_status_override_end_timestamp=tag.get(
-                    "schedule_status_override_end_timestamp"
-                ),
+                schedule_status_override_end_timestamp=tag.get("schedule_status_override_end_timestamp"),
                 test_pause_at_timestamp=tag.get("test_pause_at_timestamp"),
             )
         except HTTPError as e:
             # This handles cases where the tag has already been created
             if "409 Client Error: Conflict" in e.args[0]:
-                existing_tag = endtoend.endtoend.core_api_helper.batch_get_account_schedule_tags(
-                    account_schedule_tag_ids=[e2e_tag_id]
-                ).get(e2e_tag_id)
+                existing_tag = endtoend.endtoend.core_api_helper.batch_get_account_schedule_tags(account_schedule_tag_ids=[e2e_tag_id]).get(e2e_tag_id)
                 if existing_tag != tag:
                     # We could expand this to attempt updates, but it is normally a sign of
                     # incorrect tag_id reuse and should be fixed elsewhere
-                    raise ValueError(
-                        f"Found existing tag with same id but different attributes."
-                        f"\nExisting Tag:\n{existing_tag}\nNew Tag:\n{tag}"
-                    )
+                    raise ValueError(f"Found existing tag with same id but different attributes." f"\nExisting Tag:\n{existing_tag}\nNew Tag:\n{tag}")
                 uploaded_tag = existing_tag
             else:
                 raise e
@@ -688,17 +622,10 @@ def create_account_schedule_tags(controlled_schedules: dict[str, list[str]]) -> 
         return uploaded_tag["id"]
 
     # the tag id is overridden later to be as unique as required
-    default_tag_contents = extract_resource(
-        COMMON_ACCOUNT_SCHEDULE_TAG_PATH, "account_schedule_tag"
-    )
+    default_tag_contents = extract_resource(COMMON_ACCOUNT_SCHEDULE_TAG_PATH, "account_schedule_tag")
 
     endtoend.testhandle.controlled_schedule_tags = {
-        product_id: {
-            schedule: _create_and_upload_tag(
-                default_tag_contents, product_id=product_id, schedule_id=schedule
-            )
-            for schedule in schedules
-        }
+        product_id: {schedule: _create_and_upload_tag(default_tag_contents, product_id=product_id, schedule_id=schedule) for schedule in schedules}
         for product_id, schedules in controlled_schedules.items()
     }
 
@@ -715,9 +642,7 @@ def create_account_schedule_tags(controlled_schedules: dict[str, list[str]]) -> 
         if final_to:
             endtoend.testhandle.controlled_schedule_tags[to_product] = final_to
 
-    endtoend.testhandle.default_paused_tag_id = _create_and_upload_tag(
-        default_tag_contents, product_id="All", schedule_id="DEFAULT"
-    )
+    endtoend.testhandle.default_paused_tag_id = _create_and_upload_tag(default_tag_contents, product_id="All", schedule_id="DEFAULT")
 
 
 def create_flag_definitions(flag_definitions: dict[str, str]) -> None:
@@ -737,12 +662,8 @@ def create_flag_definitions(flag_definitions: dict[str, str]) -> None:
         # re-use e2e flag definition ids if the same flag definition file is re-used across
         # schedules or tests
         if file_path in endtoend.testhandle.flag_file_paths_to_e2e_ids:
-            e2e_flag_definition_id = endtoend.testhandle.flag_file_paths_to_e2e_ids[
-                flag_definitions[flag_definition_id]
-            ]
-            endtoend.testhandle.flag_definition_id_mapping[
-                flag_definition_id
-            ] = e2e_flag_definition_id
+            e2e_flag_definition_id = endtoend.testhandle.flag_file_paths_to_e2e_ids[flag_definitions[flag_definition_id]]
+            endtoend.testhandle.flag_definition_id_mapping[flag_definition_id] = e2e_flag_definition_id
             log.info(f"Reusing flag {e2e_flag_definition_id} for {flag_definition_id}")
             continue
 
@@ -773,10 +694,7 @@ def upload_internal_products(internal_products: Iterable[str]) -> None:
 
     products_to_upload: dict[str, dict[str, Any]] = {}
     for product in internal_products:
-        if (
-            product in available_products.keys()
-            and product not in endtoend.testhandle.internal_contract_pid_to_uploaded_pid.keys()
-        ):
+        if product in available_products.keys() and product not in endtoend.testhandle.internal_contract_pid_to_uploaded_pid.keys():
             products_to_upload[product] = available_products[product]
         elif product in endtoend.testhandle.internal_contract_pid_to_uploaded_pid.keys():
             log.info(f"Product {product} is already uploaded.")
@@ -809,13 +727,9 @@ def create_required_internal_accounts(required_internal_accounts: dict[str, list
             if product not in internal_accounts_to_create.keys():
                 internal_accounts_to_create[product] = list()
 
-            e2e_composite_id = _composite_internal_account_id(
-                account_id=internal_account_id, tside=product
-            )
+            e2e_composite_id = _composite_internal_account_id(account_id=internal_account_id, tside=product)
             if _does_internal_account_exist(e2e_composite_id):
-                endtoend.testhandle.internal_account_id_to_uploaded_id[
-                    internal_account_id
-                ] = e2e_composite_id
+                endtoend.testhandle.internal_account_id_to_uploaded_id[internal_account_id] = e2e_composite_id
             else:
                 internal_accounts_to_create[product].append(internal_account_id)
 
@@ -859,10 +773,7 @@ def extract_resource(file_path: str, resource_type: str) -> dict[str, Any]:
     relevant resource
     """
     if "resources.yaml" in file_path:
-        raise ValueError(
-            f"Only resource.yaml files are currently supported. "
-            f"{file_path} recognised as a resources.yaml file"
-        )
+        raise ValueError(f"Only resource.yaml files are currently supported. " f"{file_path} recognised as a resources.yaml file")
     yaml_str = load_file_contents(file_path)
     resource = yaml.safe_load(yaml_str)
     payload_yaml = resource["payload"]
@@ -888,21 +799,14 @@ def check_product_version(product_id: str, file_product_data: str):
         instance_product_data = resp["code"]
         instance_product_ver = _get_version_identifier(resp["display_version_number"])
     except (HTTPError, KeyError, TypeError):
-        log.warning(
-            f"{product_id} not found on instance."
-            f"Skipping product validation for this smart contract."
-        )
+        log.warning(f"{product_id} not found on instance." f"Skipping product validation for this smart contract.")
         return None
 
     file_product_ver = _get_file_product_version(file_product_data)
     # If this product is loaded on the instance and at the same version,
     # check the content is the same
     if instance_product_ver == file_product_ver and instance_product_data != file_product_data:
-        raise ValueError(
-            f"{datetime.utcnow()} -"
-            f" Instance has different content for {product_id}:"
-            f" Version increment may be required"
-        )
+        raise ValueError(f"{datetime.utcnow()} -" f" Instance has different content for {product_id}:" f" Version increment may be required")
     else:
         log.info(f"{product_id} {file_product_ver} matches on instance")
 
@@ -1030,11 +934,7 @@ def _v4_event_type_repr(event_type: SupervisorContractEventType | SmartContractE
         if overrides_event_types := event_type.overrides_event_types:
             attributes["overrides_event_types"] = repr(overrides_event_types)
 
-    return (
-        f"{event_type.__class__.__name__}("
-        + ",".join((f"{key}={value}" for key, value in attributes.items()))
-        + ")"
-    )
+    return f"{event_type.__class__.__name__}(" + ",".join((f"{key}={value}" for key, value in attributes.items())) + ")"
 
 
 class ContractNotificationResourceType(enum.Enum):
@@ -1068,9 +968,7 @@ def send_contract_notification(
         "notification_details": notification_details,
     }
 
-    produce_message(
-        endtoend.testhandle.kafka_producer, CONTRACT_NOTIFICATIONS_TOPIC, json.dumps(event_msg)
-    )
+    produce_message(endtoend.testhandle.kafka_producer, CONTRACT_NOTIFICATIONS_TOPIC, json.dumps(event_msg))
 
 
 @kafka_only_helper
@@ -1091,10 +989,7 @@ def wait_for_contract_notification(
 
         message_id = f"{event_resource_id}_{event_notification_type}"
         if message_id in unique_message_ids:
-            if (
-                resource_type != event_resource_type
-                or notification_details != event_notification_details
-            ):
+            if resource_type != event_resource_type or notification_details != event_notification_details:
                 log.info(
                     f"Notification found for resource id `{event_resource_id}` and notification "
                     f"type `{event_notification_type}` but resource_type `{event_resource_type}` "
@@ -1120,10 +1015,7 @@ def wait_for_contract_notification(
     )
 
     if len(unmatched_contract_notifications) > 0:
-        raise Exception(
-            f"Failed to retrieve {len(unmatched_contract_notifications)} notifications "
-            f"with following id and type: {', '.join(unmatched_contract_notifications.keys())}"
-        )
+        raise Exception(f"Failed to retrieve {len(unmatched_contract_notifications)} notifications " f"with following id and type: {', '.join(unmatched_contract_notifications.keys())}")
 
 
 def prepare_parameters_for_e2e(
@@ -1205,15 +1097,8 @@ def prepare_parameters_for_e2e(
     for internal_account_param, account_id in (internal_account_param_mapping or {}).items():
         e2e_parameters[internal_account_param] = {"internal_account_key": account_id}
 
-    for nested_internal_account_param, nested_internal_account in (
-        nested_internal_account_param_mapping or {}
-    ).items():
-        e2e_parameters[nested_internal_account_param] = {
-            "nested_internal_account_keys": {
-                key: {"internal_account_key": nested_internal_account[key]}
-                for key in nested_internal_account.keys()
-            }
-        }
+    for nested_internal_account_param, nested_internal_account in (nested_internal_account_param_mapping or {}).items():
+        e2e_parameters[nested_internal_account_param] = {"nested_internal_account_keys": {key: {"internal_account_key": nested_internal_account[key]} for key in nested_internal_account.keys()}}
 
     for flag_param, value in (flag_param_mapping or {}).items():
         e2e_parameters[flag_param] = {"flag_key": value}

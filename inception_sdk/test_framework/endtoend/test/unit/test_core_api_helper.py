@@ -25,9 +25,7 @@ HTTP_503_ERROR_MSG = "503 Server Error: Service Unavailable"
 class CoreApiHelperTest(TestCase):
     @patch.object(endtoend.helper, "send_request")
     def test_vault_version(self, mock_send_request: Mock):
-        mock_send_request.return_value = {
-            "version": {"major": 4, "minor": 3, "patch": 1, "label": "-rc3"}
-        }
+        mock_send_request.return_value = {"version": {"major": 4, "minor": 3, "patch": 1, "label": "-rc3"}}
         vault_version = get_vault_version()
         self.assertEqual(vault_version, Version("4.3.1-rc3"))
 
@@ -82,9 +80,7 @@ class CoreApiHelperTest(TestCase):
     ):
         tag_id = "ACCOUNT_SCHEDULE_TAG"
         test_pause_at_timestamp = datetime(2021, 1, 2, tzinfo=timezone.utc).isoformat()
-        mock_send_request.return_value = {
-            "test_pause_at_timestamp": datetime(2021, 1, 1, tzinfo=timezone.utc).isoformat()
-        }
+        mock_send_request.return_value = {"test_pause_at_timestamp": datetime(2021, 1, 1, tzinfo=timezone.utc).isoformat()}
         with self.assertRaises(Exception) as context:
             update_account_schedule_tag(
                 account_schedule_tag_id=tag_id,
@@ -92,8 +88,7 @@ class CoreApiHelperTest(TestCase):
             )
         self.assertEqual(type(context.exception), ValueError)
         self.assertIn(
-            "Wrapped result {'test_pause_at_timestamp': '2021-01-01T00:00:00+00:00'} does not match"
-            " {'test_pause_at_timestamp': '2021-01-02T00:00:00+00:00'}",
+            "Wrapped result {'test_pause_at_timestamp': '2021-01-01T00:00:00+00:00'} does not match" " {'test_pause_at_timestamp': '2021-01-02T00:00:00+00:00'}",
             str(context.exception),
         )
         mock_sleep.assert_has_calls([call(10), call(20), call(40), call(80), call(160)])
@@ -211,9 +206,7 @@ class CoreApiHelperTest(TestCase):
             status_code = int(test_case["response_msg"].split()[0])
 
             if test_case["exception_type"] is not None:
-                return_error = mock_send_request.return_value = test_case["exception_type"](
-                    test_case["response_msg"]
-                )
+                return_error = mock_send_request.return_value = test_case["exception_type"](test_case["response_msg"])
                 response = return_error.response = Response()
                 response.status_code = status_code
                 mock_send_request.side_effect = return_error
@@ -240,9 +233,7 @@ class CoreApiHelperTest(TestCase):
                 )
                 self.assertEqual(result._content, json.dumps({"some_response": "1"}))
 
-            mock_send_request.assert_has_calls(
-                [call("post", url, data=data) for _ in range(test_case["number_of_request_calls"])]
-            )
+            mock_send_request.assert_has_calls([call("post", url, data=data) for _ in range(test_case["number_of_request_calls"])])
             self.assertEqual(
                 mock_send_request.call_count,
                 test_case["number_of_request_calls"],

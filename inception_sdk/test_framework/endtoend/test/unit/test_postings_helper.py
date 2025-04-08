@@ -8,16 +8,8 @@ import inception_sdk.test_framework.endtoend as endtoend
 from inception_sdk.common.python.file_utils import load_file_contents
 from inception_sdk.test_framework.endtoend import postings_helper
 
-ERROR_RESPONSE = json.loads(
-    load_file_contents(
-        "inception_sdk/test_framework/endtoend/test/unit/input/pib_response_errored.json"
-    )
-)
-ACCEPTED_RESPONSE = json.loads(
-    load_file_contents(
-        "inception_sdk/test_framework/endtoend/test/unit/input/pib_response_accepted.json"
-    )
-)
+ERROR_RESPONSE = json.loads(load_file_contents("inception_sdk/test_framework/endtoend/test/unit/input/pib_response_errored.json"))
+ACCEPTED_RESPONSE = json.loads(load_file_contents("inception_sdk/test_framework/endtoend/test/unit/input/pib_response_accepted.json"))
 
 
 @patch.object(postings_helper, "wait_for_posting_responses")
@@ -111,13 +103,9 @@ class WaitForPostingResponseTest(TestCase):
         )
         mock_BatchCompletionRecorder.return_value = mock_batch_completion_recorder
         type(mock_testhandle).use_kafka = PropertyMock(return_value=True)
-        mock_testhandle.kafka_consumers = {
-            postings_helper.POSTINGS_API_RESPONSE_TOPIC: sentinel.postings_consumer
-        }
+        mock_testhandle.kafka_consumers = {postings_helper.POSTINGS_API_RESPONSE_TOPIC: sentinel.postings_consumer}
 
-        pib_ids, errored_responses = postings_helper.wait_for_posting_responses(
-            request_ids=["a", "b"], migration=False
-        )
+        pib_ids, errored_responses = postings_helper.wait_for_posting_responses(request_ids=["a", "b"], migration=False)
 
         mock_wait_for_messages.assert_called_once_with(
             sentinel.postings_consumer,

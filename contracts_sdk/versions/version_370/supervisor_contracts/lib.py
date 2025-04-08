@@ -34,9 +34,7 @@ class VaultFunctionsABC(v360_lib.VaultFunctionsABC):
                     **Only available in version 3.7+.**
             """,
             args=[
-                types_utils.ValueSpec(
-                    name="calendar_ids", type="List[str]", docstring="List of Calendar Ids"
-                ),
+                types_utils.ValueSpec(name="calendar_ids", type="List[str]", docstring="List of Calendar Ids"),
             ],
             return_value=types_utils.ReturnValueSpec(
                 docstring="""

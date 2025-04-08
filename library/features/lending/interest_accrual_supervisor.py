@@ -129,16 +129,7 @@ def daily_accrual_logic(
         )
 
     # TODO: we'll need to make this more flexible (interface?)
-    effective_balance = Decimal(
-        sum(
-            balances[
-                BalanceCoordinate(
-                    principal_address, DEFAULT_ASSET, denomination, phase=Phase.COMMITTED
-                )
-            ].net
-            for principal_address in principal_addresses
-        )
-    )
+    effective_balance = Decimal(sum(balances[BalanceCoordinate(principal_address, DEFAULT_ASSET, denomination, phase=Phase.COMMITTED)].net for principal_address in principal_addresses))
 
     # We use a separate address so that when it comes to applying interest we can use a simple
     # observation to fetch latest balances and know how much emi and non-emi interest is accrued.
@@ -159,9 +150,7 @@ def daily_accrual_logic(
             customer_accrual_address = ACCRUED_INTEREST_RECEIVABLE
 
     if accrual_internal_account is None:
-        accrual_internal_account = utils.get_parameter(
-            vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
-        )
+        accrual_internal_account = utils.get_parameter(vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT)
 
     return interest_accrual_common.daily_accrual(
         customer_account=vault.account_id,
@@ -180,15 +169,11 @@ def daily_accrual_logic(
         event_type=hook_arguments.event_type,
         effective_datetime=midnight,
         payable=False,
-        precision=utils.get_parameter(
-            vault=vault, name=interest_accrual_common.PARAM_ACCRUAL_PRECISION
-        ),
+        precision=utils.get_parameter(vault=vault, name=interest_accrual_common.PARAM_ACCRUAL_PRECISION),
         rounding=ROUND_HALF_UP,
     )
 
 
 def get_accrual_internal_account(vault: SuperviseeContractVault) -> str:
-    accrual_internal_account: str = utils.get_parameter(
-        vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
-    )
+    accrual_internal_account: str = utils.get_parameter(vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT)
     return accrual_internal_account

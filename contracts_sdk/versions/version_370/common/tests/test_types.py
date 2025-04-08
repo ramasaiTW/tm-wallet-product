@@ -191,15 +191,11 @@ class PublicCommonV370TypesTestCase(PublicCommonV360TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(
-            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
-        )
+        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(
-            type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs
-        )
+        pi = PostingInstruction(type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs)
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.HARD_SETTLEMENT, **common_kwargs)
@@ -209,9 +205,7 @@ class PublicCommonV370TypesTestCase(PublicCommonV360TypesTestCase):
         pi = PostingInstruction(type=PostingInstructionType.RELEASE, **common_kwargs)
         self.assertFalse(hasattr(pi, "advice"))
 
-        pi = PostingInstruction(
-            type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs
-        )
+        pi = PostingInstruction(type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs)
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.TRANSFER, **common_kwargs)
@@ -235,18 +229,12 @@ class PublicCommonV370TypesTestCase(PublicCommonV360TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
-        pi = PostingInstruction(
-            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
-        )
+        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
         with self.assertRaises(InvalidSmartContractError):
-            PostingInstruction(
-                type=PostingInstructionType.CUSTOM_INSTRUCTION,
-                phase=Phase.COMMITTED,
-                **common_kwargs
-            )
+            PostingInstruction(type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs)
 
         pi = PostingInstruction(type=PostingInstructionType.HARD_SETTLEMENT, **common_kwargs)
         self.assertTrue(hasattr(pi, "advice"))
@@ -419,21 +407,11 @@ class PublicCommonV370TypesTestCase(PublicCommonV360TypesTestCase):
                 )
             ],
         )
-        self.assertEqual(
-            self.request_id_370, hook_directives.add_account_note_directives[0].idempotency_key
-        )
-        self.assertEqual(
-            self.request_id_370, hook_directives.amend_schedule_directives[0].request_id
-        )
-        self.assertEqual(
-            self.request_id_370, hook_directives.remove_schedules_directives[0].request_id
-        )
-        self.assertEqual(
-            self.request_id_370, hook_directives.posting_instruction_batch_directives[0].request_id
-        )
-        self.assertEqual(
-            self.request_id_370, hook_directives.workflow_start_directives[0].idempotency_key
-        )
+        self.assertEqual(self.request_id_370, hook_directives.add_account_note_directives[0].idempotency_key)
+        self.assertEqual(self.request_id_370, hook_directives.amend_schedule_directives[0].request_id)
+        self.assertEqual(self.request_id_370, hook_directives.remove_schedules_directives[0].request_id)
+        self.assertEqual(self.request_id_370, hook_directives.posting_instruction_batch_directives[0].request_id)
+        self.assertEqual(self.request_id_370, hook_directives.workflow_start_directives[0].idempotency_key)
 
     def test_posting_instruction_batch_rejects_invalid_insertion_timestamp(self):
         with self.assertRaises(StrongTypingError):

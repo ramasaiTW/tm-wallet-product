@@ -70,9 +70,7 @@ class TestRetrieveEODObservations(TestOverdraftInterest):
 @patch.object(overdraft_interest.utils, "balance_at_coordinates")
 class TestCalculateAccrualBalance(TestOverdraftInterest):
     # Buffer amount = 10 Buffer period = 3 EOD Balance > 0 Previous days all have negative balance
-    def test_calculate_accrual_balance_positive_balance_at_eod_returns_0(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_positive_balance_at_eod_returns_0(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = 50
         result = overdraft_interest._calculate_accrual_balance(
             interest_free_amount=Decimal("10"),
@@ -90,9 +88,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 10 Buffer period = 3 EOD Balance = 0 Previous days all have negative balance
-    def test_calculate_accrual_balance_balance_at_eod_is_0_returns_0(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_balance_at_eod_is_0_returns_0(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = 0
         result = overdraft_interest._calculate_accrual_balance(
             interest_free_amount=Decimal("10"),
@@ -106,9 +102,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         self.assertEqual(result, Decimal("0"))
 
     # Buffer amount = 10 Buffer period = 3 EOD Balance = -9.99 Previous Day 1 balance is positive
-    def test_calculate_accrual_balance_eod_negative_previous_day1_positive_returns_0_buffer_applies(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_previous_day1_positive_returns_0_buffer_applies(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("0"),
@@ -153,9 +147,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 10 Buffer period = 3 EOD Balance = -10.01 Previous Day 1 balance is positive
-    def test_calculate_accrual_balance_eod_negative_buffer_are_applied_reducing_overdraft(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_buffer_are_applied_reducing_overdraft(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-10.01"),
             Decimal("0"),
@@ -200,9 +192,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 10 Buffer period = 3 EOD Balance = -9.99 Previous Day 2 is positive
-    def test_calculate_accrual_balance_eod_negative_previous_day2_positive_returns_0_buffer_applies(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_previous_day2_positive_returns_0_buffer_applies(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("-9.99"),
@@ -247,9 +237,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 10 Buffer period = 3 EOD Balance = -9.99 Previous Day 3 is positive
-    def test_calculate_accrual_balance_eod_negative_previous_day3_positive_returns_0_buffer_applies(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_previous_day3_positive_returns_0_buffer_applies(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("-9.99"),
@@ -294,9 +282,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 10 Buffer period = 3 EOD Balance = -9.99 Previous Day 4 is positive
-    def test_calculate_accrual_balance_eod_negative_previous_day4_positive_buffer_doesnt_apply(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_previous_day4_positive_buffer_doesnt_apply(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("-9.99"),
@@ -342,9 +328,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
 
     # Buffer Period Edge cases - Minimum Period - 1 day buffer
     # Buffer amount = 10 Buffer period = 1 EOD Balance = -9.99 Previous Day 1 is positive
-    def test_calculate_accrual_balance_edge_case_minimum_period_previous_day_pos_buffer_applies(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_edge_case_minimum_period_previous_day_pos_buffer_applies(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("0"),
@@ -381,9 +365,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 10 Buffer period = 1 EOD Balance = -9.99 Previous Day 1 is negative
-    def test_calculate_accrual_balance_edge_case_minimum_period_previous_day1_negative_doesnt_apply(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_edge_case_minimum_period_previous_day1_negative_doesnt_apply(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("-0.50"),
@@ -421,9 +403,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
 
     # Buffer Period Edge cases - Maximum Period - 5 day buffer
     # Buffer amount = 10 Buffer period = 1 EOD Balance = -9.99 Previous Days are positive
-    def test_calculate_accrual_balance_edge_case_maximum_period_prev_days_positive_buffer_applies(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_edge_case_maximum_period_prev_days_positive_buffer_applies(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("-9.99"),
@@ -476,9 +456,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 10 Buffer period = 5 EOD Balance = -9.99 Previous Days are negative
-    def test_calculate_accrual_balance_edge_case_maximum_period_prev_days_neg_buffer_not_applied(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_edge_case_maximum_period_prev_days_neg_buffer_not_applied(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-9.99"),
             Decimal("-9.99"),
@@ -531,9 +509,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 0 Buffer period = 3 EOD Balance = -999.99 Previous Day 2 is positive
-    def test_calculate_accrual_balance_eod_negative_only_period_is_set_buffer_applies(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_only_period_is_set_buffer_applies(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-999.99"),
             Decimal("-999.99"),
@@ -578,9 +554,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 0 Buffer period = 3 EOD Balance = -999.99 Previous Day 4 is positive
-    def test_calculate_accrual_balance_eod_negative_only_period_is_set_buffer_doesnt_apply(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_only_period_is_set_buffer_doesnt_apply(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-999.99"),
             Decimal("-999.99"),
@@ -625,9 +599,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 50 Buffer period = 0 EOD Balance = -100 Previous Days positive
-    def test_calculate_accrual_balance_eod_negative_only_amount_is_set_prev_days_positive(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_only_amount_is_set_prev_days_positive(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-100"),
             Decimal("100"),
@@ -656,9 +628,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 50 Buffer period = 0 EOD Balance = -100 Previous Days negative
-    def test_calculate_accrual_balance_eod_negative_only_amount_is_set_prev_days_negative(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_only_amount_is_set_prev_days_negative(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-100"),
             Decimal("-100"),
@@ -687,9 +657,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 50 Buffer period = 0 EOD Balance = -25 Previous Days negative
-    def test_calculate_accrual_balance_eod_negative_only_amount_is_set_buffer_covers_overdraft(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_only_amount_is_set_buffer_covers_overdraft(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-25"),
             Decimal("-100"),
@@ -718,9 +686,7 @@ class TestCalculateAccrualBalance(TestOverdraftInterest):
         )
 
     # Buffer amount = 0 Buffer period = 0 EOD Balance = -0.01 Previous Days positive
-    def test_calculate_accrual_balance_eod_negative_both_parameters_are_zero(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_calculate_accrual_balance_eod_negative_both_parameters_are_zero(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.side_effect = [
             Decimal("-0.01"),
             Decimal("1"),
@@ -895,8 +861,7 @@ class TestAccrueInterest(TestOverdraftInterest):
                 CustomInstruction(
                     postings=expected_postings,
                     instruction_details={
-                        "description": "Accrual on overdraft balance of -500.00 "
-                        f"{sentinel.denomination} at 5.00%",
+                        "description": "Accrual on overdraft balance of -500.00 " f"{sentinel.denomination} at 5.00%",
                         "event": "ACCRUE_OVERDRAFT_DAILY_FEE",
                         "gl_impacted": "True",
                         "account_type": "",
@@ -939,9 +904,7 @@ class TestApplyInterest(TestOverdraftInterest):
             vault=mock_vault,
         )
         self.assertEqual(result, [])
-        mock_get_parameter.assert_called_once_with(
-            vault=mock_vault, name="denomination", at_datetime=None
-        )
+        mock_get_parameter.assert_called_once_with(vault=mock_vault, name="denomination", at_datetime=None)
         mock_balance_at_coordinates.assert_called_once_with(
             balances=effective_balance_observation.balances,
             address="OVERDRAFT_ACCRUED_INTEREST",
@@ -1155,9 +1118,7 @@ class TestApplyInterest(TestOverdraftInterest):
             decimal_places=int("2"),
         )
         mock_standard_instruction_details.assert_called_once_with(
-            description=f"Apply 45.15 {sentinel.denomination} overdraft interest"
-            f" of 45.14591 rounded to 2 DP to "
-            f"{sentinel.account_id}.",
+            description=f"Apply 45.15 {sentinel.denomination} overdraft interest" f" of 45.14591 rounded to 2 DP to " f"{sentinel.account_id}.",
             event_type="APPLY_OVERDRAFT_DAILY_FEE",
             gl_impacted=True,
             account_type=sentinel.account_type,
@@ -1230,11 +1191,7 @@ class TestGetInterestReversalPostings(TestOverdraftInterest):
             }
         )
         mock_balance_at_coordinates.return_value = Decimal("0")
-        test_balance_observation_fetcher_mapping = {
-            overdraft_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                effective_balance_observation
-            )
-        }
+        test_balance_observation_fetcher_mapping = {overdraft_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (effective_balance_observation)}
         mock_vault = self.create_mock(
             account_id=sentinel.account_id,
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,
@@ -1283,11 +1240,7 @@ class TestGetInterestReversalPostings(TestOverdraftInterest):
         mock_balance_at_coordinates.return_value = Decimal("50")
         mock_standard_instruction_details.return_value = sentinel.instruction_details
         mock_accrual_custom_instruction.return_value = custom_posting_instructions
-        test_balance_observation_fetcher_mapping = {
-            overdraft_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                effective_balance_observation
-            )
-        }
+        test_balance_observation_fetcher_mapping = {overdraft_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (effective_balance_observation)}
         mock_vault = self.create_mock(
             account_id=sentinel.account_id,
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,
@@ -1419,11 +1372,7 @@ class TestGetInterestReversalPostings(TestOverdraftInterest):
         mock_balance_at_coordinates.return_value = Decimal("50")
         mock_standard_instruction_details.return_value = sentinel.instruction_details
         mock_accrual_custom_instruction.return_value = custom_posting_instructions
-        test_balance_observation_fetcher_mapping = {
-            overdraft_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                effective_balance_observation
-            )
-        }
+        test_balance_observation_fetcher_mapping = {overdraft_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (effective_balance_observation)}
         mock_vault = self.create_mock(
             account_id=sentinel.account_id,
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,

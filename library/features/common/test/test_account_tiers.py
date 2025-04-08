@@ -75,9 +75,7 @@ class AccountTiersTest(FeatureTest):
                 ),
             },
         )
-        account_tier = account_tiers.get_account_tier(
-            vault=mock_vault, effective_datetime=datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
-        )
+        account_tier = account_tiers.get_account_tier(vault=mock_vault, effective_datetime=datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC")))
 
         self.assertEqual(account_tier, "TIER_LOWER")
 
@@ -98,9 +96,7 @@ class AccountTiersTest(FeatureTest):
                 ),
             },
         )
-        account_tier = account_tiers.get_account_tier(
-            vault=mock_vault, effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC"))
-        )
+        account_tier = account_tiers.get_account_tier(vault=mock_vault, effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC")))
         self.assertEqual(account_tier, "TIER_UPPER")
 
     def test_get_account_tier_returns_first_in_tier_name_param_if_multiple_flags_exist(
@@ -108,9 +104,7 @@ class AccountTiersTest(FeatureTest):
     ) -> None:
         mock_vault = self.create_mock(
             parameter_ts=self.parameter_ts,
-            flags_ts=construct_flag_timeseries(
-                {"TIER_LOWER": True, "TIER_UPPER": True}, DEFAULT_DATETIME
-            ),
+            flags_ts=construct_flag_timeseries({"TIER_LOWER": True, "TIER_UPPER": True}, DEFAULT_DATETIME),
         )
 
         account_tier = account_tiers.get_account_tier(mock_vault)
@@ -122,23 +116,17 @@ class AccountTiersTest(FeatureTest):
         self,
     ) -> None:
         test_tier = "TIER_UPPER"
-        result = account_tiers.get_tiered_parameter_value_based_on_account_tier(
-            tiered_parameter=MIN_BALANCE_THRESHOLD_TIERS, tier=test_tier
-        )
+        result = account_tiers.get_tiered_parameter_value_based_on_account_tier(tiered_parameter=MIN_BALANCE_THRESHOLD_TIERS, tier=test_tier)
         self.assertEqual(result, "100")
 
     def test_get_tiered_parameter_value_based_on_account_tier_convert_function_provided(
         self,
     ) -> None:
         test_tier = "TIER_LOWER"
-        result = account_tiers.get_tiered_parameter_value_based_on_account_tier(
-            tiered_parameter=MIN_BALANCE_THRESHOLD_TIERS, tier=test_tier, convert=Decimal
-        )
+        result = account_tiers.get_tiered_parameter_value_based_on_account_tier(tiered_parameter=MIN_BALANCE_THRESHOLD_TIERS, tier=test_tier, convert=Decimal)
         self.assertEqual(result, Decimal("10"))
 
     def test_get_tiered_parameter_value_based_on_account_tier_no_value_for_tier(self) -> None:
         test_tier = "RANDOM"
-        result = account_tiers.get_tiered_parameter_value_based_on_account_tier(
-            tiered_parameter=MIN_BALANCE_THRESHOLD_TIERS, tier=test_tier, convert=Decimal
-        )
+        result = account_tiers.get_tiered_parameter_value_based_on_account_tier(tiered_parameter=MIN_BALANCE_THRESHOLD_TIERS, tier=test_tier, convert=Decimal)
         self.assertIsNone(result)

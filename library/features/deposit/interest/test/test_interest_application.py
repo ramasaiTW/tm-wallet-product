@@ -37,9 +37,7 @@ INTEREST_RECEIVED_ACCOUNT = "INTEREST_RECEIVED"
 class TestEventTypes(FeatureTest):
     def test_get_event_types_lower_case_event_name(self):
         expected_tag_id = ["CURRENT_ACCOUNT_APPLY_INTEREST_AST"]
-        test_case = SmartContractEventType(
-            name="current_account", scheduler_tag_ids=expected_tag_id
-        )
+        test_case = SmartContractEventType(name="current_account", scheduler_tag_ids=expected_tag_id)
         result = interest_application.event_types(test_case.name)[0].scheduler_tag_ids
         self.assertEqual(result, test_case.scheduler_tag_ids)
 
@@ -58,23 +56,17 @@ class TestScheduledEvents(FeatureTest):
     ):
         # mocks
         scheduled_event = ScheduledEvent(
-            start_datetime=DEFAULT_DATETIME.replace(hour=0, minute=0, second=0, microsecond=0)
-            + relativedelta(days=1),
+            start_datetime=DEFAULT_DATETIME.replace(hour=0, minute=0, second=0, microsecond=0) + relativedelta(days=1),
             schedule_method=EndOfMonthSchedule(hour=1, minute=2, second=3, day=1),
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "monthly"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "monthly"})
         mock_monthly_scheduled_event.return_value = scheduled_event
         # feature call
-        actual_schedules = interest_application.scheduled_events(
-            vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME
-        )
+        actual_schedules = interest_application.scheduled_events(vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME)
         # assertions
         mock_monthly_scheduled_event.assert_called_once_with(
             vault=sentinel.vault,
-            start_datetime=DEFAULT_DATETIME.replace(hour=0, minute=0, second=0, microsecond=0)
-            + relativedelta(days=1),
+            start_datetime=DEFAULT_DATETIME.replace(hour=0, minute=0, second=0, microsecond=0) + relativedelta(days=1),
             parameter_prefix="interest_application",
         )
 
@@ -90,17 +82,11 @@ class TestScheduledEvents(FeatureTest):
         mock_get_schedule_expr_from_parameters: MagicMock,
     ):
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "quarterly", "interest_application_day": "1"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "quarterly", "interest_application_day": "1"})
         mock_get_next_schedule_date.return_value = DEFAULT_DATETIME + relativedelta(months=3)
-        mock_get_schedule_expr_from_parameters.return_value = SentinelScheduleExpression(
-            "interest_expr"
-        )
+        mock_get_schedule_expr_from_parameters.return_value = SentinelScheduleExpression("interest_expr")
         # feature call
-        actual_schedules = interest_application.scheduled_events(
-            vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME
-        )
+        actual_schedules = interest_application.scheduled_events(vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME)
         # assertions
         mock_get_parameter.assert_has_calls(
             [
@@ -108,12 +94,8 @@ class TestScheduledEvents(FeatureTest):
                 call(sentinel.vault, name="interest_application_day"),
             ]
         )
-        mock_get_next_schedule_date.assert_called_once_with(
-            start_date=DEFAULT_DATETIME, schedule_frequency="quarterly", intended_day=1
-        )
-        mock_get_schedule_expr_from_parameters.assert_called_once_with(
-            vault=sentinel.vault, parameter_prefix="interest_application", day=1, month=4, year=2019
-        )
+        mock_get_next_schedule_date.assert_called_once_with(start_date=DEFAULT_DATETIME, schedule_frequency="quarterly", intended_day=1)
+        mock_get_schedule_expr_from_parameters.assert_called_once_with(vault=sentinel.vault, parameter_prefix="interest_application", day=1, month=4, year=2019)
         self.assertDictEqual(
             actual_schedules,
             {
@@ -133,17 +115,11 @@ class TestScheduledEvents(FeatureTest):
         mock_get_schedule_expr_from_parameters: MagicMock,
     ):
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "annually", "interest_application_day": "1"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "annually", "interest_application_day": "1"})
         mock_get_next_schedule_date.return_value = DEFAULT_DATETIME + relativedelta(years=1)
-        mock_get_schedule_expr_from_parameters.return_value = SentinelScheduleExpression(
-            "interest_expr"
-        )
+        mock_get_schedule_expr_from_parameters.return_value = SentinelScheduleExpression("interest_expr")
         # feature call
-        actual_schedules = interest_application.scheduled_events(
-            vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME
-        )
+        actual_schedules = interest_application.scheduled_events(vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME)
         # assertions
         self.assertDictEqual(
             actual_schedules,
@@ -154,12 +130,8 @@ class TestScheduledEvents(FeatureTest):
                 )
             },
         )
-        mock_get_next_schedule_date.assert_called_once_with(
-            start_date=DEFAULT_DATETIME, schedule_frequency="annually", intended_day=1
-        )
-        mock_get_schedule_expr_from_parameters.assert_called_once_with(
-            vault=sentinel.vault, parameter_prefix="interest_application", day=1, month=1, year=None
-        )
+        mock_get_next_schedule_date.assert_called_once_with(start_date=DEFAULT_DATETIME, schedule_frequency="annually", intended_day=1)
+        mock_get_schedule_expr_from_parameters.assert_called_once_with(vault=sentinel.vault, parameter_prefix="interest_application", day=1, month=1, year=None)
         mock_monthly_scheduled_event.assert_not_called()
 
     def test_scheduled_events_annually_frequency_in_february(
@@ -171,17 +143,11 @@ class TestScheduledEvents(FeatureTest):
     ):
         # mocks
         test_datetime = datetime(year=2019, month=2, day=1, tzinfo=ZoneInfo("UTC"))
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "annually", "interest_application_day": "5"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "annually", "interest_application_day": "5"})
         mock_get_next_schedule_date.return_value = test_datetime + relativedelta(years=1, day=5)
-        mock_get_schedule_expr_from_parameters.return_value = SentinelScheduleExpression(
-            "interest_expr"
-        )
+        mock_get_schedule_expr_from_parameters.return_value = SentinelScheduleExpression("interest_expr")
         # feature call
-        actual_schedules = interest_application.scheduled_events(
-            vault=sentinel.vault, reference_datetime=test_datetime
-        )
+        actual_schedules = interest_application.scheduled_events(vault=sentinel.vault, reference_datetime=test_datetime)
         # assertions
         self.assertDictEqual(
             actual_schedules,
@@ -192,12 +158,8 @@ class TestScheduledEvents(FeatureTest):
                 )
             },
         )
-        mock_get_next_schedule_date.assert_called_once_with(
-            start_date=test_datetime, schedule_frequency="annually", intended_day=5
-        )
-        mock_get_schedule_expr_from_parameters.assert_called_once_with(
-            vault=sentinel.vault, parameter_prefix="interest_application", day=5, month=2, year=None
-        )
+        mock_get_next_schedule_date.assert_called_once_with(start_date=test_datetime, schedule_frequency="annually", intended_day=5)
+        mock_get_schedule_expr_from_parameters.assert_called_once_with(vault=sentinel.vault, parameter_prefix="interest_application", day=5, month=2, year=None)
         mock_monthly_scheduled_event.assert_not_called()
 
 
@@ -230,17 +192,9 @@ class TestApplyInterestApplication(FeatureTest):
             [SentinelCustomInstruction("dummy2")],
         ]
         mock_standard_instruction_details.side_effect = [sentinel.value, sentinel.value]
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                interest_application.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
-                    "balances_obs"
-                )
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={interest_application.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("balances_obs")})  # noqa: E501
         # feature call
-        custom_instructions = interest_application.apply_interest(
-            vault=mock_vault, account_type="dummy_account"
-        )
+        custom_instructions = interest_application.apply_interest(vault=mock_vault, account_type="dummy_account")
         # assertions
         mock_accruals_custom_instruction.assert_has_calls(
             [
@@ -361,40 +315,26 @@ class TestApplyInterestApplication(FeatureTest):
 @patch.object(interest_application, "scheduled_events")
 @patch.object(interest_application.utils, "get_parameter")
 class TestUpdateNextSchedule(FeatureTest):
-    def test_update_next_schedule_execution_monthly(
-        self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock
-    ):
+    def test_update_next_schedule_execution_monthly(self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock):
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "monthly"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "monthly"})
         # feature call
-        feature_result = interest_application.update_next_schedule_execution(
-            vault=sentinel.vault, effective_datetime=DEFAULT_DATETIME
-        )
+        feature_result = interest_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=DEFAULT_DATETIME)
         # assertions
         self.assertEquals(feature_result, None)
         mock_scheduled_events.assert_not_called()
 
-    def test_update_next_schedule_execution_quarterly(
-        self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock
-    ):
+    def test_update_next_schedule_execution_quarterly(self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock):
         # mocks
         mock_scheduled_events.return_value = {
             APPLICATION_EVENT: ScheduledEvent(
                 start_datetime=DEFAULT_DATETIME,
-                expression=ScheduleExpression(
-                    year=2019, month=4, day=1, hour=1, minute=2, second=3
-                ),
+                expression=ScheduleExpression(year=2019, month=4, day=1, hour=1, minute=2, second=3),
             )
         }
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "quarterly", "interest_application_day": "1"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "quarterly", "interest_application_day": "1"})
         # feature call
-        feature_result = interest_application.update_next_schedule_execution(
-            vault=sentinel.vault, effective_datetime=DEFAULT_DATETIME
-        )
+        feature_result = interest_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=DEFAULT_DATETIME)
         # assertions
         self.assertEquals(
             feature_result,
@@ -403,68 +343,38 @@ class TestUpdateNextSchedule(FeatureTest):
                 expression=mock_scheduled_events.return_value[APPLICATION_EVENT].expression,
             ),
         )
-        mock_scheduled_events.assert_called_once_with(
-            vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME
-        )
+        mock_scheduled_events.assert_called_once_with(vault=sentinel.vault, reference_datetime=DEFAULT_DATETIME)
 
-    def test_update_next_schedule_execution_annually_is_february_not_leap(
-        self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock
-    ):
+    def test_update_next_schedule_execution_annually_is_february_not_leap(self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock):
         test_start_date = datetime(year=2020, month=2, day=1, tzinfo=ZoneInfo("UTC"))
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "annually", "interest_application_day": "1"}
-        )
-        mock_scheduled_events.return_value = {
-            "APPLY_INTEREST": ScheduledEvent(
-                start_datetime=test_start_date, expression=SentinelScheduleExpression("expression")
-            )
-        }
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "annually", "interest_application_day": "1"})
+        mock_scheduled_events.return_value = {"APPLY_INTEREST": ScheduledEvent(start_datetime=test_start_date, expression=SentinelScheduleExpression("expression"))}
 
-        update_result = interest_application.update_next_schedule_execution(
-            vault=sentinel.vault, effective_datetime=test_start_date
-        )
+        update_result = interest_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=test_start_date)
 
         self.assertIsNone(update_result)
         mock_scheduled_events.assert_not_called()
 
-    def test_update_next_schedule_execution_annually_is_february_leap(
-        self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock
-    ):
+    def test_update_next_schedule_execution_annually_is_february_leap(self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock):
         test_start_date = datetime(year=2020, month=2, day=1, tzinfo=ZoneInfo("UTC"))
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "annually", "interest_application_day": "29"}
-        )
-        mock_scheduled_events.return_value = {
-            "APPLY_INTEREST": ScheduledEvent(
-                start_datetime=test_start_date, expression=SentinelScheduleExpression("expression")
-            )
-        }
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "annually", "interest_application_day": "29"})
+        mock_scheduled_events.return_value = {"APPLY_INTEREST": ScheduledEvent(start_datetime=test_start_date, expression=SentinelScheduleExpression("expression"))}
 
-        update_result = interest_application.update_next_schedule_execution(
-            vault=sentinel.vault, effective_datetime=test_start_date
-        )
+        update_result = interest_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=test_start_date)
         expected_result = UpdateAccountEventTypeDirective(
             event_type=APPLICATION_EVENT,
             expression=SentinelScheduleExpression("expression"),
         )
 
         self.assertEqual(update_result, expected_result)
-        mock_scheduled_events.assert_called_once_with(
-            vault=sentinel.vault, reference_datetime=test_start_date
-        )
+        mock_scheduled_events.assert_called_once_with(vault=sentinel.vault, reference_datetime=test_start_date)
 
-    def test_update_next_schedule_execution_annually_is_not_february(
-        self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock
-    ):
+    def test_update_next_schedule_execution_annually_is_not_february(self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock):
         # mocks
         test_start_date = datetime(year=2020, month=1, day=28, tzinfo=ZoneInfo("UTC"))
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"interest_application_frequency": "annually", "interest_application_day": "1"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"interest_application_frequency": "annually", "interest_application_day": "1"})
         # feature call
-        feature_result = interest_application.update_next_schedule_execution(
-            vault=sentinel.vault, effective_datetime=test_start_date
-        )
+        feature_result = interest_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=test_start_date)
         # assertions
         self.assertIsNone(feature_result)
         mock_scheduled_events.assert_not_called()

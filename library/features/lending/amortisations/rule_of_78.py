@@ -49,9 +49,7 @@ def term_details(
     :return: the elapsed and remaining term
     """
 
-    original_total_term = int(
-        utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    original_total_term = int(utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT))
 
     # this allows us to avoid fetching balances in activation hook
     if effective_datetime == vault.get_account_creation_datetime():
@@ -59,9 +57,7 @@ def term_details(
         return 0, original_total_term
 
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
 
@@ -75,9 +71,7 @@ def term_details(
 
     # This is to handle the scenario where the loan has been fully repaid (as a result of an early
     # repayment or otherwise) but the account has been left open
-    expected_remaining_term = (
-        (original_total_term - elapsed) if principal_balance > Decimal("0") else 0
-    )
+    expected_remaining_term = (original_total_term - elapsed) if principal_balance > Decimal("0") else 0
 
     return elapsed, expected_remaining_term
 
@@ -105,38 +99,17 @@ def calculate_emi(
     :return: emi amount
     """
 
-    fixed_interest_rate = (
-        Decimal(0)
-        if not interest_calculation_feature
-        else interest_calculation_feature.get_annual_interest_rate(
-            vault=vault, effective_datetime=effective_datetime
-        )
-    )
+    fixed_interest_rate = Decimal(0) if not interest_calculation_feature else interest_calculation_feature.get_annual_interest_rate(vault=vault, effective_datetime=effective_datetime)
 
-    total_term = int(
-        utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    total_term = int(utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT))
 
-    principal = (
-        utils.get_parameter(vault=vault, name="principal")
-        if principal_amount is None
-        else principal_amount
-    )
+    principal = utils.get_parameter(vault=vault, name="principal") if principal_amount is None else principal_amount
 
     if principal_adjustments:
         denomination: str = utils.get_parameter(vault=vault, name="denomination")
-        principal += Decimal(
-            sum(
-                adjustment.calculate_principal_adjustment(
-                    vault=vault, balances=balances, denomination=denomination
-                )
-                for adjustment in principal_adjustments
-            )
-        )
+        principal += Decimal(sum(adjustment.calculate_principal_adjustment(vault=vault, balances=balances, denomination=denomination) for adjustment in principal_adjustments))
 
-    application_precision = utils.get_parameter(
-        vault=vault, name=interest_application.PARAM_APPLICATION_PRECISION
-    )
+    application_precision = utils.get_parameter(vault=vault, name=interest_application.PARAM_APPLICATION_PRECISION)
 
     total_loan_interest = calculate_non_accruing_loan_total_interest(
         original_principal=principal,
@@ -145,9 +118,7 @@ def calculate_emi(
         precision=application_precision,
     )
 
-    return utils.round_decimal(
-        (principal + total_loan_interest) / total_term, application_precision
-    )
+    return utils.round_decimal((principal + total_loan_interest) / total_term, application_precision)
 
 
 def apply_interest(
@@ -161,15 +132,11 @@ def apply_interest(
     Creates the postings needed to apply interest for a loan using rule of 78 loan amortisation
     :param vault: vault object
     """
-    application_internal_account: str = utils.get_parameter(
-        vault, interest_application.PARAM_INTEREST_RECEIVED_ACCOUNT
-    )
+    application_internal_account: str = utils.get_parameter(vault, interest_application.PARAM_INTEREST_RECEIVED_ACCOUNT)
     application_interest_address: str = interest_application.INTEREST_DUE
     denomination: str = utils.get_parameter(vault, PARAM_DENOMINATION)
     application_precision = interest_application.get_application_precision(vault=vault)
-    effective_balances: BalanceDefaultDict = vault.get_balances_observation(
-        fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-    ).balances
+    effective_balances: BalanceDefaultDict = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
 
     interest_application_amounts = get_interest_to_apply(
         vault=vault,
@@ -218,24 +185,18 @@ def get_interest_to_apply(
     """
 
     if balances_at_application is None:
-        balances_at_application = vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
+        balances_at_application = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
     if application_precision is None:
         application_precision = interest_application.get_application_precision(vault=vault)
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name=PARAM_DENOMINATION)
 
     principal: Decimal = utils.get_parameter(vault=vault, name=PARAM_PRINCIPAL)
-    total_term = int(
-        utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    total_term = int(utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT))
 
     # Calculating the remaining term again here instead of passing it from the due amount
     # calculation feature as only rule of 78 amortisation method would require remaining term
-    elapsed = term_helpers.calculate_elapsed_term(
-        balances=balances_at_application, denomination=denomination
-    )
+    elapsed = term_helpers.calculate_elapsed_term(balances=balances_at_application, denomination=denomination)
     term_remaining = total_term - elapsed
 
     # Rule of 78 only supports fixed_interest loans, therefore we always use the
@@ -345,9 +306,7 @@ def calculate_non_accruing_loan_total_interest(
     :param precision: number of places that interest is rounded to before application.
     """
     return utils.round_decimal(
-        original_principal
-        * utils.yearly_to_monthly_rate(yearly_rate=annual_interest_rate)
-        * Decimal(total_term),
+        original_principal * utils.yearly_to_monthly_rate(yearly_rate=annual_interest_rate) * Decimal(total_term),
         precision,
     )
 

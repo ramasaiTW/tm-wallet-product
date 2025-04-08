@@ -35,9 +35,7 @@ class MockConsumer(Mock):
         elif response_messages:
             messages = iter(response_messages)
         else:
-            raise ValueError(
-                "One of `response_message_file`, `response_messages` must be specified"
-            )
+            raise ValueError("One of `response_message_file`, `response_messages` must be specified")
 
         mock_poll = Mock(side_effect=lambda timeout: next(messages, None))
 
@@ -47,9 +45,7 @@ class MockConsumer(Mock):
             sentinel.high_offset,
         )
 
-        mock_subscribe = Mock(
-            side_effect=lambda topic, on_assign: on_assign(mock_consumer, [Mock()])
-        )
+        mock_subscribe = Mock(side_effect=lambda topic, on_assign: on_assign(mock_consumer, [Mock()]))
 
         super().__init__(
             name="InceptionKafkaMockConsumer",

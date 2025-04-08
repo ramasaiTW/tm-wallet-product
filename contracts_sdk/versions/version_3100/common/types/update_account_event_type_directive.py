@@ -21,15 +21,9 @@ class UpdateAccountEventTypeDirective(types390.UpdateAccountEventTypeDirective):
         if not _from_proto:
             if _validate_missing_params:
                 if not end_datetime and not schedule and not schedule_method:
-                    raise InvalidSmartContractError(
-                        "UpdateAccountEventTypeDirective object must have either an "
-                        "end_datetime, a schedule or schedule_method defined"
-                    )
+                    raise InvalidSmartContractError("UpdateAccountEventTypeDirective object must have either an " "end_datetime, a schedule or schedule_method defined")
             if schedule is not None and schedule_method is not None:
-                raise InvalidSmartContractError(
-                    "UpdateAccountEventTypeDirective cannot contain both"
-                    " schedule and schedule_method fields"
-                )
+                raise InvalidSmartContractError("UpdateAccountEventTypeDirective cannot contain both" " schedule and schedule_method fields")
             kwargs = {
                 "account_id": account_id,
                 "event_type": event_type,
@@ -53,10 +47,7 @@ class UpdateAccountEventTypeDirective(types390.UpdateAccountEventTypeDirective):
             types_utils.ValueSpec(
                 name="schedule_method",
                 type="Optional[EndOfMonthSchedule]",
-                docstring=(
-                    "Optional [EndOfMonthSchedule](#classes-EndOfMonthSchedule)."
-                    "**Only available in version 3.10.0+**"
-                ),
+                docstring=("Optional [EndOfMonthSchedule](#classes-EndOfMonthSchedule)." "**Only available in version 3.10.0+**"),
             )
         )
         return attributes

@@ -24,14 +24,11 @@ DAYS = "days"
 MONTHS = "months"
 
 # Parameters
-PARAM_CAPITALISE_ACCRUED_INTEREST_ON_ACCOUNT_CLOSURE = (
-    "capitalise_accrued_interest_on_account_closure"
-)
+PARAM_CAPITALISE_ACCRUED_INTEREST_ON_ACCOUNT_CLOSURE = "capitalise_accrued_interest_on_account_closure"
 capitalise_accrued_interest_on_account_closure_param = Parameter(
     name=PARAM_CAPITALISE_ACCRUED_INTEREST_ON_ACCOUNT_CLOSURE,
     level=ParameterLevel.TEMPLATE,
-    description="If true, on account closure accrued interest that has not yet been applied "
-    "will be applied to a customer account. If false, the accrued interest will be forfeited.",
+    description="If true, on account closure accrued interest that has not yet been applied " "will be applied to a customer account. If false, the accrued interest will be forfeited.",
     display_name="Capitalise Accrued Interest On Account Closure",
     shape=common_parameters.BooleanShape,
     default_value=common_parameters.BooleanValueFalse,
@@ -93,8 +90,4 @@ def get_term_unit_parameter(
     vault: SmartContractVault,
     effective_datetime: datetime | None = None,
 ) -> str:
-    return str(
-        utils.get_parameter(
-            vault=vault, name=PARAM_TERM_UNIT, at_datetime=effective_datetime, is_union=True
-        )
-    )
+    return str(utils.get_parameter(vault=vault, name=PARAM_TERM_UNIT, at_datetime=effective_datetime, is_union=True))

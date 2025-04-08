@@ -15,19 +15,14 @@ sys.path.append(".")
 contract_template_params = {"denomination": "GBP", "interest_rate": "0.05"}
 endtoend.testhandle.CONTRACTS = {
     "contract_module_account": {
-        "path": "inception_sdk/test_framework/common/contract_modules_examples"
-        "/full_contract_with_shared_function.py",
+        "path": "inception_sdk/test_framework/common/contract_modules_examples" "/full_contract_with_shared_function.py",
         "template_params": contract_template_params,
     },
 }
 
 endtoend.testhandle.CONTRACT_MODULES = {
-    "interest": {
-        "path": "inception_sdk/test_framework/common/contract_modules_examples/contract_module.py"
-    },
-    "module_2": {
-        "path": "inception_sdk/test_framework/common/contract_modules_examples/contract_module_2.py"
-    },
+    "interest": {"path": "inception_sdk/test_framework/common/contract_modules_examples/contract_module.py"},
+    "module_2": {"path": "inception_sdk/test_framework/common/contract_modules_examples/contract_module_2.py"},
 }
 
 
@@ -59,12 +54,8 @@ class TestProductContractModuleTest(endtoend.End2Endtest):
         # now check that the smart contract has a module link with the alias 'interest' and
         # 'module_2'
         product_version_id = contract_module_account["product_version_id"]
-        contract_module_links = endtoend.core_api_helper.get_smart_contract_module_version_links(
-            product_version_id
-        )[0]
-        module_alias = [
-            alias for alias in contract_module_links["alias_to_contract_module_version_id"]
-        ]
+        contract_module_links = endtoend.core_api_helper.get_smart_contract_module_version_links(product_version_id)[0]
+        module_alias = [alias for alias in contract_module_links["alias_to_contract_module_version_id"]]
         self.assertEqual(
             module_alias,
             ["interest", "module_2"],

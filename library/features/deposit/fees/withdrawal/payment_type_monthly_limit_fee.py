@@ -27,16 +27,13 @@ from inception_sdk.vault.contracts.extensions.contracts_api_extensions import Sm
 PAYMENT_TYPE = "PAYMENT_TYPE"
 
 # Parameters
-PARAM_MAXIMUM_MONTHLY_PAYMENT_TYPE_WITHDRAWAL_LIMIT = (
-    "maximum_monthly_payment_type_withdrawal_limit"
-)
+PARAM_MAXIMUM_MONTHLY_PAYMENT_TYPE_WITHDRAWAL_LIMIT = "maximum_monthly_payment_type_withdrawal_limit"
 
 parameters = [
     Parameter(
         name=PARAM_MAXIMUM_MONTHLY_PAYMENT_TYPE_WITHDRAWAL_LIMIT,
         level=ParameterLevel.TEMPLATE,
-        description="Fees required when the number of payments exceeds the monthly limit for that "
-        "payment type.",
+        description="Fees required when the number of payments exceeds the monthly limit for that " "payment type.",
         display_name="Monthly Payment Type Withdrawal Limit Fees",
         shape=StringShape(),
         default_value=dumps(
@@ -77,18 +74,12 @@ def apply_fees(
     """
 
     if historic_client_transactions is None:
-        historic_client_transactions = vault.get_client_transactions(
-            fetcher_id=fetchers.MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID
-        )
+        historic_client_transactions = vault.get_client_transactions(fetcher_id=fetchers.MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID)
 
-    maximum_monthly_payment_type_withdrawal_limit: dict[str, dict[str, str]] = utils.get_parameter(
-        vault, PARAM_MAXIMUM_MONTHLY_PAYMENT_TYPE_WITHDRAWAL_LIMIT, is_json=True
-    )
+    maximum_monthly_payment_type_withdrawal_limit: dict[str, dict[str, str]] = utils.get_parameter(vault, PARAM_MAXIMUM_MONTHLY_PAYMENT_TYPE_WITHDRAWAL_LIMIT, is_json=True)
     payment_type_fee_income_account = utils.get_parameter(vault, "payment_type_fee_income_account")
 
-    start_of_monthly_window = effective_datetime.replace(
-        day=1, hour=0, minute=0, second=0, microsecond=0
-    )
+    start_of_monthly_window = effective_datetime.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
     custom_instructions: list[CustomInstruction] = []
     total_fees_by_payment_type: dict[str, Decimal] = {}
@@ -128,12 +119,7 @@ def apply_fees(
     total_fee = sum(total_fees_by_payment_type.values())
     if total_fee > 0:
         instruction_detail = "Total fees charged for limits on payment types: "
-        instruction_detail += ",".join(
-            [
-                fee_by_type[0] + " " + str(fee_by_type[1]) + " " + denomination
-                for fee_by_type in total_fees_by_payment_type.items()
-            ]
-        )
+        instruction_detail += ",".join([fee_by_type[0] + " " + str(fee_by_type[1]) + " " + denomination for fee_by_type in total_fees_by_payment_type.items()])
         custom_instructions.extend(
             fees.fee_custom_instruction(
                 customer_account_id=vault.account_id,

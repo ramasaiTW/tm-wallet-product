@@ -17,9 +17,7 @@ InterestRateShape = NumberShape(
     max_value=1,
     step=0.0001,
 )
-FlagShape = UnionShape(
-    UnionItem(key="YES", display_name="Yes"), UnionItem(key="NO", display_name="No")
-)
+FlagShape = UnionShape(UnionItem(key="YES", display_name="Yes"), UnionItem(key="NO", display_name="No"))
 
 event_types = [
     EventType(name="CHECK_MAINTENANCE_FEE"),
@@ -173,9 +171,7 @@ contract_module_imports = [
     modules=["interest"],
 )
 def execution_schedules():
-    maintenance_fee_check_day = vault.modules["interest"].get_parameter(
-        vault, "maintenance_fee_check_day"
-    )
+    maintenance_fee_check_day = vault.modules["interest"].get_parameter(vault, "maintenance_fee_check_day")
     apply_accrued_overdraft_fees_schedule = {"hour": "23", "minute": "50"}
     check_maintenance_fee_schedule = {
         "day": str(maintenance_fee_check_day),
@@ -240,15 +236,10 @@ def pre_posting_code(postings, effective_date):
 
     balances = vault.get_balance_timeseries().latest()
     latest_outgoing_available_balance = _get_available_balance(balances, denomination)
-    proposed_amount = sum(
-        (1 if post.credit else -1) * post.amount
-        for post in postings
-        if post.account_address == DEFAULT_ADDRESS
-    )
+    proposed_amount = sum((1 if post.credit else -1) * post.amount for post in postings if post.account_address == DEFAULT_ADDRESS)
     if any(post.denomination != denomination for post in postings):
         raise Rejected(
-            f"Cannot make transactions in given denomination; "
-            f"transactions must be in {denomination}",
+            f"Cannot make transactions in given denomination; " f"transactions must be in {denomination}",
             reason_code=RejectedReason.WRONG_DENOMINATION,
         )
     proposed_outgoing_balance = latest_outgoing_available_balance + proposed_amount
@@ -265,9 +256,7 @@ def post_posting_code(postings, effective_date):
     overdraft_buffer = vault.modules["interest"].get_parameter(vault, "overdraft_buffer")
     overdraft_fee = Decimal(vault.modules["interest"].get_parameter(vault, "overdraft_fee"))
     overdraft_fee_accrual = vault.modules["interest"].get_parameter(vault, "overdraft_fee_accrual")
-    internal_overdraft_fee_account = vault.modules["interest"].get_parameter(
-        vault, "internal_overdraft_fee_account"
-    )
+    internal_overdraft_fee_account = vault.modules["interest"].get_parameter(vault, "internal_overdraft_fee_account")
 
     # Balances before latest posting
     balances = vault.get_balance_timeseries().at(timestamp=effective_date + timedelta(seconds=-1))
@@ -275,9 +264,7 @@ def post_posting_code(postings, effective_date):
     # Consider existing COMMITTED and PENDING OUT funds
     effective_available_balance = _get_available_balance(balances, denomination)
     # Do not charge overdraft fee on new PENDING OUT posting
-    posting_amount = postings.balances()[
-        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
-    ].net
+    posting_amount = postings.balances()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
     outgoing_available_balance = effective_available_balance + posting_amount
 
     if posting_amount < 0 and outgoing_available_balance < -overdraft_buffer:
@@ -294,8 +281,7 @@ def post_posting_code(postings, effective_date):
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
                     pics=[],
-                    client_transaction_id=f"ACCRUE_OVERDRAFT_FEE_{vault.get_hook_execution_id()}"
-                    f"_{denomination}",
+                    client_transaction_id=f"ACCRUE_OVERDRAFT_FEE_{vault.get_hook_execution_id()}" f"_{denomination}",
                     instruction_details={
                         "description": "Accrue overdraft fee",
                         "event": "ACCRUE_OVERDRAFT_FEE",
@@ -314,8 +300,7 @@ def post_posting_code(postings, effective_date):
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
                     pics=[],
-                    client_transaction_id=f"APPLY_OVERDRAFT_FEE_{vault.get_hook_execution_id()}"
-                    f"_{denomination}",
+                    client_transaction_id=f"APPLY_OVERDRAFT_FEE_{vault.get_hook_execution_id()}" f"_{denomination}",
                     instruction_details={
                         "description": "Apply overdraft fee",
                         "event": "APPLY_OVERDRAFT_FEE",
@@ -323,9 +308,7 @@ def post_posting_code(postings, effective_date):
                 )
             )
         if posting_ins:
-            vault.instruct_posting_batch(
-                posting_instructions=posting_ins, effective_date=effective_date
-            )
+            vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=effective_date)
 
 
 @requires(parameters=True, balances="latest")
@@ -336,15 +319,11 @@ def close_code(effective_date):
 def _apply_accrued_overdraft_fees(vault, effective_date):
     denomination = vault.modules["interest"].get_parameter(vault, "denomination")
     balances = vault.get_balance_timeseries().at(timestamp=effective_date)
-    overdraft_fee_balance = balances[
-        (OVERDRAFT_FEE, DEFAULT_ASSET, denomination, Phase.COMMITTED)
-    ].net
+    overdraft_fee_balance = balances[(OVERDRAFT_FEE, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
 
     if overdraft_fee_balance < 0:
         overdraft_buffer = vault.modules["interest"].get_parameter(vault, "overdraft_buffer")
-        internal_overdraft_fee_account = vault.modules["interest"].get_parameter(
-            vault, "internal_overdraft_fee_account"
-        )
+        internal_overdraft_fee_account = vault.modules["interest"].get_parameter(vault, "internal_overdraft_fee_account")
         # Consider COMMITTED and PENDING OUT funds
         effective_available_balance = _get_available_balance(balances, denomination)
 
@@ -364,9 +343,7 @@ def _apply_accrued_overdraft_fees(vault, effective_date):
                         asset=DEFAULT_ASSET,
                         override_all_restrictions=True,
                         pics=[],
-                        client_transaction_id=f"APPLY_ACCRUED_OVERDRAFT_FEES_"
-                        f"{vault.get_hook_execution_id()}_{denomination}"
-                        f"_CUSTOMER",
+                        client_transaction_id=f"APPLY_ACCRUED_OVERDRAFT_FEES_" f"{vault.get_hook_execution_id()}_{denomination}" f"_CUSTOMER",
                         instruction_details={
                             "description": "Apply accrued overdraft fees",
                             "event": "APPLY_ACCRUED_OVERDRAFT_FEES",
@@ -385,8 +362,7 @@ def _apply_accrued_overdraft_fees(vault, effective_date):
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
                     pics=[],
-                    client_transaction_id=f"REVERSE_ACCRUED_OVERDRAFT_FEES_"
-                    f"{vault.get_hook_execution_id()}_{denomination}",
+                    client_transaction_id=f"REVERSE_ACCRUED_OVERDRAFT_FEES_" f"{vault.get_hook_execution_id()}_{denomination}",
                     instruction_details={
                         "description": "Reverse accrued overdraft fees",
                         "event": "APPLY_ACCRUED_OVERDRAFT_FEES",
@@ -394,32 +370,20 @@ def _apply_accrued_overdraft_fees(vault, effective_date):
                 )
             )
         if posting_ins:
-            vault.instruct_posting_batch(
-                posting_instructions=posting_ins, effective_date=effective_date
-            )
+            vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=effective_date)
 
 
 def _check_maintenance_fee(vault, effective_date):
     # Check for either maintenance fee waivers:
     # 1. EOD balance consistently greater than $1500 in month (parameter)
     # 2. Total deposits in month greater than $1000 (parameter)
-    maintenance_fee = Decimal(
-        vault.modules["interest"].get_parameter(vault, "maintenance_fee", effective_date)
-    )
+    maintenance_fee = Decimal(vault.modules["interest"].get_parameter(vault, "maintenance_fee", effective_date))
 
     if maintenance_fee > 0:
-        denomination = vault.modules["interest"].get_parameter(
-            vault, "denomination", effective_date
-        )
-        minimum_daily_balance = vault.modules["interest"].get_parameter(
-            vault, "minimum_daily_checking_balance", effective_date
-        )
-        minimum_monthly_deposit = vault.modules["interest"].get_parameter(
-            vault, "minimum_monthly_deposit", effective_date
-        )
-        internal_maintenance_fee_account = vault.modules["interest"].get_parameter(
-            vault, "internal_maintenance_fee_account", effective_date
-        )
+        denomination = vault.modules["interest"].get_parameter(vault, "denomination", effective_date)
+        minimum_daily_balance = vault.modules["interest"].get_parameter(vault, "minimum_daily_checking_balance", effective_date)
+        minimum_monthly_deposit = vault.modules["interest"].get_parameter(vault, "minimum_monthly_deposit", effective_date)
+        internal_maintenance_fee_account = vault.modules["interest"].get_parameter(vault, "internal_maintenance_fee_account", effective_date)
 
         minimum_daily_balance_breached = False
         minimum_monthly_deposit_breached = False
@@ -432,25 +396,16 @@ def _check_maintenance_fee(vault, effective_date):
 
         for end_of_day in _daterange(start_date, effective_date + timedelta(days=1)):
             end_of_day_balances = balance_timeseries.at(timestamp=end_of_day)
-            committed_end_of_day_balances = end_of_day_balances[
-                (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
-            ].net
-            pending_out_end_of_day_balances = end_of_day_balances[
-                (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)
-            ].net
-            checking_end_of_day_balance = (
-                committed_end_of_day_balances + pending_out_end_of_day_balances
-            )
+            committed_end_of_day_balances = end_of_day_balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+            pending_out_end_of_day_balances = end_of_day_balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)].net
+            checking_end_of_day_balance = committed_end_of_day_balances + pending_out_end_of_day_balances
             if checking_end_of_day_balance < minimum_daily_balance:
                 minimum_daily_balance_breached = True
                 break
 
         if minimum_daily_balance_breached:
             client_month_transactions = vault.get_client_transactions()
-            if (
-                _sum_client_transactions(client_month_transactions, denomination)
-                < minimum_monthly_deposit
-            ):
+            if _sum_client_transactions(client_month_transactions, denomination) < minimum_monthly_deposit:
                 minimum_monthly_deposit_breached = True
 
         if minimum_daily_balance_breached and minimum_monthly_deposit_breached:
@@ -465,9 +420,7 @@ def _check_maintenance_fee(vault, effective_date):
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
                     pics=[],
-                    client_transaction_id=f"MONTHLY_MAINTENANCE_FEE_"
-                    f"{vault.get_hook_execution_id()}"
-                    f"_{denomination}",
+                    client_transaction_id=f"MONTHLY_MAINTENANCE_FEE_" f"{vault.get_hook_execution_id()}" f"_{denomination}",
                     instruction_details={
                         "description": "Maintenance fee applied",
                         "event": "MAINTENANCE_FEE",
@@ -492,10 +445,7 @@ def _publish_extract(vault, effective_date):
         str(pib.value_timestamp): [
             pib.batch_id,
             "%0.2f" % _get_altered_balance(pib.balances(), denomination),
-            "%0.2f"
-            % _get_phase_balance(
-                balance_timeseries.at(timestamp=pib.value_timestamp), denomination
-            ),
+            "%0.2f" % _get_phase_balance(balance_timeseries.at(timestamp=pib.value_timestamp), denomination),
         ]
         for pib in batches
         if end_of_last_extract <= pib.value_timestamp < effective_date
@@ -541,13 +491,9 @@ def _daterange(start_date, end_date):
 
 
 def _get_available_balance(balances, denomination):
-    committed_balance_net = balances[
-        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
-    ].net
+    committed_balance_net = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
     # Pending out is -ve
-    pending_out_balance_net = balances[
-        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)
-    ].net
+    pending_out_balance_net = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)].net
     return committed_balance_net + pending_out_balance_net
 
 
@@ -556,11 +502,7 @@ def _get_phase_balance(balances, denomination, phase=Phase.COMMITTED):
 
 
 def _get_altered_balance(balances, denomination):
-    return sum(
-        balance.net
-        for ((address, asset, denom, phase), balance) in balances.items()
-        if asset == DEFAULT_ASSET and denom == denomination
-    )
+    return sum(balance.net for ((address, asset, denom, phase), balance) in balances.items() if asset == DEFAULT_ASSET and denom == denomination)
 
 
 def _yearly_to_daily_rate(yearly_rate):

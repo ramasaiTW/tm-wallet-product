@@ -58,9 +58,7 @@ def calculate_emi(
         return static_emi
 
     # Set assume that there is no balloon payment if the value is unset.
-    balloon_payment_amount = utils.get_parameter(
-        vault=vault, name="balloon_payment_amount", is_optional=True, default_value=Decimal("0")
-    )
+    balloon_payment_amount = utils.get_parameter(vault=vault, name="balloon_payment_amount", is_optional=True, default_value=Decimal("0"))
 
     # Static Balloon payment case
     # Underlying formula used is EMI = (P-(L/(1+R)^(N)))*R*(((1+R)^N)/((1+R)^N-1))
@@ -70,29 +68,12 @@ def calculate_emi(
     # - N is the Term remaining
     # - R is the interest rate to apply
 
-    interest_rate = (
-        Decimal(0)
-        if not interest_calculation_feature
-        else interest_calculation_feature.get_monthly_interest_rate(
-            vault=vault, effective_datetime=effective_datetime
-        )
-    )
-    principal = (
-        utils.get_parameter(vault=vault, name="principal")
-        if principal_amount is None
-        else principal_amount
-    )
+    interest_rate = Decimal(0) if not interest_calculation_feature else interest_calculation_feature.get_monthly_interest_rate(vault=vault, effective_datetime=effective_datetime)
+    principal = utils.get_parameter(vault=vault, name="principal") if principal_amount is None else principal_amount
 
     if principal_adjustments:
         denomination: str = utils.get_parameter(vault=vault, name="denomination")
-        principal += Decimal(
-            sum(
-                adjustment.calculate_principal_adjustment(
-                    vault=vault, balances=balances, denomination=denomination
-                )
-                for adjustment in principal_adjustments
-            )
-        )
+        principal += Decimal(sum(adjustment.calculate_principal_adjustment(vault=vault, balances=balances, denomination=denomination) for adjustment in principal_adjustments))
 
     _, remaining_term = term_details(
         vault=vault,
@@ -134,9 +115,7 @@ def term_details(
     :return: the elapsed and remaining term
     """
 
-    original_total_term = int(
-        utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    original_total_term = int(utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT))
 
     # this allows us to avoid fetching balances in activation hook
     if effective_datetime == vault.get_account_creation_datetime():
@@ -144,9 +123,7 @@ def term_details(
         return 0, original_total_term
 
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
 
@@ -156,6 +133,4 @@ def term_details(
     return elapsed, expected_remaining_term
 
 
-AmortisationFeature = lending_interfaces.Amortisation(
-    calculate_emi=calculate_emi, term_details=term_details, override_final_event=True
-)
+AmortisationFeature = lending_interfaces.Amortisation(calculate_emi=calculate_emi, term_details=term_details, override_final_event=True)

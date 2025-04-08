@@ -47,17 +47,11 @@ class NumberShape(Shape):
         return "NumberShape"
 
     def _validate_attributes(self):
-        types_utils.validate_type(
-            self.min_value, (Decimal, int), prefix="min_value", is_optional=True
-        )
-        types_utils.validate_type(
-            self.max_value, (Decimal, int), prefix="max_value", is_optional=True
-        )
+        types_utils.validate_type(self.min_value, (Decimal, int), prefix="min_value", is_optional=True)
+        types_utils.validate_type(self.max_value, (Decimal, int), prefix="max_value", is_optional=True)
         types_utils.validate_type(self.step, (Decimal, int), prefix="step", is_optional=True)
         if self.min_value and self.max_value and self.min_value > self.max_value:
-            raise exceptions.InvalidSmartContractError(
-                "NumberShape min_value must be less than max_value"
-            )
+            raise exceptions.InvalidSmartContractError("NumberShape min_value must be less than max_value")
 
     @classmethod
     @lru_cache()
@@ -164,9 +158,7 @@ class DenominationShape(Shape):
             prefix="permitted_denominations",
         )
         if self.permitted_denominations is not None:
-            iterator = types_utils.get_iterator(
-                self.permitted_denominations, "str", "permitted_denominations", check_empty=False
-            )
+            iterator = types_utils.get_iterator(self.permitted_denominations, "str", "permitted_denominations", check_empty=False)
             for item in iterator:
                 types_utils.validate_type(item, str)
 
@@ -232,9 +224,7 @@ class DateShape(Shape):
                 "DateShape",
             )
         if self.min_date and self.max_date and self.max_date < self.min_date:
-            raise exceptions.InvalidSmartContractError(
-                "DateShape min_date must be less than max_date"
-            )
+            raise exceptions.InvalidSmartContractError("DateShape min_date must be less than max_date")
 
     @classmethod
     @lru_cache()
@@ -271,18 +261,12 @@ class DateShape(Shape):
             types_utils.ValueSpec(
                 name="min_date",
                 type="Optional[datetime]",
-                docstring=(
-                    "Metadata describing which the earliest allowed date. "
-                    "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                ),
+                docstring=("Metadata describing which the earliest allowed date. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
             ),
             types_utils.ValueSpec(
                 name="max_date",
                 type="Optional[datetime]",
-                docstring=(
-                    "Metadata describing which the latest allowed date. "
-                    "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                ),
+                docstring=("Metadata describing which the latest allowed date. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
             ),
         ]
 
@@ -304,9 +288,7 @@ class UnionItem:
         if not self.key:
             raise exceptions.StrongTypingError("UnionItem init arg 'key' must be populated")
         if not self.display_name:
-            raise exceptions.StrongTypingError(
-                "UnionItem init arg 'display_name' must be populated"
-            )
+            raise exceptions.StrongTypingError("UnionItem init arg 'display_name' must be populated")
 
     @classmethod
     @lru_cache()
@@ -340,9 +322,7 @@ class UnionItem:
             types_utils.ValueSpec(
                 name="display_name",
                 type="str",
-                docstring=(
-                    "The name of the option as could be shown on a front-end user interface."
-                ),
+                docstring=("The name of the option as could be shown on a front-end user interface."),
             ),
         ]
 
@@ -374,8 +354,7 @@ class UnionItemValue:
             "(#DerivedParameterHookResult)).",
             public_attributes=cls._public_attributes(),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
-                docstring="Constructs a UnionItemValue used to represent a [UnionItem]"
-                "(#UnionItem) key.",
+                docstring="Constructs a UnionItemValue used to represent a [UnionItem]" "(#UnionItem) key.",
                 args=cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
@@ -440,20 +419,14 @@ class UnionShape(Shape):
         if language_code != symbols.Languages.ENGLISH:
             raise ValueError("Language not supported")
 
-        return [
-            types_utils.ValueSpec(
-                name="items", type="List[UnionItem]", docstring="The allowed values."
-            )
-        ]
+        return [types_utils.ValueSpec(name="items", type="List[UnionItem]", docstring="The allowed values.")]
 
     @staticmethod
     def _validate_native_value(value: UnionItemValue, keys: list[str]):  # type: ignore
         types_utils.validate_type(value, UnionItemValue)
         value._validate_native_value()  # noqa: SLF001
         if value.key not in keys:
-            raise exceptions.InvalidSmartContractError(
-                f'UnionItemValue with key "{value.key}" not allowed in this UnionShape'
-            )
+            raise exceptions.InvalidSmartContractError(f'UnionItemValue with key "{value.key}" not allowed in this UnionShape')
 
 
 class OptionalValue:
@@ -499,21 +472,14 @@ class OptionalValue:
         return types_utils.ClassSpec(
             name="OptionalValue",
             docstring="Specifies an optional Parameter value",
-            public_attributes=[
-                types_utils.ValueSpec(
-                    name="value", type="Any", docstring="The value, if specified."
-                )
-            ],
+            public_attributes=[types_utils.ValueSpec(name="value", type="Any", docstring="The value, if specified.")],
             constructor=types_utils.ConstructorSpec(
                 docstring="",
                 args=[
                     types_utils.ValueSpec(
                         name="value",
                         type="Optional[Union[Decimal, str, datetime, UnionItemValue, int]]",
-                        docstring=(
-                            "The optional parameter value. If using a `datetime` it "
-                            "must be a timezone-aware UTC datetime using the ZoneInfo class."
-                        ),
+                        docstring=("The optional parameter value. If using a `datetime` it " "must be a timezone-aware UTC datetime using the ZoneInfo class."),
                     )
                 ],
             ),
@@ -536,9 +502,7 @@ class OptionalShape(Shape):
     def __init__(
         self,
         *,
-        shape: Union[
-            AccountIdShape, DateShape, DenominationShape, NumberShape, StringShape, UnionShape
-        ],
+        shape: Union[AccountIdShape, DateShape, DenominationShape, NumberShape, StringShape, UnionShape],
     ):
         self.shape = shape
         self._validate_attributes()
@@ -549,9 +513,7 @@ class OptionalShape(Shape):
     def _validate_attributes(self):
         # Validate the shape arg up-front to provide a user friendly error message
         if isclass(self.shape) and issubclass(self.shape, Shape):
-            raise exceptions.StrongTypingError(
-                f"OptionalShape init arg 'shape' must be an instance of {self.shape.__name__} class"
-            )
+            raise exceptions.StrongTypingError(f"OptionalShape init arg 'shape' must be an instance of {self.shape.__name__} class")
         types_utils.validate_type(
             self.shape,
             (AccountIdShape, DateShape, DenominationShape, NumberShape, StringShape, UnionShape),
@@ -584,8 +546,7 @@ class OptionalShape(Shape):
         return [
             types_utils.ValueSpec(
                 name="shape",
-                type="Union[AccountIdShape, DateShape, DenominationShape, NumberShape, "
-                "StringShape, UnionShape]",
+                type="Union[AccountIdShape, DateShape, DenominationShape, NumberShape, " "StringShape, UnionShape]",
                 docstring="The optional inner Shape.",
             ),
         ]
@@ -614,9 +575,7 @@ class Parameter:
         derived: Optional[bool] = False,
         display_name: Optional[str] = "",
         description: Optional[str] = "",
-        default_value: Optional[
-            Union[Decimal, str, datetime, OptionalValue, UnionItemValue, int]
-        ] = None,
+        default_value: Optional[Union[Decimal, str, datetime, OptionalValue, UnionItemValue, int]] = None,
         update_permission: Optional[ParameterUpdatePermission] = None,
     ):
         self.name = name
@@ -636,10 +595,7 @@ class Parameter:
     def _validate_attribute_types(self):
         # Validate up-front that the shape is an instance of Shape class for user friendly error
         if isclass(self.shape) and issubclass(self.shape, Shape):
-            raise exceptions.StrongTypingError(
-                f"Parameter init arg 'shape' for parameter '{self.name}' must be an "
-                f"instance of the {self.shape.__name__} class"
-            )
+            raise exceptions.StrongTypingError(f"Parameter init arg 'shape' for parameter '{self.name}' must be an " f"instance of the {self.shape.__name__} class")
 
         shape_types = (
             AccountIdShape,
@@ -657,13 +613,9 @@ class Parameter:
             types_utils.validate_type(self.shape, shape_types, hint="", prefix="shape")
             types_utils.validate_type(self.level, ParameterLevel, prefix="level")
             types_utils.validate_type(self.derived, bool, prefix="derived", is_optional=True)
-            types_utils.validate_type(
-                self.display_name, str, prefix="display_name", is_optional=True
-            )
+            types_utils.validate_type(self.display_name, str, prefix="display_name", is_optional=True)
             types_utils.validate_type(self.description, str, prefix="description", is_optional=True)
-            types_utils.validate_type(
-                self.default_value, default_value_types, prefix="default_value", is_optional=True
-            )
+            types_utils.validate_type(self.default_value, default_value_types, prefix="default_value", is_optional=True)
             types_utils.validate_type(
                 self.update_permission,
                 ParameterUpdatePermission,
@@ -678,28 +630,14 @@ class Parameter:
         self._validate_attribute_types()
 
         optional = isinstance(self.shape, OptionalShape)
-        if (
-            self.level == ParameterLevel.INSTANCE
-            and self.default_value is None
-            and not optional
-            and not self.derived
-        ):
-            raise exceptions.InvalidSmartContractError(
-                "Instance Parameters with non optional shapes must have a default value: "
-                f"{self.name}"
-            )
+        if self.level == ParameterLevel.INSTANCE and self.default_value is None and not optional and not self.derived:
+            raise exceptions.InvalidSmartContractError("Instance Parameters with non optional shapes must have a default value: " f"{self.name}")
         if not optional and isinstance(self.default_value, OptionalValue):
-            raise exceptions.InvalidSmartContractError(
-                f"Non optional shapes must have a non optional default value: {self.name}"
-            )
+            raise exceptions.InvalidSmartContractError(f"Non optional shapes must have a non optional default value: {self.name}")
         if self.derived and self.level != ParameterLevel.INSTANCE:
-            raise exceptions.InvalidSmartContractError(
-                f"Derived Parameters can only be INSTANCE level: {self.name}"
-            )
+            raise exceptions.InvalidSmartContractError(f"Derived Parameters can only be INSTANCE level: {self.name}")
         if self.derived and (self.default_value or self.update_permission):
-            raise exceptions.InvalidSmartContractError(
-                f"Derived Parameters cannot have a default value or update permissions: {self.name}"
-            )
+            raise exceptions.InvalidSmartContractError(f"Derived Parameters cannot have a default value or update permissions: {self.name}")
         if isinstance(self.default_value, datetime):
             validate_timezone_is_utc(
                 self.default_value,
@@ -717,9 +655,7 @@ class Parameter:
                 default_value = self.default_value.value
 
             if isinstance(actual_shape, UnionShape):
-                actual_shape._validate_native_value(  # noqa: SLF001
-                    default_value, [i.key for i in actual_shape.items]
-                )
+                actual_shape._validate_native_value(default_value, [i.key for i in actual_shape.items])  # noqa: SLF001
             else:
                 actual_shape._validate_native_value(default_value)  # noqa: SLF001
 
@@ -758,15 +694,10 @@ class Parameter:
             ),
             types_utils.ValueSpec(
                 name="shape",
-                type=(
-                    "Union[AccountIdShape, DateShape, DenominationShape, NumberShape, "
-                    "OptionalShape, StringShape, UnionShape]"
-                ),
+                type=("Union[AccountIdShape, DateShape, DenominationShape, NumberShape, " "OptionalShape, StringShape, UnionShape]"),
                 docstring="The shape of the parameter.",
             ),
-            types_utils.ValueSpec(
-                name="level", type="ParameterLevel", docstring="The level of the Parameter."
-            ),
+            types_utils.ValueSpec(name="level", type="ParameterLevel", docstring="The level of the Parameter."),
             types_utils.ValueSpec(
                 name="derived",
                 type="Optional[bool]",

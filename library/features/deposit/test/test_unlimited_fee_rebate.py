@@ -64,9 +64,7 @@ class GroupPostingsByFeeEligibilityTest(FeatureTest):
         self.mock_get_parameter.assert_not_called()
 
     @patch.object(unlimited_fee_rebate, "is_posting_instruction_eligible_for_fee_rebate")
-    def test_group_posting_instructions_by_fee_eligibility_fee_postings_denomination_provided(
-        self, mock_is_posting_instruction_eligible_for_fee_rebate: MagicMock
-    ):
+    def test_group_posting_instructions_by_fee_eligibility_fee_postings_denomination_provided(self, mock_is_posting_instruction_eligible_for_fee_rebate: MagicMock):
         mock_is_posting_instruction_eligible_for_fee_rebate.side_effect = [True, False, True]
         posting_instruction_1 = MagicMock(instruction_details={})
         posting_instruction_2 = MagicMock(instruction_details={"fee_type": sentinel.fee_1})
@@ -134,9 +132,7 @@ class GroupPostingsByFeeEligibilityTest(FeatureTest):
         )
 
     @patch.object(unlimited_fee_rebate, "is_posting_instruction_eligible_for_fee_rebate")
-    def test_group_posting_instructions_by_fee_eligibility_fee_postings_defaulted_denomination(
-        self, mock_is_posting_instruction_eligible_for_fee_rebate: MagicMock
-    ):
+    def test_group_posting_instructions_by_fee_eligibility_fee_postings_defaulted_denomination(self, mock_is_posting_instruction_eligible_for_fee_rebate: MagicMock):
         mock_is_posting_instruction_eligible_for_fee_rebate.side_effect = [True, False, True]
         posting_instruction_1 = MagicMock(instruction_details={})
         posting_instruction_2 = MagicMock(instruction_details={"fee_type": sentinel.fee_1})
@@ -238,23 +234,15 @@ class RebateFeesTest(FeatureTest):
                 "denomination": sentinel.default_denomination,
             }
         )
-        patch_group_posting_instructions_by_fee_eligibility = patch.object(
-            unlimited_fee_rebate, "group_posting_instructions_by_fee_eligibility"
-        )
-        self.mock_group_posting_instructions_by_fee_eligibility = (
-            patch_group_posting_instructions_by_fee_eligibility.start()
-        )
-        self.mock_group_posting_instructions_by_fee_eligibility.return_value = (
-            self.grouped_posting_instructions
-        )
+        patch_group_posting_instructions_by_fee_eligibility = patch.object(unlimited_fee_rebate, "group_posting_instructions_by_fee_eligibility")
+        self.mock_group_posting_instructions_by_fee_eligibility = patch_group_posting_instructions_by_fee_eligibility.start()
+        self.mock_group_posting_instructions_by_fee_eligibility.return_value = self.grouped_posting_instructions
 
         self.addCleanup(patch.stopall)
         return super().setUp()
 
     @patch.object(unlimited_fee_rebate.utils, "balance_at_coordinates")
-    def test_rebate_fees_with_eligible_fee_postings_default_denomination(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_rebate_fees_with_eligible_fee_postings_default_denomination(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-1")
 
         expected_result = [
@@ -324,9 +312,7 @@ class RebateFeesTest(FeatureTest):
         )
 
     @patch.object(unlimited_fee_rebate.utils, "balance_at_coordinates")
-    def test_rebate_fees_with_eligible_fee_postings_provided_denomination(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_rebate_fees_with_eligible_fee_postings_provided_denomination(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-1")
 
         expected_result = [
@@ -397,13 +383,9 @@ class RebateFeesTest(FeatureTest):
         )
 
     def test_rebate_fees_no_fee_postings(self):
-        grouped_posting_instructions = (
-            self.mock_group_posting_instructions_by_fee_eligibility.return_value
-        )
+        grouped_posting_instructions = self.mock_group_posting_instructions_by_fee_eligibility.return_value
         grouped_posting_instructions[unlimited_fee_rebate.FEES_ELIGIBLE_FOR_REBATE] = []
-        self.mock_group_posting_instructions_by_fee_eligibility.return_value = (
-            grouped_posting_instructions
-        )
+        self.mock_group_posting_instructions_by_fee_eligibility.return_value = grouped_posting_instructions
         self.assertListEqual(
             unlimited_fee_rebate.rebate_fees(
                 vault=sentinel.vault,
@@ -418,13 +400,9 @@ class RebateFeesTest(FeatureTest):
 class IsPostingEligibleForRebateTest(FeatureTest):
     tside = Tside.LIABILITY
 
-    def test_is_posting_instruction_eligible_for_fee_rebate_non_eligible_posting_type(
-        self, mock_get_current_debit_balance: MagicMock
-    ):
+    def test_is_posting_instruction_eligible_for_fee_rebate_non_eligible_posting_type(self, mock_get_current_debit_balance: MagicMock):
         mock_posting_instruction = MagicMock()
-        type(mock_posting_instruction).type = PropertyMock(
-            return_value="ineligible_posting_instruction_type"
-        )
+        type(mock_posting_instruction).type = PropertyMock(return_value="ineligible_posting_instruction_type")
         result = unlimited_fee_rebate.is_posting_instruction_eligible_for_fee_rebate(
             posting_instruction=mock_posting_instruction,
             eligible_fee_types=sentinel.eligible_fee_types,
@@ -434,9 +412,7 @@ class IsPostingEligibleForRebateTest(FeatureTest):
         self.assertFalse(result)
         mock_get_current_debit_balance.assert_not_called()
 
-    def test_is_posting_instruction_eligible_for_fee_rebate_positive_posting_balance(
-        self, mock_get_current_debit_balance: MagicMock
-    ):
+    def test_is_posting_instruction_eligible_for_fee_rebate_positive_posting_balance(self, mock_get_current_debit_balance: MagicMock):
         mock_get_current_debit_balance.return_value = Decimal("10")
         result = unlimited_fee_rebate.is_posting_instruction_eligible_for_fee_rebate(
             posting_instruction=self.inbound_transfer(amount=Decimal("10")),
@@ -446,9 +422,7 @@ class IsPostingEligibleForRebateTest(FeatureTest):
         )
         self.assertFalse(result)
 
-    def test_is_posting_instruction_eligible_for_fee_rebate_credit_custom_instruction(
-        self, mock_get_current_debit_balance: MagicMock
-    ):
+    def test_is_posting_instruction_eligible_for_fee_rebate_credit_custom_instruction(self, mock_get_current_debit_balance: MagicMock):
         mock_get_current_debit_balance.return_value = Decimal("0")
         result = unlimited_fee_rebate.is_posting_instruction_eligible_for_fee_rebate(
             posting_instruction=self.custom_instruction(
@@ -480,23 +454,17 @@ class IsPostingEligibleForRebateTest(FeatureTest):
         )
         self.assertFalse(result)
 
-    def test_is_posting_instruction_eligible_for_fee_rebate_no_fee_metadata(
-        self, mock_get_current_debit_balance: MagicMock
-    ):
+    def test_is_posting_instruction_eligible_for_fee_rebate_no_fee_metadata(self, mock_get_current_debit_balance: MagicMock):
         mock_get_current_debit_balance.return_value = Decimal("10")
         result = unlimited_fee_rebate.is_posting_instruction_eligible_for_fee_rebate(
-            posting_instruction=self.outbound_hard_settlement(
-                amount=Decimal("10"), _own_account_id=sentinel.account_id
-            ),
+            posting_instruction=self.outbound_hard_settlement(amount=Decimal("10"), _own_account_id=sentinel.account_id),
             eligible_fee_types=sentinel.eligible_fee_types,
             fee_rebate_internal_accounts=sentinel.fee_rebate_internal_accounts,
             denomination=sentinel.denomination,
         )
         self.assertFalse(result)
 
-    def test_is_posting_instruction_eligible_for_fee_rebate_fee_metadata_not_in_eligible_fee_types(
-        self, mock_get_current_debit_balance: MagicMock
-    ):
+    def test_is_posting_instruction_eligible_for_fee_rebate_fee_metadata_not_in_eligible_fee_types(self, mock_get_current_debit_balance: MagicMock):
         mock_get_current_debit_balance.return_value = Decimal("10")
         result = unlimited_fee_rebate.is_posting_instruction_eligible_for_fee_rebate(
             posting_instruction=self.outbound_hard_settlement(
@@ -510,9 +478,7 @@ class IsPostingEligibleForRebateTest(FeatureTest):
         )
         self.assertFalse(result)
 
-    def test_is_posting_instruction_eligible_for_fee_rebate_fee_type_internal_account_not_present(
-        self, mock_get_current_debit_balance: MagicMock
-    ):
+    def test_is_posting_instruction_eligible_for_fee_rebate_fee_type_internal_account_not_present(self, mock_get_current_debit_balance: MagicMock):
         mock_get_current_debit_balance.return_value = Decimal("10")
         result = unlimited_fee_rebate.is_posting_instruction_eligible_for_fee_rebate(
             posting_instruction=self.outbound_hard_settlement(
@@ -526,9 +492,7 @@ class IsPostingEligibleForRebateTest(FeatureTest):
         )
         self.assertFalse(result)
 
-    def test_is_posting_instruction_eligible_for_fee_rebate_is_eligible(
-        self, mock_get_current_debit_balance: MagicMock
-    ):
+    def test_is_posting_instruction_eligible_for_fee_rebate_is_eligible(self, mock_get_current_debit_balance: MagicMock):
         mock_get_current_debit_balance.return_value = Decimal("10")
         result = unlimited_fee_rebate.is_posting_instruction_eligible_for_fee_rebate(
             posting_instruction=self.outbound_hard_settlement(

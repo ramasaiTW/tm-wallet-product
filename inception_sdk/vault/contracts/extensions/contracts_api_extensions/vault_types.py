@@ -50,19 +50,7 @@ class SmartContractVault:
 
     def get_posting_instructions(
         self, *, fetcher_id: str
-    ) -> list[
-        Union[
-            AuthorisationAdjustment,
-            CustomInstruction,
-            InboundAuthorisation,
-            InboundHardSettlement,
-            OutboundAuthorisation,
-            OutboundHardSettlement,
-            Release,
-            Settlement,
-            Transfer,
-        ]
-    ]:
+    ) -> list[Union[AuthorisationAdjustment, CustomInstruction, InboundAuthorisation, InboundHardSettlement, OutboundAuthorisation, OutboundHardSettlement, Release, Settlement, Transfer,]]:
         ...
 
     def get_client_transactions(self, *, fetcher_id: str) -> dict[str, ClientTransaction]:
@@ -71,9 +59,7 @@ class SmartContractVault:
     def get_account_creation_datetime(self) -> datetime:
         ...
 
-    def get_balances_timeseries(
-        self, *, fetcher_id: str
-    ) -> Mapping[BalanceCoordinate, BalanceTimeseries]:
+    def get_balances_timeseries(self, *, fetcher_id: str) -> Mapping[BalanceCoordinate, BalanceTimeseries]:
         ...
 
     def get_hook_execution_id(self) -> str:
@@ -106,26 +92,12 @@ class SuperviseeContractVault(SmartContractVault):
 
     # override standard vault methods due to ODF restrictions in supervisors
     # ignore mypy warning for 'Signature incompatible with supertype'
-    def get_balances_timeseries(  # type: ignore
-        self, *, fetcher_id: Optional[str] = None
-    ) -> Mapping[BalanceCoordinate, BalanceTimeseries]:
+    def get_balances_timeseries(self, *, fetcher_id: Optional[str] = None) -> Mapping[BalanceCoordinate, BalanceTimeseries]:  # type: ignore
         ...
 
     def get_posting_instructions(  # type: ignore
         self,
-    ) -> list[
-        Union[
-            AuthorisationAdjustment,
-            CustomInstruction,
-            InboundAuthorisation,
-            InboundHardSettlement,
-            OutboundAuthorisation,
-            OutboundHardSettlement,
-            Release,
-            Settlement,
-            Transfer,
-        ]
-    ]:
+    ) -> list[Union[AuthorisationAdjustment, CustomInstruction, InboundAuthorisation, InboundHardSettlement, OutboundAuthorisation, OutboundHardSettlement, Release, Settlement, Transfer,]]:
         ...
 
     def get_client_transactions(  # type: ignore

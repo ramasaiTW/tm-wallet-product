@@ -43,7 +43,5 @@ class IsModuleCLv4Test(TestCase):
 
     def test_ast_module_with_non_ast_constant_api_raises(self):
         ast_module = ast.parse("test='4.0.0'\napi=test")
-        with self.assertRaisesRegex(
-            utils.InvalidApiMetadata, "`api` value must be an ast.Constant"
-        ):
+        with self.assertRaisesRegex(utils.InvalidApiMetadata, "`api` value must be an ast.Constant"):
             utils.is_module_in_contracts_language_v4(ast_module)

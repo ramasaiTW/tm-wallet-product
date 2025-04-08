@@ -46,12 +46,7 @@ class Balance(object):
         return f"{self.net}"
 
     def __eq__(self, other):
-        return (
-            isinstance(other, Balance)
-            and self.net == other.net
-            and self.credit == other.credit
-            and self.debit == other.debit
-        )
+        return isinstance(other, Balance) and self.net == other.net and self.credit == other.credit and self.debit == other.debit
 
 
 def compare_balances(

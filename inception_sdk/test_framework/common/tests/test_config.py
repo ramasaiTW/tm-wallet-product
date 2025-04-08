@@ -15,9 +15,7 @@ with mock.patch.dict("os.environ", MOCK_ENV_VARS) as mock_os_environ:
     import inception_sdk.test_framework.common.config as config
 
 
-DEFAULT_FRAMEWORK_CONFIG_JSON = json.dumps(
-    {"e2e": {"environment_name": "default_env"}, "sim": {"environment_name": "default_env"}}
-)
+DEFAULT_FRAMEWORK_CONFIG_JSON = json.dumps({"e2e": {"environment_name": "default_env"}, "sim": {"environment_name": "default_env"}})
 
 
 @mock.patch.object(config, "extract_environments_from_config")
@@ -29,20 +27,14 @@ class ConfigExtractionTest(TestCase):
         cls.maxDiff = None
         return super().setUpClass()
 
-    def test_default_envs_read_from_framework_config(
-        self, flags_mock, load_file_contents_mock, extract_environments_from_config: mock.Mock
-    ):
+    def test_default_envs_read_from_framework_config(self, flags_mock, load_file_contents_mock, extract_environments_from_config: mock.Mock):
         # Everything configured to return default_env except for the function parameter
         type(flags_mock).environment_name = mock.PropertyMock(return_value="default_env")
         load_file_contents_mock.return_value = DEFAULT_FRAMEWORK_CONFIG_JSON
 
-        config.extract_framework_environments_from_config(
-            environment_purpose=config.EnvironmentPurpose.E2E, environment_name="non_default_env"
-        )
+        config.extract_framework_environments_from_config(environment_purpose=config.EnvironmentPurpose.E2E, environment_name="non_default_env")
 
-        extract_environments_from_config.assert_called_once_with(
-            environment_name="non_default_env", default_environment_name="default_env"
-        )
+        extract_environments_from_config.assert_called_once_with(environment_name="non_default_env", default_environment_name="default_env")
 
     @mock.patch.object(config, "log")
     def test_default_envs_not_set_if_framework_config_file_missing(
@@ -57,16 +49,10 @@ class ConfigExtractionTest(TestCase):
         type(flags_mock).framework_config_path = mock.PropertyMock(return_value="some_path")
         load_file_contents_mock.side_effect = IOError()
 
-        config.extract_framework_environments_from_config(
-            environment_purpose=config.EnvironmentPurpose.E2E, environment_name="non_default_env"
-        )
+        config.extract_framework_environments_from_config(environment_purpose=config.EnvironmentPurpose.E2E, environment_name="non_default_env")
 
-        log.warning.assert_called_once_with(
-            "Could not load framework default config. File at some_path not found"
-        )
-        extract_environments_from_config.assert_called_once_with(
-            environment_name="non_default_env", default_environment_name=""
-        )
+        log.warning.assert_called_once_with("Could not load framework default config. File at some_path not found")
+        extract_environments_from_config.assert_called_once_with(environment_name="non_default_env", default_environment_name="")
 
 
 class CommonFlagSetupTest(TestCase):

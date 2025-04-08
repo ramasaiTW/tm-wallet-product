@@ -51,8 +51,7 @@ schedule_params = [
         name=PARAM_PROFIT_APPLICATION_DAY,
         shape=NumberShape(min_value=1, max_value=31, step=1),
         level=ParameterLevel.INSTANCE,
-        description="The day of the month on which profit is applied. If day does not exist"
-        " in application month, applies on last day of month.",
+        description="The day of the month on which profit is applied. If day does not exist" " in application month, applies on last day of month.",
         display_name="Profit Application Day",
         update_permission=ParameterUpdatePermission.USER_EDITABLE,
         default_value=1,
@@ -142,14 +141,10 @@ def scheduled_events(
     :param start_datetime: date to start schedules from e.g. account creation or loan start date
     :return: dict of profit application scheduled events
     """
-    application_frequency: str = utils.get_parameter(
-        vault, name=PARAM_PROFIT_APPLICATION_FREQUENCY, is_union=True
-    )
+    application_frequency: str = utils.get_parameter(vault, name=PARAM_PROFIT_APPLICATION_FREQUENCY, is_union=True)
 
     schedule_day = int(utils.get_parameter(vault, name=PARAM_PROFIT_APPLICATION_DAY))
-    schedule_hour, schedule_minute, schedule_second = utils.get_schedule_time_from_parameters(
-        vault=vault, parameter_prefix=PROFIT_APPLICATION_PREFIX
-    )
+    schedule_hour, schedule_minute, schedule_second = utils.get_schedule_time_from_parameters(vault=vault, parameter_prefix=PROFIT_APPLICATION_PREFIX)
 
     calendar_events = vault.get_calendar_events(calendar_ids=["&{PUBLIC_HOLIDAYS}"])
 
@@ -159,10 +154,7 @@ def scheduled_events(
         intended_day=schedule_day,
         calendar_events=calendar_events,
     )
-    modified_expression = utils.one_off_schedule_expression(
-        next_datetime
-        + relativedelta(hour=schedule_hour, minute=schedule_minute, second=schedule_second)
-    )
+    modified_expression = utils.one_off_schedule_expression(next_datetime + relativedelta(hour=schedule_hour, minute=schedule_minute, second=schedule_second))
     scheduled_event = ScheduledEvent(start_datetime=start_datetime, expression=modified_expression)
 
     return {APPLICATION_EVENT: scheduled_event}
@@ -183,17 +175,13 @@ def apply_profit(
     :return: the accrual posting instructions
     """
 
-    accrued_profit_payable_account: str = utils.get_parameter(
-        vault, name=tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT
-    )
+    accrued_profit_payable_account: str = utils.get_parameter(vault, name=tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT)
     profit_paid_account: str = utils.get_parameter(vault, name=PARAM_PROFIT_PAID_ACCOUNT)
 
     application_precision: int = utils.get_parameter(vault, name=PARAM_APPLICATION_PRECISION)
     denomination: str = utils.get_parameter(vault, name="denomination")
 
-    balances: BalanceDefaultDict = vault.get_balances_observation(
-        fetcher_id=fetchers.EOD_FETCHER_ID
-    ).balances
+    balances: BalanceDefaultDict = vault.get_balances_observation(fetcher_id=fetchers.EOD_FETCHER_ID).balances
     amount_accrued = utils.balance_at_coordinates(
         balances=balances,
         address=accrual_address,
@@ -233,9 +221,7 @@ def apply_profit(
     return custom_instructions
 
 
-def update_next_schedule_execution(
-    *, vault: SmartContractVault, effective_datetime: datetime
-) -> UpdateAccountEventTypeDirective | None:
+def update_next_schedule_execution(*, vault: SmartContractVault, effective_datetime: datetime) -> UpdateAccountEventTypeDirective | None:
     """
     Update next scheduled execution.
     :param vault: Vault object to retrieve profit application params
@@ -244,6 +230,4 @@ def update_next_schedule_execution(
     """
     new_schedule = scheduled_events(vault=vault, start_datetime=effective_datetime)
 
-    return UpdateAccountEventTypeDirective(
-        event_type=APPLICATION_EVENT, expression=new_schedule[APPLICATION_EVENT].expression
-    )
+    return UpdateAccountEventTypeDirective(event_type=APPLICATION_EVENT, expression=new_schedule[APPLICATION_EVENT].expression)

@@ -31,9 +31,7 @@ ACCRUED_RECEIVABLE_COORDINATE = BalanceCoordinate(
     Phase.COMMITTED,
 )
 
-PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = (
-    interest_application.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
-)
+PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = interest_application.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
 PARAM_INTEREST_RECEIVED_ACCOUNT = interest_application.PARAM_INTEREST_RECEIVED_ACCOUNT
 PARAM_APPLICATION_PRECISION = interest_application.PARAM_APPLICATION_PRECISION
 
@@ -74,12 +72,8 @@ class InterestApplicationTest(InterestApplicationTestCommon):
         mock_vault = self.create_mock(
             account_id=sentinel.account_id,
             balances_observation_fetchers_mapping={
-                interest_application.ACCRUED_INTEREST_EFF_FETCHER_ID: SentinelBalancesObservation(
-                    "effective"
-                ),
-                interest_application.ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID: (
-                    SentinelBalancesObservation("one_month_ago")
-                ),
+                interest_application.ACCRUED_INTEREST_EFF_FETCHER_ID: SentinelBalancesObservation("effective"),
+                interest_application.ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID: (SentinelBalancesObservation("one_month_ago")),
             },
         )
         mock_get_interest_to_apply.return_value = lending_interfaces.InterestAmounts(
@@ -132,9 +126,7 @@ class InterestApplicationTest(InterestApplicationTestCommon):
     @patch.object(interest_application.utils, "get_parameter")
     def test_get_application_precision(self, mock_get_parameter: MagicMock):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={interest_application.PARAM_APPLICATION_PRECISION: 2}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={interest_application.PARAM_APPLICATION_PRECISION: 2})
         self.assertEqual(interest_application.get_application_precision(mock_vault), 2)
 
     def test_get_interest_to_apply_effective_effective_datetime_greater_than_1_month_from_previous(
@@ -244,12 +236,8 @@ class InterestApplicationTest(InterestApplicationTestCommon):
         mock_get_parameter.side_effect = mock_utils_get_parameter(self.parameters)
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                interest_application.ACCRUED_INTEREST_EFF_FETCHER_ID: SentinelBalancesObservation(
-                    "effective_datetime_accrual"
-                ),
-                interest_application.ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID: (
-                    SentinelBalancesObservation("one_month_ago_accrual")
-                ),
+                interest_application.ACCRUED_INTEREST_EFF_FETCHER_ID: SentinelBalancesObservation("effective_datetime_accrual"),
+                interest_application.ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID: (SentinelBalancesObservation("one_month_ago_accrual")),
             }
         )
 
@@ -317,17 +305,13 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
 
     def test_repay_accrued_interest_with_0_repayment_amount(self):
         self.assertListEqual(
-            interest_application.repay_accrued_interest(
-                vault=sentinel.vault, repayment_amount=Decimal("0")
-            ),
+            interest_application.repay_accrued_interest(vault=sentinel.vault, repayment_amount=Decimal("0")),
             [],
         )
 
     def test_repay_accrued_interest_with_negative_repayment_amount(self):
         self.assertListEqual(
-            interest_application.repay_accrued_interest(
-                vault=sentinel.vault, repayment_amount=Decimal("-1")
-            ),
+            interest_application.repay_accrued_interest(vault=sentinel.vault, repayment_amount=Decimal("-1")),
             [],
         )
 

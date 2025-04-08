@@ -23,9 +23,7 @@ class AnnualInterestRateTest(FixedTest):
             }
         )
         self.assertEqual(fixed.get_annual_interest_rate(vault=sentinel.vault), Decimal("0.0120"))
-        mock_get_parameter.assert_called_once_with(
-            sentinel.vault, "fixed_interest_rate", at_datetime=None
-        )
+        mock_get_parameter.assert_called_once_with(sentinel.vault, "fixed_interest_rate", at_datetime=None)
 
     def test_get_annual_interest_rate_with_effective_datetime(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
@@ -34,46 +32,28 @@ class AnnualInterestRateTest(FixedTest):
             }
         )
         self.assertEqual(
-            fixed.get_annual_interest_rate(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            fixed.get_annual_interest_rate(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             Decimal("0.0120"),
         )
-        mock_get_parameter.assert_called_once_with(
-            sentinel.vault, "fixed_interest_rate", at_datetime=sentinel.effective_datetime
-        )
+        mock_get_parameter.assert_called_once_with(sentinel.vault, "fixed_interest_rate", at_datetime=sentinel.effective_datetime)
 
 
 @patch.object(fixed.utils, "yearly_to_monthly_rate")
 @patch.object(fixed, "get_annual_interest_rate")
 class MonthlyInterestRateTest(FixedTest):
-    def test_get_monthly_interest_rate(
-        self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock
-    ):
+    def test_get_monthly_interest_rate(self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock):
         mock_get_annual_interest_rate.return_value = sentinel.annual_rate
         fixed.get_monthly_interest_rate(vault=sentinel.vault)
 
-        mock_get_annual_interest_rate.assert_called_once_with(
-            vault=sentinel.vault, effective_datetime=None
-        )
-        mock_yearly_to_monthly_rate.assert_called_once_with(
-            mock_get_annual_interest_rate.return_value
-        )
+        mock_get_annual_interest_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=None)
+        mock_yearly_to_monthly_rate.assert_called_once_with(mock_get_annual_interest_rate.return_value)
 
-    def test_get_monthly_interest_rate_with_effective_datetime(
-        self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock
-    ):
+    def test_get_monthly_interest_rate_with_effective_datetime(self, mock_get_annual_interest_rate: MagicMock, mock_yearly_to_monthly_rate: MagicMock):
         mock_get_annual_interest_rate.return_value = sentinel.annual_rate
-        fixed.get_monthly_interest_rate(
-            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-        )
+        fixed.get_monthly_interest_rate(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
 
-        mock_get_annual_interest_rate.assert_called_once_with(
-            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-        )
-        mock_yearly_to_monthly_rate.assert_called_once_with(
-            mock_get_annual_interest_rate.return_value
-        )
+        mock_get_annual_interest_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        mock_yearly_to_monthly_rate.assert_called_once_with(mock_get_annual_interest_rate.return_value)
 
 
 @patch.object(fixed.utils, "yearly_to_daily_rate")
@@ -95,13 +75,9 @@ class DailyInterestRateTest(FixedTest):
         fixed.get_daily_interest_rate(vault=sentinel.vault, effective_datetime=sentinel.datetime)
 
         mock_get_annual_interest_rate.assert_called_once_with(vault=sentinel.vault)
-        mock_yearly_to_daily_rate.assert_called_once_with(
-            sentinel.datetime, sentinel.annual_rate, sentinel.days_in_year
-        )
+        mock_yearly_to_daily_rate.assert_called_once_with(sentinel.datetime, sentinel.annual_rate, sentinel.days_in_year)
 
 
 class ReamortisationInterfaceTest(FixedTest):
     def test_interface_returns_false(self):
-        self.assertFalse(
-            fixed.FixedReamortisationCondition.should_trigger_reamortisation("a", "b", "c", "d")
-        )
+        self.assertFalse(fixed.FixedReamortisationCondition.should_trigger_reamortisation("a", "b", "c", "d"))

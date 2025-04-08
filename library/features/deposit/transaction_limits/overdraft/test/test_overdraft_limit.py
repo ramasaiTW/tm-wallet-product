@@ -24,9 +24,7 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_sentinels import 
 @patch.object(overdraft_limit.utils, "get_parameter")
 class TestOverdraftLimitValidate(CommonTransactionLimitTest):
     def test_overdraft_limit_ignore_deposit(self, mock_get_parameter: MagicMock):
-        posting_instructions = [
-            self.inbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("1000"))
-        ]
+        posting_instructions = [self.inbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("1000"))]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("0"),
@@ -43,9 +41,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
         )
 
     def test_no_overdraft_set_accept_posting_balance_above_0(self, mock_get_parameter: MagicMock):
-        posting_instructions = [
-            self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("99"))
-        ]
+        posting_instructions = [self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("99"))]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("0"),
@@ -62,9 +58,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
         )
 
     def test_no_overdraft_set_accept_posting_balance_to_0(self, mock_get_parameter: MagicMock):
-        posting_instructions = [
-            self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("100"))
-        ]
+        posting_instructions = [self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("100"))]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("0"),
@@ -80,12 +74,8 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_no_overdraft_set_reject_posting_taking_balance_below_0(
-        self, mock_get_parameter: MagicMock
-    ):
-        posting_instructions = [
-            self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("201"))
-        ]
+    def test_no_overdraft_set_reject_posting_taking_balance_below_0(self, mock_get_parameter: MagicMock):
+        posting_instructions = [self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("201"))]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("0"),
@@ -104,12 +94,8 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
         )
         self.assertEqual(result, expected_rejection)
 
-    def test_arranged_overdraft_set_accept_posting_taking_balance_within_overdraft(
-        self, mock_get_parameter: MagicMock
-    ):
-        posting_instructions = [
-            self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("150"))
-        ]
+    def test_arranged_overdraft_set_accept_posting_taking_balance_within_overdraft(self, mock_get_parameter: MagicMock):
+        posting_instructions = [self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("150"))]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("100"),
@@ -125,12 +111,8 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_unarranged_overdraft_set_accept_posting_taking_balance_within_overdraft(
-        self, mock_get_parameter: MagicMock
-    ):
-        posting_instructions = [
-            self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("175"))
-        ]
+    def test_unarranged_overdraft_set_accept_posting_taking_balance_within_overdraft(self, mock_get_parameter: MagicMock):
+        posting_instructions = [self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("175"))]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("0"),
@@ -146,9 +128,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_no_overdraft_set_accept_posting_net_batch_accepted(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_no_overdraft_set_accept_posting_net_batch_accepted(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("150")),
             self.inbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("60")),
@@ -168,9 +148,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_no_overdraft_set_accept_posting_net_batch_rejected(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_no_overdraft_set_accept_posting_net_batch_rejected(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("150")),
             self.inbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("40")),
@@ -193,18 +171,14 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
         )
         self.assertEqual(result, expected_rejection)
 
-    def test_both_overdrafts_set_accept_posting_net_batch_balance_argument_not_provided(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_both_overdrafts_set_accept_posting_net_batch_balance_argument_not_provided(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("150")),
             self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("75")),
             self.inbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("25")),
         ]
         balances = self.balances(default_committed=Decimal("100"))
-        test_balance_observation_fetcher_mapping = {
-            "live_balances_bof": BalancesObservation(balances=balances)
-        }
+        test_balance_observation_fetcher_mapping = {"live_balances_bof": BalancesObservation(balances=balances)}
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("50"),
@@ -222,9 +196,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_overdraft_limit_ignore_deposit_balance_already_negative(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_overdraft_limit_ignore_deposit_balance_already_negative(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.inbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("1000")),
             self.inbound_auth(denomination=DEFAULT_DENOMINATION, amount=Decimal("1000")),
@@ -244,12 +216,8 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_overdraft_limit_accept_posting_balance_already_negative_but_within_limit(
-        self, mock_get_parameter: MagicMock
-    ):
-        posting_instructions = [
-            self.outbound_auth(denomination=DEFAULT_DENOMINATION, amount=Decimal("250"))
-        ]
+    def test_overdraft_limit_accept_posting_balance_already_negative_but_within_limit(self, mock_get_parameter: MagicMock):
+        posting_instructions = [self.outbound_auth(denomination=DEFAULT_DENOMINATION, amount=Decimal("250"))]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "arranged_overdraft_amount": Decimal("200"),
@@ -265,15 +233,11 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_overdraft_limit_rejects_posting_balance_already_negative_and_goes_over_limit(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_overdraft_limit_rejects_posting_balance_already_negative_and_goes_over_limit(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.outbound_auth(denomination=DEFAULT_DENOMINATION, amount=Decimal("200")),
             self.outbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("200")),
-            self.inbound_hard_settlement(
-                denomination=DEFAULT_DENOMINATION, amount=Decimal("49.99")
-            ),
+            self.inbound_hard_settlement(denomination=DEFAULT_DENOMINATION, amount=Decimal("49.99")),
         ]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
@@ -293,9 +257,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
         )
         self.assertEqual(result, expected_rejection)
 
-    def test_overdraft_limit_rejects_posting_different_denomination_when_no_limit_set(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_overdraft_limit_rejects_posting_different_denomination_when_no_limit_set(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.outbound_hard_settlement(denomination="USD", amount=Decimal("99")),
         ]
@@ -317,9 +279,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
         )
         self.assertEqual(result, expected_rejection)
 
-    def test_overdraft_limit_accepts_posting_different_denomination_when_under_limit(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_overdraft_limit_accepts_posting_different_denomination_when_under_limit(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.outbound_hard_settlement(denomination="USD", amount=Decimal("99")),
         ]
@@ -338,9 +298,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
             )
         )
 
-    def test_overdraft_limit_rejects_posting_different_denomination_when_over_limit(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_overdraft_limit_rejects_posting_different_denomination_when_over_limit(self, mock_get_parameter: MagicMock):
         posting_instructions = [
             self.outbound_hard_settlement(denomination="USD", amount=Decimal("100.01")),
         ]
@@ -366,9 +324,7 @@ class TestOverdraftLimitValidate(CommonTransactionLimitTest):
 @patch.object(overdraft_limit.utils, "get_available_balance")
 @patch.object(overdraft_limit.utils, "get_parameter")
 class TestOverdraftAvailableBalance(CommonTransactionLimitTest):
-    def test_get_overdraft_available_balance_args_provided(
-        self, mock_get_parameter: MagicMock, mock_get_available_balance: MagicMock
-    ):
+    def test_get_overdraft_available_balance_args_provided(self, mock_get_parameter: MagicMock, mock_get_available_balance: MagicMock):
         mock_get_available_balance.return_value = Decimal("10")
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
@@ -376,13 +332,9 @@ class TestOverdraftAvailableBalance(CommonTransactionLimitTest):
                 "unarranged_overdraft_amount": Decimal("2"),
             }
         )
-        result = overdraft_limit.get_overdraft_available_balance(
-            vault=sentinel.vault, balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        result = overdraft_limit.get_overdraft_available_balance(vault=sentinel.vault, balances=sentinel.balances, denomination=sentinel.denomination)
         self.assertEqual(result, Decimal("13"))
-        mock_get_available_balance.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_get_parameter.assert_has_calls(
             calls=[
                 call(
@@ -401,9 +353,7 @@ class TestOverdraftAvailableBalance(CommonTransactionLimitTest):
         )
         self.assertEqual(mock_get_parameter.call_count, 2)
 
-    def test_get_overdraft_available_balance_optional_args_not_provided(
-        self, mock_get_parameter: MagicMock, mock_get_available_balance: MagicMock
-    ):
+    def test_get_overdraft_available_balance_optional_args_not_provided(self, mock_get_parameter: MagicMock, mock_get_available_balance: MagicMock):
         mock_get_available_balance.return_value = Decimal("10")
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
@@ -412,16 +362,10 @@ class TestOverdraftAvailableBalance(CommonTransactionLimitTest):
                 "denomination": "GBP",
             }
         )
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                "live_balances_bof": SentinelBalancesObservation("live")
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={"live_balances_bof": SentinelBalancesObservation("live")})
         result = overdraft_limit.get_overdraft_available_balance(vault=mock_vault)
         self.assertEqual(result, Decimal("13"))
-        mock_get_available_balance.assert_called_once_with(
-            balances=sentinel.balances_live, denomination="GBP"
-        )
+        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances_live, denomination="GBP")
         mock_get_parameter.assert_has_calls(
             calls=[
                 call(vault=mock_vault, name="denomination", at_datetime=None),

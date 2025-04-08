@@ -52,30 +52,12 @@ from contracts_api import (
 from inception_sdk.vault.contracts.extensions.contracts_api_extensions import SmartContractVault
 
 PostingInstructionTypeAlias = (
-    AuthorisationAdjustment
-    | CustomInstruction
-    | InboundAuthorisation
-    | InboundHardSettlement
-    | OutboundAuthorisation
-    | OutboundHardSettlement
-    | Release
-    | Settlement
-    | Transfer
+    AuthorisationAdjustment | CustomInstruction | InboundAuthorisation | InboundHardSettlement | OutboundAuthorisation | OutboundHardSettlement | Release | Settlement | Transfer
 )
 
 PostingInstructionListAlias = list[PostingInstructionTypeAlias]
 
-PostingsTypeAlias = (
-    AuthorisationAdjustment
-    | CustomInstruction
-    | InboundAuthorisation
-    | InboundHardSettlement
-    | OutboundAuthorisation
-    | OutboundHardSettlement
-    | Release
-    | Settlement
-    | Transfer
-)
+PostingsTypeAlias = AuthorisationAdjustment | CustomInstruction | InboundAuthorisation | InboundHardSettlement | OutboundAuthorisation | OutboundHardSettlement | Release | Settlement | Transfer
 
 ParameterValueTypeAlias = Decimal | str | datetime | OptionalValue | UnionItemValue | int
 
@@ -121,9 +103,7 @@ def round_decimal(
     return amount.quantize(Decimal((0, (1,), -int(decimal_places))), rounding=rounding)
 
 
-def yearly_to_daily_rate(
-    effective_date: datetime, yearly_rate: Decimal, days_in_year: str = "actual"
-) -> Decimal:
+def yearly_to_daily_rate(effective_date: datetime, yearly_rate: Decimal, days_in_year: str = "actual") -> Decimal:
     """
     Calculate the daily rate from a yearly rate, for a given `days_in_year` convention and date
     :param effective_date: the date as of which the conversion happens. This may affect the outcome
@@ -254,10 +234,7 @@ def has_parameter_value_changed(
     :return: bool, True if parameter value has changed, False otherwise
     """
 
-    return (
-        parameter_name in updated_parameters
-        and old_parameters[parameter_name] != updated_parameters[parameter_name]
-    )
+    return parameter_name in updated_parameters and old_parameters[parameter_name] != updated_parameters[parameter_name]
 
 
 def are_optional_parameters_set(vault: SmartContractVault, parameters: list[str]) -> bool:
@@ -269,9 +246,7 @@ def are_optional_parameters_set(vault: SmartContractVault, parameters: list[str]
 
     :return: bool, True if all parameters are set, False otherwise
     """
-    return all(
-        get_parameter(vault, parameter, is_optional=True) is not None for parameter in parameters
-    )
+    return all(get_parameter(vault, parameter, is_optional=True) is not None for parameter in parameters)
 
 
 ## Schedule helpers
@@ -330,9 +305,7 @@ def monthly_scheduled_event(
 
     return ScheduledEvent(
         start_datetime=start_datetime,
-        schedule_method=get_end_of_month_schedule_from_parameters(
-            vault=vault, parameter_prefix=parameter_prefix, failover=failover, day=day
-        ),
+        schedule_method=get_end_of_month_schedule_from_parameters(vault=vault, parameter_prefix=parameter_prefix, failover=failover, day=day),
     )
 
 
@@ -390,9 +363,7 @@ END_OF_TIME_SCHEDULED_EVENT = ScheduledEvent(
 )
 
 
-def get_schedule_time_from_parameters(
-    vault: SmartContractVault, parameter_prefix: str
-) -> tuple[int, int, int]:
+def get_schedule_time_from_parameters(vault: SmartContractVault, parameter_prefix: str) -> tuple[int, int, int]:
     hour = int(get_parameter(vault=vault, name=f"{parameter_prefix}_hour"))
     minute = int(get_parameter(vault=vault, name=f"{parameter_prefix}_minute"))
     second = int(get_parameter(vault=vault, name=f"{parameter_prefix}_second"))
@@ -421,9 +392,7 @@ def get_schedule_expression_from_parameters(
     )
 
 
-def get_next_schedule_date(
-    start_date: datetime, schedule_frequency: str, intended_day: int
-) -> datetime:
+def get_next_schedule_date(start_date: datetime, schedule_frequency: str, intended_day: int) -> datetime:
     """
     Calculate next valid date for schedule based on required frequency and day of month.
     Falls to last valid day of month if intended day is not in calculated month
@@ -443,9 +412,7 @@ def get_next_schedule_date(
         return start_date + relativedelta(months=number_of_months, day=intended_day)
 
 
-def get_previous_schedule_execution_date(
-    vault: SmartContractVault, event_type: str, account_start_date: datetime | None = None
-) -> datetime | None:
+def get_previous_schedule_execution_date(vault: SmartContractVault, event_type: str, account_start_date: datetime | None = None) -> datetime | None:
     """
     Gets the last execution time of an event (if it exists) else returns the start date
     of the account
@@ -475,10 +442,7 @@ def get_next_schedule_date_calendar_aware(
     frequency_map = {"monthly": 1, "quarterly": 3, "annually": 12}
     number_of_months = frequency_map[schedule_frequency]
 
-    if (
-        schedule_frequency == "monthly"
-        and start_datetime + relativedelta(day=intended_day) > start_datetime
-    ):
+    if schedule_frequency == "monthly" and start_datetime + relativedelta(day=intended_day) > start_datetime:
         next_date = start_datetime + relativedelta(day=intended_day)
     else:
         next_date = start_datetime + relativedelta(months=number_of_months, day=intended_day)
@@ -510,10 +474,7 @@ def falls_on_calendar_events(effective_datetime: datetime, calendar_events: Cale
     Returns if true if the given date is on or between a calendar event's start and/or end
     timestamp, inclusive.
     """
-    return any(
-        calendar_event.start_datetime <= effective_datetime <= calendar_event.end_datetime
-        for calendar_event in calendar_events
-    )
+    return any(calendar_event.start_datetime <= effective_datetime <= calendar_event.end_datetime for calendar_event in calendar_events)
 
 
 ## Denomination helpers
@@ -541,10 +502,7 @@ def validate_denomination(
 
     if return_rejection:
         return Rejection(
-            message=(
-                f"Cannot make transactions in the given denomination, transactions must be one of "
-                f"{sorted(accepted_denominations_set)}"
-            ),
+            message=(f"Cannot make transactions in the given denomination, transactions must be one of " f"{sorted(accepted_denominations_set)}"),
             reason_code=RejectionReason.WRONG_DENOMINATION,
         )
     return None
@@ -621,9 +579,7 @@ def reset_tracker_balances(
     """
     postings: list[Posting] = []
     for address in tracker_addresses:
-        address_balance = balance_at_coordinates(
-            balances=balances, address=address, denomination=denomination
-        )
+        address_balance = balance_at_coordinates(balances=balances, address=address, denomination=denomination)
         if address_balance > Decimal("0"):
             postings += create_postings(
                 amount=address_balance,
@@ -659,25 +615,16 @@ def validate_single_hard_settlement_or_transfer(
     return None
 
 
-def is_key_in_instruction_details(
-    *, key: str, posting_instructions: PostingInstructionListAlias
-) -> bool:
-    return all(
-        str_to_bool(posting_instruction.instruction_details.get(key, "false"))
-        for posting_instruction in posting_instructions
-    )
+def is_key_in_instruction_details(*, key: str, posting_instructions: PostingInstructionListAlias) -> bool:
+    return all(str_to_bool(posting_instruction.instruction_details.get(key, "false")) for posting_instruction in posting_instructions)
 
 
 def is_force_override(posting_instructions: PostingInstructionListAlias) -> bool:
-    return is_key_in_instruction_details(
-        key="force_override", posting_instructions=posting_instructions
-    )
+    return is_key_in_instruction_details(key="force_override", posting_instructions=posting_instructions)
 
 
 def is_withdrawal_override(posting_instructions: PostingInstructionListAlias) -> bool:
-    return is_key_in_instruction_details(
-        key="withdrawal_override", posting_instructions=posting_instructions
-    )
+    return is_key_in_instruction_details(key="withdrawal_override", posting_instructions=posting_instructions)
 
 
 def standard_instruction_details(
@@ -739,12 +686,7 @@ def is_flag_in_list_applied(
     """
     flag_names: list[str] = get_parameter(vault, name=parameter_name, is_json=True)
 
-    return any(
-        vault.get_flag_timeseries(flag=flag_name).at(at_datetime=effective_datetime)
-        if effective_datetime
-        else vault.get_flag_timeseries(flag=flag_name).latest()
-        for flag_name in flag_names
-    )
+    return any(vault.get_flag_timeseries(flag=flag_name).at(at_datetime=effective_datetime) if effective_datetime else vault.get_flag_timeseries(flag=flag_name).latest() for flag_name in flag_names)
 
 
 def is_flag_in_timeseries_applied(
@@ -763,9 +705,7 @@ def is_flag_in_timeseries_applied(
     timestamp
     """
     return any(
-        flag_timeseries_.at(at_datetime=effective_datetime)
-        if effective_datetime
-        else flag_timeseries_.latest()
+        flag_timeseries_.at(at_datetime=effective_datetime) if effective_datetime else flag_timeseries_.latest()
         # flag_timeseries could still be None if wrong combination of params are passed in
         for flag_timeseries_ in flag_timeseries_iterable or []
     )
@@ -783,10 +723,7 @@ def get_flag_timeseries_list_for_parameter(
     JSON format
     :return: a list of FlagTimeseries objects
     """
-    return [
-        vault.get_flag_timeseries(flag=flag_definition_id)
-        for flag_definition_id in get_parameter(vault, name=parameter_name, is_json=True)
-    ]
+    return [vault.get_flag_timeseries(flag=flag_definition_id) for flag_definition_id in get_parameter(vault, name=parameter_name, is_json=True)]
 
 
 ## Balance helpers
@@ -799,18 +736,9 @@ def sum_balances(
     phase: Phase = Phase.COMMITTED,
     decimal_places: int | None = None,
 ) -> Decimal:
-    balance_sum = Decimal(
-        sum(
-            balances[BalanceCoordinate(address, asset, denomination, phase)].net
-            for address in addresses
-        )
-    )
+    balance_sum = Decimal(sum(balances[BalanceCoordinate(address, asset, denomination, phase)].net for address in addresses))
 
-    return (
-        balance_sum
-        if decimal_places is None
-        else round_decimal(amount=balance_sum, decimal_places=decimal_places)
-    )
+    return balance_sum if decimal_places is None else round_decimal(amount=balance_sum, decimal_places=decimal_places)
 
 
 def balance_at_coordinates(
@@ -823,11 +751,7 @@ def balance_at_coordinates(
     decimal_places: int | None = None,
 ) -> Decimal:
     balance_net = balances[BalanceCoordinate(address, asset, denomination, phase)].net
-    return (
-        balance_net
-        if decimal_places is None
-        else round_decimal(amount=balance_net, decimal_places=decimal_places)
-    )
+    return balance_net if decimal_places is None else round_decimal(amount=balance_net, decimal_places=decimal_places)
 
 
 def get_available_balance(
@@ -853,12 +777,8 @@ def get_available_balance(
     :param asset: balance asset
     :return: sum of committed and pending out balance coordinates
     """
-    committed_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
-    )
-    pending_out_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT
-    )
+    committed_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
+    pending_out_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT)
     return balances[committed_coordinate].net + balances[pending_out_coordinate].net
 
 
@@ -879,14 +799,10 @@ def get_latest_available_balance_from_mapping(
     :param asset: balance asset
     :return: sum of committed and pending out balance coordinates
     """
-    committed_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
-    )
+    committed_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
     committed_balance: Balance = mapping[committed_coordinate].latest()
 
-    pending_out_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT
-    )
+    pending_out_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT)
     pending_out_balance: Balance = mapping[pending_out_coordinate].latest()
 
     return committed_balance.net + pending_out_balance.net
@@ -909,9 +825,7 @@ def get_current_net_balance(
     :param asset: balance asset
     :return: sum of net attribute of committed and pending_in balance coordinates
     """
-    committed_coordinate, pending_in_coordinate = _get_current_balance_coordinates(
-        denomination=denomination, address=address, asset=asset
-    )
+    committed_coordinate, pending_in_coordinate = _get_current_balance_coordinates(denomination=denomination, address=address, asset=asset)
     return balances[committed_coordinate].net + balances[pending_in_coordinate].net
 
 
@@ -931,9 +845,7 @@ def get_current_credit_balance(
     :param asset: balance asset
     :return: sum of credit attribute of committed and pending_in balance coordinates
     """
-    committed_coordinate, pending_in_coordinate = _get_current_balance_coordinates(
-        denomination=denomination, address=address, asset=asset
-    )
+    committed_coordinate, pending_in_coordinate = _get_current_balance_coordinates(denomination=denomination, address=address, asset=asset)
     return balances[committed_coordinate].credit + balances[pending_in_coordinate].credit
 
 
@@ -953,12 +865,8 @@ def get_current_debit_balance(
     :param asset: balance asset
     :return: sum of debit attribute of committed and pending_out balance coordinates
     """
-    committed_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
-    )
-    pending_out_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT
-    )
+    committed_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
+    pending_out_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT)
     return balances[committed_coordinate].debit + balances[pending_out_coordinate].debit
 
 
@@ -976,12 +884,8 @@ def _get_current_balance_coordinates(
     :param asset: balance asset
     :return: the committed and pending balance coordinates
     """
-    committed_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
-    )
-    pending_in_coordinate = BalanceCoordinate(
-        account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN
-    )
+    committed_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
+    pending_in_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN)
     return committed_coordinate, pending_in_coordinate
 
 
@@ -998,10 +902,7 @@ def get_balance_default_dict_from_mapping(
     otherwise the latest value will be used
     :return: BalanceDefaultDict from the timeseries mapping
     """
-    balance_mapping: dict[BalanceCoordinate, Balance] = {
-        coord: (ts.at(at_datetime=effective_datetime) if effective_datetime else ts.latest())
-        for coord, ts in mapping.items()
-    }
+    balance_mapping: dict[BalanceCoordinate, Balance] = {coord: (ts.at(at_datetime=effective_datetime) if effective_datetime else ts.latest()) for coord, ts in mapping.items()}
     return BalanceDefaultDict(mapping=balance_mapping)
 
 
@@ -1019,9 +920,7 @@ def average_balance(
     return Decimal(0)
 
 
-def get_posting_instructions_balances(
-    *, posting_instructions: PostingInstructionListAlias
-) -> BalanceDefaultDict:
+def get_posting_instructions_balances(*, posting_instructions: PostingInstructionListAlias) -> BalanceDefaultDict:
     """
     Gets the combined balances for a list of posting instructions.
     Can only be used on fetched or hook argument posting instructions as the balances

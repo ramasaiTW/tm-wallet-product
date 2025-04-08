@@ -6,9 +6,7 @@ from ...versions.version_3100.supervisor_contracts import types
 
 
 class SimpleTestCase(SupervisorContracts3100TestCase):
-    filepath = os.environ.get(
-        "DATA_SIMPLE_V3100", "contracts_sdk/example_unit_tests/supervisor_contracts/simple_v3100.py"
-    )
+    filepath = os.environ.get("DATA_SIMPLE_V3100", "contracts_sdk/example_unit_tests/supervisor_contracts/simple_v3100.py")
     contract_code = SupervisorContracts3100TestCase.load_contract_code(filepath)
 
     effective_date = datetime(year=2020, month=2, day=20)
@@ -17,14 +15,8 @@ class SimpleTestCase(SupervisorContracts3100TestCase):
     def test_scheduled_code_get_scheduled_job_details(self):
         self.vault.supervisees = {"SUPERVISEE": self.create_supervisee_vault()}
 
-        self.vault.get_scheduled_job_details.return_value = types.ScheduledJob(
-            pause_datetime=self.pause_datetime
-        )
-        self.vault.supervisees[
-            "SUPERVISEE"
-        ].get_scheduled_job_details.return_value = types.ScheduledJob(
-            pause_datetime=self.pause_datetime
-        )
+        self.vault.get_scheduled_job_details.return_value = types.ScheduledJob(pause_datetime=self.pause_datetime)
+        self.vault.supervisees["SUPERVISEE"].get_scheduled_job_details.return_value = types.ScheduledJob(pause_datetime=self.pause_datetime)
 
         self.run_contract_function(
             self.contract_code,

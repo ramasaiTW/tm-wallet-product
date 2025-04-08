@@ -27,9 +27,7 @@ class BlockingFlagTests(FeatureTest):
 
     def test_is_interest_accrual_blocked(self):
         self.assertEqual(
-            repayment_holiday.is_interest_accrual_blocked(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.is_interest_accrual_blocked(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             sentinel.boolean,
         )
         self.mock_is_flag_in_list_applied.assert_called_once_with(
@@ -40,9 +38,7 @@ class BlockingFlagTests(FeatureTest):
 
     def test_are_notifications_blocked(self):
         self.assertEqual(
-            repayment_holiday.are_notifications_blocked(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.are_notifications_blocked(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             sentinel.boolean,
         )
         self.mock_is_flag_in_list_applied.assert_called_once_with(
@@ -53,9 +49,7 @@ class BlockingFlagTests(FeatureTest):
 
     def test_is_delinquency_blocked(self):
         self.assertEqual(
-            repayment_holiday.is_delinquency_blocked(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.is_delinquency_blocked(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             sentinel.boolean,
         )
         self.mock_is_flag_in_list_applied.assert_called_once_with(
@@ -66,9 +60,7 @@ class BlockingFlagTests(FeatureTest):
 
     def test_is_due_amount_calculation_blocked(self):
         self.assertEqual(
-            repayment_holiday.is_due_amount_calculation_blocked(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.is_due_amount_calculation_blocked(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             sentinel.boolean,
         )
         self.mock_is_flag_in_list_applied.assert_called_once_with(
@@ -79,9 +71,7 @@ class BlockingFlagTests(FeatureTest):
 
     def test_is_overdue_amount_calculation_blocked(self):
         self.assertEqual(
-            repayment_holiday.is_overdue_amount_calculation_blocked(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.is_overdue_amount_calculation_blocked(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             sentinel.boolean,
         )
         self.mock_is_flag_in_list_applied.assert_called_once_with(
@@ -92,9 +82,7 @@ class BlockingFlagTests(FeatureTest):
 
     def test_is_penalty_accrual_blocked(self):
         self.assertEqual(
-            repayment_holiday.is_penalty_accrual_blocked(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.is_penalty_accrual_blocked(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             sentinel.boolean,
         )
         self.mock_is_flag_in_list_applied.assert_called_once_with(
@@ -105,9 +93,7 @@ class BlockingFlagTests(FeatureTest):
 
     def test_is_repayment_blocked(self):
         self.assertEqual(
-            repayment_holiday.is_repayment_blocked(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.is_repayment_blocked(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             sentinel.boolean,
         )
         self.mock_is_flag_in_list_applied.assert_called_once_with(
@@ -121,14 +107,8 @@ class BlockingFlagTests(FeatureTest):
 class ValidateRepaymentTest(FeatureTest):
     def test_reject_repayment_returns_none(self, mock_is_repayment_blocked: MagicMock):
         mock_is_repayment_blocked.return_value = False
-        self.assertIsNone(
-            repayment_holiday.reject_repayment(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            )
-        )
-        mock_is_repayment_blocked.assert_called_once_with(
-            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-        )
+        self.assertIsNone(repayment_holiday.reject_repayment(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime))
+        mock_is_repayment_blocked.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
 
     def test_reject_repayment_returns_rejection(self, mock_is_repayment_blocked: MagicMock):
         mock_is_repayment_blocked.return_value = True
@@ -138,21 +118,15 @@ class ValidateRepaymentTest(FeatureTest):
         )
 
         self.assertEqual(
-            repayment_holiday.reject_repayment(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            ),
+            repayment_holiday.reject_repayment(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime),
             expected_result,
         )
-        mock_is_repayment_blocked.assert_called_once_with(
-            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-        )
+        mock_is_repayment_blocked.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
 
 
 @patch.object(repayment_holiday, "is_due_amount_calculation_blocked")
 class AmortisationTest(FeatureTest):
-    def test_no_preference_no_flag_at_period_start(
-        self, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_no_preference_no_flag_at_period_start(self, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.return_value = False
 
         self.assertFalse(
@@ -167,9 +141,7 @@ class AmortisationTest(FeatureTest):
             effective_datetime=sentinel.period_start_datetime,
         )
 
-    def test_no_preference_flag_at_period_start_not_at_end(
-        self, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_no_preference_flag_at_period_start_not_at_end(self, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.side_effect = [True, False]
 
         self.assertTrue(
@@ -193,9 +165,7 @@ class AmortisationTest(FeatureTest):
         )
         self.assertEqual(mock_is_due_amount_calculation_blocked.call_count, 2)
 
-    def test_no_preference_flag_at_period_start_and_end(
-        self, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_no_preference_flag_at_period_start_and_end(self, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.side_effect = [True, True]
 
         self.assertFalse(
@@ -220,13 +190,9 @@ class AmortisationTest(FeatureTest):
         self.assertEqual(mock_is_due_amount_calculation_blocked.call_count, 2)
 
     @patch.object(repayment_holiday.utils, "get_parameter")
-    def test_with_preference_no_flag_at_period_start(
-        self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_with_preference_no_flag_at_period_start(self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.return_value = False
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"repayment_holiday_impact_preference": "increase_emi"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_holiday_impact_preference": "increase_emi"})
 
         self.assertFalse(
             repayment_holiday.should_trigger_reamortisation_with_impact_preference(
@@ -241,13 +207,9 @@ class AmortisationTest(FeatureTest):
         )
 
     @patch.object(repayment_holiday.utils, "get_parameter")
-    def test_with_preference_flag_at_period_start_not_at_end(
-        self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_with_preference_flag_at_period_start_not_at_end(self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.side_effect = [True, False]
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"repayment_holiday_impact_preference": "increase_emi"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_holiday_impact_preference": "increase_emi"})
 
         self.assertTrue(
             repayment_holiday.should_trigger_reamortisation_with_impact_preference(
@@ -271,13 +233,9 @@ class AmortisationTest(FeatureTest):
         self.assertEqual(mock_is_due_amount_calculation_blocked.call_count, 2)
 
     @patch.object(repayment_holiday.utils, "get_parameter")
-    def test_with_preference_flag_at_period_start_and_end(
-        self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_with_preference_flag_at_period_start_and_end(self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.side_effect = [True, True]
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"repayment_holiday_impact_preference": "increase_emi"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_holiday_impact_preference": "increase_emi"})
 
         self.assertFalse(
             repayment_holiday.should_trigger_reamortisation_with_impact_preference(
@@ -301,12 +259,8 @@ class AmortisationTest(FeatureTest):
         self.assertEqual(mock_is_due_amount_calculation_blocked.call_count, 2)
 
     @patch.object(repayment_holiday.utils, "get_parameter")
-    def test_with_preference_increase_term(
-        self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"repayment_holiday_impact_preference": "increase_term"}
-        )
+    def test_with_preference_increase_term(self, mock_get_parameter: MagicMock, mock_is_due_amount_calculation_blocked: MagicMock):
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_holiday_impact_preference": "increase_term"})
 
         self.assertFalse(
             repayment_holiday.should_trigger_reamortisation_with_impact_preference(
@@ -320,9 +274,7 @@ class AmortisationTest(FeatureTest):
 
 @patch.object(repayment_holiday, "is_due_amount_calculation_blocked")
 class SupervisorAmortisationTest(SupervisorFeatureTest):
-    def test_no_preference_no_flag_at_period_start_supervisor(
-        self, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_no_preference_no_flag_at_period_start_supervisor(self, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.return_value = False
 
         self.assertFalse(
@@ -338,9 +290,7 @@ class SupervisorAmortisationTest(SupervisorFeatureTest):
             effective_datetime=sentinel.period_start_datetime,
         )
 
-    def test_no_preference_flag_at_period_start_not_at_end_supervisor(
-        self, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_no_preference_flag_at_period_start_not_at_end_supervisor(self, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.side_effect = [True, False]
 
         self.assertTrue(
@@ -365,9 +315,7 @@ class SupervisorAmortisationTest(SupervisorFeatureTest):
         )
         self.assertEqual(mock_is_due_amount_calculation_blocked.call_count, 2)
 
-    def test_no_preference_flag_at_period_start_and_end_supervisor(
-        self, mock_is_due_amount_calculation_blocked: MagicMock
-    ):
+    def test_no_preference_flag_at_period_start_and_end_supervisor(self, mock_is_due_amount_calculation_blocked: MagicMock):
         mock_is_due_amount_calculation_blocked.side_effect = [True, True]
 
         self.assertFalse(
@@ -396,23 +344,11 @@ class SupervisorAmortisationTest(SupervisorFeatureTest):
 @patch.object(repayment_holiday.utils, "get_parameter")
 class ImpactPreferenceTest(FeatureTest):
     def test_is_repayment_holiday_impact_increase_emi_false(self, mock_get_parameter: MagicMock):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"repayment_holiday_impact_preference": "increase_term"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_holiday_impact_preference": "increase_term"})
 
-        self.assertFalse(
-            repayment_holiday.is_repayment_holiday_impact_increase_emi(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            )
-        )
+        self.assertFalse(repayment_holiday.is_repayment_holiday_impact_increase_emi(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime))
 
     def test_is_repayment_holiday_impact_increase_emi_true(self, mock_get_parameter: MagicMock):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"repayment_holiday_impact_preference": "increase_emi"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_holiday_impact_preference": "increase_emi"})
 
-        self.assertTrue(
-            repayment_holiday.is_repayment_holiday_impact_increase_emi(
-                vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-            )
-        )
+        self.assertTrue(repayment_holiday.is_repayment_holiday_impact_increase_emi(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime))

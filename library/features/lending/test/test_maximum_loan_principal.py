@@ -25,35 +25,25 @@ class MaximumLoanAmountTest(FeatureTest):
 
     def test_posting_less_than_max_amount_returns_none(self, mock_get_parameter):
         mock_vault = sentinel.vault
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters=self.common_param_return_values
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_param_return_values)
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("100"))
 
-        actual = maximum_loan_principal.validate(
-            mock_vault, posting_instruction=posting_instruction
-        )
+        actual = maximum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
         self.assertIsNone(actual)
 
     def test_posting_equal_to_max_amount_returns_none(self, mock_get_parameter):
         mock_vault = sentinel.vault
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters=self.common_param_return_values
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_param_return_values)
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("1000"))
 
-        actual = maximum_loan_principal.validate(
-            mock_vault, posting_instruction=posting_instruction
-        )
+        actual = maximum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
         self.assertIsNone(actual)
 
     def test_posting_greater_than_max_amount_returns_rejection(self, mock_get_parameter):
         mock_vault = sentinel.vault
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters=self.common_param_return_values
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_param_return_values)
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("1001"))
 
@@ -62,9 +52,7 @@ class MaximumLoanAmountTest(FeatureTest):
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
-        actual = maximum_loan_principal.validate(
-            mock_vault, posting_instruction=posting_instruction
-        )
+        actual = maximum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
         self.assertEqual(actual, expected)
 
     def test_not_setting_max_amount_returns_none(self, mock_get_parameter):
@@ -78,7 +66,5 @@ class MaximumLoanAmountTest(FeatureTest):
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("1001"))
 
-        actual = maximum_loan_principal.validate(
-            mock_vault, posting_instruction=posting_instruction
-        )
+        actual = maximum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
         self.assertIsNone(actual)

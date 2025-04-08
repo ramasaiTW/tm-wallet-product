@@ -227,9 +227,7 @@ class UpdateEMITest(EMITest):
 class GetExpectedEMITest(EMITest):
     def test_get_expected_emi_default_decimal_places(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = sentinel.emi
-        result = emi.get_expected_emi(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        result = emi.get_expected_emi(balances=sentinel.balances, denomination=sentinel.denomination)
         self.assertEqual(result, sentinel.emi)
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
@@ -240,9 +238,7 @@ class GetExpectedEMITest(EMITest):
 
     def test_get_expected_emi_decimal_places_provded(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = sentinel.emi
-        result = emi.get_expected_emi(
-            balances=sentinel.balances, denomination=sentinel.denomination, decimal_places=5
-        )
+        result = emi.get_expected_emi(balances=sentinel.balances, denomination=sentinel.denomination, decimal_places=5)
         self.assertEqual(result, sentinel.emi)
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,

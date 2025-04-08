@@ -90,8 +90,7 @@ application_schedule_parameters = [
         name=PARAM_FEE_APPLICATION_DAY,
         shape=NumberShape(min_value=1, max_value=31, step=1),
         level=ParameterLevel.INSTANCE,
-        description="The day of the month on which unarranged overdraft fee is applied. "
-        "If day does not exist in application month, applies on last day of month.",
+        description="The day of the month on which unarranged overdraft fee is applied. " "If day does not exist in application month, applies on last day of month.",
         display_name="Unarranged Overdraft Fee Application Day",
         update_permission=ParameterUpdatePermission.USER_EDITABLE,
         default_value=1,
@@ -268,9 +267,7 @@ def accrue_fee(
         default_value="",
     )
 
-    unarranged_overdraft_fee_balance = utils.balance_at_coordinates(
-        balances=balances, address=OVERDRAFT_FEE, denomination=denomination
-    )
+    unarranged_overdraft_fee_balance = utils.balance_at_coordinates(balances=balances, address=OVERDRAFT_FEE, denomination=denomination)
 
     # if there is an unarranged overdraft fee cap defined and it has
     # been reached no additional fee will be accrued
@@ -333,12 +330,8 @@ def apply_fee(
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
-    unarranged_overdraft_fee_balance = utils.balance_at_coordinates(
-        balances=balances, address=OVERDRAFT_FEE, denomination=denomination
-    )
+        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+    unarranged_overdraft_fee_balance = utils.balance_at_coordinates(balances=balances, address=OVERDRAFT_FEE, denomination=denomination)
 
     custom_instructions: list[CustomInstruction] = []
 
@@ -372,8 +365,7 @@ def apply_fee(
                 application_customer_address=DEFAULT_ADDRESS,
                 payable=False,
                 instruction_details={
-                    "description": "Unarranged overdraft fee of "
-                    f"{unarranged_overdraft_fee_balance} {denomination} applied.",
+                    "description": "Unarranged overdraft fee of " f"{unarranged_overdraft_fee_balance} {denomination} applied.",
                     "event": APPLICATION_EVENT,
                 },
             )

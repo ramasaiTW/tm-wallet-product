@@ -228,21 +228,15 @@ class YearlyToDailyAndMonthlyRateTest(FeatureTest):
         self.assertEqual(daily_rate, Decimal("0.0001"))
 
     def test_yearly_to_daily_rate_in_leap_year_with_365_days_in_year(self):
-        daily_rate = utils.yearly_to_daily_rate(
-            effective_date=datetime(2020, 1, 1), yearly_rate=Decimal("0.0365"), days_in_year="365"
-        )
+        daily_rate = utils.yearly_to_daily_rate(effective_date=datetime(2020, 1, 1), yearly_rate=Decimal("0.0365"), days_in_year="365")
         self.assertEqual(daily_rate, Decimal("0.0001"))
 
     def test_yearly_to_daily_rate_in_leap_year_with_rounding(self):
-        daily_rate = utils.yearly_to_daily_rate(
-            effective_date=datetime(2020, 1, 1), yearly_rate=Decimal("0.0366"), days_in_year="365"
-        )
+        daily_rate = utils.yearly_to_daily_rate(effective_date=datetime(2020, 1, 1), yearly_rate=Decimal("0.0366"), days_in_year="365")
         self.assertEqual(daily_rate, Decimal("0.0001002740"))
 
     def test_yearly_to_daily_rate_with_invalid_days_in_year_defaults_to_365(self):
-        daily_rate = utils.yearly_to_daily_rate(
-            effective_date=datetime(2022, 1, 1), yearly_rate=Decimal("0.0365"), days_in_year="ABC"
-        )
+        daily_rate = utils.yearly_to_daily_rate(effective_date=datetime(2022, 1, 1), yearly_rate=Decimal("0.0365"), days_in_year="ABC")
         self.assertEqual(daily_rate, Decimal("0.0001"))
 
     def test_yearly_to_monthly_rate_with_rounding(self):
@@ -465,13 +459,9 @@ class GetParameterTest(FeatureTest):
     def test_get_parameter_returns_at_value(self):
         parameter_ts = self.parameter_timeseries.copy()
         previous_datetime = DEFAULT_DATETIME - relativedelta(hours=1)
-        parameter_ts["test_parameter"] = ParameterTimeseries(
-            [(previous_datetime, "some_old_value"), (DEFAULT_DATETIME, "test_value")]
-        )
+        parameter_ts["test_parameter"] = ParameterTimeseries([(previous_datetime, "some_old_value"), (DEFAULT_DATETIME, "test_value")])
         mock_vault = self.create_mock(parameter_ts=parameter_ts)
-        result = utils.get_parameter(
-            vault=mock_vault, name="test_parameter", at_datetime=previous_datetime
-        )
+        result = utils.get_parameter(vault=mock_vault, name="test_parameter", at_datetime=previous_datetime)
         self.assertEqual(result, "some_old_value")
 
     def test_get_parameter_returns_json_value(self):
@@ -486,23 +476,17 @@ class GetParameterTest(FeatureTest):
 
     def test_get_parameter_returns_boolean_value(self):
         mock_vault = self.create_mock(parameter_ts=self.parameter_timeseries)
-        result = utils.get_parameter(
-            vault=mock_vault, name="test_parameter_boolean", is_boolean=True
-        )
+        result = utils.get_parameter(vault=mock_vault, name="test_parameter_boolean", is_boolean=True)
         self.assertEqual(result, True)
 
     def test_get_parameter_returns_optional_value_when_set(self):
         mock_vault = self.create_mock(parameter_ts=self.parameter_timeseries)
-        result = utils.get_parameter(
-            vault=mock_vault, name="test_parameter_optional", is_optional=True
-        )
+        result = utils.get_parameter(vault=mock_vault, name="test_parameter_optional", is_optional=True)
         self.assertEqual(result, "test_value")
 
     def test_get_parameter_returns_optional_value_when_not_set(self):
         mock_vault = self.create_mock(parameter_ts=self.parameter_timeseries)
-        result = utils.get_parameter(
-            vault=mock_vault, name="test_parameter_optional_not_set", is_optional=True
-        )
+        result = utils.get_parameter(vault=mock_vault, name="test_parameter_optional_not_set", is_optional=True)
         self.assertEqual(result, None)
 
     def test_get_parameter_returns_optional_value_when_not_set_default_value(self):
@@ -517,16 +501,12 @@ class GetParameterTest(FeatureTest):
 
     def test_get_parameter_returns_optional_union_value(self):
         mock_vault = self.create_mock(parameter_ts=self.parameter_timeseries)
-        result = utils.get_parameter(
-            vault=mock_vault, name="test_parameter_optional_union", is_optional=True, is_union=True
-        )
+        result = utils.get_parameter(vault=mock_vault, name="test_parameter_optional_union", is_optional=True, is_union=True)
         self.assertEqual(result, "test_value")
 
     def test_get_parameter_returns_optional_json_value(self):
         mock_vault = self.create_mock(parameter_ts=self.parameter_timeseries)
-        result = utils.get_parameter(
-            vault=mock_vault, name="test_parameter_optional_json", is_optional=True, is_json=True
-        )
+        result = utils.get_parameter(vault=mock_vault, name="test_parameter_optional_json", is_optional=True, is_json=True)
         self.assertEqual(result, {"test_key": "test_value"})
 
     def test_get_parameter_returns_optional_boolean_value(self):
@@ -542,12 +522,8 @@ class GetParameterTest(FeatureTest):
 
 class HasParameterChangedTest(FeatureTest):
     def test_has_parameter_changed_returns_true_if_parameters_have_changed(self):
-        old_parameters: dict[str, utils.ParameterValueTypeAlias] = {
-            "interest_application_day": "25"
-        }
-        updated_parameters: dict[str, utils.ParameterValueTypeAlias] = {
-            "interest_application_day": "21"
-        }
+        old_parameters: dict[str, utils.ParameterValueTypeAlias] = {"interest_application_day": "25"}
+        updated_parameters: dict[str, utils.ParameterValueTypeAlias] = {"interest_application_day": "21"}
         expected_result = True
 
         has_parameter_value_changed = utils.has_parameter_value_changed(
@@ -559,12 +535,8 @@ class HasParameterChangedTest(FeatureTest):
         self.assertEqual(has_parameter_value_changed, expected_result)
 
     def test_has_parameter_changed_returns_false_if_parameters_have_not_changed(self):
-        old_parameters: dict[str, utils.ParameterValueTypeAlias] = {
-            "interest_application_day": "25"
-        }
-        updated_parameters: dict[str, utils.ParameterValueTypeAlias] = {
-            "interest_application_day": "25"
-        }
+        old_parameters: dict[str, utils.ParameterValueTypeAlias] = {"interest_application_day": "25"}
+        updated_parameters: dict[str, utils.ParameterValueTypeAlias] = {"interest_application_day": "25"}
         expected_result = False
 
         has_parameter_value_changed = utils.has_parameter_value_changed(
@@ -576,9 +548,7 @@ class HasParameterChangedTest(FeatureTest):
         self.assertEqual(has_parameter_value_changed, expected_result)
 
     def test_has_parameter_changed_returns_false_if_updated_parameters_not_previously_present(self):
-        old_parameters: dict[str, utils.ParameterValueTypeAlias] = {
-            "interest_application_day": "25"
-        }
+        old_parameters: dict[str, utils.ParameterValueTypeAlias] = {"interest_application_day": "25"}
         updated_parameters: dict[str, utils.ParameterValueTypeAlias] = {"new_param": "25"}
         expected_result = False
 
@@ -657,77 +627,43 @@ class AreOptionalParametersSetTest(FeatureTest):
 # Flag Helpers
 class IsFlagAppliedTest(FeatureTest):
     @patch.object(utils, "get_parameter")
-    def test_is_flag_in_list_applied_returns_true_when_flag_is_set(
-        self, mock_get_parameter: MagicMock
-    ):
-        mock_vault = self.create_mock(
-            flags_ts={"test_flag": FlagTimeseries([(DEFAULT_DATETIME, True)])}
-        )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"blocking_flags": ["test_flag"]}
-        )
+    def test_is_flag_in_list_applied_returns_true_when_flag_is_set(self, mock_get_parameter: MagicMock):
+        mock_vault = self.create_mock(flags_ts={"test_flag": FlagTimeseries([(DEFAULT_DATETIME, True)])})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"blocking_flags": ["test_flag"]})
 
-        is_flag_applied = utils.is_flag_in_list_applied(
-            vault=mock_vault, parameter_name="blocking_flags"
-        )
+        is_flag_applied = utils.is_flag_in_list_applied(vault=mock_vault, parameter_name="blocking_flags")
         self.assertEqual(is_flag_applied, True)
 
     @patch.object(utils, "get_parameter")
-    def test_is_flag_in_list_applied_returns_false_when_flag_is_not_set(
-        self, mock_get_parameter: MagicMock
-    ):
-        mock_vault = self.create_mock(
-            flags_ts={"test_flag": FlagTimeseries([(DEFAULT_DATETIME, False)])}
-        )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"blocking_flags": ["test_flag"]}
-        )
+    def test_is_flag_in_list_applied_returns_false_when_flag_is_not_set(self, mock_get_parameter: MagicMock):
+        mock_vault = self.create_mock(flags_ts={"test_flag": FlagTimeseries([(DEFAULT_DATETIME, False)])})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"blocking_flags": ["test_flag"]})
 
-        is_flag_applied = utils.is_flag_in_list_applied(
-            vault=mock_vault, parameter_name="blocking_flags"
-        )
+        is_flag_applied = utils.is_flag_in_list_applied(vault=mock_vault, parameter_name="blocking_flags")
         self.assertEqual(is_flag_applied, False)
 
     @patch.object(utils, "get_parameter")
-    def test_is_flag_in_list_applied_returns_true_when_optional_date_is_used(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_is_flag_in_list_applied_returns_true_when_optional_date_is_used(self, mock_get_parameter: MagicMock):
         mock_vault = self.create_mock(
             flags_ts={
                 "test_flag": FlagTimeseries([(datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")), True)]),
             }
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"blocking_flags": ["test_flag"]}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"blocking_flags": ["test_flag"]})
 
-        is_flag_applied = utils.is_flag_in_list_applied(
-            vault=mock_vault, parameter_name="blocking_flags"
-        )
+        is_flag_applied = utils.is_flag_in_list_applied(vault=mock_vault, parameter_name="blocking_flags")
         self.assertEqual(is_flag_applied, True)
 
     @patch.object(utils, "get_parameter")
-    def test_is_flag_in_list_applied_returns_false_when_optional_date_is_used(
-        self, mock_get_parameter: MagicMock
-    ):
-        mock_vault = self.create_mock(
-            flags_ts={
-                "test_flag": FlagTimeseries([(datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")), False)])
-            }
-        )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"blocking_flags": ["test_flag"]}
-        )
+    def test_is_flag_in_list_applied_returns_false_when_optional_date_is_used(self, mock_get_parameter: MagicMock):
+        mock_vault = self.create_mock(flags_ts={"test_flag": FlagTimeseries([(datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")), False)])})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"blocking_flags": ["test_flag"]})
 
-        is_flag_applied = utils.is_flag_in_list_applied(
-            vault=mock_vault, parameter_name="blocking_flags"
-        )
+        is_flag_applied = utils.is_flag_in_list_applied(vault=mock_vault, parameter_name="blocking_flags")
         self.assertEqual(is_flag_applied, False)
 
     def test_is_flag_in_timeseries_applied_returns_true_when_flag_is_set(self):
-        is_flag_applied = utils.is_flag_in_timeseries_applied(
-            flag_timeseries_iterable=[FlagTimeseries([(DEFAULT_DATETIME, True)])]
-        )
+        is_flag_applied = utils.is_flag_in_timeseries_applied(flag_timeseries_iterable=[FlagTimeseries([(DEFAULT_DATETIME, True)])])
         self.assertEqual(is_flag_applied, True)
 
     def test_is_flag_in_timeseries_applied_returns_false_when_flag_is_not_set(self):
@@ -738,18 +674,14 @@ class IsFlagAppliedTest(FeatureTest):
 
     def test_is_flag_in_timeseries_applied_returns_true_when_optional_date_is_used(self):
         is_flag_applied = utils.is_flag_in_timeseries_applied(
-            flag_timeseries_iterable=[
-                FlagTimeseries([(datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")), True)])
-            ],
+            flag_timeseries_iterable=[FlagTimeseries([(datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")), True)])],
             effective_datetime=datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")),
         )
         self.assertEqual(is_flag_applied, True)
 
     def test_is_flag_in_timeseries_applied_returns_false_when_optional_date_is_used(self):
         is_flag_applied = utils.is_flag_in_timeseries_applied(
-            flag_timeseries_iterable=[
-                FlagTimeseries([(datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")), False)])
-            ],
+            flag_timeseries_iterable=[FlagTimeseries([(datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")), False)])],
             effective_datetime=datetime(2021, 1, 2, tzinfo=ZoneInfo("UTC")),
         )
         self.assertEqual(is_flag_applied, False)
@@ -763,13 +695,9 @@ class GetFlagTimeseriesListForParameterTest(FeatureTest):
                 "flag_applied": FlagTimeseries([(DEFAULT_DATETIME, True)]),
             }
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"dummy_flags": ["flag_applied", "flag_not_applied"]}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"dummy_flags": ["flag_applied", "flag_not_applied"]})
 
-        flag_timeseries_list = utils.get_flag_timeseries_list_for_parameter(
-            vault=mock_vault, parameter_name="dummy_flags"
-        )
+        flag_timeseries_list = utils.get_flag_timeseries_list_for_parameter(vault=mock_vault, parameter_name="dummy_flags")
         flag_applied_timeseries = flag_timeseries_list[0]
         flag_not_applied_timeseries = flag_timeseries_list[1]
 
@@ -788,9 +716,7 @@ class ScheduledEventTest(FeatureTest):
                 "my_param_second": 3,
             }
         )
-        scheduled_event = utils.daily_scheduled_event(
-            vault=MagicMock(), start_datetime=DEFAULT_DATETIME, parameter_prefix="my_param"
-        )
+        scheduled_event = utils.daily_scheduled_event(vault=MagicMock(), start_datetime=DEFAULT_DATETIME, parameter_prefix="my_param")
         self.assertEqual(
             scheduled_event,
             ScheduledEvent(
@@ -854,9 +780,7 @@ class ScheduledEventTest(FeatureTest):
         mock_get_end_of_month_schedule_from_parameters: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule(
-            "end_of_month"
-        )
+        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule("end_of_month")
         scheduled_event = utils.monthly_scheduled_event(
             vault=mock_vault,
             start_datetime=DEFAULT_DATETIME,
@@ -881,13 +805,9 @@ class ScheduledEventTest(FeatureTest):
         )
 
     @patch.object(utils, "get_end_of_month_schedule_from_parameters")
-    def test_monthly_scheduled_event_default_failover_and_day(
-        self, mock_get_end_of_month_schedule_from_parameters: MagicMock
-    ):
+    def test_monthly_scheduled_event_default_failover_and_day(self, mock_get_end_of_month_schedule_from_parameters: MagicMock):
         mock_vault = self.create_mock()
-        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule(
-            "end_of_month"
-        )
+        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule("end_of_month")
         scheduled_event = utils.monthly_scheduled_event(
             vault=mock_vault,
             start_datetime=DEFAULT_DATETIME,
@@ -910,15 +830,11 @@ class ScheduledEventTest(FeatureTest):
         )
 
     @patch.object(utils, "get_end_of_month_schedule_from_parameters")
-    def test_monthly_scheduled_event_start_datetime_before_account_creation(
-        self, mock_get_end_of_month_schedule_from_parameters: MagicMock
-    ):
+    def test_monthly_scheduled_event_start_datetime_before_account_creation(self, mock_get_end_of_month_schedule_from_parameters: MagicMock):
         # If called with a start_datetime earlier than the account creation datetime,
         # the helper will default to account creation datetime.
         mock_vault = self.create_mock()
-        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule(
-            "end_of_month"
-        )
+        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule("end_of_month")
         start_datetime = mock_vault.get_account_creation_datetime() - relativedelta(seconds=1)
         scheduled_event = utils.monthly_scheduled_event(
             vault=mock_vault,
@@ -940,13 +856,9 @@ class ScheduledEventTest(FeatureTest):
         )
 
     @patch.object(utils, "get_end_of_month_schedule_from_parameters")
-    def test_monthly_scheduled_event_start_datetime_at_account_creation(
-        self, mock_get_end_of_month_schedule_from_parameters: MagicMock
-    ):
+    def test_monthly_scheduled_event_start_datetime_at_account_creation(self, mock_get_end_of_month_schedule_from_parameters: MagicMock):
         mock_vault = self.create_mock()
-        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule(
-            "end_of_month"
-        )
+        mock_get_end_of_month_schedule_from_parameters.return_value = SentinelEndOfMonthSchedule("end_of_month")
         start_datetime = mock_vault.get_account_creation_datetime()
         scheduled_event = utils.monthly_scheduled_event(
             vault=mock_vault,
@@ -997,16 +909,12 @@ class ScheduleFromParametersTest(FeatureTest):
         mock_vault = self.create_mock(parameter_ts=parameter_timeseries)
 
         expected_tuple = 1, 2, 3
-        result = utils.get_schedule_time_from_parameters(
-            mock_vault, parameter_prefix="schedule_prefix"
-        )
+        result = utils.get_schedule_time_from_parameters(mock_vault, parameter_prefix="schedule_prefix")
 
         self.assertTupleEqual(result, expected_tuple)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_only_provide_prefix(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_only_provide_prefix(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(hour=1, minute=2, second=3)
         result = utils.get_schedule_expression_from_parameters(
@@ -1020,9 +928,7 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_only_provide_day(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_only_provide_day(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(hour=1, minute=2, second=3, day=4)
         result = utils.get_schedule_expression_from_parameters(
@@ -1036,9 +942,7 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_only_provide_month(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_only_provide_month(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(hour=1, minute=2, second=3, month=5)
         result = utils.get_schedule_expression_from_parameters(
@@ -1052,9 +956,7 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_only_provide_year(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_only_provide_year(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(hour=1, minute=2, second=3, year=2023)
         result = utils.get_schedule_expression_from_parameters(
@@ -1068,9 +970,7 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_only_provide_day_of_week(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_only_provide_day_of_week(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(hour=1, minute=2, second=3, day_of_week=6)
         result = utils.get_schedule_expression_from_parameters(
@@ -1084,9 +984,7 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_provide_day_and_month(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_provide_day_and_month(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(hour=1, minute=2, second=3, day=4, month=5)
         result = utils.get_schedule_expression_from_parameters(
@@ -1100,9 +998,7 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_provide_month_and_year(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_provide_month_and_year(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(hour=1, minute=2, second=3, month=5, year=2023)
         result = utils.get_schedule_expression_from_parameters(
@@ -1116,9 +1012,7 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_provide_day_month_year(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_provide_day_month_year(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
         expected_expression = ScheduleExpression(
             hour=1,
@@ -1139,13 +1033,9 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_provide_month_year_day_of_week(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_provide_month_year_day_of_week(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
-        expected_expression = ScheduleExpression(
-            hour=1, minute=2, second=3, month=5, year=2023, day_of_week=6
-        )
+        expected_expression = ScheduleExpression(hour=1, minute=2, second=3, month=5, year=2023, day_of_week=6)
         result = utils.get_schedule_expression_from_parameters(
             vault=MagicMock(),
             parameter_prefix="dummy_prefix",
@@ -1157,13 +1047,9 @@ class ScheduleFromParametersTest(FeatureTest):
         self.assertEqual(result, expected_expression)
 
     @patch.object(utils, "get_schedule_time_from_parameters")
-    def test_get_schedule_expression_from_parameters_provide_day_month_year_day_of_week(
-        self, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_get_schedule_expression_from_parameters_provide_day_month_year_day_of_week(self, mock_get_schedule_time_from_parameters: MagicMock):
         mock_get_schedule_time_from_parameters.return_value = 1, 2, 3
-        expected_expression = ScheduleExpression(
-            hour=1, minute=2, second=3, day=4, month=5, year=2023, day_of_week=6
-        )
+        expected_expression = ScheduleExpression(hour=1, minute=2, second=3, day=4, month=5, year=2023, day_of_week=6)
         result = utils.get_schedule_expression_from_parameters(
             vault=MagicMock(),
             parameter_prefix="dummy_prefix",
@@ -1195,9 +1081,7 @@ class ScheduleFromParametersTest(FeatureTest):
         )
 
     @patch.object(utils, "get_parameter")
-    def test_get_end_of_month_schedule_from_parameters_default_failover_and_day(
-        self, mock_get_parameter: MagicMock
-    ):
+    def test_get_end_of_month_schedule_from_parameters_default_failover_and_day(self, mock_get_parameter: MagicMock):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "my_param_day": 24,
@@ -1230,9 +1114,7 @@ class GetNextScheduleDateTest(FeatureTest):
             schedule_frequency="monthly",
         )
 
-        expected_apply_accrued_interest_schedule = datetime(
-            year=2020, month=2, day=29, hour=3, minute=4, second=5
-        )
+        expected_apply_accrued_interest_schedule = datetime(year=2020, month=2, day=29, hour=3, minute=4, second=5)
 
         self.assertEqual(get_next_schedule_date, expected_apply_accrued_interest_schedule)
 
@@ -1243,9 +1125,7 @@ class GetNextScheduleDateTest(FeatureTest):
             schedule_frequency="quarterly",
         )
 
-        expected_apply_accrued_interest_schedule = datetime(
-            year=2020, month=2, day=29, hour=3, minute=4, second=5
-        )
+        expected_apply_accrued_interest_schedule = datetime(year=2020, month=2, day=29, hour=3, minute=4, second=5)
 
         self.assertEqual(get_next_schedule_date, expected_apply_accrued_interest_schedule)
 
@@ -1256,9 +1136,7 @@ class GetNextScheduleDateTest(FeatureTest):
             schedule_frequency="annually",
         )
 
-        expected_apply_accrued_interest_schedule = datetime(
-            year=2021, month=2, day=28, hour=23, minute=59, second=59
-        )
+        expected_apply_accrued_interest_schedule = datetime(year=2021, month=2, day=28, hour=23, minute=59, second=59)
 
         self.assertEqual(get_next_schedule_date, expected_apply_accrued_interest_schedule)
 
@@ -1341,30 +1219,22 @@ class FallsOnCalendarEventsTest(FeatureTest):
 
     def test_effective_datetime_on_beginning_of_first_event(self):
         effective_datetime = datetime(year=2020, month=1, day=2, hour=3, tzinfo=ZoneInfo("UTC"))
-        result = utils.falls_on_calendar_events(
-            effective_datetime=effective_datetime, calendar_events=self.calendar_events
-        )
+        result = utils.falls_on_calendar_events(effective_datetime=effective_datetime, calendar_events=self.calendar_events)
         self.assertTrue(result)
 
     def test_effective_date_on_end_of_second_event(self):
         effective_datetime = datetime(year=2020, month=1, day=2, hour=5, tzinfo=ZoneInfo("UTC"))
-        result = utils.falls_on_calendar_events(
-            effective_datetime=effective_datetime, calendar_events=self.calendar_events
-        )
+        result = utils.falls_on_calendar_events(effective_datetime=effective_datetime, calendar_events=self.calendar_events)
         self.assertTrue(result)
 
     def test_effective_date_before_first_event(self):
         effective_datetime = datetime(year=2020, month=1, day=2, hour=2, tzinfo=ZoneInfo("UTC"))
-        result = utils.falls_on_calendar_events(
-            effective_datetime=effective_datetime, calendar_events=self.calendar_events
-        )
+        result = utils.falls_on_calendar_events(effective_datetime=effective_datetime, calendar_events=self.calendar_events)
         self.assertFalse(result)
 
     def test_effective_date_after_first_event(self):
         effective_datetime = datetime(year=2020, month=1, day=2, hour=6, tzinfo=ZoneInfo("UTC"))
-        result = utils.falls_on_calendar_events(
-            effective_datetime=effective_datetime, calendar_events=self.calendar_events
-        )
+        result = utils.falls_on_calendar_events(effective_datetime=effective_datetime, calendar_events=self.calendar_events)
         self.assertFalse(result)
 
 
@@ -1393,13 +1263,9 @@ class GetNextScheduleDateCalendarAwareTest(FeatureTest):
             calendar_events=self.test_calendar_events,
         )
 
-        expected_apply_accrued_interest_schedule = datetime(
-            year=2020, month=2, day=29, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC")
-        )
+        expected_apply_accrued_interest_schedule = datetime(year=2020, month=2, day=29, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC"))
 
-        self.assertEqual(
-            get_next_schedule_date_calendar_aware, expected_apply_accrued_interest_schedule
-        )
+        self.assertEqual(get_next_schedule_date_calendar_aware, expected_apply_accrued_interest_schedule)
 
     def test_next_schedule_date_calendar_aware_returns_correct_date_monthly_on_holiday(self):
         """
@@ -1414,13 +1280,9 @@ class GetNextScheduleDateCalendarAwareTest(FeatureTest):
             calendar_events=self.test_calendar_events,
         )
 
-        expected_apply_accrued_interest_schedule = datetime(
-            year=2020, month=9, day=7, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC")
-        )
+        expected_apply_accrued_interest_schedule = datetime(year=2020, month=9, day=7, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC"))
 
-        self.assertEqual(
-            get_next_schedule_date_calendar_aware, expected_apply_accrued_interest_schedule
-        )
+        self.assertEqual(get_next_schedule_date_calendar_aware, expected_apply_accrued_interest_schedule)
 
     def test_next_schedule_date_calendar_aware_returns_correct_date_monthly_same_day_on_holiday(
         self,
@@ -1439,18 +1301,12 @@ class GetNextScheduleDateCalendarAwareTest(FeatureTest):
             calendar_events=self.test_calendar_events,
         )
 
-        expected_apply_accrued_interest_schedule = datetime(
-            year=2020, month=10, day=6, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC")
-        )
+        expected_apply_accrued_interest_schedule = datetime(year=2020, month=10, day=6, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC"))
 
-        self.assertEqual(
-            get_next_schedule_date_calendar_aware, expected_apply_accrued_interest_schedule
-        )
+        self.assertEqual(get_next_schedule_date_calendar_aware, expected_apply_accrued_interest_schedule)
 
     def test_get_next_datetime_after_calendar_events(self):
-        expected_effective_datetime = datetime(
-            year=2020, month=9, day=7, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC")
-        )
+        expected_effective_datetime = datetime(year=2020, month=9, day=7, hour=3, minute=4, second=5, tzinfo=ZoneInfo("UTC"))
         get_next_datetime_after_calendar_events = utils.get_next_datetime_after_calendar_events(
             effective_datetime=datetime(2020, 9, 6, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             calendar_events=self.test_calendar_events,
@@ -1503,9 +1359,7 @@ class DisableCompletedSchedulesTest(FeatureTest):
 
 ## Denomination helpers
 class ValidateDenominationTest(FeatureTest):
-    common_message = (
-        "Cannot make transactions in the given denomination, transactions must be one of"
-    )
+    common_message = "Cannot make transactions in the given denomination, transactions must be one of"
 
     def test_validate_denomination_returns_rejection_if_invalid(self):
         posting_instructions = [
@@ -1517,12 +1371,8 @@ class ValidateDenominationTest(FeatureTest):
             )
         ]
 
-        result = utils.validate_denomination(
-            posting_instructions=posting_instructions, accepted_denominations=["GBP"]
-        )
-        expected = Rejection(
-            message=f"{self.common_message} ['GBP']", reason_code=RejectionReason.WRONG_DENOMINATION
-        )
+        result = utils.validate_denomination(posting_instructions=posting_instructions, accepted_denominations=["GBP"])
+        expected = Rejection(message=f"{self.common_message} ['GBP']", reason_code=RejectionReason.WRONG_DENOMINATION)
         self.assertEqual(result, expected)
 
     def test_validate_denomination_returns_rejection_if_invalid_custom_instruction(self):
@@ -1550,9 +1400,7 @@ class ValidateDenominationTest(FeatureTest):
                 ]
             )
         ]
-        result = utils.validate_denomination(
-            posting_instructions=posting_instructions, accepted_denominations=["GBP", "AUD"]
-        )
+        result = utils.validate_denomination(posting_instructions=posting_instructions, accepted_denominations=["GBP", "AUD"])
         expected = Rejection(
             message=f"{self.common_message} ['AUD', 'GBP']",
             reason_code=RejectionReason.WRONG_DENOMINATION,
@@ -1575,9 +1423,7 @@ class ValidateDenominationTest(FeatureTest):
             ),
         ]
 
-        result = utils.validate_denomination(
-            posting_instructions=posting_instructions, accepted_denominations=["GBP", "AUD"]
-        )
+        result = utils.validate_denomination(posting_instructions=posting_instructions, accepted_denominations=["GBP", "AUD"])
         expected = Rejection(
             message=f"{self.common_message} ['AUD', 'GBP']",
             reason_code=RejectionReason.WRONG_DENOMINATION,
@@ -1616,9 +1462,7 @@ class ValidateDenominationTest(FeatureTest):
             ),
         ]
 
-        result = utils.validate_denomination(
-            posting_instructions=posting_instructions, accepted_denominations=["GBP"]
-        )
+        result = utils.validate_denomination(posting_instructions=posting_instructions, accepted_denominations=["GBP"])
         self.assertIsNone(result)
 
     def test_validate_denomination_returns_none_if_valid_multiple_instructions(self):
@@ -1637,9 +1481,7 @@ class ValidateDenominationTest(FeatureTest):
             ),
         ]
 
-        result = utils.validate_denomination(
-            posting_instructions=posting_instructions, accepted_denominations=["GBP"]
-        )
+        result = utils.validate_denomination(posting_instructions=posting_instructions, accepted_denominations=["GBP"])
         self.assertIsNone(result)
 
 
@@ -1665,9 +1507,7 @@ class ValidateSingleHardSettlementOrTransferTest(FeatureTest):
                 internal_account_id=DEFAULT_INTERNAL_ACCOUNT,
             ),
         ]
-        result = utils.validate_single_hard_settlement_or_transfer(
-            posting_instructions=posting_instructions
-        )
+        result = utils.validate_single_hard_settlement_or_transfer(posting_instructions=posting_instructions)
         expected = Rejection(message=self.common_message, reason_code=self.common_reason)
         self.assertEqual(result, expected)
 
@@ -1681,9 +1521,7 @@ class ValidateSingleHardSettlementOrTransferTest(FeatureTest):
                 internal_account_id=DEFAULT_INTERNAL_ACCOUNT,
             )
         ]
-        result = utils.validate_single_hard_settlement_or_transfer(
-            posting_instructions=posting_instructions
-        )
+        result = utils.validate_single_hard_settlement_or_transfer(posting_instructions=posting_instructions)
         expected = Rejection(message=self.common_message, reason_code=self.common_reason)
         self.assertEqual(result, expected)
 
@@ -1705,9 +1543,7 @@ class ValidateSingleHardSettlementOrTransferTest(FeatureTest):
                 internal_account_id=DEFAULT_INTERNAL_ACCOUNT,
             ),
         ]
-        result = utils.validate_single_hard_settlement_or_transfer(
-            posting_instructions=posting_instructions
-        )
+        result = utils.validate_single_hard_settlement_or_transfer(posting_instructions=posting_instructions)
         expected = Rejection(message=self.common_message, reason_code=self.common_reason)
         self.assertEqual(result, expected)
 
@@ -1720,9 +1556,7 @@ class ValidateSingleHardSettlementOrTransferTest(FeatureTest):
                 internal_account_id=DEFAULT_INTERNAL_ACCOUNT,
             ),
         ]
-        result = utils.validate_single_hard_settlement_or_transfer(
-            posting_instructions=posting_instructions
-        )
+        result = utils.validate_single_hard_settlement_or_transfer(posting_instructions=posting_instructions)
         self.assertIsNone(result)
 
     def test_none_returned_if_single_ohs(self):
@@ -1734,9 +1568,7 @@ class ValidateSingleHardSettlementOrTransferTest(FeatureTest):
                 internal_account_id=DEFAULT_INTERNAL_ACCOUNT,
             ),
         ]
-        result = utils.validate_single_hard_settlement_or_transfer(
-            posting_instructions=posting_instructions
-        )
+        result = utils.validate_single_hard_settlement_or_transfer(posting_instructions=posting_instructions)
         self.assertIsNone(result)
 
     def test_none_returned_if_single_transfer(self):
@@ -1748,9 +1580,7 @@ class ValidateSingleHardSettlementOrTransferTest(FeatureTest):
                 creditor_target_account_id="another_account",
             ),
         ]
-        result = utils.validate_single_hard_settlement_or_transfer(
-            posting_instructions=posting_instructions
-        )
+        result = utils.validate_single_hard_settlement_or_transfer(posting_instructions=posting_instructions)
         self.assertIsNone(result)
 
 
@@ -1765,9 +1595,7 @@ class IsOKeyInInstructionDetailsTest(FeatureTest):
                 instruction_details={"dummy_key": "true"},
             ),
         ]
-        result = utils.is_key_in_instruction_details(
-            key="dummy_key", posting_instructions=posting_instructions
-        )
+        result = utils.is_key_in_instruction_details(key="dummy_key", posting_instructions=posting_instructions)
         self.assertTrue(result)
 
     def test_is_key_in_instruction_details_single_posting_is_not_override(self):
@@ -1779,9 +1607,7 @@ class IsOKeyInInstructionDetailsTest(FeatureTest):
                 internal_account_id=DEFAULT_INTERNAL_ACCOUNT,
             ),
         ]
-        result = utils.is_key_in_instruction_details(
-            key="dummy_key", posting_instructions=posting_instructions
-        )
+        result = utils.is_key_in_instruction_details(key="dummy_key", posting_instructions=posting_instructions)
         self.assertFalse(result)
 
     def test_is_key_in_instruction_details_multiple_postings_is_override(self):
@@ -1801,9 +1627,7 @@ class IsOKeyInInstructionDetailsTest(FeatureTest):
                 instruction_details={"dummy_key": "true"},
             ),
         ]
-        result = utils.is_key_in_instruction_details(
-            key="dummy_key", posting_instructions=posting_instructions
-        )
+        result = utils.is_key_in_instruction_details(key="dummy_key", posting_instructions=posting_instructions)
         self.assertTrue(result)
 
     def test_is_key_in_instruction_details_multiple_postings_is_not_override(self):
@@ -1822,9 +1646,7 @@ class IsOKeyInInstructionDetailsTest(FeatureTest):
                 internal_account_id=DEFAULT_INTERNAL_ACCOUNT,
             ),
         ]
-        result = utils.is_key_in_instruction_details(
-            key="dummy_key", posting_instructions=posting_instructions
-        )
+        result = utils.is_key_in_instruction_details(key="dummy_key", posting_instructions=posting_instructions)
         self.assertFalse(result)
 
 
@@ -2065,16 +1887,10 @@ class BalancesTestBase(FeatureTest):
     ) -> _BalanceDefaultDict:
         mapping = {
             self.balance_coordinate(): self.balance(net=default_committed),
-            self.balance_coordinate(account_address="TODAYS_SPENDING"): self.balance(
-                net=todays_spending
-            ),
+            self.balance_coordinate(account_address="TODAYS_SPENDING"): self.balance(net=todays_spending),
             self.balance_coordinate(account_address="TODAYS_GIFTS"): self.balance(net=todays_gifts),
-            self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(
-                net=default_pending_outgoing
-            ),
-            self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(
-                net=default_pending_incoming
-            ),
+            self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(net=default_pending_outgoing),
+            self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(net=default_pending_incoming),
         }
         return _BalanceDefaultDict(mapping=mapping)
 
@@ -2087,21 +1903,11 @@ class BalancesTestBase(FeatureTest):
         default_pending_incoming: Decimal = DECIMAL_ZERO,
     ) -> Mapping[BalanceCoordinate, BalanceTimeseries]:
         return {
-            self.balance_coordinate(): self.construct_balance_timeseries(
-                dt=DEFAULT_DATETIME, net=default_committed
-            ),
-            self.balance_coordinate(
-                account_address="TODAYS_SPENDING"
-            ): self.construct_balance_timeseries(dt=DEFAULT_DATETIME, net=todays_spending),
-            self.balance_coordinate(
-                account_address="TODAYS_GIFTS"
-            ): self.construct_balance_timeseries(dt=DEFAULT_DATETIME, net=todays_gifts),
-            self.balance_coordinate(phase=Phase.PENDING_OUT): self.construct_balance_timeseries(
-                dt=DEFAULT_DATETIME, net=default_pending_outgoing
-            ),
-            self.balance_coordinate(phase=Phase.PENDING_IN): self.construct_balance_timeseries(
-                dt=DEFAULT_DATETIME, net=default_pending_incoming
-            ),
+            self.balance_coordinate(): self.construct_balance_timeseries(dt=DEFAULT_DATETIME, net=default_committed),
+            self.balance_coordinate(account_address="TODAYS_SPENDING"): self.construct_balance_timeseries(dt=DEFAULT_DATETIME, net=todays_spending),
+            self.balance_coordinate(account_address="TODAYS_GIFTS"): self.construct_balance_timeseries(dt=DEFAULT_DATETIME, net=todays_gifts),
+            self.balance_coordinate(phase=Phase.PENDING_OUT): self.construct_balance_timeseries(dt=DEFAULT_DATETIME, net=default_pending_outgoing),
+            self.balance_coordinate(phase=Phase.PENDING_IN): self.construct_balance_timeseries(dt=DEFAULT_DATETIME, net=default_pending_incoming),
         }
 
 
@@ -2241,12 +2047,8 @@ class GetEffectiveBalanceForAddressTest(FeatureTest):
         self.balances = _BalanceDefaultDict(
             mapping={
                 self.balance_coordinate(): self.balance(net=Decimal("12")),
-                self.balance_coordinate(account_address="ADDRESS_1", asset="ASSET_1"): self.balance(
-                    net=Decimal("23")
-                ),
-                self.balance_coordinate(
-                    account_address="ADDRESS_2", phase=Phase.PENDING_IN
-                ): self.balance(net=Decimal("34")),
+                self.balance_coordinate(account_address="ADDRESS_1", asset="ASSET_1"): self.balance(net=Decimal("23")),
+                self.balance_coordinate(account_address="ADDRESS_2", phase=Phase.PENDING_IN): self.balance(net=Decimal("34")),
                 self.balance_coordinate(
                     account_address="ADDRESS_3",
                     denomination="ABC",
@@ -2258,21 +2060,15 @@ class GetEffectiveBalanceForAddressTest(FeatureTest):
         return super().setUp()
 
     def test_balance_at_coordinates_no_optional_args(self):
-        result = utils.balance_at_coordinates(
-            balances=self.balances, address=DEFAULT_ADDRESS, denomination="GBP"
-        )
+        result = utils.balance_at_coordinates(balances=self.balances, address=DEFAULT_ADDRESS, denomination="GBP")
         self.assertEqual(result, Decimal("12"))
 
     def test_balance_at_coordinates_asset_provided(self):
-        result = utils.balance_at_coordinates(
-            balances=self.balances, address="ADDRESS_1", denomination="GBP", asset="ASSET_1"
-        )
+        result = utils.balance_at_coordinates(balances=self.balances, address="ADDRESS_1", denomination="GBP", asset="ASSET_1")
         self.assertEqual(result, Decimal("23"))
 
     def test_balance_at_coordinates_phase_provided(self):
-        result = utils.balance_at_coordinates(
-            balances=self.balances, address="ADDRESS_2", denomination="GBP", phase=Phase.PENDING_IN
-        )
+        result = utils.balance_at_coordinates(balances=self.balances, address="ADDRESS_2", denomination="GBP", phase=Phase.PENDING_IN)
         self.assertEqual(result, Decimal("34"))
 
     def test_balance_at_coordinates_all_args_provided(self):
@@ -2286,9 +2082,7 @@ class GetEffectiveBalanceForAddressTest(FeatureTest):
         self.assertEqual(result, Decimal("45"))
 
     def test_balance_at_coordinates_returns_0_when_combination_does_not_exist(self):
-        result = utils.balance_at_coordinates(
-            balances=self.balances, address="ADDRESS_4", denomination="GBP"
-        )
+        result = utils.balance_at_coordinates(balances=self.balances, address="ADDRESS_4", denomination="GBP")
         self.assertEqual(result, Decimal("0"))
 
     def test_balance_at_coordinates_2_decimal_places(self):
@@ -2297,9 +2091,7 @@ class GetEffectiveBalanceForAddressTest(FeatureTest):
                 self.balance_coordinate(): self.balance(net=Decimal("123.12345")),
             }
         )
-        result = utils.balance_at_coordinates(
-            balances=balances, address=DEFAULT_ADDRESS, denomination="GBP", decimal_places=2
-        )
+        result = utils.balance_at_coordinates(balances=balances, address=DEFAULT_ADDRESS, denomination="GBP", decimal_places=2)
         self.assertEqual(result, Decimal("123.12"))
 
     def test_balance_at_coordinates_0_decimal_places(self):
@@ -2308,9 +2100,7 @@ class GetEffectiveBalanceForAddressTest(FeatureTest):
                 self.balance_coordinate(): self.balance(net=Decimal("123.12345")),
             }
         )
-        result = utils.balance_at_coordinates(
-            balances=balances, address=DEFAULT_ADDRESS, denomination="GBP", decimal_places=0
-        )
+        result = utils.balance_at_coordinates(balances=balances, address=DEFAULT_ADDRESS, denomination="GBP", decimal_places=0)
         self.assertEqual(result, Decimal("123"))
 
     def test_balance_at_coordinates_negative_decimal_places(self):
@@ -2319,9 +2109,7 @@ class GetEffectiveBalanceForAddressTest(FeatureTest):
                 self.balance_coordinate(): self.balance(net=Decimal("123.12345")),
             }
         )
-        result = utils.balance_at_coordinates(
-            balances=balances, address=DEFAULT_ADDRESS, denomination="GBP", decimal_places=-1
-        )
+        result = utils.balance_at_coordinates(balances=balances, address=DEFAULT_ADDRESS, denomination="GBP", decimal_places=-1)
         self.assertEqual(result, Decimal("120"))
 
     def test_balance_at_coordinates_decimal_places_not_provided(self):
@@ -2330,9 +2118,7 @@ class GetEffectiveBalanceForAddressTest(FeatureTest):
                 self.balance_coordinate(): self.balance(net=Decimal("123.12345")),
             }
         )
-        result = utils.balance_at_coordinates(
-            balances=balances, address=DEFAULT_ADDRESS, denomination="GBP"
-        )
+        result = utils.balance_at_coordinates(balances=balances, address=DEFAULT_ADDRESS, denomination="GBP")
         self.assertEqual(result, Decimal("123.12345"))
 
 
@@ -2381,9 +2167,7 @@ class GetLatestAvailableBalanceFromMappingTest(BalancesTestBase):
             default_pending_outgoing=Decimal("-50"),
             default_pending_incoming=Decimal("30"),
         )
-        result = utils.get_latest_available_balance_from_mapping(
-            mapping=balance_mapping, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_latest_available_balance_from_mapping(mapping=balance_mapping, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("50"))
 
     def test_get_available_balance_committed_zero_and_pending_out_not_zero(self):
@@ -2392,9 +2176,7 @@ class GetLatestAvailableBalanceFromMappingTest(BalancesTestBase):
             default_pending_outgoing=Decimal("-50"),
             default_pending_incoming=Decimal("10"),
         )
-        result = utils.get_latest_available_balance_from_mapping(
-            mapping=balance_mapping, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_latest_available_balance_from_mapping(mapping=balance_mapping, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("-50"))
 
     def test_get_available_balance_committed_not_zero_and_pending_out_zero(self):
@@ -2403,9 +2185,7 @@ class GetLatestAvailableBalanceFromMappingTest(BalancesTestBase):
             default_pending_outgoing=Decimal("0"),
             default_pending_incoming=Decimal("0"),
         )
-        result = utils.get_latest_available_balance_from_mapping(
-            mapping=balance_mapping, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_latest_available_balance_from_mapping(mapping=balance_mapping, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("100"))
 
     def test_get_available_balance_both_committed_and_pending_out_are_zero(self):
@@ -2414,9 +2194,7 @@ class GetLatestAvailableBalanceFromMappingTest(BalancesTestBase):
             default_pending_outgoing=Decimal("0"),
             default_pending_incoming=Decimal("10"),
         )
-        result = utils.get_latest_available_balance_from_mapping(
-            mapping=balance_mapping, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_latest_available_balance_from_mapping(mapping=balance_mapping, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("0"))
 
 
@@ -2469,9 +2247,7 @@ class GetCurrentCreditBalanceTest(BalancesTestBase):
             default_pending_outgoing=Decimal("-50"),
             default_pending_incoming=Decimal("30"),
         )
-        result = utils.get_current_credit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_credit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("130"))
 
     def test_get_current_credit_balance_committed_zero_and_pending_in_not_zero(self):
@@ -2480,9 +2256,7 @@ class GetCurrentCreditBalanceTest(BalancesTestBase):
             default_pending_outgoing=Decimal("-50"),
             default_pending_incoming=Decimal("10"),
         )
-        result = utils.get_current_credit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_credit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("10"))
 
     def test_get_current_credit_balance_committed_not_zero_and_pending_in_zero(self):
@@ -2491,9 +2265,7 @@ class GetCurrentCreditBalanceTest(BalancesTestBase):
             default_pending_outgoing=Decimal("0"),
             default_pending_incoming=Decimal("0"),
         )
-        result = utils.get_current_credit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_credit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("100"))
 
     def test_get_current_credit_balance_both_committed_and_pending_in_are_zero(self):
@@ -2502,9 +2274,7 @@ class GetCurrentCreditBalanceTest(BalancesTestBase):
             default_pending_outgoing=Decimal("50"),
             default_pending_incoming=Decimal("0"),
         )
-        result = utils.get_current_credit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_credit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("0"))
 
 
@@ -2517,34 +2287,22 @@ class GetCurrentDebitBalanceTest(BalancesTestBase):
         balances = _BalanceDefaultDict(
             mapping={
                 self.balance_coordinate(): self.balance(credit=Decimal("100"), debit=Decimal("10")),
-                self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(
-                    credit=Decimal("0"), debit=Decimal("10")
-                ),
-                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(
-                    credit=Decimal("20"), debit=Decimal("10")
-                ),
+                self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(credit=Decimal("0"), debit=Decimal("10")),
+                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(credit=Decimal("20"), debit=Decimal("10")),
             }
         )
-        result = utils.get_current_debit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_debit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("20"))
 
     def test_get_current_debit_balance_committed_zero_and_pending_not_zero(self):
         balances = _BalanceDefaultDict(
             mapping={
                 self.balance_coordinate(): self.balance(net=Decimal("0")),
-                self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(
-                    credit=Decimal("0"), debit=Decimal("10")
-                ),
-                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(
-                    credit=Decimal("20"), debit=Decimal("10")
-                ),
+                self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(credit=Decimal("0"), debit=Decimal("10")),
+                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(credit=Decimal("20"), debit=Decimal("10")),
             }
         )
-        result = utils.get_current_debit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_debit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("10"))
 
     def test_get_current_debit_balance_committed_not_zero_and_pending_out_zero(self):
@@ -2552,14 +2310,10 @@ class GetCurrentDebitBalanceTest(BalancesTestBase):
             mapping={
                 self.balance_coordinate(): self.balance(credit=Decimal("100"), debit=Decimal("10")),
                 self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(net=Decimal("0")),
-                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(
-                    credit=Decimal("20"), debit=Decimal("10")
-                ),
+                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(credit=Decimal("20"), debit=Decimal("10")),
             }
         )
-        result = utils.get_current_debit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_debit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("10"))
 
     def test_get_current_debit_balance_both_committed_and_pending_out_are_zero(self):
@@ -2567,14 +2321,10 @@ class GetCurrentDebitBalanceTest(BalancesTestBase):
             mapping={
                 self.balance_coordinate(): self.balance(net=Decimal("0")),
                 self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(net=Decimal("0")),
-                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(
-                    credit=Decimal("20"), debit=Decimal("10")
-                ),
+                self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(credit=Decimal("20"), debit=Decimal("10")),
             }
         )
-        result = utils.get_current_debit_balance(
-            balances=balances, denomination=DEFAULT_DENOMINATION
-        )
+        result = utils.get_current_debit_balance(balances=balances, denomination=DEFAULT_DENOMINATION)
         self.assertEqual(result, Decimal("0"))
 
 
@@ -2605,9 +2355,7 @@ class GetBalanceDefaultDictFromMappingTest(BalancesTestBase):
         # construct expected result
         expected_result = BalanceDefaultDict(mapping={self.balance_coordinate(): self.balance_2})
         # run function
-        result = utils.get_balance_default_dict_from_mapping(
-            mapping=self.ts_balance_mapping(), effective_datetime=DEFAULT_DATETIME
-        )
+        result = utils.get_balance_default_dict_from_mapping(mapping=self.ts_balance_mapping(), effective_datetime=DEFAULT_DATETIME)
         self.assertEqual(result, expected_result)
 
 
@@ -2646,9 +2394,7 @@ class UpdateInflightBalancesTest(BalancesTestBase):
     tside = Tside.LIABILITY
 
     def test_update_inflight_balances_empty_posting_instructions(self):
-        current_balances = self.balances(
-            default_committed=Decimal("100"), todays_spending=Decimal("10")
-        )
+        current_balances = self.balances(default_committed=Decimal("100"), todays_spending=Decimal("10"))
         result = utils.update_inflight_balances(
             account_id=sentinel.account_id,
             tside=sentinel.tside,
@@ -2661,9 +2407,7 @@ class UpdateInflightBalancesTest(BalancesTestBase):
         current_balances = _BalanceDefaultDict(
             mapping={
                 self.balance_coordinate(): self.balance(net=Decimal("100")),
-                self.balance_coordinate(account_address="TODAYS_SPENDING"): self.balance(
-                    net=Decimal("10")
-                ),
+                self.balance_coordinate(account_address="TODAYS_SPENDING"): self.balance(net=Decimal("10")),
             }
         )
 
@@ -2700,15 +2444,9 @@ class UpdateInflightBalancesTest(BalancesTestBase):
 
         expected_result = BalanceDefaultDict(
             mapping={
-                self.balance_coordinate(): Balance(
-                    net=Decimal("120"), credit=Decimal("120"), debit=Decimal("0")
-                ),
-                self.balance_coordinate(account_address="TODAYS_SPENDING"): Balance(
-                    net=Decimal("20"), credit=Decimal("20"), debit=Decimal("0")
-                ),
-                self.balance_coordinate(account_address="TODAYS_SAVINGS"): Balance(
-                    net=Decimal("-10"), credit=Decimal("0"), debit=Decimal("10")
-                ),
+                self.balance_coordinate(): Balance(net=Decimal("120"), credit=Decimal("120"), debit=Decimal("0")),
+                self.balance_coordinate(account_address="TODAYS_SPENDING"): Balance(net=Decimal("20"), credit=Decimal("20"), debit=Decimal("0")),
+                self.balance_coordinate(account_address="TODAYS_SAVINGS"): Balance(net=Decimal("-10"), credit=Decimal("0"), debit=Decimal("10")),
             }
         )
 
@@ -2765,15 +2503,9 @@ class GetPostingInstructionsBalances(BalancesTestBase):
 
         expected_result = BalanceDefaultDict(
             mapping={
-                self.balance_coordinate(): Balance(
-                    net=Decimal("20"), credit=Decimal("20"), debit=Decimal("0")
-                ),
-                self.balance_coordinate(account_address="TODAYS_SPENDING"): Balance(
-                    net=Decimal("10"), credit=Decimal("10"), debit=Decimal("0")
-                ),
-                self.balance_coordinate(account_address="TODAYS_SAVINGS"): Balance(
-                    net=Decimal("-10"), credit=Decimal("0"), debit=Decimal("10")
-                ),
+                self.balance_coordinate(): Balance(net=Decimal("20"), credit=Decimal("20"), debit=Decimal("0")),
+                self.balance_coordinate(account_address="TODAYS_SPENDING"): Balance(net=Decimal("10"), credit=Decimal("10"), debit=Decimal("0")),
+                self.balance_coordinate(account_address="TODAYS_SAVINGS"): Balance(net=Decimal("-10"), credit=Decimal("0"), debit=Decimal("10")),
             }
         )
 
@@ -2788,9 +2520,7 @@ class GetPostingInstructionsBalances(BalancesTestBase):
 class ResetTrackerBalancesTest(FeatureTest):
     address_list = ["ADDRESS_1", "ADDRESS_2"]
 
-    def test_reset_tracker_balances_liability(
-        self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_reset_tracker_balances_liability(self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_create_postings.return_value = [sentinel.postings]
         mock_balance_at_coordinates.return_value = Decimal("1")
 
@@ -2839,9 +2569,7 @@ class ResetTrackerBalancesTest(FeatureTest):
             ]
         )
 
-    def test_reset_tracker_balances_asset(
-        self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_reset_tracker_balances_asset(self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_create_postings.return_value = [sentinel.postings]
         mock_balance_at_coordinates.return_value = Decimal("1")
 
@@ -2890,9 +2618,7 @@ class ResetTrackerBalancesTest(FeatureTest):
             ]
         )
 
-    def test_reset_tracker_balances_zero_balance(
-        self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_reset_tracker_balances_zero_balance(self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_create_postings.return_value = [sentinel.postings]
         mock_balance_at_coordinates.return_value = Decimal("0")
 

@@ -20,11 +20,7 @@ class AddressDetails:
         if not isinstance(other, AddressDetails):
             return False
 
-        return (
-            self.account_address == other.account_address
-            and self.description == other.description
-            and self.tags == other.tags
-        )
+        return self.account_address == other.account_address and self.description == other.description and self.tags == other.tags
 
     @classmethod
     @lru_cache()

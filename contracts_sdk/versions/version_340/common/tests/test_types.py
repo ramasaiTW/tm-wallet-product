@@ -116,21 +116,11 @@ class PublicCommonV340TypesTestCase(PublicCommonV330TypesTestCase):
                 )
             ],
         )
-        self.assertEqual(
-            self.request_id_340, hook_directives.add_account_note_directives[0].idempotency_key
-        )
-        self.assertEqual(
-            self.request_id_340, hook_directives.amend_schedule_directives[0].request_id
-        )
-        self.assertEqual(
-            self.request_id_340, hook_directives.remove_schedules_directives[0].request_id
-        )
-        self.assertEqual(
-            self.request_id_340, hook_directives.posting_instruction_batch_directives[0].request_id
-        )
-        self.assertEqual(
-            self.request_id_340, hook_directives.workflow_start_directives[0].idempotency_key
-        )
+        self.assertEqual(self.request_id_340, hook_directives.add_account_note_directives[0].idempotency_key)
+        self.assertEqual(self.request_id_340, hook_directives.amend_schedule_directives[0].request_id)
+        self.assertEqual(self.request_id_340, hook_directives.remove_schedules_directives[0].request_id)
+        self.assertEqual(self.request_id_340, hook_directives.posting_instruction_batch_directives[0].request_id)
+        self.assertEqual(self.request_id_340, hook_directives.workflow_start_directives[0].idempotency_key)
 
     def test_remove_schedules_directive(self):
         remove_schedules_directive = RemoveSchedulesDirective(

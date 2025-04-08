@@ -139,9 +139,7 @@ class WalletTest(endtoend.End2Endtest):
 
         self.assertEqual("1000", wallet_account["instance_param_vals"][wallet.PARAM_SPENDING_LIMIT])
 
-        self.assertEqual(
-            "1500", wallet_account["instance_param_vals"][wallet.PARAM_CUSTOMER_WALLET_LIMIT]
-        )
+        self.assertEqual("1500", wallet_account["instance_param_vals"][wallet.PARAM_CUSTOMER_WALLET_LIMIT])
 
         # we don't use default test denomination as the workflow takes it from the nominated account
         # permitted denoms
@@ -504,9 +502,7 @@ class WalletTest(endtoend.End2Endtest):
         self.assertEqual("ACCOUNT_STATUS_OPEN", wallet_account["status"])
 
         # Run Auto Top-Up workflow
-        wf_id = endtoend.workflows_helper.start_workflow(
-            "WALLET_AUTO_TOP_UP_SWITCH", context={"account_id": wallet_account_id}
-        )
+        wf_id = endtoend.workflows_helper.start_workflow("WALLET_AUTO_TOP_UP_SWITCH", context={"account_id": wallet_account_id})
         endtoend.workflows_helper.wait_for_state(wf_id, "auto_top_up_changed")
 
         # Ensure the flag has been added to the account
@@ -523,9 +519,7 @@ class WalletTest(endtoend.End2Endtest):
         self.assertEqual(account_flags[0]["account_id"], wallet_account_id)
 
         # Run Auto Top-Up workflow again, to disable the flag
-        wf_id = endtoend.workflows_helper.start_workflow(
-            "WALLET_AUTO_TOP_UP_SWITCH", context={"account_id": wallet_account_id}
-        )
+        wf_id = endtoend.workflows_helper.start_workflow("WALLET_AUTO_TOP_UP_SWITCH", context={"account_id": wallet_account_id})
         endtoend.workflows_helper.wait_for_state(wf_id, "auto_top_up_changed")
 
         # Ensure the flag has been removed from the account
@@ -674,11 +668,7 @@ class WalletTest(endtoend.End2Endtest):
         try:
             endtoend.core_api_helper.create_account_update(
                 account_id=wallet_account_id,
-                account_update={
-                    "instance_param_vals_update": {
-                        "instance_param_vals": {wallet.PARAM_CUSTOMER_WALLET_LIMIT: "2001"}
-                    }
-                },
+                account_update={"instance_param_vals_update": {"instance_param_vals": {wallet.PARAM_CUSTOMER_WALLET_LIMIT: "2001"}}},
             )
         except HTTPError as e:
             message = loads(e.response.text).get("message")
@@ -691,11 +681,7 @@ class WalletTest(endtoend.End2Endtest):
         try:
             endtoend.core_api_helper.create_account_update(
                 account_id=wallet_account_id,
-                account_update={
-                    "instance_param_vals_update": {
-                        "instance_param_vals": {wallet.PARAM_SPENDING_LIMIT: "2001"}
-                    }
-                },
+                account_update={"instance_param_vals_update": {"instance_param_vals": {wallet.PARAM_SPENDING_LIMIT: "2001"}}},
             )
         except HTTPError as e:
             message = loads(e.response.text).get("message")
@@ -769,15 +755,9 @@ class WalletTest(endtoend.End2Endtest):
         # Accept increase within limit
         endtoend.core_api_helper.create_account_update(
             account_id=wallet_account_id,
-            account_update={
-                "instance_param_vals_update": {
-                    "instance_param_vals": {wallet.PARAM_SPENDING_LIMIT: "1500"}
-                }
-            },
+            account_update={"instance_param_vals_update": {"instance_param_vals": {wallet.PARAM_SPENDING_LIMIT: "1500"}}},
         )
-        endtoend.accounts_helper.wait_for_account_update(
-            account_id=wallet_account_id, account_update_type="instance_param_vals_update"
-        )
+        endtoend.accounts_helper.wait_for_account_update(account_id=wallet_account_id, account_update_type="instance_param_vals_update")
 
         # Accept outbound posting within limit and with enough balance
         postingID = endtoend.postings_helper.outbound_hard_settlement(

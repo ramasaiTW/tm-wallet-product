@@ -37,9 +37,7 @@ flags.DEFINE_string(
 )
 
 
-def extract_framework_environments_from_config(
-    environment_purpose: EnvironmentPurpose, environment_name: str = ""
-) -> tuple[Environment, dict[str, Environment]]:
+def extract_framework_environments_from_config(environment_purpose: EnvironmentPurpose, environment_name: str = "") -> tuple[Environment, dict[str, Environment]]:
     """
     :param environment_purpose: what the environment will be used for: one of 'e2e' or 'sim'. This
     is used in conjunction with the framework_config to choose the right environment if no
@@ -56,15 +54,8 @@ def extract_framework_environments_from_config(
     if FLAGS.framework_config_path:
         try:
             framework_config = json.loads(load_file_contents(FLAGS.framework_config_path))
-            default_environment_name = framework_config.get(environment_purpose.value, {}).get(
-                "environment_name"
-            )
+            default_environment_name = framework_config.get(environment_purpose.value, {}).get("environment_name")
         except IOError:
-            log.warning(
-                f"Could not load framework default config. File at {FLAGS.framework_config_path}"
-                " not found"
-            )
+            log.warning(f"Could not load framework default config. File at {FLAGS.framework_config_path}" " not found")
 
-    return extract_environments_from_config(
-        environment_name=environment_name, default_environment_name=default_environment_name
-    )
+    return extract_environments_from_config(environment_name=environment_name, default_environment_name=default_environment_name)

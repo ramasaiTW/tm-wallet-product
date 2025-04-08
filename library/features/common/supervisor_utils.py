@@ -47,9 +47,7 @@ def schedule_sync_event_types(product_name: str) -> list[SupervisorContractEvent
     ]
 
 
-def get_supervisees_for_alias(
-    vault: SupervisorContractVault, alias: str
-) -> list[SuperviseeContractVault]:
+def get_supervisees_for_alias(vault: SupervisorContractVault, alias: str) -> list[SuperviseeContractVault]:
     """
     Returns a list of supervisee vault objects for the given alias, ordered by account creation date
     TODO: (INC-8671) reintroduce num_requested logic from v3
@@ -60,11 +58,7 @@ def get_supervisees_for_alias(
 
     """
     return sort_supervisees(
-        [
-            supervisee
-            for supervisee in vault.supervisees.values()
-            if supervisee.get_alias() == alias
-        ],
+        [supervisee for supervisee in vault.supervisees.values() if supervisee.get_alias() == alias],
     )
 
 
@@ -78,9 +72,7 @@ def sort_supervisees(supervisees: list[SuperviseeContractVault]) -> list[Supervi
     :return sorted_supervisees: list of ordered vault objects
     """
     sorted_supervisees_by_id = sorted(supervisees, key=lambda vault: vault.account_id)
-    sorted_supervisees_by_age_then_id = sorted(
-        sorted_supervisees_by_id, key=lambda vault: vault.get_account_creation_datetime()
-    )
+    sorted_supervisees_by_age_then_id = sorted(sorted_supervisees_by_id, key=lambda vault: vault.get_account_creation_datetime())
 
     return sorted_supervisees_by_age_then_id
 
@@ -95,15 +87,10 @@ def get_balance_default_dicts_for_supervisees(
     :param fetcher_id: the id of the fetcher used to get balances observations
     :return: the list of balances of the specified supervisees
     """
-    return [
-        supervisee.get_balances_observation(fetcher_id=fetcher_id).balances
-        for supervisee in supervisees
-    ]
+    return [supervisee.get_balances_observation(fetcher_id=fetcher_id).balances for supervisee in supervisees]
 
 
-def get_balances_default_dicts_from_timeseries(
-    supervisees: list[SuperviseeContractVault], effective_datetime: datetime
-) -> dict[str, BalanceDefaultDict]:
+def get_balances_default_dicts_from_timeseries(supervisees: list[SuperviseeContractVault], effective_datetime: datetime) -> dict[str, BalanceDefaultDict]:
     """
     Returns supervisee balances at the provided datetime, using balances timeseries.
     This is intended to be used where a fetcher cannot be used (e.g. post posting hook).
@@ -111,12 +98,7 @@ def get_balances_default_dicts_from_timeseries(
     :param effective_datetime: the datetime at which the balances should be retrieved
     :return: a dictionary that maps the supervisees account ID to the retrieved balances
     """
-    return {
-        supervisee.account_id: utils.get_balance_default_dict_from_mapping(
-            mapping=supervisee.get_balances_timeseries(), effective_datetime=effective_datetime
-        )
-        for supervisee in supervisees
-    }
+    return {supervisee.account_id: utils.get_balance_default_dict_from_mapping(mapping=supervisee.get_balances_timeseries(), effective_datetime=effective_datetime) for supervisee in supervisees}
 
 
 def sum_balances_across_supervisees(
@@ -151,11 +133,7 @@ def sum_balances_across_supervisees(
 
 def get_supervisee_directives_mapping(
     vault: SuperviseeContractVault,
-) -> tuple[
-    dict[str, list[AccountNotificationDirective]],
-    dict[str, list[PostingInstructionsDirective]],
-    dict[str, list[UpdateAccountEventTypeDirective]],
-]:
+) -> tuple[dict[str, list[AccountNotificationDirective]], dict[str, list[PostingInstructionsDirective]], dict[str, list[UpdateAccountEventTypeDirective]],]:
     """
     Return the mapping from supervisee account id to list of AccountNotificationDirective,
     PostingInstructionsDirectives and UpdateAccountEventTypeDirective to be returned
@@ -164,29 +142,15 @@ def get_supervisee_directives_mapping(
     :param vault: supervisee vault account
     :return: dictionary mapping of a tuple of vault account id to their respective directive.
     """
-    supervisee_hook_results: (
-        PostPostingHookResult | ScheduledEventHookResult
-    ) = vault.get_hook_result()  # type: ignore
+    supervisee_hook_results: (PostPostingHookResult | ScheduledEventHookResult) = vault.get_hook_result()  # type: ignore
     supervisee_notification_directives = supervisee_hook_results.account_notification_directives
-    supervisee_notification_directives_dict = (
-        {vault.account_id: supervisee_notification_directives}
-        if supervisee_notification_directives
-        else {}
-    )
+    supervisee_notification_directives_dict = {vault.account_id: supervisee_notification_directives} if supervisee_notification_directives else {}
 
     supervisee_posting_directives = supervisee_hook_results.posting_instructions_directives
-    supervisee_posting_directives_dict = (
-        {vault.account_id: supervisee_posting_directives} if supervisee_posting_directives else {}
-    )
+    supervisee_posting_directives_dict = {vault.account_id: supervisee_posting_directives} if supervisee_posting_directives else {}
 
-    supervisee_update_account_event_type_directives = (
-        supervisee_hook_results.update_account_event_type_directives
-    )
-    supervisee_update_account_event_type_directives_dict = (
-        {vault.account_id: supervisee_update_account_event_type_directives}
-        if supervisee_update_account_event_type_directives
-        else {}
-    )
+    supervisee_update_account_event_type_directives = supervisee_hook_results.update_account_event_type_directives
+    supervisee_update_account_event_type_directives_dict = {vault.account_id: supervisee_update_account_event_type_directives} if supervisee_update_account_event_type_directives else {}
     return (
         supervisee_notification_directives_dict,
         supervisee_posting_directives_dict,
@@ -233,9 +197,7 @@ def create_aggregate_posting_instructions(
     aggregate_balances = BalanceDefaultDict()
     for supervisee_account_id, posting_instructions in posting_instructions_by_supervisee.items():
         for posting_instruction in posting_instructions:
-            aggregate_balances += posting_instruction.balances(
-                account_id=supervisee_account_id, tside=tside
-            )
+            aggregate_balances += posting_instruction.balances(account_id=supervisee_account_id, tside=tside)
 
     filtered_aggregate_balances = filter_aggregate_balances(
         aggregate_balances=aggregate_balances,
@@ -250,18 +212,8 @@ def create_aggregate_posting_instructions(
     for balance_coordinate, balance in filtered_aggregate_balances.items():
         amount: Decimal = balance.net
         prefixed_address = f"{prefix}_{balance_coordinate.account_address}"
-        debit_address = (
-            prefixed_address
-            if (tside == Tside.ASSET and amount > Decimal("0"))
-            or (tside == Tside.LIABILITY and amount < Decimal("0"))
-            else addresses.INTERNAL_CONTRA
-        )
-        credit_address = (
-            prefixed_address
-            if (tside == Tside.ASSET and amount < Decimal("0"))
-            or (tside == Tside.LIABILITY and amount > Decimal("0"))
-            else addresses.INTERNAL_CONTRA
-        )
+        debit_address = prefixed_address if (tside == Tside.ASSET and amount > Decimal("0")) or (tside == Tside.LIABILITY and amount < Decimal("0")) else addresses.INTERNAL_CONTRA
+        credit_address = prefixed_address if (tside == Tside.ASSET and amount < Decimal("0")) or (tside == Tside.LIABILITY and amount > Decimal("0")) else addresses.INTERNAL_CONTRA
 
         aggregate_postings += utils.create_postings(
             amount=abs(amount),
@@ -324,9 +276,7 @@ def filter_aggregate_balances(
             current_amount = balances[balance_coordinate].net
             new_amount = new_balance_mapping[balance_coordinate].net
 
-            if utils.round_decimal(
-                amount=new_amount, decimal_places=rounding_precision
-            ) == utils.round_decimal(amount=current_amount, decimal_places=rounding_precision):
+            if utils.round_decimal(amount=new_amount, decimal_places=rounding_precision) == utils.round_decimal(amount=current_amount, decimal_places=rounding_precision):
                 del filtered_aggregate_balance_mapping[balance_coordinate]
         else:
             del filtered_aggregate_balance_mapping[balance_coordinate]
@@ -385,9 +335,6 @@ def get_supervisee_schedule_sync_updates(
         return [
             UpdatePlanEventTypeDirective(
                 event_type=SUPERVISEE_SCHEDULE_SYNC_EVENT,
-                expression=utils.one_off_schedule_expression(
-                    schedule_datetime=hook_arguments.effective_datetime
-                    + relativedelta(seconds=delay_seconds)
-                ),
+                expression=utils.one_off_schedule_expression(schedule_datetime=hook_arguments.effective_datetime + relativedelta(seconds=delay_seconds)),
             )
         ]

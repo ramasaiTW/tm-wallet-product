@@ -53,8 +53,7 @@ schedule_params = [
         name=PARAM_INTEREST_APPLICATION_DAY,
         shape=NumberShape(min_value=1, max_value=31, step=1),
         level=ParameterLevel.INSTANCE,
-        description="The day of the month on which interest is applied. If day does not exist"
-        " in application month, applies on last day of month.",
+        description="The day of the month on which interest is applied. If day does not exist" " in application month, applies on last day of month.",
         display_name="Interest Application Day",
         update_permission=ParameterUpdatePermission.USER_EDITABLE,
         default_value=1,
@@ -154,16 +153,12 @@ def scheduled_events(
     e.g. account creation datetime
     :return: dict of interest application scheduled events
     """
-    application_frequency: str = utils.get_parameter(
-        vault, name=PARAM_INTEREST_APPLICATION_FREQUENCY, is_union=True
-    )
+    application_frequency: str = utils.get_parameter(vault, name=PARAM_INTEREST_APPLICATION_FREQUENCY, is_union=True)
     start_datetime = reference_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
 
     if application_frequency == utils.MONTHLY:
         start_datetime = start_datetime + relativedelta(days=1)
-        scheduled_event = utils.monthly_scheduled_event(
-            vault=vault, start_datetime=start_datetime, parameter_prefix=INTEREST_APPLICATION_PREFIX
-        )
+        scheduled_event = utils.monthly_scheduled_event(vault=vault, start_datetime=start_datetime, parameter_prefix=INTEREST_APPLICATION_PREFIX)
     else:
         schedule_day = int(utils.get_parameter(vault, name=PARAM_INTEREST_APPLICATION_DAY))
         next_datetime = utils.get_next_schedule_date(
@@ -178,17 +173,7 @@ def scheduled_events(
             parameter_prefix=INTEREST_APPLICATION_PREFIX,
             day=next_datetime.day,
             month=next_datetime.month,
-            year=(
-                None
-                if (
-                    application_frequency == utils.ANNUALLY
-                    and (
-                        int(next_datetime.month) != 2
-                        or (int(next_datetime.month) == 2 and schedule_day < 29)
-                    )
-                )
-                else next_datetime.year
-            ),
+            year=(None if (application_frequency == utils.ANNUALLY and (int(next_datetime.month) != 2 or (int(next_datetime.month) == 2 and schedule_day < 29))) else next_datetime.year),
         )
 
         # adding a month to start_datetime param to apply interest for the first time
@@ -200,9 +185,7 @@ def scheduled_events(
             # not in the past
             start_datetime = start_datetime + relativedelta(days=1)
 
-        scheduled_event = ScheduledEvent(
-            start_datetime=start_datetime, expression=schedule_expression
-        )
+        scheduled_event = ScheduledEvent(start_datetime=start_datetime, expression=schedule_expression)
 
     return {APPLICATION_EVENT: scheduled_event}
 
@@ -228,25 +211,14 @@ def apply_interest(
     custom_instructions: list[CustomInstruction] = []
 
     interest_paid_account: str = utils.get_parameter(vault, name=PARAM_INTEREST_PAID_ACCOUNT)
-    interest_received_account: str = utils.get_parameter(
-        vault, name=PARAM_INTEREST_RECEIVED_ACCOUNT
-    )
-    accrued_interest_payable_account = (
-        interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
-    )
-    accrued_interest_receivable_account = (
-        interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
-    )
+    interest_received_account: str = utils.get_parameter(vault, name=PARAM_INTEREST_RECEIVED_ACCOUNT)
+    accrued_interest_payable_account = interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
+    accrued_interest_receivable_account = interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
 
     application_precision: int = utils.get_parameter(vault, name=PARAM_APPLICATION_PRECISION)
     denomination: str = utils.get_parameter(vault, name="denomination")
 
-    balances = (
-        balances
-        or vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
-    )
+    balances = balances or vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
 
     if amount_accrued_receivable := utils.sum_balances(
         balances=balances,
@@ -309,9 +281,7 @@ def apply_interest(
     return custom_instructions
 
 
-def update_next_schedule_execution(
-    *, vault: SmartContractVault, effective_datetime: datetime
-) -> UpdateAccountEventTypeDirective | None:
+def update_next_schedule_execution(*, vault: SmartContractVault, effective_datetime: datetime) -> UpdateAccountEventTypeDirective | None:
     """
     Update next scheduled execution if frequency not monthly or annually with
     intended month not february
@@ -321,23 +291,16 @@ def update_next_schedule_execution(
     :return: optional update event directive
     """
     # No need to reschedule these as the scheduler knows the next runtime from creation
-    application_frequency: str = utils.get_parameter(
-        vault, PARAM_INTEREST_APPLICATION_FREQUENCY, is_union=True
-    )
+    application_frequency: str = utils.get_parameter(vault, PARAM_INTEREST_APPLICATION_FREQUENCY, is_union=True)
     if application_frequency == utils.MONTHLY:
         return None
     else:
         schedule_day = int(utils.get_parameter(vault, name=PARAM_INTEREST_APPLICATION_DAY))
         # no need to reschedule if annual frequency and application month not february or
         # schedule day < 29 since there's no leap year logic to adapt
-        if application_frequency == utils.ANNUALLY and (
-            int(effective_datetime.month) != 2
-            or (int(effective_datetime.month) == 2 and schedule_day < 29)
-        ):
+        if application_frequency == utils.ANNUALLY and (int(effective_datetime.month) != 2 or (int(effective_datetime.month) == 2 and schedule_day < 29)):
             return None
 
         new_schedule = scheduled_events(vault=vault, reference_datetime=effective_datetime)
 
-        return UpdateAccountEventTypeDirective(
-            event_type=APPLICATION_EVENT, expression=new_schedule[APPLICATION_EVENT].expression
-        )
+        return UpdateAccountEventTypeDirective(event_type=APPLICATION_EVENT, expression=new_schedule[APPLICATION_EVENT].expression)

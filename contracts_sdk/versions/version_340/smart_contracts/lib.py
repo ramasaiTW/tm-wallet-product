@@ -66,9 +66,7 @@ class VaultFunctionsABC(v330_lib.VaultFunctionsABC):
                 object only. It cannot be used on a non-supervised Vault object.
             """,
             args=[],
-            return_value=types_utils.ReturnValueSpec(
-                docstring="The Supervisee Smart Contract Version alias.", type="str"
-            ),
+            return_value=types_utils.ReturnValueSpec(docstring="The Supervisee Smart Contract Version alias.", type="str"),
         )
 
         return spec

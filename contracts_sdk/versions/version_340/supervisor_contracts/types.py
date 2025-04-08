@@ -100,9 +100,7 @@ class EventType:
                     hook in the `event_types` list. **Only available in version 3.4.0+**.
                 """,
             public_attributes=cls._public_attributes(language_code),
-            constructor=types_utils.ConstructorSpec(
-                docstring="Constructs a new EventType", args=cls._public_attributes(language_code)
-            ),
+            constructor=types_utils.ConstructorSpec(docstring="Constructs a new EventType", args=cls._public_attributes(language_code)),
         )
 
     @classmethod
@@ -154,9 +152,7 @@ class EventType:
 
 class SmartContractDescriptor:
     def __init__(self, *, alias, smart_contract_version_id):
-        self._spec().assert_constructor_args(
-            self._registry, {"alias": alias, "smart_contract_version_id": smart_contract_version_id}
-        )
+        self._spec().assert_constructor_args(self._registry, {"alias": alias, "smart_contract_version_id": smart_contract_version_id})
 
         self.alias = alias
         self.smart_contract_version_id = smart_contract_version_id

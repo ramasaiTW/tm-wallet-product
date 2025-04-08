@@ -251,13 +251,11 @@ class GetElapsedAndRemainingTermsTest(ConfigurableRepaymentFrequencyTestCommon):
 
     def test_weekly_elapsed_and_remaining_terms(self):
         total_repayment_count = 16
-        elapsed_and_remaining_terms = (
-            configurable_repayment_frequency.get_elapsed_and_remaining_terms(
-                account_creation_date=self.account_creation_date,
-                effective_date=self.effective_date,
-                total_repayment_count=total_repayment_count,
-                repayment_frequency="weekly",
-            )
+        elapsed_and_remaining_terms = configurable_repayment_frequency.get_elapsed_and_remaining_terms(
+            account_creation_date=self.account_creation_date,
+            effective_date=self.effective_date,
+            total_repayment_count=total_repayment_count,
+            repayment_frequency="weekly",
         )
         self.assertTupleEqual(
             elapsed_and_remaining_terms,
@@ -266,13 +264,11 @@ class GetElapsedAndRemainingTermsTest(ConfigurableRepaymentFrequencyTestCommon):
 
     def test_fortnightly_elapsed_and_remaining_terms(self):
         total_repayment_count = 8
-        elapsed_and_remaining_terms = (
-            configurable_repayment_frequency.get_elapsed_and_remaining_terms(
-                account_creation_date=self.account_creation_date,
-                effective_date=self.effective_date,
-                total_repayment_count=total_repayment_count,
-                repayment_frequency="fortnightly",
-            )
+        elapsed_and_remaining_terms = configurable_repayment_frequency.get_elapsed_and_remaining_terms(
+            account_creation_date=self.account_creation_date,
+            effective_date=self.effective_date,
+            total_repayment_count=total_repayment_count,
+            repayment_frequency="fortnightly",
         )
         self.assertTupleEqual(
             elapsed_and_remaining_terms,
@@ -280,13 +276,11 @@ class GetElapsedAndRemainingTermsTest(ConfigurableRepaymentFrequencyTestCommon):
         )
 
     def test_monthly_elapsed_and_remaining_terms(self):
-        elapsed_and_remaining_terms = (
-            configurable_repayment_frequency.get_elapsed_and_remaining_terms(
-                account_creation_date=self.account_creation_date,
-                effective_date=self.effective_date,
-                total_repayment_count=self.total_repayment_count,
-                repayment_frequency="monthly",
-            )
+        elapsed_and_remaining_terms = configurable_repayment_frequency.get_elapsed_and_remaining_terms(
+            account_creation_date=self.account_creation_date,
+            effective_date=self.effective_date,
+            total_repayment_count=self.total_repayment_count,
+            repayment_frequency="monthly",
         )
         self.assertTupleEqual(
             elapsed_and_remaining_terms,
@@ -303,9 +297,7 @@ class GetParametersTest(ConfigurableRepaymentFrequencyTestCommon):
             parameters={PARAM_REPAYMENT_FREQUENCY: repayment_frequency_parameter},
         )
 
-        result = configurable_repayment_frequency.get_repayment_frequency_parameter(
-            vault=sentinel.vault
-        )
+        result = configurable_repayment_frequency.get_repayment_frequency_parameter(vault=sentinel.vault)
 
         self.assertEqual(
             repayment_frequency_parameter,

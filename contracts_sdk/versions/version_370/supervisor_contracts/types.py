@@ -16,9 +16,7 @@ from ....utils import types_utils, symbols
 
 class SmartContractDescriptor(types360.SmartContractDescriptor):
     def __init__(self, *, alias, smart_contract_version_id, supervise_post_posting_hook=False):
-        self._spec().assert_constructor_args(
-            self._registry, {"supervise_post_posting_hook": supervise_post_posting_hook}
-        )
+        self._spec().assert_constructor_args(self._registry, {"supervise_post_posting_hook": supervise_post_posting_hook})
         super().__init__(alias=alias, smart_contract_version_id=smart_contract_version_id)
         self.supervise_post_posting_hook = supervise_post_posting_hook
 

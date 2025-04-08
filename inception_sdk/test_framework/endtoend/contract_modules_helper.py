@@ -107,10 +107,7 @@ def upload_contract_modules(contract_modules: dict[str, dict[str, str]]) -> None
     e2e_module_mapping = {}
     for contract_module_id, contract_module_properties in contract_modules.items():
         if "path" not in contract_module_properties:
-            raise NameError(
-                "Contract Module: {} not specified with path. "
-                "Specified with {}".format(contract_module_id, str(contract_module_properties))
-            )
+            raise NameError("Contract Module: {} not specified with path. " "Specified with {}".format(contract_module_id, str(contract_module_properties)))
 
         contract_module_file = contract_module_properties["path"]
 
@@ -118,9 +115,7 @@ def upload_contract_modules(contract_modules: dict[str, dict[str, str]]) -> None
 
         display_name = contract_module_properties.get("display_name", contract_module_id)
 
-        code_hash = hashlib.md5(
-            (contract_module_data + display_name or "").encode("utf-8")
-        ).hexdigest()
+        code_hash = hashlib.md5((contract_module_data + display_name or "").encode("utf-8")).hexdigest()
         e2e_unique_contract_module_id = "e2e_" + contract_module_id + "_" + code_hash
 
         contract_module = create_contract_module(
@@ -140,10 +135,7 @@ def upload_contract_modules(contract_modules: dict[str, dict[str, str]]) -> None
 
     contract_module_aliases = get_contract_module_aliases(endtoend.testhandle.CONTRACTS)
     contract_to_version_id = {
-        endtoend.testhandle.CONTRACTS[pid].get(
-            "contract_id", pid
-        ): endtoend.contracts_helper.get_current_product_version_id(pid)
-        for pid in endtoend.testhandle.contract_pid_to_uploaded_pid
+        endtoend.testhandle.CONTRACTS[pid].get("contract_id", pid): endtoend.contracts_helper.get_current_product_version_id(pid) for pid in endtoend.testhandle.contract_pid_to_uploaded_pid
     }
     for contract in contract_module_aliases.keys():
         alias_to_contract_module_version_id = {}
@@ -177,15 +169,11 @@ def link_contract_modules_to_contract(
 
     post_body = json.dumps(post_body)
 
-    resp = endtoend.helper.send_request(
-        "post", "/v1/smart-contract-module-versions-links", data=post_body
-    )
+    resp = endtoend.helper.send_request("post", "/v1/smart-contract-module-versions-links", data=post_body)
     log.info(f"Contract module(s) linked, id {resp['id']}.")
 
 
-def get_contract_module_aliases(
-    contracts: dict[str, dict[str, Union[str, dict[str, str]]]]
-) -> dict[str, list[str]]:
+def get_contract_module_aliases(contracts: dict[str, dict[str, Union[str, dict[str, str]]]]) -> dict[str, list[str]]:
     """
     Uses a regex to parse the smart contract code and give back a list of the contract module
     aliases which are declared.
@@ -197,8 +185,6 @@ def get_contract_module_aliases(
 
             # working example of the regex code is here https://regex101.com/r/Ch8G8V/1
             regex = r"(?P<alias_prefix>alias=[\'\"]?)(?P<alias>[\w\d]*)(?P<suffix>[\'\"]?)"  # noqa: E501
-            contract_module_aliases[contract_id] = [
-                match.group("alias") for match in re.finditer(regex, contract_data)
-            ]
+            contract_module_aliases[contract_id] = [match.group("alias") for match in re.finditer(regex, contract_data)]
 
     return contract_module_aliases

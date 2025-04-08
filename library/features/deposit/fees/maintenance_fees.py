@@ -69,8 +69,7 @@ schedule_params = [
         name=PARAM_MAINTENANCE_FEE_APPLICATION_DAY,
         shape=NumberShape(min_value=1, max_value=31, step=1),
         level=ParameterLevel.INSTANCE,
-        description="The day of the month on which maintenance fee is applied."
-        "If day does not exist in application month, applies on last day of month.",
+        description="The day of the month on which maintenance fee is applied." "If day does not exist in application month, applies on last day of month.",
         display_name="Maintenance Fees Application Day",
         update_permission=ParameterUpdatePermission.USER_EDITABLE,
         default_value=1,
@@ -228,14 +227,7 @@ def scheduled_events(
             parameter_prefix=MAINTENANCE_FEE_APPLICATION_PREFIX,
             day=next_schedule_datetime.day,
             month=next_schedule_datetime.month,
-            year=(
-                None
-                if (
-                    int(next_schedule_datetime.month) != 2
-                    or (int(next_schedule_datetime.month) == 2 and schedule_day < 29)
-                )
-                else next_schedule_datetime.year
-            ),
+            year=(None if (int(next_schedule_datetime.month) != 2 or (int(next_schedule_datetime.month) == 2 and schedule_day < 29)) else next_schedule_datetime.year),
         )
         maintenance_fee_schedule = {
             event_name: ScheduledEvent(
@@ -269,20 +261,13 @@ def apply_monthly_fee(
     using a custom definition
     :return: Custom instructions to generate posting for monthly maintenance fees
     """
-    if any(
-        f.waive_fees(vault=vault, effective_datetime=effective_datetime)
-        for f in monthly_fee_waive_conditions or []
-    ):
+    if any(f.waive_fees(vault=vault, effective_datetime=effective_datetime) for f in monthly_fee_waive_conditions or []):
         return []
 
-    maintenance_fee_income_account = _get_monthly_internal_income_account(
-        vault=vault, effective_datetime=effective_datetime
-    )
+    maintenance_fee_income_account = _get_monthly_internal_income_account(vault=vault, effective_datetime=effective_datetime)
 
     # Maintenance fee is a tier parameter driven by an account-level flag
-    monthly_maintenance_fee_tiers = _get_monthly_maintenance_fee_tiers(
-        vault=vault, effective_datetime=effective_datetime
-    )
+    monthly_maintenance_fee_tiers = _get_monthly_maintenance_fee_tiers(vault=vault, effective_datetime=effective_datetime)
 
     tier = account_tiers.get_account_tier(vault)
 
@@ -296,9 +281,7 @@ def apply_monthly_fee(
     )
 
     if denomination is None:
-        denomination = common_parameters.get_denomination_parameter(
-            vault=vault, effective_datetime=effective_datetime
-        )
+        denomination = common_parameters.get_denomination_parameter(vault=vault, effective_datetime=effective_datetime)
 
     fee_custom_instructions = fees.fee_custom_instruction(
         customer_account_id=vault.account_id,
@@ -311,14 +294,9 @@ def apply_monthly_fee(
         },
     )
 
-    if (
-        _are_monthly_partial_payments_enabled(vault=vault, effective_datetime=effective_datetime)
-        and fee_custom_instructions
-    ):
+    if _are_monthly_partial_payments_enabled(vault=vault, effective_datetime=effective_datetime) and fee_custom_instructions:
         if balances is None:
-            balances = vault.get_balances_observation(
-                fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-            ).balances
+            balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
         return partial_fee.charge_partial_fee(
             vault=vault,
             effective_datetime=effective_datetime,
@@ -332,22 +310,16 @@ def apply_monthly_fee(
     return fee_custom_instructions
 
 
-def apply_annual_fee(
-    *, vault: SmartContractVault, effective_datetime: datetime
-) -> list[CustomInstruction]:
+def apply_annual_fee(*, vault: SmartContractVault, effective_datetime: datetime) -> list[CustomInstruction]:
     """
     Gets annual maintenance fees and the account where it will be credited.
     :param vault: Vault object for the account getting the fee assessed
     :return: Custom instructions to generate posting for annual maintenance fees
     """
-    annual_maintenance_fee_income_account = _get_annual_internal_income_account(
-        vault=vault, effective_datetime=effective_datetime
-    )
+    annual_maintenance_fee_income_account = _get_annual_internal_income_account(vault=vault, effective_datetime=effective_datetime)
 
     # Maintenance fee is a tier parameter driven by an account-level flag
-    annual_maintenance_fee_tiers = _get_annual_maintenance_fee_tiers(
-        vault=vault, effective_datetime=effective_datetime
-    )
+    annual_maintenance_fee_tiers = _get_annual_maintenance_fee_tiers(vault=vault, effective_datetime=effective_datetime)
 
     tier = account_tiers.get_account_tier(vault)
 
@@ -359,9 +331,7 @@ def apply_annual_fee(
         )
         or 0
     )
-    denomination = common_parameters.get_denomination_parameter(
-        vault=vault, effective_datetime=effective_datetime
-    )
+    denomination = common_parameters.get_denomination_parameter(vault=vault, effective_datetime=effective_datetime)
 
     # fees.fee_custom_instruction returns one Custom instruction
     return fees.fee_custom_instruction(
@@ -376,9 +346,7 @@ def apply_annual_fee(
     )
 
 
-def update_next_annual_schedule_execution(
-    *, vault: SmartContractVault, effective_datetime: datetime
-) -> UpdateAccountEventTypeDirective | None:
+def update_next_annual_schedule_execution(*, vault: SmartContractVault, effective_datetime: datetime) -> UpdateAccountEventTypeDirective | None:
     """
     Update next annual scheduled execution with intended month not february
 
@@ -390,14 +358,10 @@ def update_next_annual_schedule_execution(
     schedule_day = int(utils.get_parameter(vault, name=PARAM_MAINTENANCE_FEE_APPLICATION_DAY))
     # no need to reschedule if annual frequency and application month not february or
     # schedule day < 29 since there's no leap year logic to adapt
-    if int(effective_datetime.month) != 2 or (
-        int(effective_datetime.month) == 2 and schedule_day < 29
-    ):
+    if int(effective_datetime.month) != 2 or (int(effective_datetime.month) == 2 and schedule_day < 29):
         return None
 
-    new_schedule = scheduled_events(
-        vault=vault, start_datetime=effective_datetime, frequency=ANNUALLY
-    )
+    new_schedule = scheduled_events(vault=vault, start_datetime=effective_datetime, frequency=ANNUALLY)
 
     return UpdateAccountEventTypeDirective(
         event_type=APPLY_ANNUAL_FEE_EVENT,
@@ -405,9 +369,7 @@ def update_next_annual_schedule_execution(
     )
 
 
-def _get_monthly_internal_income_account(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> str:
+def _get_monthly_internal_income_account(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_MONTHLY_MAINTENANCE_FEE_INCOME_ACCOUNT,
@@ -415,9 +377,7 @@ def _get_monthly_internal_income_account(
     )
 
 
-def _get_monthly_maintenance_fee_tiers(
-    vault: SmartContractVault, effective_datetime: datetime | None
-) -> dict[str, str]:
+def _get_monthly_maintenance_fee_tiers(vault: SmartContractVault, effective_datetime: datetime | None) -> dict[str, str]:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_MONTHLY_MAINTENANCE_FEE_BY_TIER,
@@ -426,9 +386,7 @@ def _get_monthly_maintenance_fee_tiers(
     )
 
 
-def _get_annual_internal_income_account(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> str:
+def _get_annual_internal_income_account(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_ANNUAL_MAINTENANCE_FEE_INCOME_ACCOUNT,
@@ -436,9 +394,7 @@ def _get_annual_internal_income_account(
     )
 
 
-def _get_annual_maintenance_fee_tiers(
-    vault: SmartContractVault, effective_datetime: datetime | None
-) -> dict[str, str]:
+def _get_annual_maintenance_fee_tiers(vault: SmartContractVault, effective_datetime: datetime | None) -> dict[str, str]:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_ANNUAL_MAINTENANCE_FEE_BY_TIER,
@@ -447,9 +403,7 @@ def _get_annual_maintenance_fee_tiers(
     )
 
 
-def _are_monthly_partial_payments_enabled(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> bool:
+def _are_monthly_partial_payments_enabled(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> bool:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_MONTHLY_MAINTENANCE_FEE_PARTIAL_FEE_ENABLED,

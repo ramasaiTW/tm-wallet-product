@@ -46,17 +46,12 @@ TERMINAL_PLAN_STATUSES = [
 def upload_supervisor_contracts(supervisor_contracts: dict[str, dict[str, Any]]) -> None:
     for product_id, contract_properties in supervisor_contracts.items():
         if "path" not in contract_properties:
-            raise NameError(
-                "Contract: {} not specified with path. "
-                "Specified with {}".format(product_id, str(contract_properties))
-            )
+            raise NameError("Contract: {} not specified with path. " "Specified with {}".format(product_id, str(contract_properties)))
         e2e_contract_data = endtoend.contracts_helper.get_contract_content_for_e2e(
             product_id,
             contract_properties,
         )
-        e2e_contract_data = replace_clu_dependencies(
-            product_id, e2e_contract_data, endtoend.testhandle.clu_reference_mappings
-        )
+        e2e_contract_data = replace_clu_dependencies(product_id, e2e_contract_data, endtoend.testhandle.clu_reference_mappings)
 
         e2e_contract_data = replace_schedule_tag_ids_in_contract(
             contract_data=e2e_contract_data,
@@ -92,9 +87,7 @@ def upload_supervisor_contracts(supervisor_contracts: dict[str, dict[str, Any]])
         )
 
         log.info("Supervisor contract %s version uploaded.", supervisor_contract_version["id"])
-        endtoend.testhandle.supervisorcontract_name_to_id[product_id] = supervisor_contract_version[
-            "id"
-        ]
+        endtoend.testhandle.supervisorcontract_name_to_id[product_id] = supervisor_contract_version["id"]
 
 
 def create_plan(
@@ -160,9 +153,7 @@ def get_plan_updates(plan_id: str, statuses: list[str] | None = None) -> list[di
     return endtoend.helper.list_resources("plan-updates", params)
 
 
-def get_plan_updates_by_type(
-    plan_id: str, update_types: list[str], statuses: list[str] | None = None
-) -> list[dict[str, Any]]:
+def get_plan_updates_by_type(plan_id: str, update_types: list[str], statuses: list[str] | None = None) -> list[dict[str, Any]]:
     """
     Gets a list of plan updates and filters by type
     :param plan_id: the plan id to get plan updates for
@@ -172,12 +163,7 @@ def get_plan_updates_by_type(
     """
 
     plan_updates = get_plan_updates(plan_id, statuses)
-    plan_updates_by_type = [
-        plan_update
-        for plan_update in plan_updates
-        for update_type in update_types
-        if update_type in plan_update
-    ]
+    plan_updates_by_type = [plan_update for plan_update in plan_updates for update_type in update_types if update_type in plan_update]
     return plan_updates_by_type
 
 
@@ -246,9 +232,7 @@ def wait_for_plan_update(
     wait_for_plan_updates(plan_update_ids=[plan_update_id], target_status=target_status)
 
 
-def wait_for_plan_updates(
-    plan_update_ids: list[str], target_status="PLAN_UPDATE_STATUS_COMPLETED"
-) -> None:
+def wait_for_plan_updates(plan_update_ids: list[str], target_status="PLAN_UPDATE_STATUS_COMPLETED") -> None:
     """
     Verify if given one or more plan update ids are of target status.
     :param plan_update_ids: a collection of plan update ids
@@ -266,10 +250,7 @@ def wait_for_plan_updates(
             func=get_plan_updates_by_ids,
             f_args=[plan_update_ids],
             expected_result=True,
-            result_wrapper=lambda data: all(
-                item["status"] == target_status for _, item in data.items()
-            )
-            and data.keys() == set(plan_update_ids),
+            result_wrapper=lambda data: all(item["status"] == target_status for _, item in data.items()) and data.keys() == set(plan_update_ids),
             failure_message=f'"One of plan updates in {plan_update_ids} never completed.\n"',
         )
 
@@ -299,10 +280,7 @@ def wait_for_plan_updates_by_id(
                     return plan_update["id"], event_request_id, True
 
                 if plan_update["status"] in TERMINAL_PLAN_STATUSES:
-                    log.warning(
-                        f"Plan update {plan_update['id']} returned a status of "
-                        f"{plan_update['status']}"
-                    )
+                    log.warning(f"Plan update {plan_update['id']} returned a status of " f"{plan_update['status']}")
         return "", event_request_id, False
 
     failed_plan_updates = wait_for_messages(
@@ -315,10 +293,7 @@ def wait_for_plan_updates_by_id(
     )
 
     if len(failed_plan_updates) > 0:
-        raise Exception(
-            f"Failed to retrieve {len(failed_plan_updates)} of {len(plan_update_ids)} "
-            f"plan updates for update ids: {', '.join(failed_plan_updates)}"
-        )
+        raise Exception(f"Failed to retrieve {len(failed_plan_updates)} of {len(plan_update_ids)} " f"plan updates for update ids: {', '.join(failed_plan_updates)}")
 
 
 def create_and_wait_for_plan_update(
@@ -341,21 +316,15 @@ def add_account_to_plan(plan_id, account_id):
 
 
 def disassociate_account_from_plan(plan_id, account_id):
-    account_plan_assoc = endtoend.supervisors_helper.get_plan_associations(account_ids=account_id)[
-        0
-    ]
+    account_plan_assoc = endtoend.supervisors_helper.get_plan_associations(account_ids=account_id)[0]
     action = {"account_plan_assoc_id": account_plan_assoc["id"]}
     log.info(f"Preparing to disassociate account {account_id} from plan {plan_id}")
 
-    return create_and_wait_for_plan_update(
-        plan_id=plan_id, plan_action_type="disassociate_account_update", action=action
-    )
+    return create_and_wait_for_plan_update(plan_id=plan_id, plan_action_type="disassociate_account_update", action=action)
 
 
 def link_accounts_to_supervisor(supervisor_contract: str, account_list: list[str]) -> str:
-    supervisor_contract_version_id = endtoend.testhandle.supervisorcontract_name_to_id[
-        supervisor_contract
-    ]
+    supervisor_contract_version_id = endtoend.testhandle.supervisorcontract_name_to_id[supervisor_contract]
     plan = create_plan(supervisor_contract_version_id)
 
     for account in account_list:
@@ -395,8 +364,7 @@ def get_plan_schedules(plan_id=None, page_size="20"):
     return {
         schedule_details["display_name"].split()[0]: schedule_details
         for schedule_details in response_schedules.values()
-        if schedule_details["status"] != "SCHEDULE_STATUS_DISABLED"
-        and re.search(rf"{plan_id}", schedule_details["display_name"])
+        if schedule_details["status"] != "SCHEDULE_STATUS_DISABLED" and re.search(rf"{plan_id}", schedule_details["display_name"])
     }
 
 
@@ -408,9 +376,7 @@ def get_plan_details(plan_id):
     return resp["plans"][plan_id]
 
 
-def check_plan_associations(
-    test: unittest.TestCase, plan_id: str, accounts: list[str] | dict[str, str]
-):
+def check_plan_associations(test: unittest.TestCase, plan_id: str, accounts: list[str] | dict[str, str]):
     """
     Helper method to validate that plan currently has expected associations. If a given account has
     been through multiple associations with the same plan, only the latest is considered
@@ -422,9 +388,7 @@ def check_plan_associations(
     plan_associations = endtoend.supervisors_helper.get_plan_associations(plan_ids=plan_id)
 
     # there could be multiple assocs with different statuses, but we'll only consider the latest
-    actual_linked_accounts = {
-        association["account_id"]: association["status"] for association in plan_associations
-    }
+    actual_linked_accounts = {association["account_id"]: association["status"] for association in plan_associations}
 
     if isinstance(accounts, list):
         accounts = {account_id: "ACCOUNT_PLAN_ASSOC_STATUS_ACTIVE" for account_id in accounts}

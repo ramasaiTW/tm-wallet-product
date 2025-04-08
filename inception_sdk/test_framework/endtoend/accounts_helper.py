@@ -34,9 +34,7 @@ TERMINAL_ACCOUNT_STATUSES = [
 ]
 
 
-def wait_for_all_account_updates_to_complete(
-    account_id: str, error_on_no_account_updates: bool = True
-) -> None:
+def wait_for_all_account_updates_to_complete(account_id: str, error_on_no_account_updates: bool = True) -> None:
     """
     Waits for all account updates for a given account to no longer be pending execution. They may
     not necessarily be completed successfully. No account updates is treated as an error by
@@ -57,10 +55,7 @@ def wait_for_all_account_updates_to_complete(
             failure_message=f"Account id {account_id} has no account updates",
         )
         # Checking that account updates exist can provide us an early opportunity to return
-        if not any(
-            account_update["status"] == "ACCOUNT_UPDATE_STATUS_PENDING_EXECUTION"
-            for account_update in account_updates
-        ):
+        if not any(account_update["status"] == "ACCOUNT_UPDATE_STATUS_PENDING_EXECUTION" for account_update in account_updates):
             return
 
     endtoend.helper.retry_call(
@@ -69,8 +64,7 @@ def wait_for_all_account_updates_to_complete(
         result_wrapper=lambda x: len(x),
         expected_result=0,
         back_off=1.5,
-        failure_message=f"Account id {account_id} still has account_updates in"
-        f" ACCOUNT_UPDATE_STATUS_PENDING_EXECUTION ",
+        failure_message=f"Account id {account_id} still has account_updates in" f" ACCOUNT_UPDATE_STATUS_PENDING_EXECUTION ",
     )
 
 
@@ -102,9 +96,7 @@ def wait_for_account_update(
         account_update_id = account_update["id"]
 
     if endtoend.testhandle.use_kafka:
-        wait_for_account_updates_by_id(
-            account_update_ids=[account_update_id], target_status=target_status
-        )
+        wait_for_account_updates_by_id(account_update_ids=[account_update_id], target_status=target_status)
 
     else:
         endtoend.helper.retry_call(
@@ -113,9 +105,7 @@ def wait_for_account_update(
             expected_result=target_status,
             result_wrapper=lambda x: x["status"],
             back_off=1.5,
-            failure_message=f"Account update {account_update_id} for account {account_id} "
-            "never reached"
-            f"status {target_status}",
+            failure_message=f"Account update {account_update_id} for account {account_id} " "never reached" f"status {target_status}",
         )
 
 
@@ -134,10 +124,7 @@ def wait_for_account_updates(
     :param target_status: the account update status to wait for
     """
     if account_update_type != "" and account_update_type not in SUPPORTED_ACCOUNT_UPDATE_TYPES:
-        log.warning(
-            f"The account update type {account_update_type} is not recognised as a valid "
-            "account_update_type."
-        )
+        log.warning(f"The account update type {account_update_type} is not recognised as a valid " "account_update_type.")
 
     consumer = endtoend.testhandle.kafka_consumers[ACCOUNT_UPDATE_EVENTS_TOPIC]
 
@@ -161,11 +148,7 @@ def wait_for_account_updates(
                         True,
                     )
                 if account_update["status"] in TERMINAL_ACCOUNT_STATUSES:
-                    log.warning(
-                        f"Account update {account_update['id']} reached terminal status"
-                        f" {account_update['status']} that did not match target status"
-                        f" {target_status}"
-                    )
+                    log.warning(f"Account update {account_update['id']} reached terminal status" f" {account_update['status']} that did not match target status" f" {target_status}")
 
         return "", event_request_id, False
 
@@ -179,10 +162,7 @@ def wait_for_account_updates(
     )
 
     if len(failed_account_updates) > 0:
-        raise Exception(
-            f"Failed to retrieve {len(failed_account_updates)} of {len(account_ids)} account "
-            f"updates for account ids: {', '.join(failed_account_updates.keys())}"
-        )
+        raise Exception(f"Failed to retrieve {len(failed_account_updates)} of {len(account_ids)} account " f"updates for account ids: {', '.join(failed_account_updates.keys())}")
 
 
 @kafka_only_helper
@@ -213,11 +193,7 @@ def wait_for_account_updates_by_id(
                         True,
                     )
                 if account_update["status"] in TERMINAL_ACCOUNT_STATUSES:
-                    log.warning(
-                        f"Account update {account_update['id']} reached terminal status"
-                        f" {account_update['status']} that did not match target status"
-                        f" {target_status}"
-                    )
+                    log.warning(f"Account update {account_update['id']} reached terminal status" f" {account_update['status']} that did not match target status" f" {target_status}")
 
         return "", event_request_id, False
 
@@ -231,7 +207,4 @@ def wait_for_account_updates_by_id(
     )
 
     if len(failed_account_updates) > 0:
-        raise Exception(
-            f"Failed to retrieve {len(failed_account_updates)} of {len(account_update_ids)} "
-            f"account updates for update ids: {', '.join(failed_account_updates.keys())}"
-        )
+        raise Exception(f"Failed to retrieve {len(failed_account_updates)} of {len(account_update_ids)} " f"account updates for update ids: {', '.join(failed_account_updates.keys())}")

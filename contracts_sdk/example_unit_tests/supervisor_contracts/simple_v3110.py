@@ -9,9 +9,7 @@ supervised_smart_contracts = [
 ]
 
 event_types = [
-    EventType(
-        name="SKIP_EVENT_TYPE", overrides_event_types=[("SUPERVISEE", "SUPERVISED_SKIP_EVENT_TYPE")]
-    ),
+    EventType(name="SKIP_EVENT_TYPE", overrides_event_types=[("SUPERVISEE", "SUPERVISED_SKIP_EVENT_TYPE")]),
 ]
 
 

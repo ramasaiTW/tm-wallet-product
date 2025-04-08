@@ -195,16 +195,8 @@ class ScheduleLogicTest(LateRepaymentTest):
         mock_sum_balances: MagicMock,
     ):
         # construct mocks
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                late_repayment.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    SentinelBalancesObservation("effective")
-                )
-            }
-        )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={late_repayment.PARAM_DENOMINATION: sentinel.denomination}
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={late_repayment.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={late_repayment.PARAM_DENOMINATION: sentinel.denomination})
         mock_sum_balances.return_value = Decimal("100")
 
         # run function

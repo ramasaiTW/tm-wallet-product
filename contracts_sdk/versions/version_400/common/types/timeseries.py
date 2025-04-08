@@ -9,9 +9,7 @@ from .....utils.timezone_utils import validate_timezone_is_utc
 from ..types import Balance, OptionalValue, UnionItemValue
 
 
-_timeseries_value_type_str = (
-    "Union[Balance, bool, Decimal, str, datetime, OptionalValue, UnionItemValue, int]"
-)
+_timeseries_value_type_str = "Union[Balance, bool, Decimal, str, datetime, OptionalValue, UnionItemValue, int]"
 _parameter_value_type_str = "Union[Decimal, str, datetime, OptionalValue, UnionItemValue, int]"
 
 
@@ -33,11 +31,7 @@ class TimeseriesItem:
         return f"({self.at_datetime}, {self.value})"
 
     def __eq__(self, other):
-        return (
-            self.__class__ == other.__class__
-            and self.at_datetime == other.at_datetime
-            and self.value == other.value
-        )
+        return self.__class__ == other.__class__ and self.at_datetime == other.at_datetime and self.value == other.value
 
     @classmethod
     @lru_cache()
@@ -62,10 +56,7 @@ class TimeseriesItem:
             types_utils.ValueSpec(
                 name="at_datetime",
                 type="datetime",
-                docstring=(
-                    "The datetime of the timeseries datapoint. "
-                    "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                ),
+                docstring=("The datetime of the timeseries datapoint. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
             ),
             types_utils.ValueSpec(
                 name="value",
@@ -92,9 +83,7 @@ class Timeseries(list):
             iterable = []
         self.extend(TimeseriesItem(item, _from_proto) for item in iterable)
 
-    def at(
-        self, *, at_datetime: datetime, inclusive: bool = True
-    ) -> Union[Balance, bool, Decimal, str, datetime, OptionalValue, UnionItemValue, int]:
+    def at(self, *, at_datetime: datetime, inclusive: bool = True) -> Union[Balance, bool, Decimal, str, datetime, OptionalValue, UnionItemValue, int]:
         validate_timezone_is_utc(
             at_datetime,
             "at_datetime",
@@ -113,9 +102,7 @@ class Timeseries(list):
             return self.return_on_empty()  # type: ignore
         raise exceptions.InvalidSmartContractError("No values provided as of date %s" % at_datetime)
 
-    def before(
-        self, *, at_datetime: datetime
-    ) -> Union[Balance, bool, Decimal, str, datetime, OptionalValue, UnionItemValue, int]:
+    def before(self, *, at_datetime: datetime) -> Union[Balance, bool, Decimal, str, datetime, OptionalValue, UnionItemValue, int]:
         validate_timezone_is_utc(
             at_datetime,
             "at_datetime",
@@ -148,17 +135,12 @@ class Timeseries(list):
             public_methods=[
                 types_utils.MethodSpec(
                     name="at",
-                    docstring=(
-                        "Returns the latest available TimeseriesItem as of the given timestamp."
-                    ),
+                    docstring=("Returns the latest available TimeseriesItem as of the given timestamp."),
                     args=[
                         types_utils.ValueSpec(
                             name="datetime",
                             type="datetime",
-                            docstring=(
-                                "The timestamp as of which to fetch the latest TimeseriesItem. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The timestamp as of which to fetch the latest TimeseriesItem. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
@@ -168,26 +150,17 @@ class Timeseries(list):
                 ),
                 types_utils.MethodSpec(
                     name="before",
-                    docstring=(
-                        "Returns the latest available TimeseriesItem as of just before the "
-                        "given timestamp."
-                    ),
+                    docstring=("Returns the latest available TimeseriesItem as of just before the " "given timestamp."),
                     args=[
                         types_utils.ValueSpec(
                             name="at_datetime",
                             type="datetime",
-                            docstring=(
-                                "The timestamp just before which to fetch the "
-                                "latest TimeseriesItem. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The timestamp just before which to fetch the " "latest TimeseriesItem. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
                         type=cls.item_type,
-                        docstring=(
-                            "The latest TimeseriesItem as of just before the timestamp provided."
-                        ),
+                        docstring=("The latest TimeseriesItem as of just before the timestamp provided."),
                     ),
                 ),
                 types_utils.MethodSpec(
@@ -202,9 +175,7 @@ class Timeseries(list):
                 ),
                 types_utils.MethodSpec(
                     name="all",
-                    docstring=(
-                        "Returns a list of all available TimeseriesItem values across time."
-                    ),
+                    docstring=("Returns a list of all available TimeseriesItem values across time."),
                     args=[],
                     return_value=types_utils.ValueSpec(
                         name=None,
@@ -251,17 +222,12 @@ class BalanceTimeseries(Timeseries):
             public_methods=[
                 types_utils.MethodSpec(
                     name="at",
-                    docstring=(
-                        "Returns the latest available Balance object as of the given datetime."
-                    ),
+                    docstring=("Returns the latest available Balance object as of the given datetime."),
                     args=[
                         types_utils.ValueSpec(
                             name="at_datetime",
                             type="datetime",
-                            docstring=(
-                                "The datetime from which to fetch the latest Balance object. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The datetime from which to fetch the latest Balance object. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
@@ -271,26 +237,17 @@ class BalanceTimeseries(Timeseries):
                 ),
                 types_utils.MethodSpec(
                     name="before",
-                    docstring=(
-                        "Returns the latest available Balance object as of just before the "
-                        "given datetime."
-                    ),
+                    docstring=("Returns the latest available Balance object as of just before the " "given datetime."),
                     args=[
                         types_utils.ValueSpec(
                             name="at_datetime",
                             type="datetime",
-                            docstring=(
-                                "The datetime just before which to fetch the "
-                                "latest Balance object. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The datetime just before which to fetch the " "latest Balance object. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
                         type="Balance",
-                        docstring=(
-                            "The latest Balance object as of just before the datetime provided."
-                        ),
+                        docstring=("The latest Balance object as of just before the datetime provided."),
                     ),
                 ),
                 types_utils.MethodSpec(
@@ -305,9 +262,7 @@ class BalanceTimeseries(Timeseries):
                 ),
                 types_utils.MethodSpec(
                     name="all",
-                    docstring=(
-                        "Returns a list of all available Balance object values across time."
-                    ),
+                    docstring=("Returns a list of all available Balance object values across time."),
                     args=[],
                     return_value=types_utils.ValueSpec(
                         name=None,
@@ -350,10 +305,7 @@ class FlagTimeseries(Timeseries):
                         types_utils.ValueSpec(
                             name="at_datetime",
                             type="datetime",
-                            docstring=(
-                                "The datetime from which to fetch the latest flag. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The datetime from which to fetch the latest flag. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
@@ -363,17 +315,12 @@ class FlagTimeseries(Timeseries):
                 ),
                 types_utils.MethodSpec(
                     name="before",
-                    docstring=(
-                        "Returns the latest available flag as of just before the " "given datetime."
-                    ),
+                    docstring=("Returns the latest available flag as of just before the " "given datetime."),
                     args=[
                         types_utils.ValueSpec(
                             name="at_datetime",
                             type="datetime",
-                            docstring=(
-                                "The datetime just before which to fetch the latest flag. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The datetime just before which to fetch the latest flag. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
@@ -413,9 +360,7 @@ class ParameterTimeseries(Timeseries):
 
     def __init__(
         self,
-        iterable: Optional[
-            List[Tuple[datetime, Union[Decimal, str, datetime, OptionalValue, UnionItemValue, int]]]
-        ] = None,
+        iterable: Optional[List[Tuple[datetime, Union[Decimal, str, datetime, OptionalValue, UnionItemValue, int]]]] = None,
     ) -> None:
         super().__init__(iterable)
 
@@ -434,17 +379,12 @@ class ParameterTimeseries(Timeseries):
             public_methods=[
                 types_utils.MethodSpec(
                     name="at",
-                    docstring=(
-                        "Returns the latest available parameter value as of the given datetime."
-                    ),
+                    docstring=("Returns the latest available parameter value as of the given datetime."),
                     args=[
                         types_utils.ValueSpec(
                             name="at_datetime",
                             type="datetime",
-                            docstring=(
-                                "The datetime as of which to fetch the latest parameter value. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The datetime as of which to fetch the latest parameter value. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
@@ -454,26 +394,17 @@ class ParameterTimeseries(Timeseries):
                 ),
                 types_utils.MethodSpec(
                     name="before",
-                    docstring=(
-                        "Returns the latest available parameter value as of just before the "
-                        "given datetime."
-                    ),
+                    docstring=("Returns the latest available parameter value as of just before the " "given datetime."),
                     args=[
                         types_utils.ValueSpec(
                             name="at_datetime",
                             type="datetime",
-                            docstring=(
-                                "The datetime just before which to fetch the "
-                                "latest parameter value. "
-                                "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                            ),
+                            docstring=("The datetime just before which to fetch the " "latest parameter value. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
                         ),
                     ],
                     return_value=types_utils.ReturnValueSpec(
                         type=_parameter_value_type_str,
-                        docstring=(
-                            "The latest parameter value as of just before the datetime provided."
-                        ),
+                        docstring=("The latest parameter value as of just before the datetime provided."),
                     ),
                 ),
                 types_utils.MethodSpec(
@@ -488,9 +419,7 @@ class ParameterTimeseries(Timeseries):
                 ),
                 types_utils.MethodSpec(
                     name="all",
-                    docstring=(
-                        "Returns a list of all available parameter value values across time."
-                    ),
+                    docstring=("Returns a list of all available parameter value values across time."),
                     args=[],
                     return_value=types_utils.ValueSpec(
                         name=None,

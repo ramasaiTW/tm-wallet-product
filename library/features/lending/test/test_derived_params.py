@@ -87,9 +87,7 @@ class CalculatePrincipalPaidToDateTest(FeatureTest):
 
 class RemainingTermTest(FeatureTest):
     def setUp(self) -> None:
-        self.mock_term_details = MagicMock(
-            return_value=(sentinel.elapsed_term, sentinel.remaining_term)
-        )
+        self.mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, sentinel.remaining_term))
         self.mock_amortisation = MagicMock(term_details=self.mock_term_details)
 
     def test_get_remaining_term(self):

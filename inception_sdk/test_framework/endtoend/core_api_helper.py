@@ -119,9 +119,7 @@ def set_customer_status(customer_id, status):
         "update_mask": {"paths": ["status"]},
     }
 
-    resp = endtoend.helper.send_request(
-        "put", "/v1/customers/" + customer_id, data=json.dumps(post_body)
-    )
+    resp = endtoend.helper.send_request("put", "/v1/customers/" + customer_id, data=json.dumps(post_body))
     log.info("Customer %s set to %s", customer_id, status)
     return resp
 
@@ -195,9 +193,7 @@ def create_payment_device_link(
         "request_id": uuid.uuid4().hex,
     }
 
-    resp = endtoend.helper.send_request(
-        "post", "/v1/payment-device-links", data=json.dumps(post_body)
-    )
+    resp = endtoend.helper.send_request("post", "/v1/payment-device-links", data=json.dumps(post_body))
 
     return resp
 
@@ -229,9 +225,7 @@ def get_payment_device_links(
 def get_payment_device(payment_device_ids):
     # If this ID doesn't exist, Vault will throw an error
 
-    resp = endtoend.helper.send_request(
-        "get", "/v1/payment-devices:batchGet", params={"ids": payment_device_ids}
-    )
+    resp = endtoend.helper.send_request("get", "/v1/payment-devices:batchGet", params={"ids": payment_device_ids})
 
     return resp["payment_devices"][payment_device_ids]
 
@@ -248,10 +242,7 @@ def get_uk_acc_num_and_sort_code(account_id):
     if all(word in pd["routing_info"] for word in ["account_number", "bank_id"]):
         return pd["routing_info"]["account_number"], pd["routing_info"]["bank_id"]
     else:
-        raise NameError(
-            "No account number or sort code found for account "
-            "{}. Has it been set up with UK routing info?".format(account_id)
-        )
+        raise NameError("No account number or sort code found for account " "{}. Has it been set up with UK routing info?".format(account_id))
 
 
 def create_flag_definition(
@@ -295,9 +286,7 @@ def list_flag_definitions(
 
 
 def batch_get_flag_definitions(ids: list[str]) -> dict[str, dict[str, str]]:
-    return endtoend.helper.send_request(
-        "get", "/v1/flag-definitions:batchGet", params={"ids": ids}
-    )["flag_definitions"]
+    return endtoend.helper.send_request("get", "/v1/flag-definitions:batchGet", params={"ids": ids})["flag_definitions"]
 
 
 def create_flag(
@@ -385,9 +374,7 @@ def create_restriction_set_definition_version(
     return resp
 
 
-def create_restriction_set(
-    account_id: str, restriction_set_definition_id: str, name: str = "", description: str = ""
-) -> dict:
+def create_restriction_set(account_id: str, restriction_set_definition_id: str, name: str = "", description: str = "") -> dict:
     name = name or restriction_set_definition_id
     description = description or restriction_set_definition_id
 
@@ -403,9 +390,7 @@ def create_restriction_set(
     }
 
     resp = endtoend.helper.send_request("post", "/v1/restriction-sets", data=json.dumps(post_body))
-    log.info(
-        f"Restriction definition {restriction_set_definition_id} applied to account %s", account_id
-    )
+    log.info(f"Restriction definition {restriction_set_definition_id} applied to account %s", account_id)
     return resp
 
 
@@ -422,9 +407,7 @@ def update_restriction_set(restriction_set_id: str, update_field: str, update_va
         "update_mask": {"paths": [update_field]},
     }
 
-    resp = endtoend.helper.send_request(
-        "put", "/v1/restriction-sets/" + restriction_set_id, data=json.dumps(post_body)
-    )
+    resp = endtoend.helper.send_request("put", "/v1/restriction-sets/" + restriction_set_id, data=json.dumps(post_body))
     log.info(f"Restriction set {restriction_set_id} updated: {update_field} set to {update_value}")
     return resp
 
@@ -530,9 +513,7 @@ def get_account_updates(account_id: str, statuses: list[str] | None = None) -> l
     return endtoend.helper.list_resources("account-updates", params)
 
 
-def get_account_updates_by_type(
-    account_id: str, update_types: list[str], statuses: list[str] | None = None
-) -> list[dict[str, Any]]:
+def get_account_updates_by_type(account_id: str, update_types: list[str], statuses: list[str] | None = None) -> list[dict[str, Any]]:
     """
     Gets a list of account updates and filters by type
     :param account_id: the account id to get account updates for
@@ -542,12 +523,7 @@ def get_account_updates_by_type(
     """
 
     account_updates = get_account_updates(account_id, statuses)
-    account_updates_by_type = [
-        account_update
-        for account_update in account_updates
-        for update_type in update_types
-        if update_type in account_update
-    ]
+    account_updates_by_type = [account_update for account_update in account_updates for update_type in update_types if update_type in account_update]
     return account_updates_by_type
 
 
@@ -623,9 +599,7 @@ def create_closure_update(account_id: str) -> dict[str, Any]:
     return create_account_update(account_id, account_update)
 
 
-def update_account_instance_parameters(
-    account_id: str, instance_param_vals: dict[str, Any]
-) -> dict[str, Any]:
+def update_account_instance_parameters(account_id: str, instance_param_vals: dict[str, Any]) -> dict[str, Any]:
     """
     Creates an account update to update specified instance parameters to the specified values
     :param account_id: the account id of the account to update
@@ -830,9 +804,7 @@ def update_account_schedule_tag(
         account_schedule_tag.update(
             {
                 "schedule_status_override": schedule_status_override,
-                "schedule_status_override_start_timestamp": (
-                    schedule_status_override_start_timestamp
-                ),
+                "schedule_status_override_start_timestamp": (schedule_status_override_start_timestamp),
                 "schedule_status_override_end_timestamp": schedule_status_override_end_timestamp,
             }
         )
@@ -866,8 +838,7 @@ def update_account_schedule_tag(
         expected_result=account_schedule_tag,
         sleep_time=10,
         back_off=2,
-        failure_message=f"Failed to update account schedule tag {account_schedule_tag_id} "
-        f"using request {body}",
+        failure_message=f"Failed to update account schedule tag {account_schedule_tag_id} " f"using request {body}",
     )
 
 
@@ -881,12 +852,8 @@ def get_calendar_events(
     body = {
         "calendar_ids": calendar_ids or [],
         "calendar_event_names": calendar_event_names or [],
-        "calendar_timestamp_range.from": calendar_timestamp_from.isoformat()
-        if calendar_timestamp_from
-        else None,
-        "calendar_timestamp_range.to": calendar_timestamp_to.isoformat()
-        if calendar_timestamp_to
-        else None,
+        "calendar_timestamp_range.from": calendar_timestamp_from.isoformat() if calendar_timestamp_from else None,
+        "calendar_timestamp_range.to": calendar_timestamp_to.isoformat() if calendar_timestamp_to else None,
         "active_calendar_event": active_calendar_event.value,
     }
     resp = endtoend.helper.list_resources("calendar-event", params=body)
@@ -978,9 +945,7 @@ def update_calendar(
         "update_mask": {"paths": list(updated_fields.keys())},
     }
 
-    resp = endtoend.helper.send_request(
-        "put", f"/v1/calendar/{calendar_id}:updateDetails", data=json.dumps(post_body)
-    )
+    resp = endtoend.helper.send_request("put", f"/v1/calendar/{calendar_id}:updateDetails", data=json.dumps(post_body))
 
     return resp
 
@@ -1032,14 +997,10 @@ def create_postings_api_client(
         },
     }
 
-    return endtoend.helper.send_request(
-        "post", "/v1/postings-api-clients", data=json.dumps(post_body)
-    )
+    return endtoend.helper.send_request("post", "/v1/postings-api-clients", data=json.dumps(post_body))
 
 
-def init_postings_api_client(
-    client_id: str, response_topic: str, timeout: int = 5
-) -> dict[str, str]:
+def init_postings_api_client(client_id: str, response_topic: str, timeout: int = 5) -> dict[str, str]:
     """
     Postings API client can be missing on the target instance (i.e. bootstrap job as part of DR)
     so ensure it's created if it cannot be found.
@@ -1052,13 +1013,10 @@ def init_postings_api_client(
                 if i < timeout:
                     time.sleep(1)
                     continue
-                raise HTTPError(
-                    "Unexpected error when trying to connect to endpoint /v1/postings-api-clients"
-                ) from e
+                raise HTTPError("Unexpected error when trying to connect to endpoint /v1/postings-api-clients") from e
 
             log.info(
-                "Could not find existing Postings API Client with ID: %s."
-                "Creating new Postings API Client with above ID.",
+                "Could not find existing Postings API Client with ID: %s." "Creating new Postings API Client with above ID.",
                 client_id,
             )
             return create_postings_api_client(

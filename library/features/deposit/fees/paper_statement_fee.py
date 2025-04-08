@@ -53,8 +53,7 @@ parameters = [
     Parameter(
         name=PARAM_PAPER_STATEMENT_FEE_DAY,
         level=ParameterLevel.INSTANCE,
-        description="They day of the month on which the paper statement fee is applied."
-        "If day does not exist in application month, applies on the first day of the next month.",
+        description="They day of the month on which the paper statement fee is applied." "If day does not exist in application month, applies on the first day of the next month.",
         display_name="Paper Statement Fee Application Day",
         shape=NumberShape(min_value=1, max_value=31, step=1),
         update_permission=ParameterUpdatePermission.USER_EDITABLE,
@@ -120,29 +119,15 @@ parameters = [
 ]
 
 
-def get_paper_statement_fee_day(
-    vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> int:
-    return int(
-        utils.get_parameter(
-            vault=vault, name=PARAM_PAPER_STATEMENT_FEE_DAY, at_datetime=effective_datetime
-        )
-    )
+def get_paper_statement_fee_day(vault: SmartContractVault, effective_datetime: datetime | None = None) -> int:
+    return int(utils.get_parameter(vault=vault, name=PARAM_PAPER_STATEMENT_FEE_DAY, at_datetime=effective_datetime))
 
 
-def get_paper_statement_fee_rate(
-    vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> Decimal:
-    return Decimal(
-        utils.get_parameter(
-            vault=vault, name=PARAM_PAPER_STATEMENT_FEE_RATE, at_datetime=effective_datetime
-        )
-    )
+def get_paper_statement_fee_rate(vault: SmartContractVault, effective_datetime: datetime | None = None) -> Decimal:
+    return Decimal(utils.get_parameter(vault=vault, name=PARAM_PAPER_STATEMENT_FEE_RATE, at_datetime=effective_datetime))
 
 
-def get_paper_statement_fee_income_account(
-    vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> str:
+def get_paper_statement_fee_income_account(vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
     return str(
         utils.get_parameter(
             vault=vault,
@@ -152,9 +137,7 @@ def get_paper_statement_fee_income_account(
     )
 
 
-def is_paper_statement_fee_enabled(
-    vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> bool:
+def is_paper_statement_fee_enabled(vault: SmartContractVault, effective_datetime: datetime | None = None) -> bool:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_PAPER_STATEMENT_FEE_ENABLED,
@@ -171,9 +154,7 @@ PARTIAL_FEE_DETAILS = deposit_interfaces.PartialFeeCollection(
 )
 
 
-def are_partial_payments_enabled(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> bool:
+def are_partial_payments_enabled(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> bool:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_PAPER_STATEMENT_FEE_PARTIAL_FEE_ENABLED,
@@ -193,9 +174,7 @@ def event_types(product_name: str) -> list[SmartContractEventType]:
     ]
 
 
-def scheduled_events(
-    *, vault: SmartContractVault, start_datetime: datetime
-) -> dict[str, ScheduledEvent]:
+def scheduled_events(*, vault: SmartContractVault, start_datetime: datetime) -> dict[str, ScheduledEvent]:
     """
     Creates scheduled event for paper statement fee application
     :param vault: Vault object to schedule params
@@ -259,9 +238,7 @@ def apply(
             # will always be a non-empty list here
             if are_partial_payments_enabled(vault=vault, effective_datetime=effective_datetime):
                 if balances is None:
-                    balances = vault.get_balances_observation(
-                        fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-                    ).balances
+                    balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
 
                 return partial_fee.charge_partial_fee(
                     vault=vault,

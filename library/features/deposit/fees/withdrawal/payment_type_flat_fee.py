@@ -36,9 +36,7 @@ parameters = [
 ]
 
 
-def apply_fees(
-    vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str
-) -> list[CustomInstruction]:
+def apply_fees(vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str) -> list[CustomInstruction]:
     """
     Check posting instruction details for PAYMENT_TYPE key and return any fees associated with that
     payment type. The fee is credited to the account defined by the payment_type_fee_income_account
@@ -54,9 +52,7 @@ def apply_fees(
             continue
 
         posting_balances = posting.balances()
-        posting_withdrawal_amount = utils.get_available_balance(
-            balances=posting_balances, denomination=denomination
-        )
+        posting_withdrawal_amount = utils.get_available_balance(balances=posting_balances, denomination=denomination)
         if posting_withdrawal_amount >= 0:
             continue
 

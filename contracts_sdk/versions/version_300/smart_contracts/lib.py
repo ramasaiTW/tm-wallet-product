@@ -29,9 +29,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
         pass
 
     @abstractmethod
-    def add_account_note(
-        self, *, body, note_type, is_visible_to_customer, date, idempotency_key=None
-    ):
+    def add_account_note(self, *, body, note_type, is_visible_to_customer, date, idempotency_key=None):
         pass
 
     @abstractmethod
@@ -85,15 +83,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
         pass
 
     @abstractmethod
-    def instruct_posting_batch(
-        self,
-        *,
-        posting_instructions,
-        batch_details=None,
-        client_batch_id=None,
-        effective_date=None,
-        request_id=None
-    ):
+    def instruct_posting_batch(self, *, posting_instructions, batch_details=None, client_batch_id=None, effective_date=None, request_id=None):
         pass
 
     @classmethod
@@ -211,13 +201,11 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 ],
                 return_value=types_utils.ReturnValueSpec(
                     type="Dict[Tuple[str, str], ClientTransaction]",
-                    docstring="The ClientTransaction dict, "
-                    "keyed by (client_id, client_transaction_id).",
+                    docstring="The ClientTransaction dict, " "keyed by (client_id, client_transaction_id).",
                 ),
                 examples=[
                     types_utils.Example(
-                        title="Count the number of non-released "
-                        "ClientTransactions over a 24 hour period",
+                        title="Count the number of non-released " "ClientTransactions over a 24 hour period",
                         code="""
                             @requires(parameters=True, balances='latest', postings="1 days")
                             def pre_posting_code(postings, effective_date):
@@ -253,9 +241,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         """,
                     )
                 ],
-                return_value=types_utils.ReturnValueSpec(
-                    type="List[PostingInstructionBatch]", docstring="The list of batches."
-                ),
+                return_value=types_utils.ReturnValueSpec(type="List[PostingInstructionBatch]", docstring="The list of batches."),
             ),
             types_utils.MethodSpec(
                 name="add_account_note",
@@ -338,9 +324,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         type="str",
                         docstring="The event_type to change the schedule for.",
                     ),
-                    types_utils.ValueSpec(
-                        name="new_schedule", type="Dict[str, str]", docstring="The new schedule."
-                    ),
+                    types_utils.ValueSpec(name="new_schedule", type="Dict[str, str]", docstring="The new schedule."),
                 ],
                 examples=[
                     types_utils.Example(
@@ -353,9 +337,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 name="get_account_creation_date",
                 docstring="Returns the date that the currently executing Account was created.",
                 args=[],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The Account creation date.", type="datetime"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The Account creation date.", type="datetime"),
             ),
             types_utils.MethodSpec(
                 name="get_balance_timeseries",
@@ -365,9 +347,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     by the `@requires` hook decorator.
                 """,
                 args=[],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The timeseries of balances.", type="BalanceTimeseries"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The timeseries of balances.", type="BalanceTimeseries"),
             ),
             types_utils.MethodSpec(
                 name="get_hook_execution_id",
@@ -378,9 +358,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     account_id, hook, and effective_date.
                 """,
                 args=[],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The unique-enough id.", type="str"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The unique-enough id.", type="str"),
             ),
             types_utils.MethodSpec(
                 name="get_parameter_timeseries",
@@ -400,9 +378,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         docstring="The name of the ``[../types/ContractParameter]``.",
                     ),
                 ],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The timeseries of parameters.", type="ParameterTimeseries"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The timeseries of parameters.", type="ParameterTimeseries"),
             ),
             types_utils.MethodSpec(
                 name="get_flag_timeseries",
@@ -419,9 +395,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         docstring="The `flag_definition_id` to get the timeseries for.",
                     ),
                 ],
-                return_value=types_utils.ReturnValueSpec(
-                    docstring="The timeseries of flags.", type="FlagTimeseries"
-                ),
+                return_value=types_utils.ReturnValueSpec(docstring="The timeseries of flags.", type="FlagTimeseries"),
             ),
             types_utils.MethodSpec(
                 name="remove_schedule",
@@ -499,9 +473,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     of funds between two Vault accounts using CustomInstruction.
                 """,
                 args=[
-                    types_utils.ValueSpec(
-                        name="amount", type="Decimal", docstring="The amount to be transferred."
-                    ),
+                    types_utils.ValueSpec(name="amount", type="Decimal", docstring="The amount to be transferred."),
                     types_utils.ValueSpec(
                         name="denomination",
                         type="str",
@@ -532,9 +504,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                             is the currently executing Account, or an internal Account.
                         """,
                     ),
-                    types_utils.ValueSpec(
-                        name="to_account_id", type="str", docstring="The Account id to be credited."
-                    ),
+                    types_utils.ValueSpec(name="to_account_id", type="str", docstring="The Account id to be credited."),
                     types_utils.ValueSpec(
                         name="to_account_address",
                         type="Optional[str]",
@@ -547,14 +517,12 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                     types_utils.ValueSpec(
                         name="pics",
                         type="Optional[List[str]]",
-                        docstring="An optional list of pics to be attached to"
-                        " the created PostingInstruction.",
+                        docstring="An optional list of pics to be attached to" " the created PostingInstruction.",
                     ),
                     types_utils.ValueSpec(
                         name="instruction_details",
                         type="Optional[Dict[str, str]]",
-                        docstring="An optional key/value mapping to be attached to"
-                        " the created PostingInstruction.",
+                        docstring="An optional key/value mapping to be attached to" " the created PostingInstruction.",
                     ),
                     types_utils.ValueSpec(
                         name="asset",

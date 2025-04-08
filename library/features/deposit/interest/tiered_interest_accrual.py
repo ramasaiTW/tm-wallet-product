@@ -36,12 +36,8 @@ INTEREST_ACCRUAL_PREFIX = interest_accrual_common.INTEREST_ACCRUAL_PREFIX
 PARAM_INTEREST_ACCRUAL_HOUR = interest_accrual_common.PARAM_INTEREST_ACCRUAL_HOUR
 PARAM_INTEREST_ACCRUAL_MINUTE = interest_accrual_common.PARAM_INTEREST_ACCRUAL_MINUTE
 PARAM_INTEREST_ACCRUAL_SECOND = interest_accrual_common.PARAM_INTEREST_ACCRUAL_SECOND
-PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT = (
-    interest_accrual_common.PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT
-)
-PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = (
-    interest_accrual_common.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
-)
+PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT = interest_accrual_common.PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT
+PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = interest_accrual_common.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
 
 PARAM_TIERED_INTEREST_RATES = "tiered_interest_rates"
 tiered_interest_rates_parameter = Parameter(
@@ -104,12 +100,8 @@ def accrue_interest(
     :return: the accrual posting custom instructions
     """
     denomination = common_parameters.get_denomination_parameter(vault=vault)
-    accrued_interest_payable_account = (
-        interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
-    )
-    accrued_interest_receivable_account = (
-        interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
-    )
+    accrued_interest_payable_account = interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
+    accrued_interest_receivable_account = interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
     days_in_year = interest_accrual_common.get_days_in_year_parameter(vault=vault)
     rounding_precision = interest_accrual_common.get_accrual_precision_parameter(vault=vault)
     tiered_rates = get_tiered_interest_rates_parameter(vault=vault)
@@ -125,9 +117,7 @@ def accrue_interest(
     instruction_details = {"description": instruction_detail.strip(), "event": ACCRUAL_EVENT}
 
     target_customer_address, target_internal_account = (
-        (ACCRUED_INTEREST_PAYABLE, accrued_interest_payable_account)
-        if accrual_amount >= 0
-        else (ACCRUED_INTEREST_RECEIVABLE, accrued_interest_receivable_account)
+        (ACCRUED_INTEREST_PAYABLE, accrued_interest_payable_account) if accrual_amount >= 0 else (ACCRUED_INTEREST_RECEIVABLE, accrued_interest_receivable_account)
     )
 
     return accruals.accrual_custom_instruction(
@@ -169,9 +159,7 @@ def get_tiered_accrual_amount(
         # Tier max is next tier 'min value' if exists
         tier_max = determine_tier_max(list(tiered_interest_rates.keys()), index)
 
-        tier_balances = determine_tier_balance(
-            effective_balance=effective_balance, tier_min=Decimal(tier_min), tier_max=tier_max
-        )
+        tier_balances = determine_tier_balance(effective_balance=effective_balance, tier_min=Decimal(tier_min), tier_max=tier_max)
         if tier_balances != Decimal(0):
             daily_rate = utils.yearly_to_daily_rate(
                 effective_date=effective_datetime,
@@ -180,10 +168,7 @@ def get_tiered_accrual_amount(
             )
 
             daily_accrual_amount += tier_balances * daily_rate
-            instruction_detail = (
-                f"{instruction_detail}Accrual on {tier_balances:.2f} "
-                f"at annual rate of {rate*100:.2f}%. "
-            )
+            instruction_detail = f"{instruction_detail}Accrual on {tier_balances:.2f} " f"at annual rate of {rate*100:.2f}%. "
 
     return (
         utils.round_decimal(amount=daily_accrual_amount, decimal_places=precision),

@@ -32,20 +32,13 @@ parameters = [
 ]
 
 
-def validate(
-    vault: SmartContractVault, posting_instruction: utils.PostingInstructionTypeAlias
-) -> Rejection | None:
-    if minimum_loan_amount := utils.get_parameter(
-        vault=vault, name=PARAM_MINIMUM_LOAN_PRINCIPAL, is_optional=True
-    ):
+def validate(vault: SmartContractVault, posting_instruction: utils.PostingInstructionTypeAlias) -> Rejection | None:
+    if minimum_loan_amount := utils.get_parameter(vault=vault, name=PARAM_MINIMUM_LOAN_PRINCIPAL, is_optional=True):
         denomination = utils.get_parameter(vault=vault, name="denomination")
-        posting_amount = utils.get_available_balance(
-            balances=posting_instruction.balances(), denomination=denomination
-        )
+        posting_amount = utils.get_available_balance(balances=posting_instruction.balances(), denomination=denomination)
         if 0 < posting_amount < minimum_loan_amount:
             return Rejection(
-                message=f"Cannot create loan smaller than minimum loan amount limit of: "
-                f"{minimum_loan_amount}.",
+                message=f"Cannot create loan smaller than minimum loan amount limit of: " f"{minimum_loan_amount}.",
                 reason_code=RejectionReason.AGAINST_TNC,
             )
     return None

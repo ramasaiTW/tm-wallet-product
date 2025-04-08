@@ -37,19 +37,10 @@ def is_module_in_contracts_language_v4(module: ast.Module | ModuleType) -> bool:
     for stmt in _module.body:
         if isinstance(stmt, ast.Assign) and ast_utils.get_assign_node_target_name(stmt) == "api":
             if not isinstance(stmt.value, ast.Constant):
-                raise InvalidApiMetadata(
-                    f"Unable to determine contract language version from template.\n"
-                    f"`api` value must be an ast.Constant but is {type(stmt)}"
-                )
+                raise InvalidApiMetadata(f"Unable to determine contract language version from template.\n" f"`api` value must be an ast.Constant but is {type(stmt)}")
             version_string = str(stmt.value.value)
             if not semantic_version.validate(version_string):
-                raise InvalidApiMetadata(
-                    f"Unable to determine contract language version from template.\n"
-                    f"Could not parse `api` value {version_string} as a semantic version"
-                )
+                raise InvalidApiMetadata(f"Unable to determine contract language version from template.\n" f"Could not parse `api` value {version_string} as a semantic version")
             return semantic_version.Version(version_string).major == 4
 
-    raise MissingApiMetadata(
-        "Unable to determine contract language version from template.\n"
-        "Could not find an `api` assignment"
-    )
+    raise MissingApiMetadata("Unable to determine contract language version from template.\n" "Could not find an `api` assignment")

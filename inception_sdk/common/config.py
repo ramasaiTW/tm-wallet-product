@@ -41,9 +41,7 @@ flags.DEFINE_string(
 )
 
 
-def extract_environments_from_config(
-    environment_name: str = "", default_environment_name: str = ""
-) -> tuple[Environment, dict[str, Environment]]:
+def extract_environments_from_config(environment_name: str = "", default_environment_name: str = "") -> tuple[Environment, dict[str, Environment]]:
     """
 
     :param environment_name: name of the environment to use to override config. Useful if a
@@ -64,9 +62,7 @@ def extract_environments_from_config(
         log.info(f"Using environment {environment_name} - specified in CLI/OS Flags")
     elif default_environment_name:
         environment_name = default_environment_name
-        log.info(
-            f"Using environment {environment_name} - specified as default (e.g. framework config)"
-        )
+        log.info(f"Using environment {environment_name} - specified as default (e.g. framework config)")
 
     if not environment_name:
         raise ValueError("No environment_name found in CLI flags, ENV variables")

@@ -67,9 +67,7 @@ def term_details(
     # Given that a monthly due amount calculation will not be run, and no term counter populated.
     # we will fallback to a term calculation based on the execution time relative
     # to the loan start time.
-    original_total_term = int(
-        utils.get_parameter(vault=vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    original_total_term = int(utils.get_parameter(vault=vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT))
     loan_start_date = vault.get_account_creation_datetime()
 
     # in the event the loan has not started, do not use negative values
@@ -88,19 +86,9 @@ def term_details(
 
 def get_balloon_payment_datetime(vault: SmartContractVault) -> datetime:
     balloon_payment_start_date = vault.get_account_creation_datetime()
-    original_total_term = int(
-        utils.get_parameter(vault=vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
-    balloon_payment_delta_days = int(
-        utils.get_parameter(
-            vault=vault, name="balloon_payment_days_delta", is_optional=True, default_value=0
-        )
-    )
-    return balloon_payment_start_date + relativedelta(
-        days=balloon_payment_delta_days, months=original_total_term
-    )
+    original_total_term = int(utils.get_parameter(vault=vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT))
+    balloon_payment_delta_days = int(utils.get_parameter(vault=vault, name="balloon_payment_days_delta", is_optional=True, default_value=0))
+    return balloon_payment_start_date + relativedelta(days=balloon_payment_delta_days, months=original_total_term)
 
 
-AmortisationFeature = lending_interfaces.Amortisation(
-    calculate_emi=calculate_emi, term_details=term_details, override_final_event=True
-)
+AmortisationFeature = lending_interfaces.Amortisation(calculate_emi=calculate_emi, term_details=term_details, override_final_event=True)

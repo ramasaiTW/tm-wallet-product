@@ -205,38 +205,27 @@ class BalanceHelperTest(DueAmountCalculationTest):
 
     def test_get_principal(self):
         self.assertEqual(
-            due_amount_calculation.get_principal(
-                balances=self.balances, denomination=sentinel.denomination
-            ),
+            due_amount_calculation.get_principal(balances=self.balances, denomination=sentinel.denomination),
             sentinel.principal_net,
         )
 
     def test_get_emi(self):
         self.assertEqual(
-            due_amount_calculation.get_emi(
-                balances=self.balances, denomination=sentinel.denomination
-            ),
+            due_amount_calculation.get_emi(balances=self.balances, denomination=sentinel.denomination),
             sentinel.emi_net,
         )
 
 
 class PreParameterChangeValidationTest(DueAmountCalculationTest):
     def test_validate_due_amount_calculation_day_change_returns_none_after_first_event(self):
-        mock_vault = self.create_mock(
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: DEFAULT_DATETIME
-            }
-        )
+        mock_vault = self.create_mock(last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: DEFAULT_DATETIME})
         result = due_amount_calculation.validate_due_amount_calculation_day_change(mock_vault)
         self.assertIsNone(result)
 
     def test_validate_due_amount_calculation_day_change_raises_rejection_before_first_event(self):
-        mock_vault = self.create_mock(
-            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: None}
-        )
+        mock_vault = self.create_mock(last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: None})
         expected = Rejection(
-            message="It is not possible to change the monthly repayment "
-            "day if the first repayment date has not passed.",
+            message="It is not possible to change the monthly repayment " "day if the first repayment date has not passed.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
         result = due_amount_calculation.validate_due_amount_calculation_day_change(mock_vault)
@@ -267,9 +256,7 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         due_postings = [SentinelPosting("principal_due")]
         mock_transfer_principal_due.return_value = due_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
@@ -316,19 +303,13 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            }
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))}
         )
         counter_postings = [SentinelPosting("counter_posting")]
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         due_postings = [SentinelPosting("principal_due")]
         mock_transfer_principal_due.return_value = due_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
@@ -373,17 +354,11 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            }
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))}
         )
         mock_update_due_amount_calculation_counter.return_value = []
         mock_transfer_principal_due.return_value = []
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
@@ -437,18 +412,12 @@ class ScheduleLogicTest(DueAmountCalculationTest):
             apply_interest=MagicMock(return_value=interest_due_postings),
         )
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            }
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))}
         )
         mock_transfer_principal_due.return_value = principal_due_postings
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
 
@@ -498,34 +467,22 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         counter_postings = [SentinelPosting("counter_posting")]
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         mock_transfer_principal_due.return_value = []
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
 
         mock_should_trigger_reamortisation = MagicMock(return_value=True)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, sentinel.remaining_term))
-        mock_amortisation_feature = MagicMock(
-            calculate_emi=mock_calculate_emi, term_details=mock_term_details
-        )
+        mock_amortisation_feature = MagicMock(calculate_emi=mock_calculate_emi, term_details=mock_term_details)
         emi_postings = [SentinelPosting("emi_postings")]
         mock_update_emi.return_value = emi_postings
         mock_standard_instruction_details.return_value = sentinel_instruction_details
 
         last_execution_datetime = DEFAULT_DATETIME - relativedelta(months=1)
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            },
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))},
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         expected_result = [
@@ -592,31 +549,21 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         counter_postings = [SentinelPosting("counter_posting")]
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         mock_transfer_principal_due.return_value = []
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
 
         mock_should_trigger_reamortisation = MagicMock(return_value=True)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(0, sentinel.remaining_term))
-        mock_amortisation_feature = MagicMock(
-            calculate_emi=mock_calculate_emi, term_details=mock_term_details
-        )
+        mock_amortisation_feature = MagicMock(calculate_emi=mock_calculate_emi, term_details=mock_term_details)
         emi_postings = [SentinelPosting("emi_postings")]
         mock_update_emi.return_value = emi_postings
         mock_standard_instruction_details.return_value = sentinel_instruction_details
 
         account_creation_datetime = DEFAULT_DATETIME - relativedelta(months=1, days=10)
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            },
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))},
             last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: None},
             creation_date=account_creation_datetime,
         )
@@ -686,31 +633,19 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         transfer_postings = [SentinelPosting("xfer_posting")]
         mock_transfer_principal_due.return_value = transfer_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_should_trigger_reamortisation = MagicMock(return_value=False)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, sentinel.remaining_term))
-        mock_amortisation_feature = MagicMock(
-            calculate_emi=mock_calculate_emi, term_details=mock_term_details
-        )
+        mock_amortisation_feature = MagicMock(calculate_emi=mock_calculate_emi, term_details=mock_term_details)
         mock_standard_instruction_details.return_value = sentinel_instruction_details
 
         last_execution_datetime = DEFAULT_DATETIME - relativedelta(months=1)
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            },
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))},
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         result = due_amount_calculation.schedule_logic(
@@ -766,14 +701,10 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         transfer_postings = [SentinelPosting("xfer_posting")]
         mock_transfer_principal_due.return_value = transfer_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_should_trigger_reamortisation = MagicMock(return_value=False)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, Decimal("1")))
         mock_amortisation_feature = MagicMock(
@@ -785,14 +716,8 @@ class ScheduleLogicTest(DueAmountCalculationTest):
 
         last_execution_datetime = DEFAULT_DATETIME - relativedelta(months=1)
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            },
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))},
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         result = due_amount_calculation.schedule_logic(
@@ -854,14 +779,10 @@ class ScheduleLogicTest(DueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         transfer_postings = [SentinelPosting("xfer_posting")]
         mock_transfer_principal_due.return_value = transfer_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_should_trigger_reamortisation = MagicMock(return_value=False)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, Decimal("1")))
         mock_amortisation_feature = MagicMock(
@@ -873,14 +794,8 @@ class ScheduleLogicTest(DueAmountCalculationTest):
 
         last_execution_datetime = DEFAULT_DATETIME - relativedelta(months=1)
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            },
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            balances_observation_fetchers_mapping={due_amount_calculation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))},
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         result = due_amount_calculation.schedule_logic(
@@ -952,9 +867,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         due_postings = [SentinelPosting("principal_due")]
         mock_transfer_principal_due.return_value = due_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
@@ -1014,9 +927,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         due_postings = [SentinelPosting("principal_due")]
         mock_transfer_principal_due.return_value = due_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
@@ -1072,9 +983,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
 
         mock_update_due_amount_calculation_counter.return_value = []
         mock_transfer_principal_due.return_value = []
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
@@ -1140,9 +1049,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         mock_transfer_principal_due.return_value = principal_due_postings
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         mock_amortisation_feature = MagicMock(term_details=MagicMock(return_value=(0, 2)))
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_standard_instruction_details.return_value = sentinel_instruction_details
 
@@ -1196,20 +1103,14 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         counter_postings = [SentinelPosting("counter_posting")]
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         mock_transfer_principal_due.return_value = []
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
 
         mock_should_trigger_reamortisation = MagicMock(return_value=True)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, sentinel.remaining_term))
-        mock_amortisation_feature = MagicMock(
-            calculate_emi=mock_calculate_emi, term_details=mock_term_details
-        )
+        mock_amortisation_feature = MagicMock(calculate_emi=mock_calculate_emi, term_details=mock_term_details)
         emi_postings = [SentinelPosting("emi_postings")]
         mock_update_emi.return_value = emi_postings
         mock_standard_instruction_details.return_value = sentinel_instruction_details
@@ -1220,9 +1121,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
             requires_fetched_balances=sentinel.fetched_balances,
         )
         mock_main_vault = self.create_supervisee_mock(
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         expected_result = [
@@ -1296,20 +1195,14 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         counter_postings = [SentinelPosting("counter_posting")]
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         mock_transfer_principal_due.return_value = []
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
 
         mock_should_trigger_reamortisation = MagicMock(return_value=True)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(0, sentinel.remaining_term))
-        mock_amortisation_feature = MagicMock(
-            calculate_emi=mock_calculate_emi, term_details=mock_term_details
-        )
+        mock_amortisation_feature = MagicMock(calculate_emi=mock_calculate_emi, term_details=mock_term_details)
         emi_postings = [SentinelPosting("emi_postings")]
         mock_update_emi.return_value = emi_postings
         mock_standard_instruction_details.return_value = sentinel_instruction_details
@@ -1322,9 +1215,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
             creation_date=account_creation_datetime,
         )
         mock_main_vault = self.create_supervisee_mock(
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         expected_result = [
@@ -1399,19 +1290,13 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         transfer_postings = [SentinelPosting("xfer_posting")]
         mock_transfer_principal_due.return_value = transfer_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_should_trigger_reamortisation = MagicMock(return_value=False)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, sentinel.remaining_term))
-        mock_amortisation_feature = MagicMock(
-            calculate_emi=mock_calculate_emi, term_details=mock_term_details
-        )
+        mock_amortisation_feature = MagicMock(calculate_emi=mock_calculate_emi, term_details=mock_term_details)
         mock_standard_instruction_details.return_value = sentinel_instruction_details
 
         last_execution_datetime = DEFAULT_DATETIME - relativedelta(months=1)
@@ -1420,9 +1305,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
             requires_fetched_balances=sentinel.fetched_balances,
         )
         mock_main_vault = self.create_supervisee_mock(
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         result = due_amount_calculation.supervisor_schedule_logic(
@@ -1488,14 +1371,10 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         transfer_postings = [SentinelPosting("xfer_posting")]
         mock_transfer_principal_due.return_value = transfer_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_should_trigger_reamortisation = MagicMock(return_value=False)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, Decimal("1")))
         mock_amortisation_feature = MagicMock(
@@ -1511,9 +1390,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
             requires_fetched_balances=sentinel.fetched_balances,
         )
         mock_main_vault = self.create_supervisee_mock(
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         result = due_amount_calculation.supervisor_schedule_logic(
@@ -1581,14 +1458,10 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
         mock_update_due_amount_calculation_counter.return_value = counter_postings
         transfer_postings = [SentinelPosting("xfer_posting")]
         mock_transfer_principal_due.return_value = transfer_postings
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
         mock_calculate_due_principal.return_value = sentinel.principal_due
         mock_should_trigger_reamortisation = MagicMock(return_value=False)
-        mock_reamortisation_condition_feature = MagicMock(
-            should_trigger_reamortisation=mock_should_trigger_reamortisation
-        )
+        mock_reamortisation_condition_feature = MagicMock(should_trigger_reamortisation=mock_should_trigger_reamortisation)
         mock_calculate_emi = MagicMock(return_value=sentinel.updated_emi)
         mock_term_details = MagicMock(return_value=(sentinel.elapsed_term, Decimal("1")))
         mock_amortisation_feature = MagicMock(
@@ -1604,9 +1477,7 @@ class SupervisorScheduleLogicTest(SupervisorDueAmountCalculationTest):
             requires_fetched_balances=sentinel.fetched_balances,
         )
         mock_main_vault = self.create_supervisee_mock(
-            last_execution_datetimes={
-                due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime
-            },
+            last_execution_datetimes={due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: last_execution_datetime},
         )
 
         result = due_amount_calculation.supervisor_schedule_logic(
@@ -1667,9 +1538,7 @@ class DueAmountCalculationScheduleTest(DueAmountCalculationTest):
             [
                 SmartContractEventType(
                     name=due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT,
-                    scheduler_tag_ids=[
-                        f"PRODUCT_A_{due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT}_AST"
-                    ],
+                    scheduler_tag_ids=[f"PRODUCT_A_{due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT}_AST"],
                 )
             ],
         )
@@ -1681,17 +1550,13 @@ class DueAmountCalculationScheduleTest(DueAmountCalculationTest):
             [
                 SupervisorContractEventType(
                     name=due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT,
-                    scheduler_tag_ids=[
-                        f"PRODUCT_A_{due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT}_AST"
-                    ],
+                    scheduler_tag_ids=[f"PRODUCT_A_{due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT}_AST"],
                 )
             ],
         )
 
     @patch.object(due_amount_calculation.utils, "monthly_scheduled_event")
-    def test_due_amount_scheduled_event_starts_a_month_after_opening(
-        self, mock_monthly_scheduled_event: MagicMock
-    ):
+    def test_due_amount_scheduled_event_starts_a_month_after_opening(self, mock_monthly_scheduled_event: MagicMock):
         mock_vault = MagicMock()
         mock_monthly_scheduled_event.return_value = sentinel.monthly_scheduled_event
 
@@ -1714,54 +1579,30 @@ class DueAmountCalculationScheduleTest(DueAmountCalculationTest):
 @patch.object(due_amount_calculation.utils, "get_schedule_time_from_parameters")
 @patch.object(due_amount_calculation.utils, "get_parameter")
 class FirstDueAmountCalculationDate(DueAmountCalculationTest):
-    def test_first_due_amount_calculation_date_opening_before_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 4}
-        )
+    def test_first_due_amount_calculation_date_opening_before_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 4})
         mock_get_schedule_time_from_parameters.return_value = 0, 1, 0
-        mock_vault = MagicMock(
-            get_account_creation_datetime=MagicMock(
-                return_value=datetime(2020, 1, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
-            )
-        )
+        mock_vault = MagicMock(get_account_creation_datetime=MagicMock(return_value=datetime(2020, 1, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))))
 
         self.assertEqual(
             due_amount_calculation.get_first_due_amount_calculation_datetime(vault=mock_vault),
             datetime(2020, 2, 4, 0, 1, 0, tzinfo=ZoneInfo("UTC")),
         )
 
-    def test_first_due_amount_calculation_date_opening_after_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 4}
-        )
+    def test_first_due_amount_calculation_date_opening_after_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 4})
         mock_get_schedule_time_from_parameters.return_value = 0, 1, 0
-        mock_vault = MagicMock(
-            get_account_creation_datetime=MagicMock(
-                return_value=datetime(2020, 1, 5, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
-            )
-        )
+        mock_vault = MagicMock(get_account_creation_datetime=MagicMock(return_value=datetime(2020, 1, 5, 2, 3, 4, tzinfo=ZoneInfo("UTC"))))
 
         self.assertEqual(
             due_amount_calculation.get_first_due_amount_calculation_datetime(vault=mock_vault),
             datetime(2020, 3, 4, 0, 1, 0, tzinfo=ZoneInfo("UTC")),
         )
 
-    def test_first_due_amount_calculation_date_opening_on_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 4}
-        )
+    def test_first_due_amount_calculation_date_opening_on_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 4})
         mock_get_schedule_time_from_parameters.return_value = 0, 1, 0
-        mock_vault = MagicMock(
-            get_account_creation_datetime=MagicMock(
-                return_value=datetime(2020, 1, 4, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
-            )
-        )
+        mock_vault = MagicMock(get_account_creation_datetime=MagicMock(return_value=datetime(2020, 1, 4, 2, 3, 4, tzinfo=ZoneInfo("UTC"))))
 
         self.assertEqual(
             due_amount_calculation.get_first_due_amount_calculation_datetime(vault=mock_vault),
@@ -1771,9 +1612,7 @@ class FirstDueAmountCalculationDate(DueAmountCalculationTest):
 
 @patch.object(due_amount_calculation.utils, "reset_tracker_balances")
 class GetResidualCleanupPostingsTest(DueAmountCalculationTest):
-    def test_get_residual_cleanup_postings_with_postings(
-        self, mock_reset_tracker_balances: MagicMock
-    ):
+    def test_get_residual_cleanup_postings_with_postings(self, mock_reset_tracker_balances: MagicMock):
         mock_reset_tracker_balances.return_value = [sentinel.postings]
 
         result = due_amount_calculation.get_residual_cleanup_postings(
@@ -1795,9 +1634,7 @@ class GetResidualCleanupPostingsTest(DueAmountCalculationTest):
             tside=Tside.ASSET,
         )
 
-    def test_get_residual_cleanup_postings_no_postings(
-        self, mock_reset_tracker_balances: MagicMock
-    ):
+    def test_get_residual_cleanup_postings_no_postings(self, mock_reset_tracker_balances: MagicMock):
         mock_reset_tracker_balances.return_value = []
 
         result = due_amount_calculation.get_residual_cleanup_postings(
@@ -1824,9 +1661,7 @@ class GetResidualCleanupPostingsTest(DueAmountCalculationTest):
 class UpdateTrackerTest(DueAmountCalculationTest):
     def test_update_due_amount_calculation_counter(self, mock_create_postings: MagicMock):
         mock_create_postings.return_value = [sentinel.postings]
-        result = due_amount_calculation.update_due_amount_calculation_counter(
-            account_id=sentinel.account_id, denomination=sentinel.denomination
-        )
+        result = due_amount_calculation.update_due_amount_calculation_counter(account_id=sentinel.account_id, denomination=sentinel.denomination)
         self.assertListEqual(result, [sentinel.postings])
 
         mock_create_postings.assert_called_once_with(
@@ -1842,9 +1677,7 @@ class UpdateTrackerTest(DueAmountCalculationTest):
 @patch.object(due_amount_calculation.utils, "get_schedule_time_from_parameters")
 @patch.object(due_amount_calculation.utils, "get_parameter")
 class NextDueAmountCalculationDate(DueAmountCalculationTest):
-    def test_next_due_amount_calculation_dt_opening_before_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_opening_before_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         If effective_dt is in the opening period
         First due amount calculation date occurs skips a month from account opening
@@ -1855,9 +1688,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 2, 3, 4, 5, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         mock_vault = MagicMock(
             get_account_creation_datetime=MagicMock(return_value=start_dt),
@@ -1874,13 +1705,9 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         )
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
-        mock_get_parameter.assert_called_once_with(
-            vault=mock_vault, name="due_amount_calculation_day"
-        )
+        mock_get_parameter.assert_called_once_with(vault=mock_vault, name="due_amount_calculation_day")
 
-    def test_next_due_amount_calculation_dt_with_due_amount_calculation_day_supplied(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_with_due_amount_calculation_day_supplied(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         Use the due_amount_calculation_day arg rather than defaulting to None
         """
@@ -1906,9 +1733,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
         mock_get_parameter.assert_not_called()
 
-    def test_next_due_amount_calculation_dt_opening_after_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_opening_after_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         If effective_dt is in the opening period
         First due amount calculation date occurs in the following month from account opening
@@ -1916,9 +1741,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         mock_vault = MagicMock(
             get_account_creation_datetime=MagicMock(return_value=start_dt),
@@ -1935,18 +1758,14 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_opening_on_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_opening_on_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         If effective_dt is in the opening period
         First due amount calculation date can be exactly one month after account opening
         """
         start_dt = datetime(2020, 1, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         mock_vault = MagicMock(
             get_account_creation_datetime=MagicMock(return_value=start_dt),
@@ -1962,9 +1781,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_mid_cycle_a_day_before_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_mid_cycle_a_day_before_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -1973,9 +1790,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 2, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -1994,9 +1809,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_mid_cycle_on_due_amount_calculation_day_before_runtime(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_mid_cycle_on_due_amount_calculation_day_before_runtime(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2005,9 +1818,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 2, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2026,9 +1837,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_mid_cycle_a_day_after_due_amount_calculation_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_mid_cycle_a_day_after_due_amount_calculation_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2037,9 +1846,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 3, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2058,9 +1865,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_mid_cycle_on_due_amount_calculation_day_after_runtime(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_mid_cycle_on_due_amount_calculation_day_after_runtime(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2069,9 +1874,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 3, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2090,9 +1893,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calc_dt_mid_cycle_on_due_amount_calc_runtime_with_effective_dt(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calc_dt_mid_cycle_on_due_amount_calc_runtime_with_effective_dt(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2102,9 +1903,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 2, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2123,9 +1922,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calc_dt_on_first_due_calculation_dt(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calc_dt_on_first_due_calculation_dt(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2134,9 +1931,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         mock_vault = MagicMock(
             get_account_creation_datetime=MagicMock(return_value=start_dt),
@@ -2154,9 +1949,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_day_to_after_last_execution_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_day_to_after_last_execution_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2166,9 +1959,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 15}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 15})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 2, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2187,9 +1978,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_day_to_before_last_execution_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_day_to_before_last_execution_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2199,9 +1988,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 2}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 2})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 2, 15, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2220,9 +2007,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_to_a_day_before_effective_day(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_to_a_day_before_effective_day(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2232,9 +2017,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 2}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 2})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 2, 15, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2253,9 +2036,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_day_applies_from_following_month(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_dt_changed_due_amnt_calc_day_applies_from_following_month(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         IF effective_dt is not in the opening period
         AND
@@ -2265,9 +2046,7 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 2}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 2})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2020, 3, 15, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2286,18 +2065,14 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
 
         self.assertEqual(expected_next_repayment_dt, next_due_amount_calc_dt)
 
-    def test_next_due_amount_calculation_after_loan_term(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_after_loan_term(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         If effective_dt is after the final due amount calculation event, it should return the
         last execution datetime
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 1})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2021, 2, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2316,18 +2091,14 @@ class NextDueAmountCalculationDate(DueAmountCalculationTest):
         self.assertEqual(last_execution_dt, next_due_amount_calc_dt)
         mock_get_parameter.assert_not_called()
 
-    def test_next_due_amount_calculation_effective_datetime_less_than_last_execution(
-        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
-    ):
+    def test_next_due_amount_calculation_effective_datetime_less_than_last_execution(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
         """
         If effective_dt is before the last_execution_datetime, it should return the next datetime
         anchored from the effective_dt
         """
         start_dt = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 15}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({due_amount_calculation.PARAM_DUE_AMOUNT_CALCULATION_DAY: 15})
         mock_get_schedule_time_from_parameters.return_value = 2, 3, 4
         last_execution_dt = datetime(2021, 2, 1, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         mock_vault = MagicMock(
@@ -2366,9 +2137,7 @@ class DueAmountCalculationDayChanged(DueAmountCalculationTest):
 
 @patch.object(due_amount_calculation, "get_next_due_amount_calculation_datetime")
 class GetNextRepaymentDateDerivedParamTest(DueAmountCalculationTest):
-    def test_get_actual_next_repayment_date_for_param_updated_multiple_times_edge_case(
-        self, mock_get_next_due_amount_calculation_datetime: MagicMock
-    ):
+    def test_get_actual_next_repayment_date_for_param_updated_multiple_times_edge_case(self, mock_get_next_due_amount_calculation_datetime: MagicMock):
         """
         When the following is true:
             the due calculation day param has been updated thrice since the last execution
@@ -2446,9 +2215,7 @@ class GetNextRepaymentDateDerivedParamTest(DueAmountCalculationTest):
             ]
         )
 
-    def test_get_actual_next_repayment_date_no_param_updates(
-        self, mock_get_next_due_amount_calculation_datetime: MagicMock
-    ):
+    def test_get_actual_next_repayment_date_no_param_updates(self, mock_get_next_due_amount_calculation_datetime: MagicMock):
         effective_dt = datetime(2020, 3, 19, 13, 3, 5, tzinfo=ZoneInfo("UTC"))
         last_execution_dt = datetime(2020, 2, 5, 2, 3, 4, tzinfo=ZoneInfo("UTC"))
         first_next_due_calc_datetime = last_execution_dt + relativedelta(months=1)
@@ -2489,9 +2256,7 @@ class SuperviseeLastExecutionEffectiveDatetimeTest(SupervisorDueAmountCalculatio
 
     def test_last_execution_date_is_in_past(self):
         last_execution_datetimes = {self.dummy_event: DEFAULT_DATETIME - relativedelta(months=1)}
-        mock_main_vault = self.create_supervisee_mock(
-            last_execution_datetimes=last_execution_datetimes
-        )
+        mock_main_vault = self.create_supervisee_mock(last_execution_datetimes=last_execution_datetimes)
 
         expected = DEFAULT_DATETIME - relativedelta(months=1)
 
@@ -2506,9 +2271,7 @@ class SuperviseeLastExecutionEffectiveDatetimeTest(SupervisorDueAmountCalculatio
 
     def test_last_execution_date_is_effective_datetime(self):
         last_execution_datetimes = {self.dummy_event: DEFAULT_DATETIME}
-        mock_main_vault = self.create_supervisee_mock(
-            last_execution_datetimes=last_execution_datetimes
-        )
+        mock_main_vault = self.create_supervisee_mock(last_execution_datetimes=last_execution_datetimes)
 
         expected = DEFAULT_DATETIME - relativedelta(months=1)
 

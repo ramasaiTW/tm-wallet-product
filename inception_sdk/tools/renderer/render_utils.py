@@ -35,17 +35,10 @@ class ImportedObject:
     module_from: ModuleType
 
     def __eq__(self, __o: object) -> bool:
-        return (
-            isinstance(__o, type(self))
-            and self.name == __o.name
-            and self.namespaced_name == __o.namespaced_name
-            and self.module_from == __o.module_from
-        )
+        return isinstance(__o, type(self)) and self.name == __o.name and self.namespaced_name == __o.namespaced_name and self.module_from == __o.module_from
 
     def __hash__(self) -> int:
-        return hash(
-            self.name + (self.namespaced_name or "") + getattr(self.module_from, "__name__", "")
-        )
+        return hash(self.name + (self.namespaced_name or "") + getattr(self.module_from, "__name__", ""))
 
 
 @dataclass
@@ -56,16 +49,10 @@ class NativeModule:
     module_from: ModuleType | None = None
 
     def __eq__(self, __o: object) -> bool:
-        return (
-            isinstance(__o, type(self))
-            and self.name == __o.name
-            and self.namespaced_name == __o.namespaced_name
-        )
+        return isinstance(__o, type(self)) and self.name == __o.name and self.namespaced_name == __o.namespaced_name
 
     def __hash__(self) -> int:
-        return hash(
-            self.name + (self.namespaced_name or "") + getattr(self.module_from, "__name__", "")
-        )
+        return hash(self.name + (self.namespaced_name or "") + getattr(self.module_from, "__name__", ""))
 
 
 @dataclass
@@ -81,12 +68,7 @@ class ImportedModule:
         return f"ImportedModule(name={self.name}, alias={self.alias})"
 
     def __eq__(self, __o: object) -> bool:
-        return (
-            isinstance(__o, type(self))
-            and self.name == __o.name
-            and self.alias == __o.alias
-            and self.module.__name__ == __o.module.__name__
-        )
+        return isinstance(__o, type(self)) and self.name == __o.name and self.alias == __o.alias and self.module.__name__ == __o.module.__name__
 
     def __hash__(self) -> int:
         return hash(self.name + str(self.alias) + self.module.__name__)
@@ -204,18 +186,12 @@ def remove_quotes_from_module_headers(rendered_contract: str, module_header_iden
                     newlines_added -= 1
                     continue
             # if we have come across a new token type add whitespace if its required
-            elif (
-                token.type != t_type.NL
-                and token.type != t_type.DEDENT
-                and module_header_identifier not in token.line
-            ):
+            elif token.type != t_type.NL and token.type != t_type.DEDENT and module_header_identifier not in token.line:
                 header_found = False
                 if header_whitespace_required:
                     nl_start = (token.start[0] + newlines_added, token.start[1])
                     nl_end = (token.end[0] + newlines_added, token.end[1])
-                    new_tokens.append(
-                        TokenInfo(t_type.NL, "\n", (nl_start[0], 0), (nl_end[0], 1), "\n")
-                    )
+                    new_tokens.append(TokenInfo(t_type.NL, "\n", (nl_start[0], 0), (nl_end[0], 1), "\n"))
                     newlines_added += 1
 
         token_start = (token.start[0] + newlines_added, token.start[1])
@@ -223,15 +199,10 @@ def remove_quotes_from_module_headers(rendered_contract: str, module_header_iden
 
         if module_header_identifier in token.string:
             # check that the previous token is a new line or header line otherwise add an NL 61
-            if new_tokens[-1] and (
-                module_header_identifier not in new_tokens[-1].line
-                and new_tokens[-1].type != t_type.NL
-            ):
+            if new_tokens[-1] and (module_header_identifier not in new_tokens[-1].line and new_tokens[-1].type != t_type.NL):
                 nl_start = (token.start[0] + newlines_added, token.start[1])
                 nl_end = (token.end[0] + newlines_added, token.end[1])
-                new_tokens.append(
-                    TokenInfo(t_type.NL, "\n", (nl_start[0], 0), (nl_end[0], 1), "\n")
-                )
+                new_tokens.append(TokenInfo(t_type.NL, "\n", (nl_start[0], 0), (nl_end[0], 1), "\n"))
                 newlines_added += 1
                 token_start = (token.start[0] + newlines_added, token.start[1])
                 token_end = (token.end[0] + newlines_added, token.end[1])
@@ -279,9 +250,7 @@ def remove_quotes_from_module_headers(rendered_contract: str, module_header_iden
             header_found = True
             header_whitespace_required = True
         else:
-            new_tokens.append(
-                TokenInfo(token.type, token.string, token_start, token_end, token.line)
-            )
+            new_tokens.append(TokenInfo(token.type, token.string, token_start, token_end, token.line))
 
     return untokenize(new_tokens).decode("utf-8")
 
@@ -402,11 +371,7 @@ def remove_remaining_headers(nodes: list[ast.stmt], header_prefix: str) -> list[
     Removes any stray unused headers that may be left at the bottom of the list.
     This could happen if all objects from the template have been moved to the top of the file.
     """
-    while (
-        isinstance(nodes[-1], ast.Expr)
-        and isinstance(nodes[-1].value, ast.Constant)
-        and header_prefix in nodes[-1].value.value
-    ):
+    while isinstance(nodes[-1], ast.Expr) and isinstance(nodes[-1].value, ast.Constant) and header_prefix in nodes[-1].value.value:
         nodes.pop(-1)
     return nodes
 
@@ -470,9 +435,7 @@ class ObjectReferenceDiscovery(ast.NodeVisitor):
         return self.generic_visit(node)
 
 
-def get_unreferenced_objects(
-    object_reference_map: dict[ImportedObject, Iterable[ImportedObject | str]]
-) -> list[ImportedObject]:
+def get_unreferenced_objects(object_reference_map: dict[ImportedObject, Iterable[ImportedObject | str]]) -> list[ImportedObject]:
     """
     Taking each object in object_reference_map, check against the map to see if it is referenced,
     either directly or indirectly. Below is a pseudo example of an object_reference_map:

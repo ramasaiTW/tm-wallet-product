@@ -31,9 +31,7 @@ INACTIVITY_FEE_INCOME = "INACTIVITY_FEE_INCOME"
 @patch.object(inactivity_fee.fees, "fee_custom_instruction")
 @patch.object(inactivity_fee.utils, "get_parameter")
 class TestApplication(FeatureTest):
-    def test_monthly_inactivity_fee_applied(
-        self, mock_get_parameter: MagicMock, mock_fee_custom_instruction: MagicMock
-    ):
+    def test_monthly_inactivity_fee_applied(self, mock_get_parameter: MagicMock, mock_fee_custom_instruction: MagicMock):
         # construct mocks
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -62,9 +60,7 @@ class TestApplication(FeatureTest):
             },
         )
 
-    def test_monthly_inactivity_fee_not_applied(
-        self, mock_get_parameter: MagicMock, mock_fee_custom_instruction: MagicMock
-    ):
+    def test_monthly_inactivity_fee_not_applied(self, mock_get_parameter: MagicMock, mock_fee_custom_instruction: MagicMock):
         # construct mocks
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -76,15 +72,11 @@ class TestApplication(FeatureTest):
         )
 
         # run function
-        fee_postings_result = inactivity_fee.apply(
-            vault=sentinel.vault, effective_datetime=DEFAULT_DATETIME
-        )
+        fee_postings_result = inactivity_fee.apply(vault=sentinel.vault, effective_datetime=DEFAULT_DATETIME)
 
         # call assertions
         self.assertEqual(len(fee_postings_result), 0)
-        mock_get_parameter.assert_called_with(
-            vault=sentinel.vault, name="inactivity_fee", at_datetime=DEFAULT_DATETIME
-        )
+        mock_get_parameter.assert_called_with(vault=sentinel.vault, name="inactivity_fee", at_datetime=DEFAULT_DATETIME)
         mock_fee_custom_instruction.assert_not_called()
 
     @patch.object(inactivity_fee.partial_fee, "charge_partial_fee")
@@ -154,11 +146,7 @@ class TestApplication(FeatureTest):
                 "denomination": "GBP",
             }
         )
-        balance_map = {
-            inactivity_fee.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
-                "effective"
-            )
-        }
+        balance_map = {inactivity_fee.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")}
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=balance_map)
         mock_charge_partial_fee.return_value = [SentinelCustomInstruction("partial_fee_postings")]
         mock_fee_custom_instruction.return_value = [SentinelCustomInstruction("fee_postings")]
@@ -207,14 +195,10 @@ class TestEventDefinition(FeatureTest):
 
     @patch.object(inactivity_fee.utils, "monthly_scheduled_event")
     def test_scheduled_event(self, mock_monthly_scheduled_event: MagicMock):
-        expected = {
-            inactivity_fee.APPLICATION_EVENT: SentinelScheduledEvent("inactivity_fee_event")
-        }
+        expected = {inactivity_fee.APPLICATION_EVENT: SentinelScheduledEvent("inactivity_fee_event")}
         # function call
         mock_monthly_scheduled_event.return_value = SentinelScheduledEvent("inactivity_fee_event")
-        result = inactivity_fee.scheduled_events(
-            vault=sentinel.vault, start_datetime=sentinel.datetime
-        )
+        result = inactivity_fee.scheduled_events(vault=sentinel.vault, start_datetime=sentinel.datetime)
         # assertion
         self.assertDictEqual(result, expected)
         mock_monthly_scheduled_event.assert_called_once_with(
@@ -257,9 +241,7 @@ class TestGetterFunctions(FeatureTest):
     def test_is_account_inactive(self, mock_is_flag_in_list_applied: MagicMock):
         mock_is_flag_in_list_applied.return_value = sentinel.boolean
 
-        result = inactivity_fee.is_account_inactive(
-            vault=sentinel.vault, effective_datetime=sentinel.datetime
-        )
+        result = inactivity_fee.is_account_inactive(vault=sentinel.vault, effective_datetime=sentinel.datetime)
         self.assertEqual(result, sentinel.boolean)
 
         mock_is_flag_in_list_applied.assert_called_once_with(

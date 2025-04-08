@@ -39,9 +39,7 @@ def sum_client_transactions(
         # before the cutoff timestamp instead (max granularity is 1 us)
         cutoff_datetime -= relativedelta(microseconds=1)
 
-        amount_before_cutoff = _get_total_transaction_impact(
-            transaction=transaction, effective_datetime=cutoff_datetime
-        )
+        amount_before_cutoff = _get_total_transaction_impact(transaction=transaction, effective_datetime=cutoff_datetime)
 
         amount = transaction_amount - amount_before_cutoff
         if amount > 0:
@@ -83,13 +81,9 @@ def sum_debits_by_instruction_details_key(
     in_scope_transactions = {
         client_transaction_id: client_transaction
         for client_transaction_id, client_transaction in client_transactions.items()
-        if client_transaction_id != client_transaction_id_to_ignore
-        and client_transaction.denomination == denomination
-        and not client_transaction.released()
+        if client_transaction_id != client_transaction_id_to_ignore and client_transaction.denomination == denomination and not client_transaction.released()
         # custom instructions aren't chainable so we only need to check the first posting
-        and client_transaction.posting_instructions[0].type
-        != PostingInstructionType.CUSTOM_INSTRUCTION
-        and client_transaction.posting_instructions[0].instruction_details.get(key) == value
+        and client_transaction.posting_instructions[0].type != PostingInstructionType.CUSTOM_INSTRUCTION and client_transaction.posting_instructions[0].instruction_details.get(key) == value
     }
 
     return sum_client_transactions(
@@ -154,11 +148,7 @@ def _get_total_transaction_impact(
     """
     # This is required to circumvent TM-80295 whereby the contracts_api wrongly raises an exception
     # instead of returning 0 if effects are queried before the start_datetime
-    if (
-        effective_datetime is not None
-        and transaction.start_datetime is not None
-        and effective_datetime < transaction.start_datetime
-    ):
+    if effective_datetime is not None and transaction.start_datetime is not None and effective_datetime < transaction.start_datetime:
         return Decimal(0)
 
     return (

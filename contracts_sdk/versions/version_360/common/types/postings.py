@@ -30,9 +30,7 @@ class PostingInstructionBatch(types350.PostingInstructionBatch):
     def __init__(self, insertion_timestamp=None, **kwargs):
         super().__init__(**kwargs)
         if not kwargs.get("_from_proto", False):
-            self._spec().assert_constructor_args(
-                self._registry, {"insertion_timestamp": insertion_timestamp}
-            )
+            self._spec().assert_constructor_args(self._registry, {"insertion_timestamp": insertion_timestamp})
         self.insertion_timestamp = insertion_timestamp
 
     def balances(self, exclude_advice: bool = False):

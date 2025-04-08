@@ -24,9 +24,7 @@ logging.basicConfig(
 SCHEDULER_OPERATION_EVENTS_TOPIC = "vault.core_api.v1.scheduler.operation.events"
 SCHEDULER_TICK_TIME = 20
 SCHEDULE_STATUS_OVERRIDE_START_TIMESTAMP = datetime.min.replace(tzinfo=timezone.utc).isoformat()
-SCHEDULE_STATUS_OVERRIDE_END_TIMESTAMP = datetime.max.replace(
-    microsecond=0, tzinfo=timezone.utc
-).isoformat()
+SCHEDULE_STATUS_OVERRIDE_END_TIMESTAMP = datetime.max.replace(microsecond=0, tzinfo=timezone.utc).isoformat()
 
 
 class ResourceType(Enum):
@@ -74,17 +72,13 @@ def _filter_and_transform_schedules(
     for _, schedule_details in sorted_schedules.items():
         if schedule_details["status"] not in statuses_to_exclude:
             if schedule_details["display_name"].startswith(display_name_format):
-                account_schedule_name = schedule_details["display_name"].replace(
-                    f"{display_name_format}", ""
-                )
+                account_schedule_name = schedule_details["display_name"].replace(f"{display_name_format}", "")
                 output_schedules[account_schedule_name] = schedule_details
 
     return output_schedules
 
 
-def get_account_schedules(
-    account_id: str, statuses_to_exclude: list[str] | None = None
-) -> dict[str, dict[str, str]]:
+def get_account_schedules(account_id: str, statuses_to_exclude: list[str] | None = None) -> dict[str, dict[str, str]]:
     """
     Fetches all schedules for a given account, optionally excluding certain schedule statuses
     :param account_id: the account to fetch schedules for
@@ -108,9 +102,7 @@ def get_account_schedules(
     )
 
 
-def get_plan_schedules(
-    plan_id: str, statuses_to_exclude: list[str] | None = None
-) -> dict[str, dict[str, str]]:
+def get_plan_schedules(plan_id: str, statuses_to_exclude: list[str] | None = None) -> dict[str, dict[str, str]]:
     """
     Fetches all schedules for a given plan, optionally excluding certain schedule statuses
     :param plan_id: the plan to fetch schedules for
@@ -166,9 +158,7 @@ def wait_for_schedule_operation_events(
         event_request_id = event_msg["event_id"]
         if tag_name in unique_message_ids:
             if wait_for_timestamp:
-                completed_run_timestamp = extract_date(
-                    event_msg["operation_created"]["operation"]["completed_run_timestamp"]
-                )
+                completed_run_timestamp = extract_date(event_msg["operation_created"]["operation"]["completed_run_timestamp"])
                 if completed_run_timestamp and completed_run_timestamp >= wait_for_timestamp:
                     return tag_name, event_request_id, True
             else:
@@ -187,10 +177,7 @@ def wait_for_schedule_operation_events(
     )
 
     if len(unmatched_events) > 0:
-        raise Exception(
-            f"Failed to retrieve {len(unmatched_events)} operation events"
-            f" for tags: {', '.join(unmatched_events.keys())}"
-        )
+        raise Exception(f"Failed to retrieve {len(unmatched_events)} operation events" f" for tags: {', '.join(unmatched_events.keys())}")
 
     log.info("Got all operation events")
 
@@ -220,10 +207,7 @@ def get_schedule_tag_next_run_times(account_id: str) -> dict[str, datetime]:
     for schedule_details in account_schedules.values():
         for schedule_tag in schedule_details.get("tags", []):
             next_runtime = extract_date(schedule_details["next_run_timestamp"])
-            if (
-                not schedule_next_run_times.get(schedule_tag)
-                or next_runtime < schedule_next_run_times[schedule_tag]
-            ):
+            if not schedule_next_run_times.get(schedule_tag) or next_runtime < schedule_next_run_times[schedule_tag]:
                 schedule_next_run_times.update({schedule_tag: next_runtime})
     return schedule_next_run_times
 
@@ -252,10 +236,7 @@ def skip_scheduled_jobs_and_wait(
     # TODO: could we refactor this a bit as we repeatedly fetch schedules for a given name and
     # account/plan id?
     id_and_type = f"{resource_type.value=} {resource_id=}"
-    log.info(
-        f"Skipping jobs for {schedule_name=} between {skip_start_date=} and {skip_end_date=} for "
-        f"{id_and_type}"
-    )
+    log.info(f"Skipping jobs for {schedule_name=} between {skip_start_date=} and {skip_end_date=} for " f"{id_and_type}")
 
     if resource_type == ResourceType.ACCOUNT:
         schedules = get_account_schedules(resource_id)
@@ -271,10 +252,7 @@ def skip_scheduled_jobs_and_wait(
     if len(schedule["tags"]) == 0:
         raise ValueError(f"No tags found on {schedule_name=} {schedule_id=} for {id_and_type}")
     elif len(schedule["tags"]) > 1:
-        log.info(
-            f"Found multiple tags on {schedule_name=} {schedule_id=} for {id_and_type}. First "
-            f"will be used"
-        )
+        log.info(f"Found multiple tags on {schedule_name=} {schedule_id=} for {id_and_type}. First " f"will be used")
     schedule_tag_id = schedule["tags"][0]
 
     skip_scheduled_jobs_between_dates(
@@ -325,9 +303,7 @@ def trigger_next_schedule_job_and_wait(
         effective_date=effective_date,
     )
 
-    wait_for_schedule_job(
-        schedule_tag_id=tag_id, schedule_id=schedule_id, expected_run_time=next_run_time
-    )
+    wait_for_schedule_job(schedule_tag_id=tag_id, schedule_id=schedule_id, expected_run_time=next_run_time)
 
 
 def trigger_next_schedule_job(
@@ -371,10 +347,7 @@ def trigger_next_schedule_job(
     if len(schedule["tags"]) == 0:
         raise ValueError(f"No tags found on {schedule_name=} {schedule_id=} for {id_and_type}")
     elif len(schedule["tags"]) > 1:
-        log.info(
-            f"Found multiple tags on {schedule_name=} {schedule_id=} for {id_and_type}. "
-            f"First will be used"
-        )
+        log.info(f"Found multiple tags on {schedule_name=} {schedule_id=} for {id_and_type}. " f"First will be used")
     schedule_tag_id = schedule["tags"][0]
 
     if effective_date and effective_date != next_run_time:
@@ -384,9 +357,7 @@ def trigger_next_schedule_job(
     if after_next_run_time > datetime.now(tz=timezone.utc):
         fast_forward_tag(paused_tag_id=schedule_tag_id, fast_forward_to_date=after_next_run_time)
     else:
-        update_tag_test_pause_at_timestamp(
-            schedule_tag_id=schedule_tag_id, test_pause_at_timestamp=after_next_run_time
-        )
+        update_tag_test_pause_at_timestamp(schedule_tag_id=schedule_tag_id, test_pause_at_timestamp=after_next_run_time)
     return schedule_tag_id, schedule_id, next_run_time
 
 
@@ -423,10 +394,7 @@ def wait_for_schedule_job(
         )
     else:
         if not schedule_id:
-            raise ValueError(
-                f"Not using kafka to wait for schedule job ({endtoend.testhandle.use_kafka=} and "
-                f"{schedule_tag_id=} and no schedule_id provided {schedule_id=}"
-            )
+            raise ValueError(f"Not using kafka to wait for schedule job ({endtoend.testhandle.use_kafka=} and " f"{schedule_tag_id=} and no schedule_id provided {schedule_id=}")
         if initial_wait > 0:
             time.sleep(initial_wait)
         job_statuses = job_statuses or ["JOB_STATUS_SUCCEEDED", "JOB_STATUS_FAILED"]

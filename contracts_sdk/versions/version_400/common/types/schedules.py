@@ -29,10 +29,7 @@ class EndOfMonthSchedule:
             ("second", self.second, range(0, 60)),
         ]:
             if item not in allowed_range:
-                raise exceptions.InvalidSmartContractError(
-                    f"Argument {item_name} of EndOfMonthSchedule object is"
-                    f" out of range({allowed_range[0]}-{allowed_range[-1]})."
-                )
+                raise exceptions.InvalidSmartContractError(f"Argument {item_name} of EndOfMonthSchedule object is" f" out of range({allowed_range[0]}-{allowed_range[-1]}).")
 
     @classmethod
     @lru_cache()
@@ -42,15 +39,9 @@ class EndOfMonthSchedule:
 
         return [
             types_utils.ValueSpec(name="day", type="int", docstring="Day of the month (1-31)."),
-            types_utils.ValueSpec(
-                name="hour", type="Optional[int]", docstring="Hour of the day (0-23)."
-            ),
-            types_utils.ValueSpec(
-                name="minute", type="Optional[int]", docstring="Minute of the hour (0-59)."
-            ),
-            types_utils.ValueSpec(
-                name="second", type="Optional[int]", docstring="Second of the minute (0-59)."
-            ),
+            types_utils.ValueSpec(name="hour", type="Optional[int]", docstring="Hour of the day (0-23)."),
+            types_utils.ValueSpec(name="minute", type="Optional[int]", docstring="Minute of the hour (0-59)."),
+            types_utils.ValueSpec(name="second", type="Optional[int]", docstring="Second of the minute (0-59)."),
             types_utils.ValueSpec(
                 name="failover",
                 type="Optional[ScheduleFailover]",

@@ -15,9 +15,7 @@ class PublicSupervisorContractsV3120TypesTestCase(
     test_types.PublicSupervisorContractsV3110TypesTestCase,
 ):
     def test_smart_contract_descriptor_no_supervised_hooks(self):
-        supervised_smart_contract = SmartContractDescriptor(
-            alias="test1", smart_contract_version_id="test_smart_contract_version_id"
-        )
+        supervised_smart_contract = SmartContractDescriptor(alias="test1", smart_contract_version_id="test_smart_contract_version_id")
         self.assertEqual("test1", supervised_smart_contract.alias)
         self.assertIsNone(supervised_smart_contract.supervised_hooks)
 
@@ -29,8 +27,7 @@ class PublicSupervisorContractsV3120TypesTestCase(
                 supervised_hooks=1,
             )
         self.assertEqual(
-            "SmartContractDescriptor.__init__ arg 'supervised_hooks'"
-            " expected Optional[SupervisedHooks] but got value 1",
+            "SmartContractDescriptor.__init__ arg 'supervised_hooks'" " expected Optional[SupervisedHooks] but got value 1",
             str(ex.exception),
         )
 
@@ -54,7 +51,5 @@ class PublicSupervisorContractsV3120TypesTestCase(
 
     def test_smart_contract_descriptor_attributes_are_verified(self):
         with self.assertRaises(StrongTypingError) as ex:
-            SmartContractDescriptor(
-                alias=None, smart_contract_version_id="test_smart_contract_version_id"
-            )
+            SmartContractDescriptor(alias=None, smart_contract_version_id="test_smart_contract_version_id")
         self.assertIn("'alias' expected str but got value None", str(ex.exception))

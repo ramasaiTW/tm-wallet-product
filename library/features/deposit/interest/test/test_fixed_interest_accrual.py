@@ -13,9 +13,7 @@ from inception_sdk.test_framework.contracts.unit.common import DEFAULT_DATETIME,
 class TestGetDailyInterestRate(FeatureTest):
     @patch.object(fixed_interest_accrual.utils, "yearly_to_daily_rate")
     @patch.object(fixed_interest_accrual.utils, "get_parameter")
-    def test_get_daily_interest_rate(
-        self, mock_get_parameter: MagicMock, mock_yearly_to_daily_rate: MagicMock
-    ):
+    def test_get_daily_interest_rate(self, mock_get_parameter: MagicMock, mock_yearly_to_daily_rate: MagicMock):
         mock_vault = self.create_mock()
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -25,13 +23,9 @@ class TestGetDailyInterestRate(FeatureTest):
         )
         mock_yearly_to_daily_rate.return_value = Decimal("0.0001")
 
-        result = fixed_interest_accrual.get_daily_interest_rate(
-            vault=mock_vault, effective_datetime=DEFAULT_DATETIME
-        )
+        result = fixed_interest_accrual.get_daily_interest_rate(vault=mock_vault, effective_datetime=DEFAULT_DATETIME)
         self.assertEqual(result, Decimal("0.0001"))
-        mock_yearly_to_daily_rate.assert_called_once_with(
-            effective_date=DEFAULT_DATETIME, yearly_rate=Decimal("0.0365"), days_in_year="actual"
-        )
+        mock_yearly_to_daily_rate.assert_called_once_with(effective_date=DEFAULT_DATETIME, yearly_rate=Decimal("0.0365"), days_in_year="actual")
 
 
 class TestAccrueInterest(FeatureTest):
@@ -50,9 +44,7 @@ class TestAccrueInterest(FeatureTest):
         self.mock_get_parameter = patch_get_parameter.start()
         self.mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=params)
         # get_daily_interest_rate
-        patch_get_daily_interest_rate = patch.object(
-            fixed_interest_accrual, "get_daily_interest_rate"
-        )
+        patch_get_daily_interest_rate = patch.object(fixed_interest_accrual, "get_daily_interest_rate")
         self.mock_get_daily_interest_rate = patch_get_daily_interest_rate.start()
 
         # get_accrual_capital
@@ -61,16 +53,12 @@ class TestAccrueInterest(FeatureTest):
         self.mock_get_accrual_capital.return_value = Decimal("1000")
 
         # standard_instruction_details
-        patch_standard_instruction_details = patch.object(
-            fixed_interest_accrual.utils, "standard_instruction_details"
-        )
+        patch_standard_instruction_details = patch.object(fixed_interest_accrual.utils, "standard_instruction_details")
         self.mock_standard_instruction_details = patch_standard_instruction_details.start()
         self.mock_standard_instruction_details.return_value = sentinel.instruction_details
 
         # accrual_custom_instruction
-        patch_accrual_custom_instruction = patch.object(
-            fixed_interest_accrual.accruals, "accrual_custom_instruction"
-        )
+        patch_accrual_custom_instruction = patch.object(fixed_interest_accrual.accruals, "accrual_custom_instruction")
         self.mock_accrual_custom_instruction = patch_accrual_custom_instruction.start()
         self.mock_accrual_custom_instruction.return_value = sentinel.accrual_instructions
 
@@ -82,9 +70,7 @@ class TestAccrueInterest(FeatureTest):
         self.mock_get_daily_interest_rate.return_value = Decimal("0.01")
 
         expected_result = sentinel.accrual_instructions
-        result = fixed_interest_accrual.accrue_interest(
-            vault=self.mock_vault, effective_datetime=DEFAULT_DATETIME, account_type="PRODUCT"
-        )
+        result = fixed_interest_accrual.accrue_interest(vault=self.mock_vault, effective_datetime=DEFAULT_DATETIME, account_type="PRODUCT")
         self.assertEqual(result, expected_result)
         self.mock_accrual_custom_instruction.assert_called_once_with(
             customer_account=self.mock_vault.account_id,
@@ -101,9 +87,7 @@ class TestAccrueInterest(FeatureTest):
         self.mock_get_daily_interest_rate.return_value = Decimal("-0.01")
 
         expected_result = sentinel.accrual_instructions
-        result = fixed_interest_accrual.accrue_interest(
-            vault=self.mock_vault, effective_datetime=DEFAULT_DATETIME, account_type="PRODUCT"
-        )
+        result = fixed_interest_accrual.accrue_interest(vault=self.mock_vault, effective_datetime=DEFAULT_DATETIME, account_type="PRODUCT")
         self.assertEqual(result, expected_result)
         self.mock_accrual_custom_instruction.assert_called_once_with(
             customer_account=self.mock_vault.account_id,
@@ -129,9 +113,7 @@ class TestAccrueInterest(FeatureTest):
         )
 
         self.assertEqual(result, expected_result)
-        self.mock_get_accrual_capital.assert_called_once_with(
-            vault=self.mock_vault, balances=sentinel.balances
-        )
+        self.mock_get_accrual_capital.assert_called_once_with(vault=self.mock_vault, balances=sentinel.balances)
         self.mock_accrual_custom_instruction.assert_called_once_with(
             customer_account=self.mock_vault.account_id,
             customer_address=fixed_interest_accrual.ACCRUED_INTEREST_PAYABLE,

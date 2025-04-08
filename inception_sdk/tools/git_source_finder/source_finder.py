@@ -111,9 +111,7 @@ class GitSourceFinder:
 
         if git_commit_hash or filepath:
             with override_logging_level(logging.WARNING):
-                commits = Repository(
-                    self._git_root, single=git_commit_hash, filepath=filepath
-                ).traverse_commits()
+                commits = Repository(self._git_root, single=git_commit_hash, filepath=filepath).traverse_commits()
             source = self._find_source_from_hash(commits, file_hash)
             if source:
                 return source
@@ -133,9 +131,7 @@ class GitSourceFinder:
     def _hash(self, data: str) -> str:
         return hashlib.new(self.hashing_algorithm, data.encode("utf-8")).hexdigest()
 
-    def _find_source_from_hash(
-        self, commits: Generator[Commit, None, None], file_hash: str
-    ) -> GitSourceFinderResult | None:
+    def _find_source_from_hash(self, commits: Generator[Commit, None, None], file_hash: str) -> GitSourceFinderResult | None:
         for commit in commits:
             for modified_file in commit.modified_files:
                 if modified_file.source_code:
@@ -160,29 +156,15 @@ class GitSourceFinder:
     def _validate_cache(self) -> bool:
         if not self._app_cache:
             return False
-        if (
-            self._app_cache.commit_hashes is None
-            or self._app_cache.hash_map is None
-            or self._app_cache.alg != self.hashing_algorithm
-        ):
-            log.warning(
-                f"Cache file {self._cache_filepath} is empty or invalid (algorithm mismatch)"
-            )
+        if self._app_cache.commit_hashes is None or self._app_cache.hash_map is None or self._app_cache.alg != self.hashing_algorithm:
+            log.warning(f"Cache file {self._cache_filepath} is empty or invalid (algorithm mismatch)")
             return False
         else:
             return True
 
     def _clean_cache(self, all_git_commit_hashes: list[str]) -> None:
-        invalid_hashes = [
-            cached_hash
-            for cached_hash in self._app_cache.commit_hashes
-            if cached_hash not in all_git_commit_hashes
-        ]
-        invalid_checksums = [
-            checksum
-            for checksum, git_commit_hash in self._app_cache.hash_map.items()
-            if git_commit_hash in invalid_hashes
-        ]
+        invalid_hashes = [cached_hash for cached_hash in self._app_cache.commit_hashes if cached_hash not in all_git_commit_hashes]
+        invalid_checksums = [checksum for checksum, git_commit_hash in self._app_cache.hash_map.items() if git_commit_hash in invalid_hashes]
         if invalid_hashes or invalid_checksums:
             log.info("Removing stale commit hashes from cache")
             for invalid_hash in invalid_hashes:

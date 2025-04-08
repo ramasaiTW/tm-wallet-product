@@ -22,19 +22,10 @@ class DatetimeVisitor(ast.NodeVisitor):
 
     @staticmethod
     def _attribute_is_datetime(node: ast.Attribute):
-        return (
-            node.attr in ["now", "utcnow"]
-            and isinstance(node.value, ast.Name)
-            and node.value.id == "datetime"
-        )
+        return node.attr in ["now", "utcnow"] and isinstance(node.value, ast.Name) and node.value.id == "datetime"
 
     def visit_keyword(self, node: ast.keyword) -> Any:
-        if (
-            node.arg == "default_value"
-            and isinstance(node.value, ast.Call)
-            and isinstance(node.value.func, ast.Attribute)
-            and self._attribute_is_datetime(node.value.func)
-        ):
+        if node.arg == "default_value" and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Attribute) and self._attribute_is_datetime(node.value.func):
             attribute_node = node.value.func
             # add uses in Parameter default_value to ignore list
             self.to_ignore.append((attribute_node.lineno, attribute_node.col_offset, ERRORS_CTR001))

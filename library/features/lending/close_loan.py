@@ -75,9 +75,7 @@ def does_repayment_fully_repay_loan(
 
     merged_repayment_balances = BalanceDefaultDict()
     for posting_instruction in repayment_posting_instructions:
-        merged_repayment_balances += posting_instruction.balances(
-            account_id=account_id, tside=Tside.ASSET
-        )
+        merged_repayment_balances += posting_instruction.balances(account_id=account_id, tside=Tside.ASSET)
 
     # It is always assumed that repayment_posting_instructions contain the posting instructions
     # to pay off the balance(s) in the list of payment addresses, and so the sum of the balance(s)
@@ -129,9 +127,7 @@ def net_balances(
     :return: A list of custom instructions used to net all remaining balances
     """
     net_postings: list[Posting] = []
-    emi_amount = utils.balance_at_coordinates(
-        balances=balances, address=lending_addresses.EMI, denomination=denomination
-    )
+    emi_amount = utils.balance_at_coordinates(balances=balances, address=lending_addresses.EMI, denomination=denomination)
 
     if emi_amount > Decimal("0"):
         net_postings += utils.create_postings(
@@ -145,9 +141,7 @@ def net_balances(
 
     if residual_cleanup_features is not None:
         for feature in residual_cleanup_features:
-            net_postings += feature.get_residual_cleanup_postings(
-                balances=balances, account_id=account_id, denomination=denomination
-            )
+            net_postings += feature.get_residual_cleanup_postings(balances=balances, account_id=account_id, denomination=denomination)
 
     custom_instructions: list[CustomInstruction] = []
     if net_postings:

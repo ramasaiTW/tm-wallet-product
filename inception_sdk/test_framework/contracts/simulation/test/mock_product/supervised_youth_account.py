@@ -110,9 +110,7 @@ def scheduled_code(event_type, effective_date):
     if event_type == "CHECK_MAINTENANCE_FEE":
         # Handled in supervisor
         pass
-    if (event_type == "CLOSE_ORPHANED_STATEMENT_CYCLE") or (
-        event_type == "CLOSE_ORPHANED_ZERO_BALANCE"
-    ):
+    if (event_type == "CLOSE_ORPHANED_STATEMENT_CYCLE") or (event_type == "CLOSE_ORPHANED_ZERO_BALANCE"):
         vault.start_workflow(
             workflow="CLOSE_YOUTH_ACCOUNT",
             context={"account_id": vault.account_id, "disbursement_account_id": "1"},
@@ -130,9 +128,7 @@ def post_parameter_change_code(old_parameters, new_parameters, effective_date):
             # Start timer to close account in 2 statement cycles time
             statement_day = int(vault.get_parameter_timeseries(name="statement_day").latest())
             close_date = effective_date
-            if (effective_date.day < statement_day) and (
-                (effective_date + timedelta(day=statement_day)).day < statement_day
-            ):
+            if (effective_date.day < statement_day) and ((effective_date + timedelta(day=statement_day)).day < statement_day):
                 # We haven't had a statement yet this month
                 close_date += timedelta(months=1)
                 close_date += timedelta(day=statement_day)
@@ -207,8 +203,7 @@ def pre_posting_code(postings, effective_date):
 
     if any(post.denomination != denomination for post in postings):
         raise Rejected(
-            f"Cannot make transactions in given denomination; "
-            f"transactions must be in {denomination}",
+            f"Cannot make transactions in given denomination; " f"transactions must be in {denomination}",
             reason_code=RejectedReason.WRONG_DENOMINATION,
         )
 
@@ -234,12 +229,8 @@ def pre_posting_code(postings, effective_date):
                 reason_code=RejectedReason.AGAINST_TNC,
             )
 
-    posting_committed_amount = postings.balances()[
-        DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED
-    ].net
-    posting_pending_outbound_amount = postings.balances()[
-        DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT
-    ].net
+    posting_committed_amount = postings.balances()[DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED].net
+    posting_pending_outbound_amount = postings.balances()[DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT].net
 
     client_transactions = vault.get_client_transactions(include_proposed=False)
 
@@ -294,9 +285,7 @@ def post_posting_code(postings, effective_date):
                         to_account_address=post.instruction_details["category"],
                         asset=DEFAULT_ASSET,
                         override_all_restrictions=True,
-                        client_transaction_id=f"MONIES_RECIEVED_"
-                        f"{vault.get_hook_execution_id()}_"
-                        f"{denomination}_CUSTOMER_{count}",
+                        client_transaction_id=f"MONIES_RECIEVED_" f"{vault.get_hook_execution_id()}_" f"{denomination}_CUSTOMER_{count}",
                         instruction_details={
                             "category": post.instruction_details["category"],
                             "description": "Money recieved onto DEFAULT",
@@ -318,9 +307,7 @@ def post_posting_code(postings, effective_date):
                         to_account_address=DEFAULT_ADDRESS,
                         asset=DEFAULT_ASSET,
                         override_all_restrictions=True,
-                        client_transaction_id=f"MONEY_OUT_"
-                        f"{vault.get_hook_execution_id()}_"
-                        f"{denomination}_CUSTOMER_{count}",
+                        client_transaction_id=f"MONEY_OUT_" f"{vault.get_hook_execution_id()}_" f"{denomination}_CUSTOMER_{count}",
                         instruction_details={
                             "category": post.instruction_details["category"],
                             "description": "Money moved out of account",
@@ -420,17 +407,13 @@ def close_code(effective_date):
                     from_account_address=address,
                     to_account_id=vault.account_id,
                     to_account_address=DEFAULT_ADDRESS,
-                    instruction_details={
-                        "description": f"Moving balance to zero out {address} address"
-                    },
+                    instruction_details={"description": f"Moving balance to zero out {address} address"},
                     asset=DEFAULT_ASSET,
                 )
             )
 
     if payment_instructions:
-        vault.instruct_posting_batch(
-            posting_instructions=payment_instructions, effective_date=effective_date
-        )
+        vault.instruct_posting_batch(posting_instructions=payment_instructions, effective_date=effective_date)
 
 
 # Helper functions
@@ -454,9 +437,7 @@ def _get_available_balance(
         if phase == Phase.COMMITTED:
             continue
 
-        available_balance += _total_ringfenced_for_category(
-            balances, category, phase, denomination, client_transactions
-        )
+        available_balance += _total_ringfenced_for_category(balances, category, phase, denomination, client_transactions)
 
     return available_balance
 
@@ -476,9 +457,7 @@ def _total_ringfenced_for_category(balances, category, phase, denomination, clie
 
         if client_txn[0].instruction_details["category"] == category:
             txn_unsettled = 0
-            txn_unsettled = client_txn.effects()[
-                (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)
-            ].unsettled
+            txn_unsettled = client_txn.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].unsettled
             # Pending-in isn't available to spend yet, so only add the (negative) pending out amounts.
             if txn_unsettled < 0:
                 total_pending += txn_unsettled
@@ -487,21 +466,13 @@ def _total_ringfenced_for_category(balances, category, phase, denomination, clie
 
 
 def _is_zero_balance(balances, denomination):
-    posting_pending_outbound_amount = balances[
-        DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT
-    ].net
-    posting_pending_inbound_amount = balances[
-        DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_IN
-    ].net
+    posting_pending_outbound_amount = balances[DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT].net
+    posting_pending_inbound_amount = balances[DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_IN].net
 
     if (posting_pending_outbound_amount != 0) or (posting_pending_inbound_amount != 0):
         return False
 
-    total_bucket_balance = sum(
-        balance.net
-        for ((address, asset, denom, phase), balance) in balances.items()
-        if asset == DEFAULT_ASSET and phase == Phase.COMMITTED and denom == denomination
-    )
+    total_bucket_balance = sum(balance.net for ((address, asset, denom, phase), balance) in balances.items() if asset == DEFAULT_ASSET and phase == Phase.COMMITTED and denom == denomination)
 
     if total_bucket_balance > 0:
         return False

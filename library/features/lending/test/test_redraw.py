@@ -86,14 +86,10 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertEqual(auto_repayment_result, [])
 
-    def test_no_due_amount_balances_returns_no_postings(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_no_due_amount_balances_returns_no_postings(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-55.00")
 
         auto_repayment_result = redraw.auto_repayment(
@@ -105,14 +101,10 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertEqual(auto_repayment_result, [])
 
-    def test_no_repayment_hierarchy_returns_no_postings(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_no_repayment_hierarchy_returns_no_postings(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-55.00")
 
         auto_repayment_result = redraw.auto_repayment(
@@ -124,15 +116,11 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertEqual(auto_repayment_result, [])
 
     @patch.object(redraw.payments, "redistribute_postings")
-    def test_redraw_balance_pays_off_part_of_first_due_balance(
-        self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_redraw_balance_pays_off_part_of_first_due_balance(self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-55.00")
         auto_repay_due_postings = [SentinelPosting("auto_repay_principal_due_balance")] * 2
         mock_redistribute_postings.return_value = auto_repay_due_postings
@@ -169,9 +157,7 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         mock_redistribute_postings.assert_called_with(
             debit_account=self.default_account_id,
             denomination=self.default_denomination,
@@ -195,9 +181,7 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
     @patch.object(redraw.payments, "redistribute_postings")
-    def test_redraw_balance_pays_off_all_of_first_due_balance_and_part_of_second_due_balance(
-        self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_redraw_balance_pays_off_all_of_first_due_balance_and_part_of_second_due_balance(self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-55.00")
         auto_repay_due_postings = [
             SentinelPosting("auto_repay_principal_due_balance"),
@@ -219,9 +203,7 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         mock_redistribute_postings.assert_has_calls(
             [
                 call(
@@ -257,9 +239,7 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
     @patch.object(redraw.payments, "redistribute_postings")
-    def test_redraw_balance_pays_off_all_due_balances(
-        self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_redraw_balance_pays_off_all_due_balances(self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-55.00")
         auto_repay_due_postings = [
             SentinelPosting("auto_repay_principal_due_balance"),
@@ -322,9 +302,7 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         mock_redistribute_postings.assert_has_calls(
             [
                 call(
@@ -360,9 +338,7 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
     @patch.object(redraw.payments, "redistribute_postings")
-    def test_redraw_balance_pays_off_all_due_balances_with_leftover_redraw(
-        self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_redraw_balance_pays_off_all_due_balances_with_leftover_redraw(self, mock_redistribute_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-55.00")
         auto_repay_due_postings = [
             SentinelPosting("auto_repay_principal_due_balance"),
@@ -407,9 +383,7 @@ class AutoRepaymentTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         mock_redistribute_postings.assert_called_once_with(
             debit_account=self.default_account_id,
             denomination=self.default_denomination,
@@ -460,9 +434,7 @@ class HandleOverpaymentTest(RedrawTestCommon):
 class GetAvailableRedrawFundsTest(RedrawTestCommon):
     def test_returns_redraw_balance(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-10")
-        redraw_funds = redraw.get_available_redraw_funds(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        redraw_funds = redraw.get_available_redraw_funds(balances=sentinel.balances, denomination=sentinel.denomination)
 
         # assertions
         mock_balance_at_coordinates.assert_called_once_with(
@@ -480,14 +452,10 @@ class RejectClosureWhenOutstandingRedrawFundsTest(RedrawTestCommon):
 
     def test_rejects_when_redraw_has_positive_balance(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("10")
-        outstanding_redraw_funds_rejection = redraw.reject_closure_when_outstanding_redraw_funds(
-            balances=self.default_balances, denomination=self.default_denomination
-        )
+        outstanding_redraw_funds_rejection = redraw.reject_closure_when_outstanding_redraw_funds(balances=self.default_balances, denomination=self.default_denomination)
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertEqual(
             outstanding_redraw_funds_rejection,
             Rejection(
@@ -498,14 +466,10 @@ class RejectClosureWhenOutstandingRedrawFundsTest(RedrawTestCommon):
 
     def test_rejects_when_redraw_has_negative_balance(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("-10")
-        outstanding_redraw_funds_rejection = redraw.reject_closure_when_outstanding_redraw_funds(
-            balances=self.default_balances, denomination=self.default_denomination
-        )
+        outstanding_redraw_funds_rejection = redraw.reject_closure_when_outstanding_redraw_funds(balances=self.default_balances, denomination=self.default_denomination)
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertEqual(
             outstanding_redraw_funds_rejection,
             Rejection(
@@ -514,18 +478,12 @@ class RejectClosureWhenOutstandingRedrawFundsTest(RedrawTestCommon):
             ),
         )
 
-    def test_does_not_reject_when_redraw_has_zero_balance(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_does_not_reject_when_redraw_has_zero_balance(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("0")
-        outstanding_redraw_funds_rejection = redraw.reject_closure_when_outstanding_redraw_funds(
-            balances=self.default_balances, denomination=self.default_denomination
-        )
+        outstanding_redraw_funds_rejection = redraw.reject_closure_when_outstanding_redraw_funds(balances=self.default_balances, denomination=self.default_denomination)
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertIsNone(outstanding_redraw_funds_rejection)
 
 
@@ -542,14 +500,10 @@ class ValidateRedrawFundsTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertIsNone(validate_redraw_funds_result)
 
-    def test_posting_amount_below_the_redraw_balance_is_accepted(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_posting_amount_below_the_redraw_balance_is_accepted(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("10.00")
         validate_redraw_funds_result = redraw.validate_redraw_funds(
             balances=self.default_balances,
@@ -558,14 +512,10 @@ class ValidateRedrawFundsTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertIsNone(validate_redraw_funds_result)
 
-    def test_posting_amount_equal_to_the_redraw_balance_is_accepted(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_posting_amount_equal_to_the_redraw_balance_is_accepted(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("10.00")
         validate_redraw_funds_result = redraw.validate_redraw_funds(
             balances=self.default_balances,
@@ -574,14 +524,10 @@ class ValidateRedrawFundsTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         self.assertIsNone(validate_redraw_funds_result)
 
-    def test_posting_amount_above_redraw_balance_is_rejected(
-        self, mock_balance_at_coordinates: MagicMock
-    ):
+    def test_posting_amount_above_redraw_balance_is_rejected(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = Decimal("10.00")
         validate_redraw_funds_result = redraw.validate_redraw_funds(
             balances=self.default_balances,
@@ -590,12 +536,9 @@ class ValidateRedrawFundsTest(RedrawTestCommon):
         )
 
         # assertions
-        mock_balance_at_coordinates.assert_called_once_with(
-            balances=self.default_balances, address="REDRAW", denomination=self.default_denomination
-        )
+        mock_balance_at_coordinates.assert_called_once_with(balances=self.default_balances, address="REDRAW", denomination=self.default_denomination)
         expected_rejection = Rejection(
-            message=f"Transaction amount 10.01 {self.default_denomination} is greater than "
-            f"the available redraw funds of 10.00 {self.default_denomination}.",
+            message=f"Transaction amount 10.01 {self.default_denomination} is greater than " f"the available redraw funds of 10.00 {self.default_denomination}.",
             reason_code=RejectionReason.INSUFFICIENT_FUNDS,
         )
         self.assertEqual(expected_rejection, validate_redraw_funds_result)

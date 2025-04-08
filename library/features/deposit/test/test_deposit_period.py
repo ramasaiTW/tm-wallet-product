@@ -81,21 +81,15 @@ class ScheduleEventTest(FeatureTest):
         )
 
         # get one off schedule expression
-        patch_one_off_schedule_expression = patch.object(
-            deposit_period.utils, "one_off_schedule_expression"
-        )
+        patch_one_off_schedule_expression = patch.object(deposit_period.utils, "one_off_schedule_expression")
         self.mock_one_off_schedule_expression = patch_one_off_schedule_expression.start()
-        self.mock_one_off_schedule_expression.return_value = SentinelScheduleExpression(
-            "deposit_period_end"
-        )
+        self.mock_one_off_schedule_expression.return_value = SentinelScheduleExpression("deposit_period_end")
 
         self.addCleanup(patch.stopall)
         return super().setUp()
 
     def test_scheduled_events(self):
-        test_deposit_period_end_datetime = datetime(
-            2019, 1, 3, 23, 59, 59, 999999, tzinfo=ZoneInfo("UTC")
-        )
+        test_deposit_period_end_datetime = datetime(2019, 1, 3, 23, 59, 59, 999999, tzinfo=ZoneInfo("UTC"))
         expected_schedule_event = ScheduledEvent(
             start_datetime=test_deposit_period_end_datetime - relativedelta(seconds=1),
             expression=SentinelScheduleExpression("deposit_period_end"),
@@ -105,19 +99,13 @@ class ScheduleEventTest(FeatureTest):
         result = deposit_period.scheduled_events(vault=self.mock_vault)
 
         self.assertEqual(result["DEPOSIT_PERIOD_END"], expected_schedule_event)
-        self.mock_one_off_schedule_expression.assert_called_once_with(
-            schedule_datetime=test_deposit_period_end_datetime
-        )
+        self.mock_one_off_schedule_expression.assert_called_once_with(schedule_datetime=test_deposit_period_end_datetime)
 
 
 class ValidateDepositTest(FeatureTest):
     def setUp(self) -> None:
         # mock vault
-        self.mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                "live_balances_bof": SentinelBalancesObservation("dummy_observation")
-            }
-        )
+        self.mock_vault = self.create_mock(balances_observation_fetchers_mapping={"live_balances_bof": SentinelBalancesObservation("dummy_observation")})
 
         # get_parameter
         patch_get_parameter = patch.object(deposit_period.utils, "get_parameter")
@@ -131,9 +119,7 @@ class ValidateDepositTest(FeatureTest):
         self.deposit_period_end_datetime = datetime(2019, 1, 3, 23, 59, 59, tzinfo=ZoneInfo("UTC"))
 
         # get_current_credit_balance
-        patch_get_current_credit_balance = patch.object(
-            deposit_period.utils, "get_current_credit_balance"
-        )
+        patch_get_current_credit_balance = patch.object(deposit_period.utils, "get_current_credit_balance")
         self.mock_get_current_credit_balance = patch_get_current_credit_balance.start()
         self.mock_get_current_credit_balance.side_effect = [
             Decimal("12"),  # deposit_proposed_amount
@@ -141,12 +127,8 @@ class ValidateDepositTest(FeatureTest):
         ]
 
         # get_posting_instructions_balances
-        patch_get_posting_instructions_balances = patch.object(
-            deposit_period.utils, "get_posting_instructions_balances"
-        )
-        self.mock_get_posting_instructions_balances = (
-            patch_get_posting_instructions_balances.start()
-        )
+        patch_get_posting_instructions_balances = patch.object(deposit_period.utils, "get_posting_instructions_balances")
+        self.mock_get_posting_instructions_balances = patch_get_posting_instructions_balances.start()
         self.mock_get_posting_instructions_balances.return_value = sentinel.instruction_balances
 
         # is_within_deposit_period
@@ -175,9 +157,7 @@ class ValidateDepositTest(FeatureTest):
         )
 
         self.assertIsNone(result)
-        self.mock_get_current_credit_balance.assert_called_once_with(
-            balances=sentinel.instruction_balances, denomination=self.default_denomination
-        )
+        self.mock_get_current_credit_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
 
     @ac_coverage(["CPP-2082-AC05"])
     def test_validation_when_unlimited_deposits_after_end_of_deposit_period(self):
@@ -202,9 +182,7 @@ class ValidateDepositTest(FeatureTest):
         )
 
         self.assertEqual(result, expected_rejection)
-        self.mock_get_current_credit_balance.assert_called_once_with(
-            balances=sentinel.instruction_balances, denomination=self.default_denomination
-        )
+        self.mock_get_current_credit_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
 
     @ac_coverage(["CPP-2082-AC04", "CPP-2082-AC06"])
     def test_posting_is_accepted_when_single_deposit_is_configured_and_no_previous_deposits(self):
@@ -224,12 +202,8 @@ class ValidateDepositTest(FeatureTest):
         self.assertIsNone(result)
         self.mock_get_current_credit_balance.assert_has_calls(
             calls=[
-                call(
-                    balances=sentinel.instruction_balances, denomination=self.default_denomination
-                ),
-                call(
-                    balances=sentinel.balances_observation, denomination=self.default_denomination
-                ),
+                call(balances=sentinel.instruction_balances, denomination=self.default_denomination),
+                call(balances=sentinel.balances_observation, denomination=self.default_denomination),
             ]
         )
 
@@ -253,12 +227,8 @@ class ValidateDepositTest(FeatureTest):
         self.assertEqual(result, expected_rejection)
         self.mock_get_current_credit_balance.assert_has_calls(
             calls=[
-                call(
-                    balances=sentinel.instruction_balances, denomination=self.default_denomination
-                ),
-                call(
-                    balances=sentinel.balances_observation, denomination=self.default_denomination
-                ),
+                call(balances=sentinel.instruction_balances, denomination=self.default_denomination),
+                call(balances=sentinel.balances_observation, denomination=self.default_denomination),
             ]
         )
 
@@ -280,9 +250,7 @@ class ValidateDepositTest(FeatureTest):
         )
 
         self.assertEqual(result, expected_rejection)
-        self.mock_get_current_credit_balance.assert_called_once_with(
-            balances=sentinel.instruction_balances, denomination=self.default_denomination
-        )
+        self.mock_get_current_credit_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
 
     def test_validation_when_optional_arguments_are_absent(self):
         self.mock_get_current_credit_balance.side_effect = [
@@ -305,9 +273,7 @@ class ValidateDepositTest(FeatureTest):
         self.assertIsNone(result)
         self.mock_get_current_credit_balance.assert_has_calls(
             calls=[
-                call(
-                    balances=sentinel.instruction_balances, denomination=self.default_denomination
-                ),
+                call(balances=sentinel.instruction_balances, denomination=self.default_denomination),
                 call(
                     balances=sentinel.balances_dummy_observation,
                     denomination=self.default_denomination,
@@ -369,9 +335,7 @@ class NotificationTest(FeatureTest):
         self.product_name = "TEST_PRODUCT"
 
         # get current credit balance
-        patch_get_current_net_balance = patch.object(
-            deposit_period.utils, "get_current_net_balance"
-        )
+        patch_get_current_net_balance = patch.object(deposit_period.utils, "get_current_net_balance")
         self.mock_get_current_net_balance = patch_get_current_net_balance.start()
         self.mock_get_current_net_balance.return_value = Decimal("0")
 
@@ -390,9 +354,7 @@ class NotificationTest(FeatureTest):
         )
 
         self.assertListEqual(result, [])
-        self.mock_get_current_net_balance.assert_called_once_with(
-            balances=sentinel.balances_observation, denomination=self.default_denomination
-        )
+        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_observation, denomination=self.default_denomination)
 
     @ac_coverage(["CPP-2082-AC09"])
     def test_deposit_period_end_notification_when_no_funds(self):
@@ -418,6 +380,4 @@ class NotificationTest(FeatureTest):
         )
 
         self.assertListEqual(result, expected_notification)
-        self.mock_get_current_net_balance.assert_called_once_with(
-            balances=sentinel.balances_observation, denomination=self.default_denomination
-        )
+        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_observation, denomination=self.default_denomination)

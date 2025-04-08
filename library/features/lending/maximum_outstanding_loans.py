@@ -51,7 +51,5 @@ def validate(
 
 
 def _get_max_outstanding_loans_parameter(vault: SuperviseeContractVault) -> int:
-    max_outstanding_loans: int = utils.get_parameter(
-        vault=vault, name=PARAM_MAXIMUM_NUMBER_OF_OUTSTANDING_LOANS
-    )
+    max_outstanding_loans: int = utils.get_parameter(vault=vault, name=PARAM_MAXIMUM_NUMBER_OF_OUTSTANDING_LOANS)
     return max_outstanding_loans

@@ -78,11 +78,7 @@ class KafkaTest(TestCase):
             matched_message_timeout=1,
             inter_message_timeout=0,
         )
-        warning_logging.assert_called_with(
-            "Waited 2.0s since last matched message received. "
-            "Timeout set to 1.0. Exiting after 1 "
-            "messages received"
-        )
+        warning_logging.assert_called_with("Waited 2.0s since last matched message received. " "Timeout set to 1.0. Exiting after 1 " "messages received")
         expected_result = {"2": None, "3": None}
         self.assertEqual(result, expected_result)
 
@@ -113,11 +109,7 @@ class KafkaTest(TestCase):
             inter_message_timeout=1,
         )
 
-        warning_logging.assert_called_with(
-            "Waited 2.0s since last message received. "
-            "Timeout set to 1.0. Exiting after 1 "
-            "messages received"
-        )
+        warning_logging.assert_called_with("Waited 2.0s since last message received. " "Timeout set to 1.0. Exiting after 1 " "messages received")
         expected_result = {"2": None, "3": None}
         self.assertEqual(result, expected_result)
 
@@ -132,9 +124,7 @@ class KafkaTest(TestCase):
 
     @patch("uuid.uuid4")
     @patch.object(kafka, "Consumer")
-    def test_initialise_consumer_creates_a_random_group_id_if_none_is_provided(
-        self, mock_consumer: Mock, mock_uuid: Mock
-    ):
+    def test_initialise_consumer_creates_a_random_group_id_if_none_is_provided(self, mock_consumer: Mock, mock_uuid: Mock):
         mock_consumer_instance = Mock()
         mock_consumer_instance.return_value = mock_consumer
         mock_uuid.return_value = 42
@@ -144,9 +134,7 @@ class KafkaTest(TestCase):
         mock_consumer.assert_called_with({"group.id": "e2e_42"} | kafka.DEFAULT_CONSUMER_CONFIG)
 
     @patch.object(kafka, "initialise_consumer")
-    def test_subscribe_to_topics_returns_correct_topic_to_consumer_mapping(
-        self, mock_initialise_consumer: Mock
-    ):
+    def test_subscribe_to_topics_returns_correct_topic_to_consumer_mapping(self, mock_initialise_consumer: Mock):
         consumer1 = MockConsumer(response_message_file=SAMPLE_BALANCE_MESSAGE)
         consumer2 = MockConsumer(response_message_file=SAMPLE_BALANCE_MESSAGE)
         mock_initialise_consumer.side_effect = [consumer1, consumer2]

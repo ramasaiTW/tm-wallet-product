@@ -74,6 +74,4 @@ def calculate_emi(
     return Decimal("0")
 
 
-AmortisationFeature = lending_interfaces.Amortisation(
-    calculate_emi=calculate_emi, term_details=term_details, override_final_event=True
-)
+AmortisationFeature = lending_interfaces.Amortisation(calculate_emi=calculate_emi, term_details=term_details, override_final_event=True)

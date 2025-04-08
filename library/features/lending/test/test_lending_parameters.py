@@ -15,9 +15,7 @@ class GetParametersTest(FeatureTest):
         total_repayment_count_parameter = 5
 
         mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={
-                lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT: total_repayment_count_parameter
-            },
+            parameters={lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT: total_repayment_count_parameter},
         )
 
         result = lending_parameters.get_total_repayment_count_parameter(vault=sentinel.vault)

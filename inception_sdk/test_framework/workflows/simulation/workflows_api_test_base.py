@@ -18,18 +18,12 @@ class WorkflowsApiTestBase(TestCase):
     def setUpClass(cls):
         flag_utils.parse_flags(allow_unknown=True)
 
-        environment, _ = extract_framework_environments_from_config(
-            environment_purpose=EnvironmentPurpose.SIM
-        )
+        environment, _ = extract_framework_environments_from_config(environment_purpose=EnvironmentPurpose.SIM)
         workflow_api_url = environment.workflow_api_url
         auth_token = environment.service_account.token
         if not workflow_api_url or not auth_token:
-            raise ValueError(
-                "workflow_api_url and/or service_account.token not found in specified config"
-            )
-        cls.workflows_api_client = WorkflowsApiClient(
-            base_url=workflow_api_url, auth_token=auth_token
-        )
+            raise ValueError("workflow_api_url and/or service_account.token not found in specified config")
+        cls.workflows_api_client = WorkflowsApiClient(base_url=workflow_api_url, auth_token=auth_token)
 
         super().setUpClass()
 
@@ -82,8 +76,7 @@ class WorkflowsApiTestBase(TestCase):
             "side_effect_callbacks": side_effect_callbacks or [],
             "side_effect_global_uis": side_effect_global_uis or [],
             "side_effect_instantiations": side_effect_instantiations or [],
-            "side_effect_state_ui": side_effect_state_ui
-            or {"ui_panels": [], "ui_actions": [], "ui_inputs": []},
+            "side_effect_state_ui": side_effect_state_ui or {"ui_panels": [], "ui_actions": [], "ui_inputs": []},
             "side_effect_vault_callbacks": side_effect_vault_callbacks or [],
             "side_effect_external_callbacks": side_effect_external_callbacks or [],
         }
@@ -175,11 +168,7 @@ def _get_side_effect_events(res: dict) -> Generator[Any, None, None]:
     Helper that takes in workflow simulation response
     And return the iteration of side effect events
     """
-    side_effect_events = (
-        side_effect_event
-        for step in res["steps"]
-        for side_effect_event in step["side_effect_events"]
-    )
+    side_effect_events = (side_effect_event for step in res["steps"] for side_effect_event in step["side_effect_events"])
     return side_effect_events
 
 
@@ -188,11 +177,7 @@ def _get_side_effect_callbacks(res: dict) -> Generator[Any, None, None]:
     Helper that takes in workflow simulation response
     And return the iteration of side effect callbacks
     """
-    side_effect_callbacks = (
-        side_effect_callback
-        for step in res["steps"]
-        for side_effect_callback in step["side_effect_callbacks"]
-    )
+    side_effect_callbacks = (side_effect_callback for step in res["steps"] for side_effect_callback in step["side_effect_callbacks"])
     return side_effect_callbacks
 
 
@@ -201,11 +186,7 @@ def _get_side_effect_instantiations(res: dict) -> Generator[Any, None, None]:
     Helper that takes in workflow simulation response
     And return the iteration of side effect instantiations
     """
-    side_effect_instantiations = (
-        side_effect_instantiation
-        for step in res["steps"]
-        for side_effect_instantiation in step["side_effect_instantiations"]
-    )
+    side_effect_instantiations = (side_effect_instantiation for step in res["steps"] for side_effect_instantiation in step["side_effect_instantiations"])
     return side_effect_instantiations
 
 
@@ -214,11 +195,7 @@ def _get_side_effect_ticket_creations(res: dict) -> Generator[Any, None, None]:
     Helper that takes in workflow simulation response
     And return the iterator of side effect ticket creations
     """
-    side_effect_ticket_creations = (
-        side_effect_ticket_creation
-        for step in res["steps"]
-        for side_effect_ticket_creation in step["side_effect_ticket_creations"]
-    )
+    side_effect_ticket_creations = (side_effect_ticket_creation for step in res["steps"] for side_effect_ticket_creation in step["side_effect_ticket_creations"])
     return side_effect_ticket_creations
 
 
@@ -227,11 +204,7 @@ def _get_side_effect_state_ui_actions(res: dict) -> Generator[Any, None, None]:
     Helper that takes in test workflow simulation response
     And return the iterator of ui actions
     """
-    ui_actions = (
-        ui_action
-        for step in res["steps"]
-        for ui_action in step["side_effect_state_ui"]["ui_actions"]
-    )
+    ui_actions = (ui_action for step in res["steps"] for ui_action in step["side_effect_state_ui"]["ui_actions"])
     return ui_actions
 
 
@@ -240,9 +213,7 @@ def _get_side_effect_state_ui_panels(res: dict) -> Generator[Any, None, None]:
     Helper that takes in workflow simulation response
     And return the iterator of side effect state_ui
     """
-    side_effect_state_ui_panels = (
-        ui_panel for step in res["steps"] for ui_panel in step["side_effect_state_ui"]["ui_panels"]
-    )
+    side_effect_state_ui_panels = (ui_panel for step in res["steps"] for ui_panel in step["side_effect_state_ui"]["ui_panels"])
     return side_effect_state_ui_panels
 
 
@@ -251,10 +222,5 @@ def _get_side_effect_global_uis_panels(res: dict) -> Generator[Any, None, None]:
     Helper that takes in test workflow simulation response
     And return the iterator of side effect global ui panels
     """
-    side_effect_global_uis_ui_panels = (
-        ui_panel
-        for step in res["steps"]
-        for side_effect_global_ui in step["side_effect_global_uis"]
-        for ui_panel in side_effect_global_ui["ui_panels"]
-    )
+    side_effect_global_uis_ui_panels = (ui_panel for step in res["steps"] for side_effect_global_ui in step["side_effect_global_uis"] for ui_panel in side_effect_global_ui["ui_panels"])
     return side_effect_global_uis_ui_panels

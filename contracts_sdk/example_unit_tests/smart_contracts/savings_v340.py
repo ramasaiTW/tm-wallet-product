@@ -35,9 +35,7 @@ def execution_schedules():
 def pre_parameter_change_code(parameters, effective_date):
     # Set the default value to the open date of the account
     if "key_date" in parameters:
-        parameters["key_date"].default_value = OptionalValue(
-            Decimal(vault.get_account_creation_date().day)
-        )
+        parameters["key_date"].default_value = OptionalValue(Decimal(vault.get_account_creation_date().day))
     return parameters
 
 

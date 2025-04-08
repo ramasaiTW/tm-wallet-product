@@ -122,11 +122,7 @@ def distribute_repayment_for_single_target(
 
         # ensure that the unrounded repayment amount is <= unrounded address amount
         # rounded repayment amount can be >, =, or < unrounded address amount
-        unrounded_address_repayment_amount = (
-            unrounded_address_amount
-            if rounded_address_amount <= remaining_repayment_amount
-            else remaining_repayment_amount
-        )
+        unrounded_address_repayment_amount = unrounded_address_amount if rounded_address_amount <= remaining_repayment_amount else remaining_repayment_amount
         repayment_per_address[repayment_address] = RepaymentAmounts(
             unrounded_amount=unrounded_address_repayment_amount,
             rounded_amount=rounded_address_repayment_amount,
@@ -172,9 +168,7 @@ def distribute_repayment_for_multiple_targets(
     """
 
     remaining_repayment_amount = repayment_amount
-    repayments_per_target: dict[str, dict[str, RepaymentAmounts]] = {
-        target: {} for target in balances_per_target.keys()
-    }
+    repayments_per_target: dict[str, dict[str, RepaymentAmounts]] = {target: {} for target in balances_per_target.keys()}
 
     for address_list in repayment_hierarchy:
         for target_account_id in balances_per_target.keys():
@@ -227,11 +221,7 @@ def generate_repayment_postings(
     # here it is assumed that the repayment amount will always be in the DEFAULT balance address
     # associated with the first posting instruction, which should be enforced in the pre_posting
     # hook
-    repayment_amount: Decimal = (
-        hook_arguments.posting_instructions[0]
-        .balances()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)]
-        .net
-    )
+    repayment_amount: Decimal = hook_arguments.posting_instructions[0].balances()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
     balances = vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
 
     custom_instructions: list[CustomInstruction] = []
@@ -362,18 +352,14 @@ def generate_repayment_postings_for_multiple_targets(
     if repayment_hierarchy is None:
         repayment_hierarchy = [[address] for address in lending_addresses.REPAYMENT_HIERARCHY]
 
-    posting_instructions_per_target: dict[str, list[CustomInstruction]] = {
-        target.account_id: [] for target in sorted_repayment_targets
-    }
+    posting_instructions_per_target: dict[str, list[CustomInstruction]] = {target.account_id: [] for target in sorted_repayment_targets}
 
     # here it is assumed that the repayment amount will always be in the DEFAULT balance address
     # associated with the first posting instruction, which should be enforced in the pre_posting
     # hook
     if (
         repayment_amount := utils.balance_at_coordinates(
-            balances=hook_arguments.supervisee_posting_instructions[main_vault.account_id][
-                0
-            ].balances(),
+            balances=hook_arguments.supervisee_posting_instructions[main_vault.account_id][0].balances(),
             denomination=denomination,
         )
     ) >= 0:
@@ -404,9 +390,7 @@ def generate_repayment_postings_for_multiple_targets(
                 denomination=denomination,
                 credit_account=target_account_id,
                 credit_address=address,
-                debit_address=DEFAULT_ADDRESS
-                if target_account_id == main_vault.account_id
-                else lending_addresses.INTERNAL_CONTRA,
+                debit_address=DEFAULT_ADDRESS if target_account_id == main_vault.account_id else lending_addresses.INTERNAL_CONTRA,
             )
 
         if repayment_postings:
@@ -422,18 +406,13 @@ def generate_repayment_postings_for_multiple_targets(
 
     # Handle overpayment
     if overpayment_amount > 0 and overpayment_features is not None:
-        overpayment_postings_per_target: dict[str, list[Posting]] = {
-            target.account_id: [] for target in sorted_repayment_targets
-        }
+        overpayment_postings_per_target: dict[str, list[Posting]] = {target.account_id: [] for target in sorted_repayment_targets}
         for overpayment_feature in overpayment_features:
             for target_account_id, postings in overpayment_feature.handle_overpayment(
                 main_vault=main_vault,
                 overpayment_amount=overpayment_amount,
                 denomination=denomination,
-                balances_per_target_vault={
-                    target: balances_per_target[target.account_id]
-                    for target in sorted_repayment_targets
-                },
+                balances_per_target_vault={target: balances_per_target[target.account_id] for target in sorted_repayment_targets},
             ).items():
                 overpayment_postings_per_target[target_account_id] += postings
 

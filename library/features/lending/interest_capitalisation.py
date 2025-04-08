@@ -57,8 +57,7 @@ capitalise_penalty_interest_param = Parameter(
     name=PARAM_CAPITALISE_PENALTY_INTEREST,
     shape=common_parameters.BooleanShape,
     level=ParameterLevel.TEMPLATE,
-    description="Determines if penalty interest is immediately added to Penalties (False) or "
-    " accrued and capitalised at next due amount calculation.",
+    description="Determines if penalty interest is immediately added to Penalties (False) or " " accrued and capitalised at next due amount calculation.",
     display_name="Capitalise Penalty Interest",
     default_value=common_parameters.BooleanValueFalse,
 )
@@ -95,9 +94,7 @@ def handle_overpayments_to_penalties_pending_capitalisation(
         return []
     application_precision = interest_application.get_application_precision(vault=vault)
     capitalised_interest_received_account = get_capitalised_interest_received_account(vault=vault)
-    capitalised_interest_receivable_account = get_capitalised_interest_receivable_account(
-        vault=vault
-    )
+    capitalised_interest_receivable_account = get_capitalised_interest_receivable_account(vault=vault)
     return capitalise_interest(
         account_id=vault.account_id,
         application_precision=application_precision,
@@ -120,9 +117,7 @@ def handle_penalty_interest_capitalisation(
             account_type=account_type,
             # We have to override the EOD default as there will have been an accrual since EOD that
             # we need to include
-            balances=vault.get_balances_observation(
-                fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-            ).balances,
+            balances=vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances,
             interest_to_capitalise_address=lending_addresses.ACCRUED_OVERDUE_INTEREST_PENDING_CAPITALISATION,  # noqa: E501
         )
 
@@ -151,14 +146,10 @@ def handle_interest_capitalisation(
     capitalised
     :return: posting instructions to capitalise the interest
     """
-    balances = (
-        balances or vault.get_balances_observation(fetcher_id=fetchers.EOD_FETCHER_ID).balances
-    )
+    balances = balances or vault.get_balances_observation(fetcher_id=fetchers.EOD_FETCHER_ID).balances
     denomination = _get_denomination(vault=vault)
     capitalised_interest_received_account = get_capitalised_interest_received_account(vault=vault)
-    capitalised_interest_receivable_account = get_capitalised_interest_receivable_account(
-        vault=vault
-    )
+    capitalised_interest_receivable_account = get_capitalised_interest_receivable_account(vault=vault)
     application_precision = interest_application.get_application_precision(vault=vault)
 
     return capitalise_interest(
@@ -196,9 +187,7 @@ def capitalise_interest(
         address=interest_address_pending_capitalisation,
         denomination=denomination,
     )
-    interest_to_apply = utils.round_decimal(
-        amount=accrued_capitalised_interest, decimal_places=application_precision
-    )
+    interest_to_apply = utils.round_decimal(amount=accrued_capitalised_interest, decimal_places=application_precision)
 
     if interest_to_apply <= 0:
         return []
@@ -243,11 +232,7 @@ def _get_denomination(vault: SmartContractVault, denomination: str | None = None
     :param denomination: denomination of the relevant loan
     :return: the denomination
     """
-    return (
-        utils.get_parameter(vault=vault, name="denomination")
-        if denomination is None
-        else denomination
-    )
+    return utils.get_parameter(vault=vault, name="denomination") if denomination is None else denomination
 
 
 def get_capitalised_interest_received_account(vault: SmartContractVault) -> str:

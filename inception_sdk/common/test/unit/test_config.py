@@ -35,65 +35,43 @@ class ConfigExtractionTest(TestCase):
         }
         return super().setUpClass()
 
-    def test_function_parameter_take_top_priority(
-        self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock
-    ):
+    def test_function_parameter_take_top_priority(self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock):
         # Everything configured to return default_env except for the function parameter
         type(flags_mock).environment_name = mock.PropertyMock(return_value="default_env")
         load_environments_mock.return_value = self.available_environments
 
-        env, _ = config.extract_environments_from_config(
-            environment_name="non_default_env", default_environment_name="default_env"
-        )
+        env, _ = config.extract_environments_from_config(environment_name="non_default_env", default_environment_name="default_env")
 
         self.assertEqual(env, self.non_default_env)
-        info_logger_mock.assert_called_once_with(
-            "Using environment non_default_env - hardcoded (e.g. in test module)"
-        )
+        info_logger_mock.assert_called_once_with("Using environment non_default_env - hardcoded (e.g. in test module)")
 
-    def test_flag_variables_take_second_priority(
-        self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock
-    ):
+    def test_flag_variables_take_second_priority(self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock):
         # Everything configured to return default_env except flag and function param
         type(flags_mock).environment_name = mock.PropertyMock(return_value="non_default_env")
         load_environments_mock.return_value = self.available_environments
 
-        env, _ = config.extract_environments_from_config(
-            environment_name="", default_environment_name="default_env"
-        )
+        env, _ = config.extract_environments_from_config(environment_name="", default_environment_name="default_env")
 
         self.assertEqual(env, self.non_default_env)
-        info_logger_mock.assert_called_once_with(
-            "Using environment non_default_env - specified in CLI/OS Flags"
-        )
+        info_logger_mock.assert_called_once_with("Using environment non_default_env - specified in CLI/OS Flags")
 
-    def test_default_environment_name_takes_third_priority(
-        self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock
-    ):
+    def test_default_environment_name_takes_third_priority(self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock):
         # Everything configured to return nothing, except default env param
         type(flags_mock).environment_name = mock.PropertyMock(return_value="")
 
         load_environments_mock.return_value = self.available_environments
 
-        env, _ = config.extract_environments_from_config(
-            environment_name="", default_environment_name="default_env"
-        )
+        env, _ = config.extract_environments_from_config(environment_name="", default_environment_name="default_env")
 
         self.assertEqual(env, self.default_env)
-        info_logger_mock.assert_called_once_with(
-            "Using environment default_env - specified as default (e.g. framework config)"
-        )
+        info_logger_mock.assert_called_once_with("Using environment default_env - specified as default (e.g. framework config)")
 
-    def test_no_environment_name_by_any_mechanism_raises_exception(
-        self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock
-    ):
+    def test_no_environment_name_by_any_mechanism_raises_exception(self, flags_mock, load_environments_mock, info_logger_mock: mock.Mock):
         type(flags_mock).environment_name = mock.PropertyMock(return_value="")
 
         load_environments_mock.return_value = self.available_environments
         with self.assertRaisesRegex(ValueError, r"No environment_name found.*"):
-            config.extract_environments_from_config(
-                environment_name="", default_environment_name=""
-            )
+            config.extract_environments_from_config(environment_name="", default_environment_name="")
 
 
 class CommonFlagSetupTest(TestCase):

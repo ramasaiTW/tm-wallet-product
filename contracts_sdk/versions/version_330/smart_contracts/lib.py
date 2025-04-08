@@ -37,14 +37,8 @@ class VaultFunctionsABC(v320_lib.VaultFunctionsABC):
                 If no events_timezone is specified in the contract, the UTC timezone is
                 used.
             """,
-            args=[
-                types_utils.ValueSpec(
-                    name="dt", type="datetime", docstring="The datetime to localize"
-                )
-            ],
-            return_value=types_utils.ReturnValueSpec(
-                type="datetime", docstring="The localized datetime"
-            ),
+            args=[types_utils.ValueSpec(name="dt", type="datetime", docstring="The datetime to localize")],
+            return_value=types_utils.ReturnValueSpec(type="datetime", docstring="The localized datetime"),
             examples=[
                 types_utils.Example(
                     title="Localizing the account creation date.",

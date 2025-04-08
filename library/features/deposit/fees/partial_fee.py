@@ -43,16 +43,12 @@ def charge_partial_fee(
     if required.
     """
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
 
     if denomination is None:
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
-    incoming_fee_balances = fee_custom_instruction.balances(
-        account_id=vault.account_id, tside=vault.tside
-    )
+    incoming_fee_balances = fee_custom_instruction.balances(account_id=vault.account_id, tside=vault.tside)
     fee_amount = utils.balance_at_coordinates(
         balances=incoming_fee_balances,
         address=DEFAULT_ADDRESS,
@@ -62,9 +58,7 @@ def charge_partial_fee(
     fee_amount = -fee_amount
 
     available_amount = (
-        available_balance_feature.calculate(
-            vault=vault, balances=balances, denomination=denomination
-        )
+        available_balance_feature.calculate(vault=vault, balances=balances, denomination=denomination)
         if available_balance_feature
         else utils.get_available_balance(balances=balances, denomination=denomination)
     )
@@ -74,9 +68,7 @@ def charge_partial_fee(
     chargeable_fee = min(fee_amount, available_amount)
     outstanding_fee = fee_amount - chargeable_fee
     partial_fee_address = fee_details.outstanding_fee_address
-    fee_internal_account = fee_details.get_internal_account_parameter(
-        vault=vault, effective_datetime=effective_datetime
-    )
+    fee_internal_account = fee_details.get_internal_account_parameter(vault=vault, effective_datetime=effective_datetime)
 
     custom_instructions: list[CustomInstruction] = []
 
@@ -145,9 +137,7 @@ def charge_outstanding_fees(
 
     custom_instructions: list[CustomInstruction] = []
     account_available_balance = (
-        available_balance_feature.calculate(
-            vault=vault, balances=balances, denomination=denomination
-        )
+        available_balance_feature.calculate(vault=vault, balances=balances, denomination=denomination)
         if available_balance_feature
         else utils.get_available_balance(balances=balances, denomination=denomination)
     )
@@ -156,13 +146,9 @@ def charge_outstanding_fees(
         if account_available_balance <= Decimal("0"):
             break
         outstanding_fee_address = fee.outstanding_fee_address
-        outstanding_fee_amount = utils.balance_at_coordinates(
-            address=outstanding_fee_address, balances=balances, denomination=denomination
-        )
+        outstanding_fee_amount = utils.balance_at_coordinates(address=outstanding_fee_address, balances=balances, denomination=denomination)
         amount_to_charge = min(outstanding_fee_amount, account_available_balance)
-        fee_internal_account = fee.get_internal_account_parameter(
-            vault=vault, effective_datetime=effective_datetime
-        )
+        fee_internal_account = fee.get_internal_account_parameter(vault=vault, effective_datetime=effective_datetime)
 
         if amount_to_charge > Decimal("0"):
             custom_instructions.extend(

@@ -24,10 +24,6 @@ class ParameterNameVisitor(ast.NodeVisitor):
                     self.violations.append((kw.lineno, kw.col_offset, ERRORS_CTR007))
                 # if it is assigned to a ast.Name then it is pointing to a constant,
                 # so we want to ensure it begins with PARAM_
-                elif (
-                    kw.arg == "name"
-                    and isinstance(kw.value, ast.Name)
-                    and not (kw.value.id).startswith("PARAM_")
-                ):
+                elif kw.arg == "name" and isinstance(kw.value, ast.Name) and not (kw.value.id).startswith("PARAM_"):
                     self.violations.append((kw.lineno, kw.col_offset, ERRORS_CTR007))
         self.generic_visit(node)

@@ -67,10 +67,7 @@ class PostingInstruction:
 
         return types_utils.ClassSpec(
             name="PostingInstruction",
-            docstring=(
-                "A PostingInstruction is an instruction sent to Vault to move some amount to/from "
-                "an Account."
-            ),
+            docstring=("A PostingInstruction is an instruction sent to Vault to move some amount to/from " "an Account."),
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="",
@@ -78,18 +75,12 @@ class PostingInstruction:
                     types_utils.ValueSpec(
                         name="account_address",
                         type="str",
-                        docstring=(
-                            "The account address whose balance is affected by this "
-                            "PostingInstruction. Only populated if "
-                            "type == PostingInstructionType.CUSTOM_INSTRUCTION."
-                        ),
+                        docstring=("The account address whose balance is affected by this " "PostingInstruction. Only populated if " "type == PostingInstructionType.CUSTOM_INSTRUCTION."),
                     ),
                     types_utils.ValueSpec(
                         name="account_id",
                         type="str",
-                        docstring=(
-                            "The account id whose balance is affected by this PostingInstruction."
-                        ),
+                        docstring=("The account id whose balance is affected by this PostingInstruction."),
                     ),
                     types_utils.ValueSpec(
                         name="amount",
@@ -104,10 +95,7 @@ class PostingInstruction:
                     types_utils.ValueSpec(
                         name="credit",
                         type="bool",
-                        docstring=(
-                            "True if the PostingInstruction is crediting the account_id; "
-                            "False otherwise."
-                        ),
+                        docstring=("True if the PostingInstruction is crediting the account_id; " "False otherwise."),
                     ),
                     types_utils.ValueSpec(
                         name="denomination",
@@ -146,11 +134,7 @@ class PostingInstruction:
                     types_utils.ValueSpec(
                         name="client_transaction_id",
                         type="str",
-                        docstring=(
-                            "The id of the ClientTransaction that this PostingInstruction is a "
-                            "part of. A PostingInstruction may be viewed as a change of state to a "
-                            "ClientTransaction."
-                        ),
+                        docstring=("The id of the ClientTransaction that this PostingInstruction is a " "part of. A PostingInstruction may be viewed as a change of state to a " "ClientTransaction."),
                     ),
                     types_utils.ValueSpec(
                         name="instruction_details",
@@ -168,10 +152,7 @@ class PostingInstruction:
                     types_utils.ValueSpec(
                         name="custom_instruction_grouping_key",
                         type="str",
-                        docstring=(
-                            "Key used for grouping custom instructions together into one "
-                            "instruction."
-                        ),
+                        docstring=("Key used for grouping custom instructions together into one " "instruction."),
                     ),
                 ],
             ),
@@ -257,9 +238,7 @@ class PostingInstruction:
             types_utils.ValueSpec(
                 name="credit",
                 type="bool",
-                docstring=(
-                    "True if the PostingInstruction is crediting the account_id; False otherwise."
-                ),
+                docstring=("True if the PostingInstruction is crediting the account_id; False otherwise."),
             ),
             types_utils.ValueSpec(
                 name="denomination",
@@ -316,27 +295,14 @@ class PostingInstruction:
             types_utils.ValueSpec(
                 name="custom_instruction_grouping_key",
                 type="str",
-                docstring="Key used for grouping custom instructions Postings "
-                "together into one PostingInstruction.",
+                docstring="Key used for grouping custom instructions Postings " "together into one PostingInstruction.",
             ),
-            types_utils.ValueSpec(
-                name="batch_id", type="Optional[str]", docstring="The id of the batch."
-            ),
+            types_utils.ValueSpec(name="batch_id", type="Optional[str]", docstring="The id of the batch."),
         ]
 
 
 class PostingInstructionBatch(types_utils.TypedList("PostingInstruction")):
-    def __init__(
-        self,
-        *,
-        batch_details,
-        client_batch_id,
-        value_timestamp=None,
-        batch_id=None,
-        client_id=None,
-        posting_instructions=(),
-        _from_proto=False
-    ):
+    def __init__(self, *, batch_details, client_batch_id, value_timestamp=None, batch_id=None, client_id=None, posting_instructions=(), _from_proto=False):
         super().__init__(posting_instructions, _from_proto)
         if not _from_proto:
             self._spec().assert_constructor_args(
@@ -465,9 +431,7 @@ class PostingInstructionBatch(types_utils.TypedList("PostingInstruction")):
             public_methods=[
                 types_utils.MethodSpec(
                     name="balances",
-                    docstring=(
-                        "Returns the net balance changes caused by this PostingInstructionBatch."
-                    ),
+                    docstring=("Returns the net balance changes caused by this PostingInstructionBatch."),
                     args=[],
                     return_value=types_utils.ReturnValueSpec(
                         type="BalanceDefaultDict",
@@ -490,10 +454,7 @@ class ClientTransaction(types_utils.TypedList("PostingInstruction")):
 
     @property
     def cancelled(self):
-        return any(
-            posting_instruction.type == enums.PostingInstructionType.RELEASE
-            for posting_instruction in self
-        )
+        return any(posting_instruction.type == enums.PostingInstructionType.RELEASE for posting_instruction in self)
 
     @property
     def start_time(self):
@@ -617,15 +578,7 @@ class ClientTransaction(types_utils.TypedList("PostingInstruction")):
 
 
 class ClientTransactionEffects:
-    def __init__(
-        self,
-        *,
-        authorised=Decimal(0),
-        released=Decimal(0),
-        settled=Decimal(0),
-        unsettled=Decimal(0),
-        _from_proto=False
-    ):
+    def __init__(self, *, authorised=Decimal(0), released=Decimal(0), settled=Decimal(0), unsettled=Decimal(0), _from_proto=False):
         super().__setattr__("_from_proto", _from_proto)
         kwargs = {
             "authorised": authorised,
@@ -643,13 +596,7 @@ class ClientTransactionEffects:
         super().__setattr__(name, value)
 
     def __eq__(self, other):
-        return (
-            self.__class__ == other.__class__
-            and self.authorised == other.authorised
-            and self.released == other.released
-            and self.settled == other.settled
-            and self.unsettled == other.unsettled
-        )
+        return self.__class__ == other.__class__ and self.authorised == other.authorised and self.released == other.released and self.settled == other.settled and self.unsettled == other.unsettled
 
     @classmethod
     @lru_cache()
@@ -684,25 +631,18 @@ class ClientTransactionEffects:
             types_utils.ValueSpec(
                 name="authorised",
                 type="Decimal",
-                docstring="The total amount that has been authorised. "
-                "Note: value is updated on Adjustment instructions, "
-                "however, is not updated on Settlement or Release instructions.",
+                docstring="The total amount that has been authorised. " "Note: value is updated on Adjustment instructions, " "however, is not updated on Settlement or Release instructions.",
             ),
             types_utils.ValueSpec(
                 name="released",
                 type="Decimal",
-                docstring="The total amount that has been released. "
-                "Note: this is also updated on final Settlement instructions,"
-                "if not full amount that was authorised is being settled.",
+                docstring="The total amount that has been released. " "Note: this is also updated on final Settlement instructions," "if not full amount that was authorised is being settled.",
             ),
-            types_utils.ValueSpec(
-                name="settled", type="Decimal", docstring="The total amount that has been settled."
-            ),
+            types_utils.ValueSpec(name="settled", type="Decimal", docstring="The total amount that has been settled."),
             types_utils.ValueSpec(
                 name="unsettled",
                 type="Decimal",
-                docstring="The total amount that has been authorised (including adjustments)"
-                " but is yet to be released or settled.",
+                docstring="The total amount that has been authorised (including adjustments)" " but is yet to be released or settled.",
             ),
         ]
 

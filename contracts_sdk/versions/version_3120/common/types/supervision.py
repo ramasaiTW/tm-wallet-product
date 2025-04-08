@@ -15,9 +15,7 @@ class SupervisedHooks:
         # This can be extended later to check that at least one hook
         # supervision is specified.
         if not pre_posting_code:
-            raise exceptions.InvalidSmartContractError(
-                "At least one hook supervision must be specified."
-            )
+            raise exceptions.InvalidSmartContractError("At least one hook supervision must be specified.")
         self.pre_posting_code = pre_posting_code
 
     @classmethod

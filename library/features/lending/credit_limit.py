@@ -62,8 +62,7 @@ parameters = [
             ]
         ),
         level=ParameterLevel.TEMPLATE,
-        description="Defines whether the available credit limit is calculated using the original"
-        " or outstanding principal for all open loans.",
+        description="Defines whether the available credit limit is calculated using the original" " or outstanding principal for all open loans.",
         display_name="Available Credit Limit Definition",
         default_value=UnionItemValue(key=CREDIT_LIMIT_OUTSTANDING),
     ),
@@ -76,12 +75,8 @@ def validate(
     posting_instruction: utils.PostingInstructionTypeAlias,
     non_repayable_addresses: list[str] | None = None,
 ) -> Rejection | None:
-    main_vault_balances = main_vault.get_balances_observation(
-        fetcher_id=LIVE_BALANCES_BOF_ID
-    ).balances
-    loan_balances = supervisor_utils.get_balance_default_dicts_for_supervisees(
-        supervisees=loans, fetcher_id=LIVE_BALANCES_BOF_ID
-    )
+    main_vault_balances = main_vault.get_balances_observation(fetcher_id=LIVE_BALANCES_BOF_ID).balances
+    loan_balances = supervisor_utils.get_balance_default_dicts_for_supervisees(supervisees=loans, fetcher_id=LIVE_BALANCES_BOF_ID)
     denomination = _get_denomination_parameter(vault=main_vault)
 
     associated_original_principal = calculate_associated_original_principal(loans=loans)
@@ -104,22 +99,17 @@ def validate(
         unassociated_principal=unassociated_principal,
     )
 
-    posting_amount = utils.get_available_balance(
-        balances=posting_instruction.balances(), denomination=denomination
-    )
+    posting_amount = utils.get_available_balance(balances=posting_instruction.balances(), denomination=denomination)
     if posting_amount > available_credit_limit:
         return Rejection(
-            message=f"Incoming posting of {posting_amount} exceeds available credit limit "
-            f"of {available_credit_limit}",
+            message=f"Incoming posting of {posting_amount} exceeds available credit limit " f"of {available_credit_limit}",
             reason_code=RejectionReason.AGAINST_TNC,
         )
     return None
 
 
 def calculate_associated_original_principal(loans: list[SuperviseeContractVault]) -> Decimal:
-    associated_original_principal = sum(
-        Decimal(utils.get_parameter(loan_vault, "principal")) for loan_vault in loans
-    )
+    associated_original_principal = sum(Decimal(utils.get_parameter(loan_vault, "principal")) for loan_vault in loans)
     return Decimal(associated_original_principal)
 
 
@@ -150,13 +140,9 @@ def calculate_unassociated_principal(
         addresses=non_repayable_addresses,
     )
 
-    main_vault_default_net = utils.balance_at_coordinates(
-        balances=main_vault_balances, denomination=denomination
-    )
+    main_vault_default_net = utils.balance_at_coordinates(balances=main_vault_balances, denomination=denomination)
 
-    unassociated_original_principal = (
-        main_vault_default_net - associated_original_principal + associated_repayments
-    )
+    unassociated_original_principal = main_vault_default_net - associated_original_principal + associated_repayments
     return unassociated_original_principal
 
 
@@ -242,9 +228,7 @@ def validate_credit_limit_parameter_change(
 
     if proposed_credit_limit < total_outstanding_principal:
         return Rejection(
-            message=f"Cannot set proposed credit limit {proposed_credit_limit} "
-            "to a value below the total outstanding debt of "
-            f"{total_outstanding_principal}",
+            message=f"Cannot set proposed credit limit {proposed_credit_limit} " "to a value below the total outstanding debt of " f"{total_outstanding_principal}",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 

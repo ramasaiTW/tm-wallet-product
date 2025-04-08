@@ -46,17 +46,7 @@ from contracts_api import (
     UnionItemValue,
 )
 
-PostingInstruction = (
-    AuthorisationAdjustment
-    | CustomInstruction
-    | InboundAuthorisation
-    | InboundHardSettlement
-    | OutboundAuthorisation
-    | OutboundHardSettlement
-    | Release
-    | Settlement
-    | Transfer
-)
+PostingInstruction = AuthorisationAdjustment | CustomInstruction | InboundAuthorisation | InboundHardSettlement | OutboundAuthorisation | OutboundHardSettlement | Release | Settlement | Transfer
 
 
 PostingInstructionTypeList = list[PostingInstruction]
@@ -81,26 +71,16 @@ ACCOUNT_ID = "default_account"
 DEFAULT_INTERNAL_ACCOUNT = "1"
 
 
-def construct_parameter_timeseries(
-    parameter_name_to_value_map: dict[str, ParameterValueType], default_datetime: datetime
-) -> dict[str, ParameterTimeseries]:
+def construct_parameter_timeseries(parameter_name_to_value_map: dict[str, ParameterValueType], default_datetime: datetime) -> dict[str, ParameterTimeseries]:
     """
     returns a dict where key is param name and value is a ParameterTimeseries object to
     be used as the parameter_ts for the mock vault object
     """
-    return {
-        param_name: ParameterTimeseries([(default_datetime, param_value)])
-        for param_name, param_value in parameter_name_to_value_map.items()
-    }
+    return {param_name: ParameterTimeseries([(default_datetime, param_value)]) for param_name, param_value in parameter_name_to_value_map.items()}
 
 
-def construct_flag_timeseries(
-    flag_name_to_bool_map: dict[str, bool], default_datetime: datetime
-) -> dict[str, FlagTimeseries]:
-    return {
-        flag_name: FlagTimeseries([(default_datetime, flag_bool)])
-        for flag_name, flag_bool in flag_name_to_bool_map.items()
-    }
+def construct_flag_timeseries(flag_name_to_bool_map: dict[str, bool], default_datetime: datetime) -> dict[str, FlagTimeseries]:
+    return {flag_name: FlagTimeseries([(default_datetime, flag_bool)]) for flag_name, flag_bool in flag_name_to_bool_map.items()}
 
 
 class ContractTest(TestCase):
@@ -113,17 +93,13 @@ class ContractTest(TestCase):
         try:
             cls.tside
         except AttributeError:
-            raise AttributeError(
-                "You must supply the Tside of the product at the start of the test class"
-            )
+            raise AttributeError("You must supply the Tside of the product at the start of the test class")
 
     def create_mock(
         self,
         account_id: str = ACCOUNT_ID,
         balances_observation_fetchers_mapping: dict[str, BalancesObservation] | None = None,
-        balances_interval_fetchers_mapping: (
-            dict[str, defaultdict[BalanceCoordinate, BalanceTimeseries]] | None
-        ) = None,
+        balances_interval_fetchers_mapping: (dict[str, defaultdict[BalanceCoordinate, BalanceTimeseries]] | None) = None,
         calendar_events: list[CalendarEvent] | None = None,
         client_transactions_mapping: dict[str, dict[str, ClientTransaction]] | None = None,
         creation_date: datetime = DEFAULT_DATETIME,
@@ -136,9 +112,7 @@ class ContractTest(TestCase):
         requires_fetched_client_transactions: dict[str, ClientTransaction] | None = None,
         requires_fetched_postings: PostingInstructionTypeList | None = None,
         supervisee_alias: str | None = None,
-        supervisee_hook_result: (
-            PostPostingHookResult | PrePostingHookResult | ScheduledEventHookResult | None
-        ) = None,
+        supervisee_hook_result: (PostPostingHookResult | PrePostingHookResult | ScheduledEventHookResult | None) = None,
         is_supervisee_vault: bool = False,
     ) -> Mock:
         """
@@ -182,10 +156,7 @@ class ContractTest(TestCase):
         # replace CLU dependency syntax from flag definitions. This allows for consistency between
         # the contract and the tests since unit tests run the contract directly as a python module,
         # these aren't removed in any class setup or rendering
-        flags_ts = {
-            flag.replace("&{", "").replace("}", ""): datetime_bool
-            for flag, datetime_bool in flags_ts.items()
-        }
+        flags_ts = {flag.replace("&{", "").replace("}", ""): datetime_bool for flag, datetime_bool in flags_ts.items()}
 
         calendar_events = [
             CalendarEvent(
@@ -255,9 +226,7 @@ class ContractTest(TestCase):
             # replace CLU dependency syntax from flag definitions. This allows for consistency
             # between the contract and the tests since unit tests run the contract directly as
             # a python module, these aren't removed in any class setup or rendering
-            calendar_ids = [
-                calendar_id.replace("&{", "").replace("}", "") for calendar_id in calendar_ids
-            ]
+            calendar_ids = [calendar_id.replace("&{", "").replace("}", "") for calendar_id in calendar_ids]
             events = [event for event in calendar_events if event.calendar_id in calendar_ids]
             return CalendarEvents(calendar_events=events)
 
@@ -284,10 +253,7 @@ class ContractTest(TestCase):
         def mock_get_client_transaction(fetcher_id: str | None = None):
             if is_supervisee_vault:
                 if fetcher_id:
-                    raise ValueError(
-                        "Supervisee vault object cannot provide fetcher_id to "
-                        "get_client_transactions()"
-                    )
+                    raise ValueError("Supervisee vault object cannot provide fetcher_id to " "get_client_transactions()")
                 if requires_fetched_client_transactions is None:
                     raise ValueError("Missing requires fetched client transactions in test setup")
                 else:
@@ -311,27 +277,16 @@ class ContractTest(TestCase):
                     raise ValueError("No supervisee alias provided")
 
             else:
-                raise ValueError(
-                    "get_alias method cannot be called on a non-supervisee Vault object, "
-                    "make sure the create_mock argument is set correctly"
-                )
+                raise ValueError("get_alias method cannot be called on a non-supervisee Vault object, " "make sure the create_mock argument is set correctly")
 
-        def mock_get_hook_result() -> (
-            PrePostingHookResult | PostPostingHookResult | ScheduledEventHookResult
-        ):
+        def mock_get_hook_result() -> PrePostingHookResult | PostPostingHookResult | ScheduledEventHookResult:
             if is_supervisee_vault:
                 if supervisee_hook_result:
                     return supervisee_hook_result
                 else:
-                    raise ValueError(
-                        "get_hook_result must return one of PrePostingHookResult, "
-                        "PostPostingHookResult, ScheduledEventHookResult"
-                    )
+                    raise ValueError("get_hook_result must return one of PrePostingHookResult, " "PostPostingHookResult, ScheduledEventHookResult")
             else:
-                raise ValueError(
-                    "get_hook_result method cannot be called on a non-supervisee Vault object, "
-                    "make sure the create_mock argument is set correctly"
-                )
+                raise ValueError("get_hook_result method cannot be called on a non-supervisee Vault object, " "make sure the create_mock argument is set correctly")
 
         # Identify mocks more easily, especially in supervisor scenarios
         mock_vault = existing_mock or Mock(name=account_id)
@@ -405,9 +360,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=client_transaction_id,
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -458,9 +411,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=client_transaction_id,
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -511,9 +462,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -569,9 +518,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -640,9 +587,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -714,9 +659,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -764,9 +707,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -815,9 +756,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -870,9 +809,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -921,9 +858,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=client_transaction_id,
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -970,9 +905,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -1019,9 +952,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=committed_postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -1050,9 +981,7 @@ class ContractTest(TestCase):
             batch_id=kwargs.get("batch_id"),
             committed_postings=postings,
             instruction_id=kwargs.get("instruction_id"),
-            unique_client_transaction_id=kwargs.get(
-                "unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"
-            ),
+            unique_client_transaction_id=kwargs.get("unique_client_transaction_id", f"{POSTING_CLIENT_ID}_{client_transaction_id}"),
             client_transaction_id=kwargs.get("client_transaction_id", CLIENT_TRANSACTION_ID),
             own_account_id=kwargs.get("own_account_id", ACCOUNT_ID),
             tside=self.tside,
@@ -1081,14 +1010,8 @@ class ContractTest(TestCase):
         """
         if net is None:
             if credit is None or debit is None:
-                raise ValueError(
-                    "Cannot create balance with net `None` and credit/debit also `None`"
-                )
-            net = (
-                Decimal(credit) - Decimal(debit)
-                if (self.tside == Tside.LIABILITY)
-                else Decimal(debit) - Decimal(credit)
-            )
+                raise ValueError("Cannot create balance with net `None` and credit/debit also `None`")
+            net = Decimal(credit) - Decimal(debit) if (self.tside == Tside.LIABILITY) else Decimal(debit) - Decimal(credit)
 
         else:
             net = Decimal(net)

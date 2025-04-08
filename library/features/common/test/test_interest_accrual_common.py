@@ -38,15 +38,11 @@ class InterestAccrualScheduleTest(InterestAccrualTestCommon):
         )
 
     @patch.object(interest_accrual_common.utils, "daily_scheduled_event")
-    def test_interest_accrual_scheduled_event_use_skip_default(
-        self, mock_daily_scheduled_event: MagicMock
-    ):
+    def test_interest_accrual_scheduled_event_use_skip_default(self, mock_daily_scheduled_event: MagicMock):
         mock_vault = MagicMock()
         mock_daily_scheduled_event.return_value = sentinel.daily_scheduled_event
 
-        scheduled_events = interest_accrual_common.scheduled_events(
-            vault=mock_vault, start_datetime=sentinel.start_datetime
-        )
+        scheduled_events = interest_accrual_common.scheduled_events(vault=mock_vault, start_datetime=sentinel.start_datetime)
 
         self.assertDictEqual(
             scheduled_events,
@@ -60,15 +56,11 @@ class InterestAccrualScheduleTest(InterestAccrualTestCommon):
         )
 
     @patch.object(interest_accrual_common.utils, "daily_scheduled_event")
-    def test_interest_accrual_scheduled_event_skip_defined(
-        self, mock_daily_scheduled_event: MagicMock
-    ):
+    def test_interest_accrual_scheduled_event_skip_defined(self, mock_daily_scheduled_event: MagicMock):
         mock_vault = MagicMock()
         mock_daily_scheduled_event.return_value = sentinel.daily_scheduled_event
 
-        scheduled_events = interest_accrual_common.scheduled_events(
-            vault=mock_vault, start_datetime=sentinel.start_datetime, skip=sentinel.skip
-        )
+        scheduled_events = interest_accrual_common.scheduled_events(vault=mock_vault, start_datetime=sentinel.start_datetime, skip=sentinel.skip)
 
         self.assertDictEqual(
             scheduled_events,
@@ -133,9 +125,7 @@ class CalculateDailyAccrualTest(InterestAccrualTestCommon):
 
     @patch.object(interest_accrual_common.utils, "yearly_to_daily_rate")
     @patch.object(interest_accrual_common.utils, "round_decimal")
-    def test_calculate_daily_for_zero_accrual_amount(
-        self, mock_round_decimal: MagicMock, mock_yearly_to_daily_rate: MagicMock
-    ):
+    def test_calculate_daily_for_zero_accrual_amount(self, mock_round_decimal: MagicMock, mock_yearly_to_daily_rate: MagicMock):
         # it doesn't really matter which of the rate or final amount yields 0
         mock_yearly_to_daily_rate.return_value = Decimal("0.5")
         mock_round_decimal.return_value = 0
@@ -164,9 +154,7 @@ class CalculateDailyAccrualTest(InterestAccrualTestCommon):
 
     @patch.object(interest_accrual_common.utils, "yearly_to_daily_rate")
     @patch.object(interest_accrual_common.utils, "round_decimal")
-    def test_calculate_daily_for_non_zero_accrual_amount(
-        self, mock_round_decimal: MagicMock, mock_yearly_to_daily_rate: MagicMock
-    ):
+    def test_calculate_daily_for_non_zero_accrual_amount(self, mock_round_decimal: MagicMock, mock_yearly_to_daily_rate: MagicMock):
         mock_yearly_to_daily_rate.return_value = Decimal("0.05")
         mock_round_decimal.return_value = Decimal("0.01")
 
@@ -227,9 +215,7 @@ class DailyAccrualTest(InterestAccrualTestCommon):
         mock_accrual_custom_instruction: MagicMock,
         mock_standard_instruction_details: MagicMock,
     ):
-        mock_calculate_daily_accrual.return_value = interest_accrual_common.accruals.AccrualDetail(
-            amount=sentinel.amount, description=sentinel.description
-        )
+        mock_calculate_daily_accrual.return_value = interest_accrual_common.accruals.AccrualDetail(amount=sentinel.amount, description=sentinel.description)
         mock_accrual_custom_instruction.return_value = [sentinel.accrual_custom_instruction]
         mock_standard_instruction_details.return_value = sentinel.standard_instruction_details
 

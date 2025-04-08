@@ -6,9 +6,7 @@ from ...versions.version_3110.supervisor_contracts import types
 
 
 class SimpleTestCase(SupervisorContracts3110TestCase):
-    filepath = os.environ.get(
-        "DATA_SIMPLE_V3110", "contracts_sdk/example_unit_tests/supervisor_contracts/simple_v3110.py"
-    )
+    filepath = os.environ.get("DATA_SIMPLE_V3110", "contracts_sdk/example_unit_tests/supervisor_contracts/simple_v3110.py")
     contract_code = SupervisorContracts3110TestCase.load_contract_code(filepath)
     effective_date = datetime(year=2020, month=2, day=15)
 

@@ -46,13 +46,9 @@ class TestPaperStatementFees(FeatureTest):
 
     @patch.object(paper_statement_fee.utils, "get_parameter")
     @patch.object(paper_statement_fee.utils, "monthly_scheduled_event")
-    def test_paper_statement_fee_scheduled_event(
-        self, mock_monthly_scheduled_event: MagicMock, mock_get_parameter: MagicMock
-    ):
+    def test_paper_statement_fee_scheduled_event(self, mock_monthly_scheduled_event: MagicMock, mock_get_parameter: MagicMock):
         # construct mocks
-        mock_monthly_scheduled_event.return_value = SentinelScheduledEvent(
-            "APPLY_PAPER_STATEMENT_FEE"
-        )
+        mock_monthly_scheduled_event.return_value = SentinelScheduledEvent("APPLY_PAPER_STATEMENT_FEE")
         paper_statement_fee_day = "17"
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
@@ -102,9 +98,7 @@ class TestPaperStatementFees(FeatureTest):
         mock_vault = self.create_mock(account_id=sentinel.account_id)
 
         # run function
-        fee_postings = paper_statement_fee.apply(
-            vault=mock_vault, effective_datetime=DEFAULT_DATETIME
-        )
+        fee_postings = paper_statement_fee.apply(vault=mock_vault, effective_datetime=DEFAULT_DATETIME)
 
         # call assertions
         self.assertListEqual(fee_postings, [sentinel.fee_custom_instruction])
@@ -228,9 +222,7 @@ class TestPaperStatementFees(FeatureTest):
         mock_fee_custom_instruction.return_value = [sentinel.fee_custom_instruction]
         mock_charge_partial_fee.return_value = [sentinel.partial_fee_instruction]
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                "EFFECTIVE_FETCHER": SentinelBalancesObservation("live")
-            },
+            balances_observation_fetchers_mapping={"EFFECTIVE_FETCHER": SentinelBalancesObservation("live")},
         )
         # run function
         fee_postings = paper_statement_fee.apply(

@@ -58,12 +58,8 @@ class PublicCommonV310TypesTestCase(PublicCommonV300TypesTestCase):
             AccountIdShape.validate_value(value=121231234)
 
     def test_address_details(self):
-        default = AddressDetails(
-            account_address="DEFAULT", description="Default address", tags=["default"]
-        )
-        other_default = AddressDetails(
-            account_address="DEFAULT", description="Default address", tags=["default"]
-        )
+        default = AddressDetails(account_address="DEFAULT", description="Default address", tags=["default"])
+        other_default = AddressDetails(account_address="DEFAULT", description="Default address", tags=["default"])
         self.assertEqual(default, other_default)
 
     def test_date_shape(self):

@@ -16,8 +16,7 @@ parameters = [
     Parameter(
         name=PARAM_MAX_DEPOSIT,
         level=ParameterLevel.TEMPLATE,
-        description="The maximum amount that can be deposited into the account"
-        " in a single transaction.",
+        description="The maximum amount that can be deposited into the account" " in a single transaction.",
         display_name="Maximum Deposit Amount",
         shape=NumberShape(min_value=Decimal("0"), step=Decimal("0.01")),
         default_value=Decimal("1000"),
@@ -42,13 +41,10 @@ def validate(
     max_deposit: Decimal = utils.get_parameter(vault, PARAM_MAX_DEPOSIT)
     for posting in postings:
         posting_balances = posting.balances()
-        deposit_value = utils.get_current_net_balance(
-            balances=posting_balances, denomination=denomination
-        )
+        deposit_value = utils.get_current_net_balance(balances=posting_balances, denomination=denomination)
         if deposit_value > 0 and max_deposit is not None and deposit_value > max_deposit:
             return Rejection(
-                message=f"Transaction amount {deposit_value} {denomination} is more than "
-                f"the maximum permitted deposit amount {max_deposit} {denomination}.",
+                message=f"Transaction amount {deposit_value} {denomination} is more than " f"the maximum permitted deposit amount {max_deposit} {denomination}.",
                 reason_code=RejectionReason.AGAINST_TNC,
             )
 

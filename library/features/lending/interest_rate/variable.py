@@ -31,8 +31,7 @@ parameters = [
     Parameter(
         name=PARAM_VARIABLE_RATE_ADJUSTMENT,
         level=ParameterLevel.INSTANCE,
-        description="Account level adjustment to be added to variable interest rate, "
-        "can be positive, negative or zero.",
+        description="Account level adjustment to be added to variable interest rate, " "can be positive, negative or zero.",
         display_name="Variable Rate Adjustment",
         shape=NumberShape(step=Decimal("0.01")),
         default_value=Decimal("0.00"),
@@ -74,9 +73,7 @@ def get_daily_interest_rate(
     denomination: str | None = None,
 ) -> Decimal:
     annual_rate = get_annual_interest_rate(vault=vault, effective_datetime=effective_datetime)
-    days_in_year = utils.get_parameter(
-        vault, "days_in_year", is_union=True, at_datetime=effective_datetime
-    )
+    days_in_year = utils.get_parameter(vault, "days_in_year", is_union=True, at_datetime=effective_datetime)
     return utils.yearly_to_daily_rate(effective_datetime, annual_rate, days_in_year)
 
 
@@ -103,14 +100,8 @@ def get_annual_interest_rate(
     accounts for any maximum or minimum interest rate limits that may be set.
     """
 
-    annual_rate = Decimal(
-        utils.get_parameter(
-            vault=vault, name=PARAM_VARIABLE_INTEREST_RATE, at_datetime=effective_datetime
-        )
-    ) + Decimal(
-        utils.get_parameter(
-            vault=vault, name=PARAM_VARIABLE_RATE_ADJUSTMENT, at_datetime=effective_datetime
-        )
+    annual_rate = Decimal(utils.get_parameter(vault=vault, name=PARAM_VARIABLE_INTEREST_RATE, at_datetime=effective_datetime)) + Decimal(
+        utils.get_parameter(vault=vault, name=PARAM_VARIABLE_RATE_ADJUSTMENT, at_datetime=effective_datetime)
     )
 
     interest_rate_cap: Decimal = utils.get_parameter(
@@ -158,9 +149,7 @@ def should_trigger_reamortisation(
     :return bool: Whether the monthly interest rate at the period end differs from period start
     """
 
-    return get_monthly_interest_rate(
-        vault=vault, effective_datetime=period_start_datetime
-    ) != get_monthly_interest_rate(vault=vault, effective_datetime=period_end_datetime)
+    return get_monthly_interest_rate(vault=vault, effective_datetime=period_start_datetime) != get_monthly_interest_rate(vault=vault, effective_datetime=period_end_datetime)
 
 
 interest_rate_interface = lending_interfaces.InterestRate(
@@ -169,6 +158,4 @@ interest_rate_interface = lending_interfaces.InterestRate(
     get_annual_interest_rate=get_annual_interest_rate,
 )
 
-VariableReamortisationCondition = lending_interfaces.ReamortisationCondition(
-    should_trigger_reamortisation=should_trigger_reamortisation
-)
+VariableReamortisationCondition = lending_interfaces.ReamortisationCondition(should_trigger_reamortisation=should_trigger_reamortisation)

@@ -17,9 +17,7 @@ class TestGitSourceFinder(unittest.TestCase):
         def get_source_code(suffix: str):
             return f"source_code{suffix}"
 
-        mock_modified_files = [
-            Mock(source_code=get_source_code(str(i))) for i in range(num_modified_files)
-        ]
+        mock_modified_files = [Mock(source_code=get_source_code(str(i))) for i in range(num_modified_files)]
         mock_commit = Mock(modified_files=mock_modified_files, hash="git_commit_hash")
         return mock_commit
 
@@ -40,9 +38,7 @@ class TestGitSourceFinder(unittest.TestCase):
     @patch.object(GitSourceFinder, "_validate_cache")
     @patch.object(source_finder, "load_repo")
     @patch.object(GitSourceFinder, "_load_cache")
-    def test_init_recognised_hash_alg(
-        self, mock_load_cache: Mock, mock_load_repo: Mock, mock_validate_cache: Mock
-    ):
+    def test_init_recognised_hash_alg(self, mock_load_cache: Mock, mock_load_repo: Mock, mock_validate_cache: Mock):
         mock_validate_cache.return_value = False
         gsf = GitSourceFinder(hashing_algorithm="sha1")
         self.assertEqual(gsf._app_cache.alg, "sha1")
@@ -151,9 +147,7 @@ class TestGitSourceFinder(unittest.TestCase):
 
     def test_hash(self):
         mock_gsf = Mock(hashing_algorithm="md5")
-        self.assertEqual(
-            GitSourceFinder._hash(mock_gsf, "data"), "8d777f385d3dfec8815d20f7496026dc"
-        )
+        self.assertEqual(GitSourceFinder._hash(mock_gsf, "data"), "8d777f385d3dfec8815d20f7496026dc")
 
     def test_validate_cache_valid(self):
         valid_app_cache = GitSourceFinderCache()
@@ -163,13 +157,9 @@ class TestGitSourceFinder(unittest.TestCase):
     @patch.object(source_finder.log, "warning")
     def test_validate_cache_invalid_different_alg(self, mock_log: Mock):
         valid_app_cache = GitSourceFinderCache()
-        mock_gsf = Mock(
-            _app_cache=valid_app_cache, hashing_algorithm="sha1", _cache_filepath="cache/file"
-        )
+        mock_gsf = Mock(_app_cache=valid_app_cache, hashing_algorithm="sha1", _cache_filepath="cache/file")
         self.assertFalse(GitSourceFinder._validate_cache(mock_gsf))
-        mock_log.assert_called_with(
-            "Cache file cache/file is empty or invalid (algorithm mismatch)"
-        )
+        mock_log.assert_called_with("Cache file cache/file is empty or invalid (algorithm mismatch)")
 
     @patch.object(source_finder.log, "warning")
     def test_validate_cache_empty_defaults(self, mock_log: Mock):
@@ -182,9 +172,7 @@ class TestGitSourceFinder(unittest.TestCase):
     @patch.object(source_finder.log, "info")
     @patch.object(source_finder, "Repository")
     def test_populate_cache_empty(self, mock_Repository: Mock, mock_log: Mock):
-        mock_Repository.return_value = Mock(
-            traverse_commits=Mock(return_value=[self.create_mock_commit()])
-        )
+        mock_Repository.return_value = Mock(traverse_commits=Mock(return_value=[self.create_mock_commit()]))
         expected_hash_map = {"checksum": "commit_hash"}
         mock_get_source_file_hash_map = Mock(return_value=expected_hash_map)
         mock_gsf = Mock(
@@ -202,9 +190,7 @@ class TestGitSourceFinder(unittest.TestCase):
     @patch.object(source_finder.log, "info")
     @patch.object(source_finder, "Repository")
     def test_populate_cache_not_empty(self, mock_Repository: Mock, mock_log: Mock):
-        mock_Repository.return_value = Mock(
-            traverse_commits=Mock(return_value=[self.create_mock_commit()])
-        )
+        mock_Repository.return_value = Mock(traverse_commits=Mock(return_value=[self.create_mock_commit()]))
         initial_hash_map = {"checksum": "git_commit_hash"}
         mock_get_source_file_hash_map = Mock(return_value=initial_hash_map)
         populated_cache = self.create_test_cache(
@@ -223,9 +209,7 @@ class TestGitSourceFinder(unittest.TestCase):
             mock_gsf._app_cache.hash_map,
             {"checksum_2": "git_commit_hash_2"} | initial_hash_map,
         )
-        self.assertEqual(
-            mock_gsf._app_cache.commit_hashes, {"git_commit_hash_2", "git_commit_hash"}
-        )
+        self.assertEqual(mock_gsf._app_cache.commit_hashes, {"git_commit_hash_2", "git_commit_hash"})
         mock_log.assert_called_once_with("Populating the cache, this may take several minutes...")
         mock_Repository.assert_called_once()
         mock_gsf._report_status.assert_called_once()
@@ -234,9 +218,7 @@ class TestGitSourceFinder(unittest.TestCase):
     @patch.object(source_finder.log, "info")
     @patch.object(source_finder, "Repository")
     def test_populate_cache_already_populated(self, mock_Repository: Mock, mock_log: Mock):
-        mock_Repository.return_value = Mock(
-            traverse_commits=Mock(return_value=[self.create_mock_commit()])
-        )
+        mock_Repository.return_value = Mock(traverse_commits=Mock(return_value=[self.create_mock_commit()]))
         initial_hash_map = {"checksum": "git_commit_hash"}
         populated_cache = self.create_test_cache(
             {
@@ -260,9 +242,7 @@ class TestGitSourceFinder(unittest.TestCase):
 
     @patch.object(source_finder, "Repository")
     def test_get_source_file_hash_map_already_exists(self, mock_Repository: Mock):
-        mock_Repository.return_value = Mock(
-            traverse_commits=Mock(return_value=[self.create_mock_commit()])
-        )
+        mock_Repository.return_value = Mock(traverse_commits=Mock(return_value=[self.create_mock_commit()]))
         initial_hash_map = {"checksum": "git_commit_hash"}
         populated_cache = self.create_test_cache(
             {
@@ -278,9 +258,7 @@ class TestGitSourceFinder(unittest.TestCase):
 
     @patch.object(source_finder, "Repository")
     def test_get_source_file_hash_map_update_required(self, mock_Repository: Mock):
-        mock_Repository.return_value = Mock(
-            traverse_commits=Mock(return_value=[self.create_mock_commit()])
-        )
+        mock_Repository.return_value = Mock(traverse_commits=Mock(return_value=[self.create_mock_commit()]))
         initial_hash_map = {"old_checksum": "old_commit_hash"}
         populated_cache = self.create_test_cache(
             {

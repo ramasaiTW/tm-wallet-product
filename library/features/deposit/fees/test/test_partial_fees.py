@@ -48,12 +48,8 @@ def mock_incoming_fee_custom_instruction():
 class PartialFeeTest(FeatureTest):
     def setUp(self) -> None:
         self.effective_datetime = sentinel.effective_datetime
-        self.mock_fee_custom_instruction = patch.object(
-            partial_fee.fees, "fee_custom_instruction"
-        ).start()
-        self.mock_tracking_balance_instructions = patch.object(
-            partial_fee, "modify_tracking_balance"
-        ).start()
+        self.mock_fee_custom_instruction = patch.object(partial_fee.fees, "fee_custom_instruction").start()
+        self.mock_tracking_balance_instructions = patch.object(partial_fee, "modify_tracking_balance").start()
         self.mock_get_parameter = patch.object(partial_fee.utils, "get_parameter").start()
 
         self.mock_fee_custom_instruction.return_value = [sentinel.CustomInstructionIncome]
@@ -127,9 +123,7 @@ class TestPartialFeeCharging(PartialFeeTest):
         )
 
         # Assert results
-        self.assertEqual(
-            response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial]
-        )
+        self.assertEqual(response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial])
 
     def test_charge_partial_fee_generates_postings_more_debt(
         self,
@@ -187,9 +181,7 @@ class TestPartialFeeCharging(PartialFeeTest):
         )
 
         # Assert results
-        self.assertEqual(
-            response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial]
-        )
+        self.assertEqual(response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial])
 
     def test_charge_partial_fee_generates_postings_no_balance(
         self,
@@ -316,11 +308,7 @@ class TestPartialFeeCharging(PartialFeeTest):
         )
         mock_balance_observation = MagicMock()
         mock_balance_observation.balances = sentinel.balances
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                partial_fee.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: mock_balance_observation
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={partial_fee.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: mock_balance_observation})
         mock_available_balance = MagicMock()
         mock_calculate_available_balance = MagicMock(return_value=available_balance)
         mock_available_balance.calculate = mock_calculate_available_balance
@@ -354,13 +342,9 @@ class TestPartialFeeCharging(PartialFeeTest):
         )
 
         # Assert results
-        self.assertEqual(
-            response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial]
-        )
+        self.assertEqual(response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial])
         mock_get_available_balance.assert_not_called()
-        mock_calculate_available_balance.assert_called_once_with(
-            vault=mock_vault, balances=sentinel.balances, denomination=DEFAULT_DENOMINATION
-        )
+        mock_calculate_available_balance.assert_called_once_with(vault=mock_vault, balances=sentinel.balances, denomination=DEFAULT_DENOMINATION)
 
 
 @patch.object(partial_fee.utils, "balance_at_coordinates")
@@ -393,11 +377,7 @@ class TestPartialOutstandingFeeCharging(PartialFeeTest):
 
         mock_balance_observation = MagicMock()
         mock_balance_observation.balances = sentinel.balances
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                partial_fee.fetchers.LIVE_BALANCES_BOF_ID: mock_balance_observation
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={partial_fee.fetchers.LIVE_BALANCES_BOF_ID: mock_balance_observation})
 
         # Execute test
 
@@ -427,9 +407,7 @@ class TestPartialOutstandingFeeCharging(PartialFeeTest):
         )
 
         # Assert results
-        self.assertEqual(
-            response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial]
-        )
+        self.assertEqual(response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial])
 
     def test_charge_partial_fee_generates_postings_sufficient_funds(
         self,
@@ -485,9 +463,7 @@ class TestPartialOutstandingFeeCharging(PartialFeeTest):
         )
 
         # Assert results
-        self.assertEqual(
-            response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial]
-        )
+        self.assertEqual(response, [sentinel.CustomInstructionIncome, sentinel.CustomInstructionPartial])
 
     def test_charge_multiple_outstanding_fee_generates_postings_sufficient_funds(
         self,
@@ -527,11 +503,7 @@ class TestPartialOutstandingFeeCharging(PartialFeeTest):
 
         mock_balance_observation = MagicMock()
         mock_balance_observation.balances = sentinel.balances
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                partial_fee.fetchers.LIVE_BALANCES_BOF_ID: mock_balance_observation
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={partial_fee.fetchers.LIVE_BALANCES_BOF_ID: mock_balance_observation})
 
         # Execute test
 
@@ -648,11 +620,7 @@ class TestPartialOutstandingFeeCharging(PartialFeeTest):
 
         mock_balance_observation = MagicMock()
         mock_balance_observation.balances = sentinel.balances
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                partial_fee.fetchers.LIVE_BALANCES_BOF_ID: mock_balance_observation
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={partial_fee.fetchers.LIVE_BALANCES_BOF_ID: mock_balance_observation})
 
         # Execute test
 
@@ -860,11 +828,7 @@ class HasOutstandingFeesTest(PartialFeeTest):
         mock_balance_at_coordinates: MagicMock,
     ):
         # construct mocks
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                partial_fee.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={partial_fee.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")})
         mock_fee_details = generate_mock_fee_details(
             partial_fee_tracking_address="PARTIAL_FEE",
             fee_type="FEE_TYPE",
@@ -884,11 +848,7 @@ class HasOutstandingFeesTest(PartialFeeTest):
         mock_balance_at_coordinates: MagicMock,
     ):
         # construct mocks
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                partial_fee.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={partial_fee.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")})
         mock_fee_details_1 = generate_mock_fee_details(
             partial_fee_tracking_address="PARTIAL_FEE",
             fee_type="FEE_TYPE_1",

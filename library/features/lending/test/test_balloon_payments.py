@@ -102,9 +102,7 @@ class ScheduleEventsTest(BalloonPaymentTest):
         mock_vault = sentinel.vault
         mock_schedule = sentinel.monthly_scheduled_event
         mock_scheduled_event.return_value = mock_schedule
-        mock_due_amount_scheduled_events.return_value = {
-            due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: mock_schedule
-        }
+        mock_due_amount_scheduled_events.return_value = {due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: mock_schedule}
 
         expected = {
             balloon_payments.BALLOON_PAYMENT_EVENT: mock_schedule,
@@ -135,16 +133,12 @@ class ScheduleEventsTest(BalloonPaymentTest):
         account_opening_day = datetime(2020, 1, 2, 3, 4, 5, tzinfo=ZoneInfo("UTC"))
         loan_start_day = account_opening_day + relativedelta(days=1)
         term_months = 10
-        mock_due_calc_parameter_datetime_offset.return_value = (
-            sentinel.balloon_payment_event_datetime
-        )
+        mock_due_calc_parameter_datetime_offset.return_value = sentinel.balloon_payment_event_datetime
 
         expected_one_off_expression_date = account_opening_day + relativedelta(months=10, days=5)
         # construct mocks
         mock_vault = sentinel.vault
-        mock_one_off_schedule_expression.return_value = SentinelScheduleExpression(
-            "balloon payment"
-        )
+        mock_one_off_schedule_expression.return_value = SentinelScheduleExpression("balloon payment")
         mock_get_parameters.side_effect = mock_utils_get_parameter(
             parameters={
                 lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT: term_months,
@@ -173,19 +167,13 @@ class ScheduleEventsTest(BalloonPaymentTest):
 
         # validate results
         self.assertDictEqual(scheduled_events, expected)
-        mock_one_off_schedule_expression.assert_called_once_with(
-            sentinel.balloon_payment_event_datetime
-        )
-        mock_due_calc_parameter_datetime_offset.assert_called_once_with(
-            vault=mock_vault, from_datetime=expected_one_off_expression_date
-        )
+        mock_one_off_schedule_expression.assert_called_once_with(sentinel.balloon_payment_event_datetime)
+        mock_due_calc_parameter_datetime_offset.assert_called_once_with(vault=mock_vault, from_datetime=expected_one_off_expression_date)
 
 
 @patch.object(balloon_payments.utils, "get_parameter")
 @patch.object(balloon_payments.utils, "one_off_schedule_expression")
-@patch.object(
-    balloon_payments.utils, "END_OF_TIME_EXPRESSION", SentinelScheduleExpression("end_of_time")
-)
+@patch.object(balloon_payments.utils, "END_OF_TIME_EXPRESSION", SentinelScheduleExpression("end_of_time"))
 @patch.object(balloon_payments, "set_time_from_due_amount_parameter")
 class UpdateBalloonPaymentScheduleTest(BalloonPaymentTest):
     def test_update_balloon_payment_schedule_applies_delta(
@@ -231,9 +219,7 @@ class UpdateBalloonPaymentScheduleTest(BalloonPaymentTest):
         # validate results
         self.assertListEqual(update_events, expected)
         mock_one_off_schedule_expression.assert_called_once_with(sentinel.balloon_event_datetime)
-        mock_due_calc_parameter_datetime_offset.assert_called_once_with(
-            vault=mock_vault, from_datetime=expected_one_off_expression_date
-        )
+        mock_due_calc_parameter_datetime_offset.assert_called_once_with(vault=mock_vault, from_datetime=expected_one_off_expression_date)
 
     def test_update_balloon_payment_schedule_unset_delta(
         self,
@@ -279,9 +265,7 @@ class UpdateBalloonPaymentScheduleTest(BalloonPaymentTest):
         # validate results
         self.assertListEqual(update_events, expected)
         mock_one_off_schedule_expression.assert_called_once_with(sentinel.balloon_event_datetime)
-        mock_due_calc_parameter_datetime_offset.assert_called_once_with(
-            vault=mock_vault, from_datetime=expected_one_off_expression_date
-        )
+        mock_due_calc_parameter_datetime_offset.assert_called_once_with(vault=mock_vault, from_datetime=expected_one_off_expression_date)
 
 
 sentinel_instruction_details = {
@@ -300,26 +284,18 @@ sentinel_instruction_details = {
 )
 @patch.object(balloon_payments.due_amount_calculation, "transfer_principal_due")
 class BalloonPaymentScheduledCodeTest(BalloonPaymentTest):
-    @patch.object(
-        balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=True)
-    )
+    @patch.object(balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=True))
     def test_scheduled_event_hook_with_no_interest_application_feature(
         self,
         mock_transfer_principal_due: MagicMock,
         mock_get_parameter: MagicMock,
     ):
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                balloon_payments.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            }
+            balances_observation_fetchers_mapping={balloon_payments.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))}
         )
 
         due_postings = [SentinelPosting("principal_due")]
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination, "amortisation_method": "no_repayment"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination, "amortisation_method": "no_repayment"})
         mock_transfer_principal_due.return_value = due_postings
 
         expected_postings = [
@@ -347,28 +323,20 @@ class BalloonPaymentScheduledCodeTest(BalloonPaymentTest):
             denomination=sentinel.denomination,
         )
 
-    @patch.object(
-        balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=True)
-    )
+    @patch.object(balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=True))
     def test_scheduled_event_hook_with_interest_application_feature(
         self,
         mock_transfer_principal_due: MagicMock,
         mock_get_parameter: MagicMock,
     ):
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                balloon_payments.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            }
+            balances_observation_fetchers_mapping={balloon_payments.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))}
         )
         principal_postings = [SentinelPosting("principal_due")]
         interest_postings = [SentinelPosting("interest_due")]
         mock_interest = MagicMock()
         mock_interest.apply_interest = MagicMock(return_value=interest_postings)
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination, "amortisation_method": "no_repayment"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination, "amortisation_method": "no_repayment"})
         mock_transfer_principal_due.return_value = principal_postings
 
         expected_postings = [
@@ -397,9 +365,7 @@ class BalloonPaymentScheduledCodeTest(BalloonPaymentTest):
             denomination=sentinel.denomination,
         )
 
-    @patch.object(
-        balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=False)
-    )
+    @patch.object(balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=False))
     def test_scheduled_event_hook_with_unsupported_amortisation_returns_no_postings(
         self,
         mock_transfer_principal_due: MagicMock,
@@ -407,9 +373,7 @@ class BalloonPaymentScheduledCodeTest(BalloonPaymentTest):
     ):
         mock_vault = self.create_mock()
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination, "amortisation_method": "other"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination, "amortisation_method": "other"})
 
         postings = balloon_payments.schedule_logic(
             vault=mock_vault,
@@ -424,26 +388,18 @@ class BalloonPaymentScheduledCodeTest(BalloonPaymentTest):
 
         mock_transfer_principal_due.assert_not_called()
 
-    @patch.object(
-        balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=True)
-    )
+    @patch.object(balloon_payments.no_repayment, "is_no_repayment_loan", MagicMock(return_value=True))
     def test_scheduled_event_hook_with_no_postings_returns_no_custom_instruction(
         self,
         mock_transfer_principal_due: MagicMock,
         mock_get_parameter: MagicMock,
     ):
         mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                balloon_payments.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                    BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME)
-                )
-            }
+            balances_observation_fetchers_mapping={balloon_payments.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (BalancesObservation(balances=self.balances, value_datetime=DEFAULT_DATETIME))}
         )
         mock_interest = MagicMock()
         mock_interest.apply_interest = MagicMock(return_value=[])
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"denomination": sentinel.denomination, "amortisation_method": "no_repayment"}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination, "amortisation_method": "no_repayment"})
         mock_transfer_principal_due.return_value = []
 
         expected_postings: list[Any] = []
@@ -489,9 +445,7 @@ class ExpectedBalloonPaymentAmountTest(BalloonPaymentTest):
 
         self.assertEqual(resp, sentinel.principal)
 
-    def test_no_repayment_returns_non_negative_zero_principal(
-        self, mock_get_parameter, mock_balance_coords
-    ):
+    def test_no_repayment_returns_non_negative_zero_principal(self, mock_get_parameter, mock_balance_coords):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "amortisation_method": "no_repayment",
@@ -551,9 +505,7 @@ class ExpectedBalloonPaymentAmountTest(BalloonPaymentTest):
 
         self.assertEqual(resp, Decimal("0"))
 
-    def test_minimum_repayment_returns_bp_amount_if_set(
-        self, mock_get_parameter, mock_balance_coords
-    ):
+    def test_minimum_repayment_returns_bp_amount_if_set(self, mock_get_parameter, mock_balance_coords):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "amortisation_method": "MINIMUM_REPAYMENT_WITH_BALLOON_PAYMENT",
@@ -576,9 +528,7 @@ class ExpectedBalloonPaymentAmountTest(BalloonPaymentTest):
 
         self.assertEqual(resp, sentinel.balloon_payment_amount)
 
-    def test_minimum_repayment_returns_nothing_if_no_emi(
-        self, mock_get_parameter, mock_balance_coords
-    ):
+    def test_minimum_repayment_returns_nothing_if_no_emi(self, mock_get_parameter, mock_balance_coords):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "amortisation_method": "MINIMUM_REPAYMENT_WITH_BALLOON_PAYMENT",
@@ -601,9 +551,7 @@ class ExpectedBalloonPaymentAmountTest(BalloonPaymentTest):
         self.assertEqual(resp, Decimal("0"))
 
     @patch.object(balloon_payments, "calculate_lump_sum")
-    def test_minimum_repayment_returns_calculated_result(
-        self, mock_calculate_lump_sum, mock_get_parameter, mock_balance_coords
-    ):
+    def test_minimum_repayment_returns_calculated_result(self, mock_calculate_lump_sum, mock_get_parameter, mock_balance_coords):
         term_count = Decimal("12")
         precision = Decimal("2")
         mock_get_parameter.side_effect = mock_utils_get_parameter(
@@ -640,9 +588,7 @@ class ExpectedBalloonPaymentAmountTest(BalloonPaymentTest):
 
 
 class DisableBalloonScheduleTest(BalloonPaymentTest):
-    @patch.object(
-        balloon_payments.utils, "create_end_of_time_schedule", return_value=sentinel.eot_schedule
-    )
+    @patch.object(balloon_payments.utils, "create_end_of_time_schedule", return_value=sentinel.eot_schedule)
     def test_disabled_balloon_schedule(self, _):
         resp = balloon_payments.disabled_balloon_schedule(sentinel.datetime)
 
@@ -676,9 +622,7 @@ class CalculateLumpSumTest(BalloonPaymentTest):
 @patch.object(balloon_payments.utils, "get_parameter")
 class CalculateBalloonPaymentTopUp(BalloonPaymentTest):
     def test_minimum_repayment_does_not_convert_events(self, mock_get_parameter: MagicMock):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            {"amortisation_method": balloon_payments.minimum_repayment.AMORTISATION_METHOD}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter({"amortisation_method": balloon_payments.minimum_repayment.AMORTISATION_METHOD})
         mock_vault = self.create_mock(
             parameter_ts=construct_parameter_timeseries(
                 parameter_name_to_value_map={
@@ -757,25 +701,13 @@ class CalculateBalloonPaymentTopUp(BalloonPaymentTest):
 
 class IsBalloonLoanTest(BalloonPaymentTest):
     def test_is_balloon_loan_no_repayment(self):
-        self.assertTrue(
-            balloon_payments.is_balloon_loan(
-                amortisation_method=balloon_payments.no_repayment.AMORTISATION_METHOD
-            )
-        )
+        self.assertTrue(balloon_payments.is_balloon_loan(amortisation_method=balloon_payments.no_repayment.AMORTISATION_METHOD))
 
     def test_is_balloon_loan_min_repayment(self):
-        self.assertTrue(
-            balloon_payments.is_balloon_loan(
-                amortisation_method=balloon_payments.minimum_repayment.AMORTISATION_METHOD
-            )
-        )
+        self.assertTrue(balloon_payments.is_balloon_loan(amortisation_method=balloon_payments.minimum_repayment.AMORTISATION_METHOD))
 
     def test_is_balloon_loan_interest_only(self):
-        self.assertTrue(
-            balloon_payments.is_balloon_loan(
-                amortisation_method=balloon_payments.interest_only.AMORTISATION_METHOD
-            )
-        )
+        self.assertTrue(balloon_payments.is_balloon_loan(amortisation_method=balloon_payments.interest_only.AMORTISATION_METHOD))
 
     def test_is_balloon_loan_non_balloon_payment(self):
         self.assertFalse(balloon_payments.is_balloon_loan(amortisation_method="other"))
@@ -797,14 +729,10 @@ class OffsettedScheduleEventsTest(BalloonPaymentTest):
         mock_vault = self.create_mock()
 
         # run function
-        offsetted_datetime = balloon_payments.set_time_from_due_amount_parameter(
-            vault=mock_vault, from_datetime=test_datetime
-        )
+        offsetted_datetime = balloon_payments.set_time_from_due_amount_parameter(vault=mock_vault, from_datetime=test_datetime)
 
         # validate results
-        self.assertEqual(
-            offsetted_datetime, datetime(2019, 1, 1, 5, 10, 15, tzinfo=ZoneInfo("UTC"))
-        )
+        self.assertEqual(offsetted_datetime, datetime(2019, 1, 1, 5, 10, 15, tzinfo=ZoneInfo("UTC")))
 
     def test_set_time_from_due_amount_parameter_overwrites_time(self, mock_get_parameters):
         # Test Params
@@ -820,11 +748,7 @@ class OffsettedScheduleEventsTest(BalloonPaymentTest):
         mock_vault = self.create_mock()
 
         # run function
-        offsetted_datetime = balloon_payments.set_time_from_due_amount_parameter(
-            vault=mock_vault, from_datetime=test_datetime
-        )
+        offsetted_datetime = balloon_payments.set_time_from_due_amount_parameter(vault=mock_vault, from_datetime=test_datetime)
 
         # validate results
-        self.assertEqual(
-            offsetted_datetime, datetime(2019, 1, 1, 5, 10, 15, tzinfo=ZoneInfo("UTC"))
-        )
+        self.assertEqual(offsetted_datetime, datetime(2019, 1, 1, 5, 10, 15, tzinfo=ZoneInfo("UTC")))

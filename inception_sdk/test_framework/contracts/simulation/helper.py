@@ -186,9 +186,7 @@ def create_account_product_version_update_instruction(
     """
     return SimulationEvent(
         timestamp,
-        CreateAccountProductVersionUpdateEvent(
-            account_id=account_id, product_version_id=product_version_id
-        ).to_dict(),
+        CreateAccountProductVersionUpdateEvent(account_id=account_id, product_version_id=product_version_id).to_dict(),
     )
 
 
@@ -200,9 +198,7 @@ def update_account_status_pending_closure(timestamp: datetime, account_id: str):
     """
     return SimulationEvent(
         timestamp,
-        UpdateAccountEvent(
-            account_id=account_id, status=AccountStatus.ACCOUNT_STATUS_PENDING_CLOSURE
-        ).to_dict(),
+        UpdateAccountEvent(account_id=account_id, status=AccountStatus.ACCOUNT_STATUS_PENDING_CLOSURE).to_dict(),
     )
 
 
@@ -651,9 +647,7 @@ def create_posting_instruction_batch(
     )
 
 
-def create_instance_parameter_change_event(
-    timestamp: datetime, account_id: str, **kwargs: str
-) -> SimulationEvent:
+def create_instance_parameter_change_event(timestamp: datetime, account_id: str, **kwargs: str) -> SimulationEvent:
     """
     Returns a SimulationEvent containing an account update to update instance parameter values.
     :param timestamp: the datetime will be applied in the simulation.
@@ -667,9 +661,7 @@ def create_instance_parameter_change_event(
     )
 
 
-def create_template_parameter_change_event(
-    timestamp: datetime, smart_contract_version_id: str = "0", **kwargs: str
-) -> SimulationEvent:
+def create_template_parameter_change_event(timestamp: datetime, smart_contract_version_id: str = "0", **kwargs: str) -> SimulationEvent:
     """
     The platform implementation for this can only handle one update per
     instruction, therefore, we are mirroring that constraint and preserve
@@ -682,9 +674,7 @@ def create_template_parameter_change_event(
 
     return SimulationEvent(
         timestamp,
-        CreateTemplateParameterUpdateEvent(
-            smart_contract_version_id, parameter_name, new_parameter_value
-        ).to_dict(),
+        CreateTemplateParameterUpdateEvent(smart_contract_version_id, parameter_name, new_parameter_value).to_dict(),
     )
 
 
@@ -757,9 +747,7 @@ def create_global_parameter_value_instruction(
     )
 
 
-def create_plan_instruction(
-    timestamp: datetime, plan_id: str, supervisor_contract_version_id: str
-) -> SimulationEvent:
+def create_plan_instruction(timestamp: datetime, plan_id: str, supervisor_contract_version_id: str) -> SimulationEvent:
     """
     Instructs the simulation to create a plan.
     :param timestamp: the datetime at which the create plan will be applied in the simulation.
@@ -925,18 +913,11 @@ def get_supervisor_setup_events(
     setup_events = []
 
     if test_scenario.supervisor_config is None:
-        raise ValueError(
-            "get_supervisor_setup_events called on test scenario with no supervisor_config"
-        )
+        raise ValueError("get_supervisor_setup_events called on test scenario with no supervisor_config")
 
     # Set up global parameters
     if test_scenario.supervisor_config.global_params:
-        setup_events.extend(
-            [
-                SimulationEvent(time=test_scenario.start, event=g.to_dict())
-                for g in test_scenario.supervisor_config.global_params
-            ]
-        )
+        setup_events.extend([SimulationEvent(time=test_scenario.start, event=g.to_dict()) for g in test_scenario.supervisor_config.global_params])
 
     event_time_offset = 0
     supervisee_account_creation_events = {}
@@ -944,13 +925,9 @@ def get_supervisor_setup_events(
         for account_config in supervisee_contract.account_configs:
             for i in range(account_config.number_of_accounts):
                 if account_config.account_id_base + str(i) in supervisee_account_creation_events:
-                    raise ValueError(
-                        "account_id_base must be different for each contract and account type"
-                    )
+                    raise ValueError("account_id_base must be different for each contract and account type")
 
-                supervisee_account_creation_events[
-                    account_config.account_id_base + str(i)
-                ] = create_account_instruction(
+                supervisee_account_creation_events[account_config.account_id_base + str(i)] = create_account_instruction(
                     timestamp=test_scenario.start + timedelta(milliseconds=event_time_offset + i),
                     account_id=account_config.account_id_base + str(i),
                     product_id=supervisee_contract.smart_contract_version_id,
@@ -966,9 +943,7 @@ def get_supervisor_setup_events(
         create_plan_instruction(
             timestamp=test_scenario.start + timedelta(milliseconds=event_time_offset),
             plan_id=test_scenario.supervisor_config.plan_id,
-            supervisor_contract_version_id=(
-                test_scenario.supervisor_config.supervisor_contract_version_id
-            ),
+            supervisor_contract_version_id=(test_scenario.supervisor_config.supervisor_contract_version_id),
         )
     )
     # Create plan assoc
@@ -993,18 +968,11 @@ def get_contract_setup_events(
     contract_setup_events = []
 
     if test_scenario.contract_config is None:
-        raise ValueError(
-            "get_contract_setup_events called on test scenario with no contract_config"
-        )
+        raise ValueError("get_contract_setup_events called on test scenario with no contract_config")
 
     # Set up global parameters
     if test_scenario.contract_config and test_scenario.contract_config.global_params:
-        contract_setup_events.extend(
-            [
-                SimulationEvent(time=test_scenario.start, event=g.to_dict())
-                for g in test_scenario.contract_config.global_params
-            ]
-        )
+        contract_setup_events.extend([SimulationEvent(time=test_scenario.start, event=g.to_dict()) for g in test_scenario.contract_config.global_params])
 
     contract_setup_events.append(
         create_account_instruction(

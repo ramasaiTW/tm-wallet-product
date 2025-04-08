@@ -62,11 +62,7 @@ class CreateGlobalParameterValue:
             return getattr(o, "__dict__", str(o))
 
     def to_dict(self):
-        return {
-            "create_global_parameter_value": json.loads(
-                json.dumps(self, default=self.iso_date_json_formatter)
-            )
-        }
+        return {"create_global_parameter_value": json.loads(json.dumps(self, default=self.iso_date_json_formatter))}
 
 
 @dataclass
@@ -86,8 +82,4 @@ class CreateGlobalParameterEvent:
     initial_value: str
 
     def to_dict(self):
-        return {
-            "create_global_parameter": json.loads(
-                json.dumps(self, default=lambda o: getattr(o, "__dict__", str(o)))
-            )
-        }
+        return {"create_global_parameter": json.loads(json.dumps(self, default=lambda o: getattr(o, "__dict__", str(o))))}

@@ -50,13 +50,7 @@ event_types = [
 
 
 def activation_hook(vault, hook_arguments: ActivationHookArguments) -> ActivationHookResult | None:
-    return ActivationHookResult(
-        scheduled_events_return_value={
-            "ACCRUE_INTEREST": ScheduledEvent(
-                expression=ScheduleExpression(hour=0, minute=0, second=0)
-            )
-        }
-    )
+    return ActivationHookResult(scheduled_events_return_value={"ACCRUE_INTEREST": ScheduledEvent(expression=ScheduleExpression(hour=0, minute=0, second=0))})
 
 
 @requires(
@@ -65,9 +59,7 @@ def activation_hook(vault, hook_arguments: ActivationHookArguments) -> Activatio
     calendar=["E2E_CALENDAR_1", "E2E_CALENDAR_2", "E2E_CALENDAR_3"],
     flags=True,
 )
-def scheduled_hook(
-    vault, hook_arguments: ScheduledEventHookArguments
-) -> ScheduledEventHookResult | None:
+def scheduled_hook(vault, hook_arguments: ScheduledEventHookArguments) -> ScheduledEventHookResult | None:
     vault.get_calendar_events(calendar_ids=["E2E_CALENDAR_1", "E2E_CALENDAR_2", "E2E_CALENDAR_3"])
     _get_flag_duration_in_months(vault, "E2E_REPAYMENT_HOLIDAY", include_active=True)
     vault.get_flag_timeseries(flag=DORMANCY_FLAG).latest()

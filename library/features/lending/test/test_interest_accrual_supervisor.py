@@ -26,12 +26,8 @@ from inception_sdk.test_framework.contracts.unit.supervisor.common import Superv
 
 DEFAULT_DATE = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-PRINCIPAL_COORDINATE = BalanceCoordinate(
-    lending_addresses.PRINCIPAL, DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED
-)
-NOT_PRINCIPAL_COORDINATE = BalanceCoordinate(
-    "NOT_PRINCIPAL", DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED
-)
+PRINCIPAL_COORDINATE = BalanceCoordinate(lending_addresses.PRINCIPAL, DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED)
+NOT_PRINCIPAL_COORDINATE = BalanceCoordinate("NOT_PRINCIPAL", DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED)
 
 
 class InterestAccrualTestCommon(SupervisorFeatureTest):
@@ -49,9 +45,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
                 NOT_PRINCIPAL_COORDINATE: Balance(net=Decimal("100")),
             }
         )
-        self.mock_vault = self.create_supervisee_mock(
-            account_id=sentinel.account_id, requires_fetched_balances=sentinel.fetched_balances
-        )
+        self.mock_vault = self.create_supervisee_mock(account_id=sentinel.account_id, requires_fetched_balances=sentinel.fetched_balances)
         self.mock_parameter_side_effect = mock_utils_get_parameter(
             parameters={
                 "accrued_interest_receivable_account": sentinel.accrued_interest_receivable_account,
@@ -61,9 +55,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
             }
         )
 
-        self.mock_interest_rate_feature = MagicMock(
-            get_annual_interest_rate=MagicMock(return_value=sentinel.yearly_interest_rate)
-        )
+        self.mock_interest_rate_feature = MagicMock(get_annual_interest_rate=MagicMock(return_value=sentinel.yearly_interest_rate))
 
     def test_daily_accrual_schedule_logic_over_1_month_before_due_amount_calc(
         self,
@@ -83,9 +75,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         daily_accrual_ci = interest_accrual_supervisor.daily_accrual_logic(
             vault=self.mock_vault,
             hook_arguments=hook_args,
-            next_due_amount_calculation_datetime=datetime(
-                2020, 2, 3, 3, 4, 5, tzinfo=ZoneInfo("UTC")
-            ),
+            next_due_amount_calculation_datetime=datetime(2020, 2, 3, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             interest_rate_feature=self.mock_interest_rate_feature,
             account_type=sentinel.account_type,
         )
@@ -126,9 +116,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         daily_accrual_ci = interest_accrual_supervisor.daily_accrual_logic(
             vault=self.mock_vault,
             hook_arguments=hook_args,
-            next_due_amount_calculation_datetime=datetime(
-                2020, 2, 2, 3, 4, 5, tzinfo=ZoneInfo("UTC")
-            ),
+            next_due_amount_calculation_datetime=datetime(2020, 2, 2, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             interest_rate_feature=self.mock_interest_rate_feature,
             account_type=sentinel.account_type,
         )
@@ -169,9 +157,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         daily_accrual_ci = interest_accrual_supervisor.daily_accrual_logic(
             vault=self.mock_vault,
             hook_arguments=hook_args,
-            next_due_amount_calculation_datetime=datetime(
-                2020, 2, 2, 3, 4, 5, tzinfo=ZoneInfo("UTC")
-            ),
+            next_due_amount_calculation_datetime=datetime(2020, 2, 2, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             interest_rate_feature=self.mock_interest_rate_feature,
             account_type=sentinel.account_type,
         )
@@ -212,9 +198,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         daily_accrual_ci = interest_accrual_supervisor.daily_accrual_logic(
             vault=self.mock_vault,
             hook_arguments=hook_args,
-            next_due_amount_calculation_datetime=datetime(
-                2020, 2, 1, 3, 4, 5, tzinfo=ZoneInfo("UTC")
-            ),
+            next_due_amount_calculation_datetime=datetime(2020, 2, 1, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             interest_rate_feature=self.mock_interest_rate_feature,
             account_type=sentinel.account_type,
         )
@@ -257,9 +241,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         daily_accrual_ci = interest_accrual_supervisor.daily_accrual_logic(
             vault=self.mock_vault,
             hook_arguments=hook_args,
-            next_due_amount_calculation_datetime=datetime(
-                2020, 2, 1, 3, 4, 5, tzinfo=ZoneInfo("UTC")
-            ),
+            next_due_amount_calculation_datetime=datetime(2020, 2, 1, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             interest_rate_feature=self.mock_interest_rate_feature,
             account_type=sentinel.account_type,
             inflight_postings=[],
@@ -357,9 +339,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         daily_accrual_ci = interest_accrual_supervisor.daily_accrual_logic(
             vault=self.mock_vault,
             hook_arguments=hook_args,
-            next_due_amount_calculation_datetime=datetime(
-                2020, 2, 1, 3, 4, 5, tzinfo=ZoneInfo("UTC")
-            ),
+            next_due_amount_calculation_datetime=datetime(2020, 2, 1, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             interest_rate_feature=self.mock_interest_rate_feature,
             account_type=sentinel.account_type,
             inflight_postings=inflight_postings,
@@ -401,9 +381,7 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         daily_accrual_ci = interest_accrual_supervisor.daily_accrual_logic(
             vault=self.mock_vault,
             hook_arguments=hook_args,
-            next_due_amount_calculation_datetime=datetime(
-                2020, 2, 3, 3, 4, 5, tzinfo=ZoneInfo("UTC")
-            ),
+            next_due_amount_calculation_datetime=datetime(2020, 2, 3, 3, 4, 5, tzinfo=ZoneInfo("UTC")),
             interest_rate_feature=self.mock_interest_rate_feature,
             account_type=sentinel.account_type,
             customer_accrual_address=sentinel.custom_accrual_address,

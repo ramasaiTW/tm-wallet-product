@@ -22,15 +22,10 @@ def scheduled_code(event_type, effective_date):
         )
     elif event_type == "FETCH_BALANCES_OBSERVATION":
         live_balances_observation = vault.get_balances_observation(fetcher_id="lbof_1")
-        live_balances_observations_net_balance = live_balances_observation.balances[
-            (DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)
-        ].net
+        live_balances_observations_net_balance = live_balances_observation.balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)].net
 
         vault.add_account_note(
-            body=(
-                f"live_balances_observation: {live_balances_observation.value_datetime}, "
-                f"{live_balances_observations_net_balance}"
-            ),
+            body=(f"live_balances_observation: {live_balances_observation.value_datetime}, " f"{live_balances_observations_net_balance}"),
             note_type=NoteType.RAW_TEXT,
             is_visible_to_customer=True,
             date=effective_date,

@@ -58,10 +58,7 @@ class HookArguments:
             types_utils.ValueSpec(
                 name="effective_datetime",
                 type="datetime",
-                docstring=(
-                    "The logical datetime the hook is being run against. "
-                    "Must be a timezone-aware UTC datetime using the ZoneInfo class."
-                ),
+                docstring=("The logical datetime the hook is being run against. " "Must be a timezone-aware UTC datetime using the ZoneInfo class."),
             )
         ]
 
@@ -156,8 +153,7 @@ class ConversionHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new ConversionHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )
@@ -239,10 +235,7 @@ class PostParameterChangeHookArguments(HookArguments):
 
         type_str = "Dict[str, Union[datetime, Decimal, int, OptionalValue, str, UnionItemValue]"
         if is_fflag_enabled(ACCOUNTS_V2):
-            type_str = (
-                "Dict[str, Union[DateOffset, datetime, Decimal, int, OptionalValue, str, "
-                "UnionItemValue]"
-            )
+            type_str = "Dict[str, Union[DateOffset, datetime, Decimal, int, OptionalValue, str, " "UnionItemValue]"
 
         return super()._public_attributes(language_code) + [
             types_utils.ValueSpec(
@@ -284,8 +277,7 @@ class PostPostingHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new PostPostingHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )
@@ -357,8 +349,7 @@ class PrePostingHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new PrePostingHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )
@@ -439,8 +430,7 @@ class PreParameterChangeHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new PreParameterChangeHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )
@@ -453,10 +443,7 @@ class PreParameterChangeHookArguments(HookArguments):
 
         type_str = "Dict[str, Union[datetime, Decimal, int, OptionalValue, str, UnionItemValue]"
         if is_fflag_enabled(ACCOUNTS_V2):
-            type_str = (
-                "Dict[str, Union[DateOffset, datetime, Decimal, int, OptionalValue, str, "
-                "UnionItemValue]"
-            )
+            type_str = "Dict[str, Union[DateOffset, datetime, Decimal, int, OptionalValue, str, " "UnionItemValue]"
 
         return super()._public_attributes(language_code) + [
             types_utils.ValueSpec(
@@ -513,8 +500,7 @@ class ScheduledEventHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new ScheduledEventHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )
@@ -581,8 +567,7 @@ class SupervisorPostPostingHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new SupervisorPostPostingHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )
@@ -650,8 +635,7 @@ class SupervisorPrePostingHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new SupervisorPrePostingHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )
@@ -749,8 +733,7 @@ class SupervisorScheduledEventHookArguments(HookArguments):
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new SupervisorScheduledEventHookArguments object.",
-                args=super()._public_attributes(language_code)
-                + cls._public_attributes(language_code),  # noqa: SLF001
+                args=super()._public_attributes(language_code) + cls._public_attributes(language_code),  # noqa: SLF001
             ),
             public_methods=[],
         )

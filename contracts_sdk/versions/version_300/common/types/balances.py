@@ -9,9 +9,7 @@ class Balance:
     def __init__(self, credit=Decimal(0), debit=Decimal(0), net=Decimal(0), _from_proto=False):
         super().__setattr__("_from_proto", _from_proto)
         if not _from_proto:
-            self._spec().assert_constructor_args(
-                self._registry, {"credit": credit, "debit": debit, "net": net}
-            )
+            self._spec().assert_constructor_args(self._registry, {"credit": credit, "debit": debit, "net": net})
         self.credit = credit
         self.debit = debit
         self.net = net
@@ -29,12 +27,7 @@ class Balance:
         super().__setattr__(name, value)
 
     def __eq__(self, other):
-        return (
-            self.__class__ == other.__class__
-            and self.credit == other.credit
-            and self.debit == other.debit
-            and self.net == other.net
-        )
+        return self.__class__ == other.__class__ and self.credit == other.credit and self.debit == other.debit and self.net == other.net
 
     def __str__(self):
         return "Balance(credit=%s, debit=%s, net=%s)" % (self.credit, self.debit, self.net)
@@ -47,9 +40,7 @@ class Balance:
 
         return types_utils.ClassSpec(
             name="Balance",
-            docstring=(
-                "The credit, debit, and net balances (credit - debit) for a given balance phase."
-            ),
+            docstring=("The credit, debit, and net balances (credit - debit) for a given balance phase."),
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="",
@@ -65,12 +56,8 @@ class Balance:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(
-                name="credit", type="Decimal", docstring="The total credit balance"
-            ),
-            types_utils.ValueSpec(
-                name="debit", type="Decimal", docstring="The total debit balance"
-            ),
+            types_utils.ValueSpec(name="credit", type="Decimal", docstring="The total credit balance"),
+            types_utils.ValueSpec(name="debit", type="Decimal", docstring="The total debit balance"),
             types_utils.ValueSpec(
                 name="net",
                 type="Decimal",
@@ -93,9 +80,7 @@ class BalanceDefaultDict(types_utils.TypedDefaultDict(BALANCE_ITEM_TYPE)):
         balance_dict_default_factory = lambda *_: self._balance(_from_proto=True)
         if default_factory is not None:
             balance_dict_default_factory = default_factory
-        super(BalanceDefaultDict, self).__init__(
-            default_factory=balance_dict_default_factory, mapping=mapping, _from_proto=_from_proto
-        )
+        super(BalanceDefaultDict, self).__init__(default_factory=balance_dict_default_factory, mapping=mapping, _from_proto=_from_proto)
 
     @classmethod
     @lru_cache()
@@ -115,9 +100,7 @@ class BalanceDefaultDict(types_utils.TypedDefaultDict(BALANCE_ITEM_TYPE)):
 
 
 class BalanceTimeseries(types_utils.Timeseries(BALANCE_ITEM_TYPE, "Balance dictionary")):
-    return_on_empty = lambda *_: BalanceDefaultDict(
-        lambda *_: Balance(_from_proto=True), _from_proto=True
-    )
+    return_on_empty = lambda *_: BalanceDefaultDict(lambda *_: Balance(_from_proto=True), _from_proto=True)
 
     @classmethod
     @lru_cache()

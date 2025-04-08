@@ -58,8 +58,7 @@ requires = types_utils.DecoratorSpec(
         types_utils.ValueSpec(
             name="data_scope",
             type="str",
-            docstring="See [supervisor data scope](../../supervisor_contracts_api_reference4xx/"
-            "hook_requirements/#data_scope)<br>  \n(**Supervisor Only**)",
+            docstring="See [supervisor data scope](../../supervisor_contracts_api_reference4xx/" "hook_requirements/#data_scope)<br>  \n(**Supervisor Only**)",
         ),
         types_utils.ValueSpec(
             name="event_type",
@@ -77,9 +76,7 @@ requires = types_utils.DecoratorSpec(
         types_utils.ValueSpec(
             name="last_execution_datetime",
             type="List[str]",
-            docstring="A list of [`event_types`](/reference/contracts/contracts_api_4xx/"
-            "smart_contracts_api_reference4xx/metadata/#event_types) to retrieve last execution "
-            "datetimes for",
+            docstring="A list of [`event_types`](/reference/contracts/contracts_api_4xx/" "smart_contracts_api_reference4xx/metadata/#event_types) to retrieve last execution " "datetimes for",
         ),
         types_utils.ValueSpec(
             name="parameters",
@@ -144,8 +141,7 @@ fetch_account_data = types_utils.DecoratorSpec(
         types_utils.ValueSpec(
             name="postings",
             type="List[str]",
-            docstring="A list of [PostingsIntervalFetcher](/reference/contracts/contracts_api_4xx/"
-            "common_types_4xx/classes/#PostingsIntervalFetcher) Fetcher IDs",
+            docstring="A list of [PostingsIntervalFetcher](/reference/contracts/contracts_api_4xx/" "common_types_4xx/classes/#PostingsIntervalFetcher) Fetcher IDs",
         ),
     ],
     supervisor_args=[
@@ -191,23 +187,14 @@ class IntervalFetcher:
             hint="Union[RelativeDateTime, DefinedDateTime]",
             prefix=f"{repr(self)}.start",
         )
-        if (
-            isinstance(self.start, RelativeDateTime)
-            and self.start.origin != DefinedDateTime.EFFECTIVE_DATETIME
-        ):
-            raise exceptions.InvalidSmartContractError(
-                f"{self} 'start' origin value must be set to 'DefinedDateTime.EFFECTIVE_DATETIME'"
-            )
+        if isinstance(self.start, RelativeDateTime) and self.start.origin != DefinedDateTime.EFFECTIVE_DATETIME:
+            raise exceptions.InvalidSmartContractError(f"{self} 'start' origin value must be set to 'DefinedDateTime.EFFECTIVE_DATETIME'")
 
         if self.start == DefinedDateTime.LIVE:
-            raise exceptions.InvalidSmartContractError(
-                f"{self} 'start' cannot be set to 'DefinedDateTime.LIVE'"
-            )
+            raise exceptions.InvalidSmartContractError(f"{self} 'start' cannot be set to 'DefinedDateTime.LIVE'")
 
         if self.start == DefinedDateTime.INTERVAL_START:
-            raise exceptions.InvalidSmartContractError(
-                f"{self} 'start' cannot be set to 'DefinedDateTime.INTERVAL_START'"
-            )
+            raise exceptions.InvalidSmartContractError(f"{self} 'start' cannot be set to 'DefinedDateTime.INTERVAL_START'")
 
         types_utils.validate_type(
             self.end,
@@ -217,9 +204,7 @@ class IntervalFetcher:
             prefix=f"{repr(self)}.end",
         )
         if self.end == DefinedDateTime.INTERVAL_START:
-            raise exceptions.InvalidSmartContractError(
-                f"{self} 'end' cannot be set to 'DefinedDateTime.INTERVAL_START'"
-            )
+            raise exceptions.InvalidSmartContractError(f"{self} 'end' cannot be set to 'DefinedDateTime.INTERVAL_START'")
 
     @classmethod
     @lru_cache()
@@ -347,9 +332,7 @@ class BalancesObservationFetcher:
         )
 
         if not self.at:
-            raise exceptions.InvalidSmartContractError(
-                "BalancesObservationFetcher 'at' must be populated"
-            )
+            raise exceptions.InvalidSmartContractError("BalancesObservationFetcher 'at' must be populated")
 
         types_utils.validate_type(
             self.at,
@@ -359,9 +342,7 @@ class BalancesObservationFetcher:
         )
 
         if self.at == DefinedDateTime.INTERVAL_START:
-            raise exceptions.InvalidSmartContractError(
-                "BalancesObservationFetcher 'at' cannot be set to 'DefinedDateTime.INTERVAL_START'"
-            )
+            raise exceptions.InvalidSmartContractError("BalancesObservationFetcher 'at' cannot be set to 'DefinedDateTime.INTERVAL_START'")
 
         types_utils.validate_type(
             self.filter,
@@ -378,9 +359,7 @@ class BalancesObservationFetcher:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(
-                name="fetcher_id", type="str", docstring="The ID for this fetcher."
-            ),
+            types_utils.ValueSpec(name="fetcher_id", type="str", docstring="The ID for this fetcher."),
             types_utils.ValueSpec(
                 name="at",
                 type="Union[DefinedDateTime, RelativeDateTime]",

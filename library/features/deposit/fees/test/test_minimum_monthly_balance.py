@@ -33,9 +33,7 @@ class MinimumMonthlyBalanceTest(FeatureTest):
         # mocks
         expected = SmartContractEventType(
             name=minimum_monthly_balance.APPLY_MINIMUM_MONTHLY_BALANCE_EVENT,
-            scheduler_tag_ids=[
-                f"PRODUCT_{minimum_monthly_balance.APPLY_MINIMUM_MONTHLY_BALANCE_EVENT}_AST"
-            ],
+            scheduler_tag_ids=[f"PRODUCT_{minimum_monthly_balance.APPLY_MINIMUM_MONTHLY_BALANCE_EVENT}_AST"],
         )
         # function call
         result = minimum_monthly_balance.event_types("PRODUCT")
@@ -45,16 +43,10 @@ class MinimumMonthlyBalanceTest(FeatureTest):
     @patch.object(minimum_monthly_balance.utils, "monthly_scheduled_event")
     def test_scheduled_event(self, mock_monthly_scheduled_event: MagicMock):
         # mocks
-        expected = {
-            minimum_monthly_balance.APPLY_MINIMUM_MONTHLY_BALANCE_EVENT: SentinelScheduledEvent(
-                "inactivity_fee_event"
-            )
-        }
+        expected = {minimum_monthly_balance.APPLY_MINIMUM_MONTHLY_BALANCE_EVENT: SentinelScheduledEvent("inactivity_fee_event")}
         # function call
         mock_monthly_scheduled_event.return_value = SentinelScheduledEvent("inactivity_fee_event")
-        result = minimum_monthly_balance.scheduled_events(
-            vault=sentinel.vault, start_datetime=sentinel.datetime
-        )
+        result = minimum_monthly_balance.scheduled_events(vault=sentinel.vault, start_datetime=sentinel.datetime)
         # assertion
         self.assertDictEqual(result, expected)
         mock_monthly_scheduled_event.assert_called_once_with(
@@ -72,24 +64,16 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         default_pending_incoming: Decimal = Decimal("0"),
     ) -> BalanceDefaultDict:
         mapping = {
-            self.balance_coordinate(denomination=DEFAULT_DENOMINATION): self.balance(
-                net=default_committed
-            ),
-            self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(
-                net=default_pending_outgoing
-            ),
-            self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(
-                net=default_pending_incoming
-            ),
+            self.balance_coordinate(denomination=DEFAULT_DENOMINATION): self.balance(net=default_committed),
+            self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(net=default_pending_outgoing),
+            self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(net=default_pending_incoming),
         }
         return BalanceDefaultDict(mapping=mapping)
 
     @patch.object(minimum_monthly_balance.utils, "get_parameter")
     @patch.object(minimum_monthly_balance.utils, "balance_at_coordinates")
     @patch.object(minimum_monthly_balance.utils, "average_balance")
-    @patch.object(
-        minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
-    )
+    @patch.object(minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
     def test_fee_not_applied_when_mean_balance_above_threshold(
         self,
         mock_get_tiered_parameter_value_based_on_account_tier: MagicMock,
@@ -104,9 +88,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         test_balance_observation_fetcher_mapping = {}
 
         for i in range(num_days):
-            test_balance_observation_fetcher_mapping[
-                f"PREVIOUS_EOD_{i+1}_FETCHER_ID"
-            ] = SentinelBalancesObservation("dummy_observation")
+            test_balance_observation_fetcher_mapping[f"PREVIOUS_EOD_{i+1}_FETCHER_ID"] = SentinelBalancesObservation("dummy_observation")
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,
@@ -135,9 +117,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         )
 
     @patch.object(minimum_monthly_balance.utils, "get_parameter")
-    @patch.object(
-        minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
-    )
+    @patch.object(minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
     def test_fee_not_applied_when_threshold_is_zero(
         self,
         mock_get_tiered_parameter_value_based_on_account_tier: MagicMock,
@@ -166,9 +146,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
     @patch.object(minimum_monthly_balance.utils, "get_parameter")
     @patch.object(minimum_monthly_balance.utils, "balance_at_coordinates")
     @patch.object(minimum_monthly_balance.utils, "average_balance")
-    @patch.object(
-        minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
-    )
+    @patch.object(minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
     @patch.object(minimum_monthly_balance.fees, "fee_custom_instruction")
     def test_fee_applied_when_mean_balance_below_threshold(
         self,
@@ -184,9 +162,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         test_balance_observation_fetcher_mapping = {}
 
         for i in range(num_days):
-            test_balance_observation_fetcher_mapping[
-                f"PREVIOUS_EOD_{i+1}_FETCHER_ID"
-            ] = SentinelBalancesObservation("dummy_observation")
+            test_balance_observation_fetcher_mapping[f"PREVIOUS_EOD_{i+1}_FETCHER_ID"] = SentinelBalancesObservation("dummy_observation")
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,
@@ -213,9 +189,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
             effective_datetime=effective_time,
         )
 
-        mock_average_balance.assert_called_once_with(
-            balances=[Decimal("50") for _ in range(num_days - 1)]
-        )
+        mock_average_balance.assert_called_once_with(balances=[Decimal("50") for _ in range(num_days - 1)])
         mock_fee_custom_instruction.assert_called_once_with(
             instruction_details={
                 "description": "Minimum balance fee",
@@ -231,9 +205,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
     @patch.object(minimum_monthly_balance.utils, "get_parameter")
     @patch.object(minimum_monthly_balance.utils, "balance_at_coordinates")
     @patch.object(minimum_monthly_balance.utils, "average_balance")
-    @patch.object(
-        minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
-    )
+    @patch.object(minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
     def test_fee_applied_when_mean_balance_equals_threshold_and_period_start_exactly_one_month(
         self,
         mock_get_tiered_parameter_value_based_on_account_tier: MagicMock,
@@ -248,9 +220,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         test_balance_observation_fetcher_mapping = {}
 
         for i in range(num_days):
-            test_balance_observation_fetcher_mapping[
-                f"PREVIOUS_EOD_{i+1}_FETCHER_ID"
-            ] = SentinelBalancesObservation("dummy_observation")
+            test_balance_observation_fetcher_mapping[f"PREVIOUS_EOD_{i+1}_FETCHER_ID"] = SentinelBalancesObservation("dummy_observation")
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,
@@ -281,9 +251,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
     @patch.object(minimum_monthly_balance.utils, "get_parameter")
     @patch.object(minimum_monthly_balance.utils, "balance_at_coordinates")
     @patch.object(minimum_monthly_balance.utils, "average_balance")
-    @patch.object(
-        minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
-    )
+    @patch.object(minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
     @patch.object(minimum_monthly_balance.fees, "fee_custom_instruction")
     def test_fee_applied_balance_below_threshold_and_period_date_before_creation_date(
         self,
@@ -299,9 +267,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         test_balance_observation_fetcher_mapping = {}
 
         for i in range(num_days):
-            test_balance_observation_fetcher_mapping[
-                f"PREVIOUS_EOD_{i+1}_FETCHER_ID"
-            ] = SentinelBalancesObservation("dummy_observation")
+            test_balance_observation_fetcher_mapping[f"PREVIOUS_EOD_{i+1}_FETCHER_ID"] = SentinelBalancesObservation("dummy_observation")
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,
@@ -329,9 +295,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
             effective_datetime=effective_time,
         )
 
-        mock_average_balance.assert_called_once_with(
-            balances=[Decimal("50") for _ in range(num_days - 1)]
-        )
+        mock_average_balance.assert_called_once_with(balances=[Decimal("50") for _ in range(num_days - 1)])
         mock_fee_custom_instruction.assert_called_once_with(
             instruction_details={
                 "description": "Minimum balance fee",
@@ -347,9 +311,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
     @patch.object(minimum_monthly_balance.utils, "get_parameter")
     @patch.object(minimum_monthly_balance.utils, "balance_at_coordinates")
     @patch.object(minimum_monthly_balance.utils, "average_balance")
-    @patch.object(
-        minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
-    )
+    @patch.object(minimum_monthly_balance.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
     @patch.object(minimum_monthly_balance.fees, "fee_custom_instruction")
     def test_fee_applied_balance_below_threshold_period_after_creation_date(
         self,
@@ -365,9 +327,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         test_balance_observation_fetcher_mapping = {}
 
         for i in range(num_days):
-            test_balance_observation_fetcher_mapping[
-                f"PREVIOUS_EOD_{i+1}_FETCHER_ID"
-            ] = SentinelBalancesObservation("dummy_observation")
+            test_balance_observation_fetcher_mapping[f"PREVIOUS_EOD_{i+1}_FETCHER_ID"] = SentinelBalancesObservation("dummy_observation")
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=test_balance_observation_fetcher_mapping,
@@ -395,9 +355,7 @@ class MinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
             effective_datetime=effective_time,
         )
 
-        mock_average_balance.assert_called_once_with(
-            balances=[Decimal("50") for _ in range(num_days)]
-        )
+        mock_average_balance.assert_called_once_with(balances=[Decimal("50") for _ in range(num_days)])
         mock_fee_custom_instruction.assert_called_once_with(
             instruction_details={
                 "description": "Minimum balance fee",
@@ -473,13 +431,7 @@ class PartialMinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
         mock_fee_custom_instruction.return_value = [sentinel.fee_custom_instruction]
         mock_charge_partial_fee.return_value = [sentinel.partial_fee_custom_instruction]
 
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                minimum_monthly_balance.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
-                    "effective"
-                )
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={minimum_monthly_balance.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")})  # noqa: E501
 
         result = minimum_monthly_balance.apply_minimum_balance_fee(
             vault=mock_vault,

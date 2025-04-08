@@ -24,8 +24,7 @@ parameters = [
     Parameter(
         name=PARAM_COOLING_OFF_PERIOD,
         level=ParameterLevel.TEMPLATE,
-        description="The number of days from the account creation datetime when a user can make a "
-        "full withdrawal without penalties.",
+        description="The number of days from the account creation datetime when a user can make a " "full withdrawal without penalties.",
         display_name="Cooling-off Period Length (days)",
         shape=NumberShape(min_value=0, step=1),
         default_value=5,
@@ -35,8 +34,7 @@ parameters = [
         name=PARAM_COOLING_OFF_PERIOD_END_DATE,
         level=ParameterLevel.INSTANCE,
         derived=True,
-        description="The cooling-off period will end at 23:59:59.999999 on this day. If "
-        "0001-01-01 is returned, this parameter is not valid for this account.",
+        description="The cooling-off period will end at 23:59:59.999999 on this day. If " "0001-01-01 is returned, this parameter is not valid for this account.",
         display_name="Cooling-off Period End Date",
         shape=DateShape(),
     ),
@@ -53,15 +51,11 @@ def get_cooling_off_period_end_datetime(*, vault: SmartContractVault) -> datetim
     """
     cooling_off_period = _get_cooling_off_period_parameter(vault=vault)
     account_creation_datetime = vault.get_account_creation_datetime()
-    cooling_off_period_end = (
-        account_creation_datetime + relativedelta(days=cooling_off_period)
-    ).replace(hour=23, minute=59, second=59, microsecond=999999)
+    cooling_off_period_end = (account_creation_datetime + relativedelta(days=cooling_off_period)).replace(hour=23, minute=59, second=59, microsecond=999999)
     return cooling_off_period_end
 
 
-def is_within_cooling_off_period(
-    *, vault: SmartContractVault, effective_datetime: datetime
-) -> bool:
+def is_within_cooling_off_period(*, vault: SmartContractVault, effective_datetime: datetime) -> bool:
     """
     Determines whether an effective datetime is within the cooling-off period of an account
 
@@ -73,14 +67,8 @@ def is_within_cooling_off_period(
     return effective_datetime <= get_cooling_off_period_end_datetime(vault=vault)
 
 
-def _get_cooling_off_period_parameter(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> int:
-    return int(
-        utils.get_parameter(
-            vault=vault, name=PARAM_COOLING_OFF_PERIOD, at_datetime=effective_datetime
-        )
-    )
+def _get_cooling_off_period_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> int:
+    return int(utils.get_parameter(vault=vault, name=PARAM_COOLING_OFF_PERIOD, at_datetime=effective_datetime))
 
 
 def is_withdrawal_subject_to_fees(
@@ -120,13 +108,9 @@ def is_withdrawal_subject_to_fees(
     if not is_withdrawal:
         return False
 
-    is_full_withdrawal = is_withdrawal and (
-        utils.get_available_balance(balances=balances, denomination=denomination) == Decimal("0")
-    )
+    is_full_withdrawal = is_withdrawal and (utils.get_available_balance(balances=balances, denomination=denomination) == Decimal("0"))
 
-    if is_full_withdrawal and is_within_cooling_off_period(
-        vault=vault, effective_datetime=effective_datetime
-    ):
+    if is_full_withdrawal and is_within_cooling_off_period(vault=vault, effective_datetime=effective_datetime):
         return False
 
     return True

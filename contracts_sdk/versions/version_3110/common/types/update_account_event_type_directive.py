@@ -6,25 +6,12 @@ from functools import lru_cache
 
 
 class UpdateAccountEventTypeDirective(types3100.UpdateAccountEventTypeDirective):
-    def __init__(
-        self,
-        *,
-        account_id,
-        event_type,
-        schedule=None,
-        schedule_method=None,
-        end_datetime=None,
-        skip=None,
-        _from_proto=False
-    ):
+    def __init__(self, *, account_id, event_type, schedule=None, schedule_method=None, end_datetime=None, skip=None, _from_proto=False):
         _validate_missing_params = skip is None
         if not _from_proto:
             if skip is None:
                 if not end_datetime and not schedule and not schedule_method:
-                    raise InvalidSmartContractError(
-                        "UpdateAccountEventTypeDirective object must have either an "
-                        "end_datetime, a schedule, schedule_method, or skip defined"
-                    )
+                    raise InvalidSmartContractError("UpdateAccountEventTypeDirective object must have either an " "end_datetime, a schedule, schedule_method, or skip defined")
             else:
                 self._spec().assert_constructor_args(self._registry, {"skip": skip})
         super().__init__(

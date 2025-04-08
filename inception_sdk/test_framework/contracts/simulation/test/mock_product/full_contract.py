@@ -76,8 +76,7 @@ def pre_posting_code(postings, effective_date):
     denomination = vault.get_parameter_timeseries(name="denomination").latest()
     if any(post.denomination != denomination for post in postings):
         raise Rejected(
-            "Cannot make transactions in given denomination; "
-            "transactions must be in {}".format(denomination),
+            "Cannot make transactions in given denomination; " "transactions must be in {}".format(denomination),
             reason_code=RejectedReason.WRONG_DENOMINATION,
         )
 
@@ -87,9 +86,7 @@ def post_posting_code(postings, effective_date):
     denomination = vault.get_parameter_timeseries(name="denomination").latest()
     overdraft_limit = vault.get_parameter_timeseries(name="overdraft_limit").latest()
     balances = vault.get_balance_timeseries().latest()
-    committed_balance = balances[
-        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
-    ].net
+    committed_balance = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
     # We ignore authorised (PENDING_OUT) transactions and only look at settled ones (COMMITTED)
     if committed_balance < -overdraft_limit:
         # Charge the fee
@@ -99,11 +96,7 @@ def post_posting_code(postings, effective_date):
 @requires(parameters=True)
 def execution_schedules():
     selected_day = vault.get_parameter_timeseries(name="interest_payment_day").latest()
-    interest_payday = (
-        selected_day.value
-        if selected_day.is_set()
-        else min(vault.get_account_creation_date().day, 28)
-    )
+    interest_payday = selected_day.value if selected_day.is_set() else min(vault.get_account_creation_date().day, 28)
     apply_accrued_interest_schedule = {
         "day": str(interest_payday),
         "hour": "0",
@@ -189,12 +182,8 @@ def _accrue_interest(vault, end_of_day_datetime):
     # Get the balance at the end of the previous day
     denomination = vault.get_parameter_timeseries(name="denomination").latest()
     balances = vault.get_balance_timeseries().at(timestamp=end_of_day_datetime)
-    effective_balance = balances[
-        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
-    ].net
-    gross_interest_rate = vault.get_parameter_timeseries(name="gross_interest_rate").before(
-        timestamp=end_of_day_datetime
-    )
+    effective_balance = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+    gross_interest_rate = vault.get_parameter_timeseries(name="gross_interest_rate").before(timestamp=end_of_day_datetime)
     daily_rate = gross_interest_rate / 365
     daily_rate_percent = daily_rate * 100
     amount_to_accrue = effective_balance * daily_rate
@@ -207,15 +196,10 @@ def _accrue_interest(vault, end_of_day_datetime):
             from_account_address="ACCRUED_OUTGOING",
             to_account_id=vault.account_id,
             to_account_address="ACCRUED_INCOMING",
-            instruction_details={
-                "description": "Daily interest accrued at %0.5f%% on balance of %0.2f"
-                % (daily_rate_percent, effective_balance)
-            },
+            instruction_details={"description": "Daily interest accrued at %0.5f%% on balance of %0.2f" % (daily_rate_percent, effective_balance)},
             asset=DEFAULT_ASSET,
         )
-        vault.instruct_posting_batch(
-            posting_instructions=posting_ins, effective_date=end_of_day_datetime
-        )
+        vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=end_of_day_datetime)
 
     vault.start_workflow(
         workflow="MOCK_INTEREST_ACCRUAL_WORKFLOW",
@@ -230,9 +214,7 @@ def _accrue_interest(vault, end_of_day_datetime):
 def _apply_accrued_interest(vault, end_of_day_datetime):
     denomination = vault.get_parameter_timeseries(name="denomination").latest()
     latest_bal_by_addr = vault.get_balance_timeseries().at(timestamp=end_of_day_datetime)
-    incoming_accrued = latest_bal_by_addr[
-        ("ACCRUED_INCOMING", DEFAULT_ASSET, denomination, Phase.COMMITTED)
-    ].net
+    incoming_accrued = latest_bal_by_addr[("ACCRUED_INCOMING", DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
     amount_to_be_paid = _precision_fulfillment(incoming_accrued)
     # Fulfil any incoming interest into the account
     if amount_to_be_paid > 0:
@@ -244,9 +226,7 @@ def _apply_accrued_interest(vault, end_of_day_datetime):
             to_account_id=vault.account_id,
             to_account_address=DEFAULT_ADDRESS,
             asset=DEFAULT_ASSET,
-            client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_CUSTOMER".format(
-                vault.get_hook_execution_id(), denomination
-            ),
+            client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_CUSTOMER".format(vault.get_hook_execution_id(), denomination),
             instruction_details={
                 "description": "Interest Applied",
                 "event": "APPLY_ACCRUED_INTEREST",
@@ -261,9 +241,7 @@ def _apply_accrued_interest(vault, end_of_day_datetime):
                 to_account_id=internal_account,
                 to_account_address="ACCRUED_OUTGOING",
                 asset=DEFAULT_ASSET,
-                client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_INTERNAL".format(
-                    vault.get_hook_execution_id(), denomination
-                ),
+                client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_INTERNAL".format(vault.get_hook_execution_id(), denomination),
                 instruction_details={
                     "description": "Interest Applied",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -283,9 +261,7 @@ def _apply_accrued_interest(vault, end_of_day_datetime):
                     to_account_id=internal_account,
                     to_account_address="ACCRUED_OUTGOING",
                     asset=DEFAULT_ASSET,
-                    client_transaction_id="REVERSE_ACCRUE_INTEREST_{}_{}".format(
-                        vault.get_hook_execution_id(), denomination
-                    ),
+                    client_transaction_id="REVERSE_ACCRUE_INTEREST_{}_{}".format(vault.get_hook_execution_id(), denomination),
                     instruction_details={
                         "description": "Reversing negative accrued interest after payment.",
                         "event": "APPLY_ACCRUED_INTEREST",
@@ -297,9 +273,7 @@ def _apply_accrued_interest(vault, end_of_day_datetime):
         vault.instruct_posting_batch(
             posting_instructions=posting_ins,
             effective_date=end_of_day_datetime,
-            client_batch_id="APPLY_ACCRUED_INTEREST_{}_{}".format(
-                vault.get_hook_execution_id(), denomination
-            ),
+            client_batch_id="APPLY_ACCRUED_INTEREST_{}_{}".format(vault.get_hook_execution_id(), denomination),
         )
 
 

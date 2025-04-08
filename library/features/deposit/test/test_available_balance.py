@@ -25,12 +25,8 @@ class IsWithdrawalExceedingAvailableBalance(FeatureTest):
 
     @patch.object(feature.utils, "get_available_balance")
     def test_postings_exceeding_available_balance(self, mock_get_available_balance: MagicMock):
-        balances = BalanceDefaultDict(
-            mapping={self.balance_coordinate(denomination="USD"): SentinelBalance("dummy_balance")}
-        )
-        posting_instructions = [
-            self.outbound_hard_settlement(denomination="USD", amount=Decimal("175"))
-        ]
+        balances = BalanceDefaultDict(mapping={self.balance_coordinate(denomination="USD"): SentinelBalance("dummy_balance")})
+        posting_instructions = [self.outbound_hard_settlement(denomination="USD", amount=Decimal("175"))]
         mock_get_available_balance.side_effect = [Decimal("100"), Decimal("-175")]
 
         result = feature.validate(
@@ -48,9 +44,7 @@ class IsWithdrawalExceedingAvailableBalance(FeatureTest):
         )
 
     @patch.object(feature.utils, "get_available_balance")
-    def test_postings_exceeding_available_balance_multiple_supported_denomination(
-        self, mock_get_available_balance: MagicMock
-    ):
+    def test_postings_exceeding_available_balance_multiple_supported_denomination(self, mock_get_available_balance: MagicMock):
         posting_instructions = [
             self.inbound_hard_settlement(denomination=sentinel.denom_one, amount=Decimal("75")),
             self.outbound_hard_settlement(denomination=sentinel.denom_two, amount=Decimal("175")),
@@ -75,8 +69,7 @@ class IsWithdrawalExceedingAvailableBalance(FeatureTest):
         self.assertEqual(
             result,
             Rejection(
-                message=f"Posting amount of 175 {sentinel.denom_two} is exceeding "
-                f"available balance of 100 {sentinel.denom_two}.",
+                message=f"Posting amount of 175 {sentinel.denom_two} is exceeding " f"available balance of 100 {sentinel.denom_two}.",
                 reason_code=RejectionReason.INSUFFICIENT_FUNDS,
             ),
         )
@@ -95,17 +88,11 @@ class IsWithdrawalExceedingAvailableBalance(FeatureTest):
 
     @patch.object(feature.utils, "get_available_balance")
     def test_postings_not_exceeding_available_balance(self, mock_get_available_balance: MagicMock):
-        balances = BalanceDefaultDict(
-            mapping={self.balance_coordinate(denomination="USD"): self.balance(net=Decimal("200"))}
-        )
-        posting_instructions = [
-            self.outbound_hard_settlement(denomination="USD", amount=Decimal("175"))
-        ]
+        balances = BalanceDefaultDict(mapping={self.balance_coordinate(denomination="USD"): self.balance(net=Decimal("200"))})
+        posting_instructions = [self.outbound_hard_settlement(denomination="USD", amount=Decimal("175"))]
         mock_get_available_balance.side_effect = [Decimal("200"), Decimal("-175")]
 
-        result = feature.validate(
-            balances=balances, denominations=["USD"], posting_instructions=posting_instructions
-        )
+        result = feature.validate(balances=balances, denominations=["USD"], posting_instructions=posting_instructions)
 
         self.assertIsNone(result)
 

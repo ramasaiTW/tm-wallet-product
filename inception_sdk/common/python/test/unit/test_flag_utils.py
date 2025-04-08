@@ -46,15 +46,11 @@ class FlagParsingTests(TestCase):
         mock_logger.warning.assert_called_once_with("Ignoring unrecognised flags ['--b', '--c']")
 
     def test_parse_flags_with_positional_accepts_single_dash(self):
-        remaining = flag_utils.parse_flags(
-            argv=["binary", "--log_level=INFO", "-"], positional=True, allow_unknown=False
-        )
+        remaining = flag_utils.parse_flags(argv=["binary", "--log_level=INFO", "-"], positional=True, allow_unknown=False)
         self.assertListEqual(remaining, ["-"])
 
     def test_parse_flags_with_positional_accepts_positional_args(self):
-        remaining = flag_utils.parse_flags(
-            argv=["binary", "--log_level=INFO", "test"], positional=True, allow_unknown=False
-        )
+        remaining = flag_utils.parse_flags(argv=["binary", "--log_level=INFO", "test"], positional=True, allow_unknown=False)
         self.assertListEqual(remaining, ["test"])
 
     @patch.object(flag_utils, "sys", spec=sys)
@@ -64,9 +60,7 @@ class FlagParsingTests(TestCase):
 
     @patch.object(flag_utils, "FLAGS")
     @patch.object(flag_utils, "sys", spec=sys)
-    def test_parse_flags_with_error_and_help_sys_exits(
-        self, mock_sys: MagicMock, mock_flags: MagicMock
-    ):
+    def test_parse_flags_with_error_and_help_sys_exits(self, mock_sys: MagicMock, mock_flags: MagicMock):
         type(mock_flags).help = PropertyMock(return_value=True)
         mock_flags.is_parsed.return_value = True
         mock_flags.side_effect = IllegalFlagValueError("bla")
@@ -81,7 +75,6 @@ class FlagParsingTests(TestCase):
             flag_utils.parse_flags(argv=["binary", "--log_level=1234"])
         self.assertEqual(
             ctx.exception.args[0],
-            "flag --log_level=1234: value should be one of "
-            "<DEBUG|INFO|WARN|WARNING|ERROR|CRITICAL>",
+            "flag --log_level=1234: value should be one of " "<DEBUG|INFO|WARN|WARNING|ERROR|CRITICAL>",
         )
         mock_log.exception.assert_called_once_with(ctx.exception)

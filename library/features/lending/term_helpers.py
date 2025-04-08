@@ -30,9 +30,7 @@ def calculate_term_details_from_counter(
     balances: BalanceDefaultDict | None = None,
     denomination: str | None = None,
 ) -> tuple[int, int]:
-    original_total_term = int(
-        utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    original_total_term = int(utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT))
 
     # this allows us to avoid fetching balances in activation hook
     if effective_datetime == vault.get_account_creation_datetime():
@@ -40,9 +38,7 @@ def calculate_term_details_from_counter(
         return 0, original_total_term
 
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
 

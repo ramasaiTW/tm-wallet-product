@@ -40,9 +40,7 @@ class HelpersTest(WalletTestBase):
             self.inbound_auth_adjust(amount=Decimal(100000), account_id=DEFAULT_ACCOUNT_ID),
         ]
 
-        amount = contract._get_release_and_decreased_auth_amount(
-            postings=postings, denomination=self.default_denomination
-        )
+        amount = contract._get_release_and_decreased_auth_amount(postings=postings, denomination=self.default_denomination)
 
         self.assertEqual(amount, Decimal(15))
 
@@ -286,10 +284,7 @@ class HelpersTest(WalletTestBase):
         expected_pi = [
             CustomInstruction(
                 postings=expected_postings,
-                instruction_details={
-                    "description": "Auto top up transferred from nominated account:"
-                    + str(transfer_amount)
-                },
+                instruction_details={"description": "Auto top up transferred from nominated account:" + str(transfer_amount)},
                 override_all_restrictions=None,
             )
         ]

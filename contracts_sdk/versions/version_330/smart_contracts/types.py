@@ -9,9 +9,7 @@ from ....utils import symbols
 
 class EventType:
     def __init__(self, *, name, scheduler_tag_ids=None):
-        self._spec().assert_constructor_args(
-            self._registry, {"name": name, "scheduler_tag_ids": scheduler_tag_ids}
-        )
+        self._spec().assert_constructor_args(self._registry, {"name": name, "scheduler_tag_ids": scheduler_tag_ids})
 
         self.name = name
         self.scheduler_tag_ids = scheduler_tag_ids
@@ -32,9 +30,7 @@ class EventType:
                 [EventType](#classes-EventType)s included in its execution_schedules hook.
             """,
             public_attributes=cls._public_attributes(language_code),
-            constructor=types_utils.ConstructorSpec(
-                docstring="Constructs a new EventType", args=cls._public_attributes(language_code)
-            ),
+            constructor=types_utils.ConstructorSpec(docstring="Constructs a new EventType", args=cls._public_attributes(language_code)),
         )
 
     @classmethod

@@ -31,27 +31,17 @@ event_types = [
 ]
 
 
-def activation_hook(
-    vault: SmartContractVault, hook_arguments: ActivationHookArguments
-) -> Optional[ActivationHookResult]:
+def activation_hook(vault: SmartContractVault, hook_arguments: ActivationHookArguments) -> Optional[ActivationHookResult]:
     return ActivationHookResult(
         scheduled_events_return_value={
-            "ACCRUE_OFFSET_INTEREST": feature.schedules(
-                start_datetime=hook_arguments.effective_datetime
-            ),
+            "ACCRUE_OFFSET_INTEREST": feature.schedules(start_datetime=hook_arguments.effective_datetime),
         }
     )
 
 
-def scheduled_event_hook(
-    vault: SmartContractVault, hook_arguments: ScheduledEventHookArguments
-) -> Optional[ScheduledEventHookResult]:
+def scheduled_event_hook(vault: SmartContractVault, hook_arguments: ScheduledEventHookArguments) -> Optional[ScheduledEventHookResult]:
     # We use a different amount in supervisor to distinguish which has run
-    posting_directives = [
-        PostingInstructionsDirective(
-            posting_instructions=feature.posting_logic(vault.account_id, amount=Decimal("0.1"))
-        )
-    ]
+    posting_directives = [PostingInstructionsDirective(posting_instructions=feature.posting_logic(vault.account_id, amount=Decimal("0.1")))]
 
     return ScheduledEventHookResult(posting_instructions_directives=posting_directives)
 

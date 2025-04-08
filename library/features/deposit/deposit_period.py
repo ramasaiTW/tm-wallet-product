@@ -63,8 +63,7 @@ parameters = [
             ]
         ),
         level=ParameterLevel.TEMPLATE,
-        description="Number of deposits allowed during the deposit period."
-        " This can be single or unlimited.",
+        description="Number of deposits allowed during the deposit period." " This can be single or unlimited.",
         display_name="Number Of Deposits",
         default_value=UnionItemValue(key="unlimited"),
     ),
@@ -73,8 +72,7 @@ parameters = [
         shape=DateShape(),
         level=ParameterLevel.INSTANCE,
         derived=True,
-        description="The deposit period will end at 23:59:59.999999 on this day. If "
-        "0001-01-01 is returned, this parameter is not valid for this account.",
+        description="The deposit period will end at 23:59:59.999999 on this day. If " "0001-01-01 is returned, this parameter is not valid for this account.",
         display_name="Deposit Period End Date",
     ),
 ]
@@ -162,13 +160,9 @@ def validate(
         number_of_permitted_deposits = _get_number_of_permitted_deposits_parameter(vault=vault)
         if number_of_permitted_deposits == SINGLE:
             if balances is None:
-                balances = vault.get_balances_observation(
-                    fetcher_id=fetchers.LIVE_BALANCES_BOF_ID
-                ).balances
+                balances = vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
 
-            credit_default_balance = utils.get_current_credit_balance(
-                balances=balances, denomination=denomination
-            )
+            credit_default_balance = utils.get_current_credit_balance(balances=balances, denomination=denomination)
 
             if credit_default_balance > Decimal(0):
                 return Rejection(
@@ -223,9 +217,7 @@ def get_deposit_period_end_datetime(*, vault: SmartContractVault) -> datetime:
     """
     account_creation_datetime = vault.get_account_creation_datetime()
     deposit_period = _get_deposit_period_parameter(vault=vault)
-    return (account_creation_datetime + relativedelta(days=deposit_period)).replace(
-        hour=23, minute=59, second=59, microsecond=999999, tzinfo=ZoneInfo("UTC")
-    )
+    return (account_creation_datetime + relativedelta(days=deposit_period)).replace(hour=23, minute=59, second=59, microsecond=999999, tzinfo=ZoneInfo("UTC"))
 
 
 def is_within_deposit_period(*, vault: SmartContractVault, effective_datetime: datetime) -> bool:
@@ -240,17 +232,11 @@ def is_within_deposit_period(*, vault: SmartContractVault, effective_datetime: d
     return effective_datetime <= get_deposit_period_end_datetime(vault=vault)
 
 
-def _get_deposit_period_parameter(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> int:
-    return int(
-        utils.get_parameter(vault=vault, name=PARAM_DEPOSIT_PERIOD, at_datetime=effective_datetime)
-    )
+def _get_deposit_period_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> int:
+    return int(utils.get_parameter(vault=vault, name=PARAM_DEPOSIT_PERIOD, at_datetime=effective_datetime))
 
 
-def _get_number_of_permitted_deposits_parameter(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> str:
+def _get_number_of_permitted_deposits_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
     return str(
         utils.get_parameter(
             vault=vault,

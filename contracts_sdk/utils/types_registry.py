@@ -28,9 +28,7 @@ class TypeRegistry(dict):
     or method may wish to assert.
     """
 
-    def __init__(
-        self, *, builtins: Dict[str, Any], custom: List[Any], disable_type_checking: bool = False
-    ):
+    def __init__(self, *, builtins: Dict[str, Any], custom: List[Any], disable_type_checking: bool = False):
         if not isinstance(builtins, dict):
             raise ValueError("builtins must be a dict")
         if not isinstance(custom, list):
@@ -39,9 +37,7 @@ class TypeRegistry(dict):
         self["__builtins__"] = builtins
         self._specs: Dict[
             str,
-            Union[
-                ClassSpec, DecoratorSpec, FixedValueSpec, MethodSpec, NativeObjectSpec, ValueSpec
-            ],
+            Union[ClassSpec, DecoratorSpec, FixedValueSpec, MethodSpec, NativeObjectSpec, ValueSpec],
         ] = {}
         self.disable_type_checking = disable_type_checking
 
@@ -121,20 +117,14 @@ class RegistrySpecsSanityCheckResults:
     def __str__(self):
         lines = []
         if self.classes_without_constructor_specs:
-            lines.append(
-                f"Classes without constructor specs: "
-                f"{', '.join(sorted(self.classes_without_constructor_specs))}"
-            )
+            lines.append(f"Classes without constructor specs: " f"{', '.join(sorted(self.classes_without_constructor_specs))}")
 
         if self.missing_attributes:
             lines.append(f"Missing attributes: {' ,'.join(sorted(self.missing_attributes))}")
 
         if self.invalid_attributes:
             lines.append("Invalid attributes:")
-            lines.extend(
-                f"{item} expected {repr(item)} but got {item}"
-                for item in sorted(self.invalid_attributes)
-            )
+            lines.extend(f"{item} expected {repr(item)} but got {item}" for item in sorted(self.invalid_attributes))
 
         if self.missing_methods:
             lines.append(f"Missing methods: {', '.join(sorted(self.missing_methods))}")
@@ -184,9 +174,7 @@ def _check_class_spec(
             try:
                 registry.assert_type_name(attr_spec.type, attr, "")
             except StrongTypingError:
-                results.invalid_attributes.add(
-                    (f"{class_spec.name}.{attr_spec.name}", attr_spec.type, type(attr))
-                )
+                results.invalid_attributes.add((f"{class_spec.name}.{attr_spec.name}", attr_spec.type, type(attr)))
 
     # Check all the public methods match the specification.
     for method_spec in class_spec.public_methods.values():
@@ -207,10 +195,7 @@ def _check_method_spec(
     method: Any,
     method_spec: MethodSpec,
 ):
-    args = {
-        name: _try_to_construct(registry, prebuilt_instances, spec_of_arg.type)
-        for name, spec_of_arg in method_spec.args.items()
-    }
+    args = {name: _try_to_construct(registry, prebuilt_instances, spec_of_arg.type) for name, spec_of_arg in method_spec.args.items()}
 
     try:
         return_value = method(**args)
@@ -225,9 +210,7 @@ def _check_method_spec(
         try:
             registry.assert_type_name(method_spec.return_value.type, return_value, "")
         except StrongTypingError:
-            results.invalid_method_return_values.add(
-                (identifier, method_spec.type, type(return_value))
-            )
+            results.invalid_method_return_values.add((identifier, method_spec.type, type(return_value)))
 
 
 def _try_to_construct(registry: TypeRegistry, prebuilt_instances: Dict[str, Any], type_str: str):
@@ -240,12 +223,7 @@ def _try_to_construct(registry: TypeRegistry, prebuilt_instances: Dict[str, Any]
 
     if spec:
         if isinstance(spec, ClassSpec) and spec.constructor:
-            return type_obj(
-                **{
-                    name: _try_to_construct(registry, prebuilt_instances, spec_of_arg.type)
-                    for name, spec_of_arg in spec.constructor.args.items()
-                }
-            )
+            return type_obj(**{name: _try_to_construct(registry, prebuilt_instances, spec_of_arg.type) for name, spec_of_arg in spec.constructor.args.items()})
         elif isinstance(spec, ValueSpec):
             return _try_to_construct(registry, prebuilt_instances, spec.type)
         elif isinstance(spec, NativeObjectSpec):
@@ -288,17 +266,12 @@ def check_registry_specs_sanity(registry: TypeRegistry, prebuilt_instances: Dict
     return results
 
 
-def make_contract_version_sandbox(
-    contract_lib: Any, disable_type_checking: bool = False
-) -> Dict[str, Any]:
+def make_contract_version_sandbox(contract_lib: Any, disable_type_checking: bool = False) -> Dict[str, Any]:
     # The _builtin_not_supported method provides a more accurate error message when unsupported
     # builtin methods are used, e.g. if python has a C implementation which is calling a Python
     # function such as `__import__`.
     types_dict = TypeRegistry(
-        builtins={
-            k: v if k in contract_lib.ALLOWED_BUILTINS else _builtin_not_supported
-            for k, v in builtins.__dict__.items()
-        },
+        builtins={k: v if k in contract_lib.ALLOWED_BUILTINS else _builtin_not_supported for k, v in builtins.__dict__.items()},
         custom=list(contract_lib.types_registry().values()),
         disable_type_checking=disable_type_checking,
     )
@@ -322,13 +295,7 @@ def make_contract_version_sandbox_with_imports(
     if contracts_api_import_all:
         custom_types = set(contract_lib.types_registry().values())
     else:
-        custom_types = set(
-            [
-                custom_type
-                for name, custom_type in contract_lib.types_registry().items()
-                if name in contracts_api_imports
-            ]
-        )
+        custom_types = set([custom_type for name, custom_type in contract_lib.types_registry().items() if name in contracts_api_imports])
     if native_modules_import_all:
         native_module_list = []
         for function_dict in contract_lib.ALLOWED_NATIVES.values():
@@ -339,10 +306,7 @@ def make_contract_version_sandbox_with_imports(
     elif imported_native_modules:
         custom_types.update(imported_native_modules)
     types_dict = TypeRegistry(
-        builtins={
-            k: v if k in contract_lib.ALLOWED_BUILTINS else _builtin_not_supported
-            for k, v in builtins.__dict__.items()
-        },
+        builtins={k: v if k in contract_lib.ALLOWED_BUILTINS else _builtin_not_supported for k, v in builtins.__dict__.items()},
         # Custom needs to be a list for the TypeRegistry.
         custom=list(custom_types),
     )
@@ -380,11 +344,7 @@ class _TypeCheckingDict:
             @staticmethod
             def _type_check(obj: Any):
                 return isinstance(obj, dict) and all(
-                    self._registry.is_valid_type(types[0], key)
-                    and self._registry.is_valid_type(  # noqa: SLF001
-                        types[1], value
-                    )  # noqa: SLF001
-                    for key, value in obj.items()
+                    self._registry.is_valid_type(types[0], key) and self._registry.is_valid_type(types[1], value) for key, value in obj.items()  # noqa: SLF001  # noqa: SLF001
                 )
 
         return TypeCheckingDict
@@ -400,9 +360,7 @@ class _TypeCheckingList:
 
             @staticmethod
             def _type_check(obj):
-                return isinstance(obj, list) and all(
-                    self._registry.is_valid_type(type, item) for item in obj  # noqa: SLF001
-                )
+                return isinstance(obj, list) and all(self._registry.is_valid_type(type, item) for item in obj)  # noqa: SLF001
 
         return TypeCheckingList
 
@@ -432,13 +390,7 @@ class _TypeCheckingTupleCls:
         class TypeCheckingTupleWithArgs:
             @staticmethod
             def _type_check(obj):
-                return (
-                    isinstance(obj, tuple)
-                    and len(obj) == len(types)
-                    and all(
-                        self._registry.is_valid_type(_type, item) for _type, item in zip(types, obj)
-                    )
-                )
+                return isinstance(obj, tuple) and len(obj) == len(types) and all(self._registry.is_valid_type(_type, item) for _type, item in zip(types, obj))
 
         return TypeCheckingTupleWithArgs
 

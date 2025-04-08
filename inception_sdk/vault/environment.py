@@ -62,9 +62,6 @@ def load_environments(file_path: str) -> dict[str, Environment]:
     :return: environments, initialised from JSON file contents
     """
 
-    environments = {
-        env_name: load_environment(env_name, env_definition=env)
-        for env_name, env in json.loads(load_file_contents(file_path)).items()
-    }
+    environments = {env_name: load_environment(env_name, env_definition=env) for env_name, env in json.loads(load_file_contents(file_path)).items()}
 
     return environments

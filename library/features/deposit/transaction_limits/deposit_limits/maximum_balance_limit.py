@@ -29,8 +29,7 @@ parameters = [
     Parameter(
         name=PARAM_MAXIMUM_BALANCE,
         level=ParameterLevel.TEMPLATE,
-        description="The maximum deposited balance amount for the account."
-        " Deposits that breach this amount will be rejected.",
+        description="The maximum deposited balance amount for the account." " Deposits that breach this amount will be rejected.",
         display_name="Maximum Balance Amount",
         shape=NumberShape(min_value=Decimal("0"), step=Decimal("0.01")),
         default_value=Decimal("10000"),
@@ -56,25 +55,19 @@ def validate(
     using the LIVE_BALANCES_BOF_ID fetcher id
     :return: rejection if the limit conditions are not met
     """
-    balances = (
-        balances
-        or vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
-    )
+    balances = balances or vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
 
     current_balance = utils.get_current_net_balance(balances=balances, denomination=denomination)
 
     deposit_proposed_amount = Decimal(0)
     for posting in postings:
         postings_balances = posting.balances()
-        deposit_proposed_amount += utils.get_current_net_balance(
-            balances=postings_balances, denomination=denomination
-        )
+        deposit_proposed_amount += utils.get_current_net_balance(balances=postings_balances, denomination=denomination)
 
     maximum_balance: Decimal = utils.get_parameter(vault, PARAM_MAXIMUM_BALANCE)
     if maximum_balance is not None and current_balance + deposit_proposed_amount > maximum_balance:
         return Rejection(
-            message=f"Posting would exceed maximum permitted balance {maximum_balance} "
-            f"{denomination}.",
+            message=f"Posting would exceed maximum permitted balance {maximum_balance} " f"{denomination}.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 

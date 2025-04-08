@@ -46,8 +46,7 @@ parameters = [
     Parameter(
         name=PARAM_UNARRANGED_OVERDRAFT_AMOUNT,
         level=ParameterLevel.INSTANCE,
-        description="An additional borrowing amount which may be used to validate balance"
-        " checks when going beyond the agreed borrowing limit",
+        description="An additional borrowing amount which may be used to validate balance" " checks when going beyond the agreed borrowing limit",
         display_name="Unarranged Overdraft Amount",
         update_permission=ParameterUpdatePermission.OPS_EDITABLE,
         shape=OptionalShape(shape=NumberShape(min_value=0, step=Decimal("0.01"))),
@@ -74,27 +73,16 @@ def validate(
     using the LIVE_BALANCES_BOF_ID fetcher id
     :return : rejection if criteria not satisfied
     """
-    balances = (
-        balances
-        or vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
-    )
+    balances = balances or vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
 
-    posting_amount = Decimal(
-        sum(
-            utils.get_available_balance(balances=posting.balances(), denomination=denomination)
-            for posting in postings
-        )
-    )
-    total_available_balance = get_overdraft_available_balance(
-        vault=vault, balances=balances, denomination=denomination
-    )
+    posting_amount = Decimal(sum(utils.get_available_balance(balances=posting.balances(), denomination=denomination) for posting in postings))
+    total_available_balance = get_overdraft_available_balance(vault=vault, balances=balances, denomination=denomination)
 
     # check the posting amount is less than 0 as we want to always accept deposit amounts
     # (removing this would cause a rejection of a deposit if balance is in overdraft)
     if posting_amount < 0 and abs(posting_amount) > total_available_balance:
         return Rejection(
-            message=f"Postings total {denomination} {posting_amount}, which exceeds the"
-            f" available balance of {denomination} {total_available_balance}.",
+            message=f"Postings total {denomination} {posting_amount}, which exceeds the" f" available balance of {denomination} {total_available_balance}.",
             reason_code=RejectionReason.INSUFFICIENT_FUNDS,
         )
     return None
@@ -111,11 +99,7 @@ def get_overdraft_available_balance(
     if denomination is None:
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
-    return (
-        utils.get_available_balance(balances=balances, denomination=denomination)
-        + get_arranged_overdraft_amount(vault=vault)
-        + get_unarranged_overdraft_amount(vault=vault)
-    )
+    return utils.get_available_balance(balances=balances, denomination=denomination) + get_arranged_overdraft_amount(vault=vault) + get_unarranged_overdraft_amount(vault=vault)
 
 
 def get_arranged_overdraft_amount(vault: SmartContractVault) -> Decimal:
@@ -140,6 +124,4 @@ def get_unarranged_overdraft_amount(vault: SmartContractVault) -> Decimal:
     )
 
 
-OverdraftLimitAvailableBalance = deposit_interfaces.AvailableBalance(
-    calculate=get_overdraft_available_balance
-)
+OverdraftLimitAvailableBalance = deposit_interfaces.AvailableBalance(calculate=get_overdraft_available_balance)

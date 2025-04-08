@@ -47,14 +47,10 @@ class CalculateRemainingTermTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, 20)
-        mock_round_decimal.assert_called_once_with(
-            amount=Decimal("20"), decimal_places=2, rounding=ROUND_HALF_UP
-        )
+        mock_round_decimal.assert_called_once_with(amount=Decimal("20"), decimal_places=2, rounding=ROUND_HALF_UP)
 
     @patch.object(declining_principal.utils, "round_decimal")
-    def test_calculates_remaining_term_with_eight_percent_interest(
-        self, mock_round_decimal: MagicMock
-    ):
+    def test_calculates_remaining_term_with_eight_percent_interest(self, mock_round_decimal: MagicMock):
         mock_round_decimal.return_value = Decimal("21.53")
 
         result = declining_principal.calculate_remaining_term(
@@ -81,14 +77,10 @@ class CalculateRemainingTermTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, 20)
-        mock_round_decimal.assert_called_once_with(
-            amount=Decimal("20"), decimal_places=2, rounding=ROUND_HALF_UP
-        )
+        mock_round_decimal.assert_called_once_with(amount=Decimal("20"), decimal_places=2, rounding=ROUND_HALF_UP)
 
     @patch.object(declining_principal.utils, "round_decimal")
-    def test_calculates_remaining_term_with_different_rounding_strategy(
-        self, mock_round_decimal: MagicMock
-    ):
+    def test_calculates_remaining_term_with_different_rounding_strategy(self, mock_round_decimal: MagicMock):
         mock_round_decimal.return_value = Decimal("20")
 
         result = declining_principal.calculate_remaining_term(
@@ -99,9 +91,7 @@ class CalculateRemainingTermTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, Decimal("20"))
-        mock_round_decimal.assert_called_once_with(
-            amount=Decimal("20"), decimal_places=2, rounding=ROUND_CEILING
-        )
+        mock_round_decimal.assert_called_once_with(amount=Decimal("20"), decimal_places=2, rounding=ROUND_CEILING)
 
 
 @patch.object(declining_principal.utils, "get_parameter")
@@ -132,9 +122,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
         #  and converted to int respectively
         mock_calculate_elapsed_term.return_value = 1
         mock_calculate_remaining_term.return_value = Decimal(8)
-        mock_interest_rate = MagicMock(
-            get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate)
-        )
+        mock_interest_rate = MagicMock(get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate))
         mock_principal_adjustments = [
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(1))),
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(10))),
@@ -153,9 +141,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             emi=Decimal(1),
             # this is principal balance (2) + principal adjustments (1 + 10)
@@ -176,9 +162,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
         #  and converted to int respectively
         mock_calculate_elapsed_term.return_value = 1
         mock_calculate_remaining_term.return_value = Decimal("10")
-        mock_interest_rate = MagicMock(
-            get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate)
-        )
+        mock_interest_rate = MagicMock(get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate))
         mock_principal_adjustments = [
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(1))),
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(10))),
@@ -197,9 +181,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             emi=Decimal(1),
             # this is principal balance (2) + principal adjustments (1 + 10)
@@ -234,9 +216,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             # emi and principal as per the mock_balances as there are no adjustment features
             emi=Decimal(1),
@@ -257,24 +237,16 @@ class TermDetailsTest(DecliningPrincipalCommon):
         #  and converted to int respectively
         mock_calculate_elapsed_term.return_value = 1
         mock_calculate_remaining_term.return_value = Decimal(8)
-        mock_interest_rate = MagicMock(
-            get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate)
-        )
+        mock_interest_rate = MagicMock(get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate))
         mock_principal_adjustments = [
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(1))),
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(10))),
         ]
         mock_balance_at_coordinates.side_effect = TermDetailsTest.mock_balances
 
-        balances_observation_fetchers_mapping = {
-            declining_principal.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                SentinelBalancesObservation("effective")
-            )
-        }
+        balances_observation_fetchers_mapping = {declining_principal.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))}
 
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
 
         result = declining_principal.term_details(
             vault=mock_vault,
@@ -284,9 +256,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
             principal_adjustments=mock_principal_adjustments,  # type: ignore
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances_effective, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances_effective, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             emi=Decimal(1),
             # this is principal balance (2) + principal adjustments (1 + 10)
@@ -338,9 +308,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 9))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
     def test_term_details_with_use_expected_term_uses_elapsed_and_original_term(
@@ -366,9 +334,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 9))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
     def test_term_details_with_use_expected_term_with_zero_principal(
@@ -394,9 +360,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
     def test_term_details_with_use_expected_term_with_negative_principal(
@@ -422,9 +386,7 @@ class TermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
 
@@ -451,16 +413,12 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         mock_balance_at_coordinates: MagicMock,
         mock_get_parameter: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
         # can't use a sentinel for these return values they're used subtracted from original term
         #  and converted to int respectively
         mock_calculate_elapsed_term.return_value = 1
         mock_calculate_remaining_term.return_value = Decimal(8)
-        mock_interest_rate = MagicMock(
-            get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate)
-        )
+        mock_interest_rate = MagicMock(get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate))
         mock_principal_adjustments = [
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(1))),
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(10))),
@@ -480,9 +438,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             emi=Decimal(1),
             # this is principal balance (2) + principal adjustments (1 + 10)
@@ -498,16 +454,12 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         mock_balance_at_coordinates: MagicMock,
         mock_get_parameter: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
         # can't use a sentinel for these return values they're used subtracted from original term
         #  and converted to int respectively
         mock_calculate_elapsed_term.return_value = 1
         mock_calculate_remaining_term.return_value = Decimal("10")
-        mock_interest_rate = MagicMock(
-            get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate)
-        )
+        mock_interest_rate = MagicMock(get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate))
         mock_principal_adjustments = [
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(1))),
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(10))),
@@ -527,9 +479,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             emi=Decimal(1),
             # this is principal balance (2) + principal adjustments (1 + 10)
@@ -545,9 +495,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         mock_balance_at_coordinates: MagicMock,
         mock_get_parameter: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
         # can't use a sentinel for these return values they're used subtracted from original term
         #  and converted to int respectively
         mock_calculate_elapsed_term.return_value = 1
@@ -566,9 +514,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             # emi and principal as per the mock_balances as there are no adjustment features
             emi=Decimal(1),
@@ -584,31 +530,21 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         mock_balance_at_coordinates: MagicMock,
         mock_get_parameter: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
         # can't use a sentinel for these return values they're used subtracted from original term
         #  and converted to int respectively
         mock_calculate_elapsed_term.return_value = 1
         mock_calculate_remaining_term.return_value = Decimal(8)
-        mock_interest_rate = MagicMock(
-            get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate)
-        )
+        mock_interest_rate = MagicMock(get_monthly_interest_rate=MagicMock(return_value=sentinel.monthly_interest_rate))
         mock_principal_adjustments = [
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(1))),
             MagicMock(calculate_principal_adjustment=MagicMock(return_value=Decimal(10))),
         ]
         mock_balance_at_coordinates.side_effect = SupervisorTermDetailsTest.mock_balances
 
-        balances_observation_fetchers_mapping = {
-            declining_principal.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
-                SentinelBalancesObservation("effective")
-            )
-        }
+        balances_observation_fetchers_mapping = {declining_principal.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))}
 
-        loan_vault = self.create_mock(
-            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
-        )
+        loan_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
 
         result = declining_principal.supervisor_term_details(
             loan_vault=loan_vault,
@@ -619,9 +555,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
             principal_adjustments=mock_principal_adjustments,  # type: ignore
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances_effective, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances_effective, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_called_once_with(
             emi=Decimal(1),
             # this is principal balance (2) + principal adjustments (1 + 10)
@@ -638,9 +572,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         mock_get_parameter: MagicMock,
     ):
         mock_balance_at_coordinates.return_value = Decimal("0")
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
 
         loan_vault = self.create_mock()
 
@@ -663,9 +595,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         mock_calculate_elapsed_term.return_value = 1
         # principal, overpayment
         mock_balance_at_coordinates.side_effect = [Decimal("10"), Decimal("0")]
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
 
         loan_vault = self.create_mock()
 
@@ -679,9 +609,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 9))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
     def test_term_details_with_use_expected_term_uses_elapsed_and_original_term(
@@ -693,9 +621,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
     ):
         mock_calculate_elapsed_term.return_value = 1
         mock_balance_at_coordinates.return_value = Decimal("10")
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
 
         loan_vault = self.create_mock()
 
@@ -709,9 +635,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 9))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
     def test_term_details_with_use_expected_term_with_zero_principal(
@@ -723,9 +647,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
     ):
         mock_calculate_elapsed_term.return_value = 1
         mock_balance_at_coordinates.return_value = Decimal("0")
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
 
         loan_vault = self.create_mock()
 
@@ -739,9 +661,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
     def test_term_details_with_use_expected_term_with_negative_principal(
@@ -753,9 +673,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
     ):
         mock_calculate_elapsed_term.return_value = 1
         mock_balance_at_coordinates.return_value = Decimal("-10")
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            SupervisorTermDetailsTest.common_params
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(SupervisorTermDetailsTest.common_params)
 
         loan_vault = self.create_mock()
 
@@ -769,9 +687,7 @@ class SupervisorTermDetailsTest(DecliningPrincipalCommon):
         )
 
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(
-            balances=sentinel.balances, denomination=sentinel.denomination
-        )
+        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
         mock_calculate_remaining_term.assert_not_called()
 
 
@@ -860,14 +776,10 @@ class CalculateEmi(FeatureTest):
             sentinel.monthly_int_rate,
         )
         mock_term_details.return_value = (sentinel.elapsed_term, sentinel.remaining_term)
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"principal": sentinel.principal}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"principal": sentinel.principal})
         mock_apply_declining_principal_formula.return_value = sentinel.emi
 
-        result = declining_principal.calculate_emi(
-            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
-        )
+        result = declining_principal.calculate_emi(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
         self.assertEqual(result, sentinel.emi)
 
         mock_get_declining_principal_formula_terms.assert_called_once_with(
@@ -1066,9 +978,7 @@ class SupervisorCalculateEmi(SupervisorFeatureTest):
 
         mock_vault = self.create_supervisee_mock()
         mock_main_vault = self.create_supervisee_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter_for_multiple_vaults(
-            parameters_per_vault={mock_main_vault: {"denomination": sentinel.denomination}}
-        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter_for_multiple_vaults(parameters_per_vault={mock_main_vault: {"denomination": sentinel.denomination}})
 
         result = declining_principal.supervisor_calculate_emi(
             loan_vault=mock_vault,
@@ -1162,14 +1072,10 @@ class SupervisorCalculateEmi(SupervisorFeatureTest):
 
 class IsDecliningPrincipalLoanTest(FeatureTest):
     def test_is_declining_principal_loan_true(self):
-        self.assertEqual(
-            declining_principal.is_declining_principal_loan("DECLINING_PRINCIPAL"), True
-        )
+        self.assertEqual(declining_principal.is_declining_principal_loan("DECLINING_PRINCIPAL"), True)
 
     def test_is_declining_principal_lower_case_true(self):
-        self.assertEqual(
-            declining_principal.is_declining_principal_loan("declining_principal"), True
-        )
+        self.assertEqual(declining_principal.is_declining_principal_loan("declining_principal"), True)
 
     def test_is_declining_principal_loan_false(self):
         self.assertEqual(declining_principal.is_declining_principal_loan("other"), False)
@@ -1177,12 +1083,8 @@ class IsDecliningPrincipalLoanTest(FeatureTest):
 
 @patch.object(declining_principal.utils, "get_parameter")
 class GetDecliningPrincipalFormulaTerms(FeatureTest):
-    def test_get_declining_principal_formula_terms_no_optional_params_provided(
-        self, mock_get_parameter: MagicMock
-    ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"principal": sentinel.principal}
-        )
+    def test_get_declining_principal_formula_terms_no_optional_params_provided(self, mock_get_parameter: MagicMock):
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"principal": sentinel.principal})
 
         expected = (sentinel.principal, Decimal("0"))
 
@@ -1194,12 +1096,8 @@ class GetDecliningPrincipalFormulaTerms(FeatureTest):
 
         mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="principal")
 
-    def test_get_declining_principal_formula_terms_all_optional_params_provided(
-        self, mock_get_parameter: MagicMock
-    ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={"principal": sentinel.principal}
-        )
+    def test_get_declining_principal_formula_terms_all_optional_params_provided(self, mock_get_parameter: MagicMock):
+        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"principal": sentinel.principal})
         mock_interest_feature = MagicMock()
         mock_interest_feature.get_monthly_interest_rate.return_value = sentinel.monthly_int_rate
 

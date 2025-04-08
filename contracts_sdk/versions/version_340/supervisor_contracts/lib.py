@@ -84,14 +84,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 If no events_timezone is specified in the contract, the UTC timezone is
                 used.
             """,
-            args=[
-                types_utils.ValueSpec(
-                    name="dt", type="datetime", docstring="The datetime to localize"
-                )
-            ],
-            return_value=types_utils.ReturnValueSpec(
-                type="datetime", docstring="The localized datetime"
-            ),
+            args=[types_utils.ValueSpec(name="dt", type="datetime", docstring="The datetime to localize")],
+            return_value=types_utils.ReturnValueSpec(type="datetime", docstring="The localized datetime"),
             examples=[
                 types_utils.Example(
                     title="Localizing the account creation date.",
@@ -104,9 +98,7 @@ class VaultFunctionsABC(types_utils.StrictInterface):
             ],
         )
         spec.public_methods[localize_datetime_spec.name] = localize_datetime_spec
-        spec.public_attributes["plan_id"] = types_utils.ValueSpec(
-            name="plan_id", type="str", docstring="The ID of the Plan currently being executed."
-        )
+        spec.public_attributes["plan_id"] = types_utils.ValueSpec(name="plan_id", type="str", docstring="The ID of the Plan currently being executed.")
         spec.public_attributes["supervisees"] = types_utils.ValueSpec(
             name="supervisees",
             type="Dict[str, Vault]",
@@ -136,8 +128,6 @@ class VaultFunctionsABC(types_utils.StrictInterface):
             name="get_plan_creation_date",
             docstring="Returns the creation date of the Plan currently being executed.",
             args=[],
-            return_value=types_utils.ReturnValueSpec(
-                docstring="The date the Plan was created.", type="datetime"
-            ),
+            return_value=types_utils.ReturnValueSpec(docstring="The date the Plan was created.", type="datetime"),
         )
         return spec

@@ -32,8 +32,7 @@ parameters = [
     Parameter(
         name=PARAM_MAX_DAILY_DEPOSIT,
         level=ParameterLevel.TEMPLATE,
-        description="The maximum amount which can be deposited into the account from start of day"
-        " to end of day.",
+        description="The maximum amount which can be deposited into the account from start of day" " to end of day.",
         display_name="Maximum Daily Deposit Amount",
         shape=NumberShape(min_value=Decimal("0"), step=Decimal("0.01")),
         default_value=Decimal("10000"),
@@ -82,14 +81,9 @@ def validate(
     if proposed_postings_deposited_amount == 0:
         return None
 
-    effective_date_client_transactions = (
-        effective_date_client_transactions
-        or vault.get_client_transactions(fetcher_id=fetchers.EFFECTIVE_DATE_POSTINGS_FETCHER_ID)
-    )
+    effective_date_client_transactions = effective_date_client_transactions or vault.get_client_transactions(fetcher_id=fetchers.EFFECTIVE_DATE_POSTINGS_FETCHER_ID)
 
-    deposit_cutoff_datetime: datetime = hook_arguments.effective_datetime.replace(
-        hour=0, minute=0, second=0, microsecond=0
-    )
+    deposit_cutoff_datetime: datetime = hook_arguments.effective_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
 
     # obtain the amount of deposits and withdrawals for the day excluding proposed
     (amount_deposited_actual, _) = client_transaction_utils.sum_client_transactions(
@@ -105,8 +99,7 @@ def validate(
 
     if deposit_daily_spent > max_daily_deposit:
         return Rejection(
-            message=f"Transactions would cause the maximum daily deposit limit of "
-            f"{max_daily_deposit} {denomination} to be exceeded.",
+            message=f"Transactions would cause the maximum daily deposit limit of " f"{max_daily_deposit} {denomination} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 

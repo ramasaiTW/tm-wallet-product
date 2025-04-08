@@ -51,9 +51,7 @@ def term_details(
     :return: the elapsed and remaining term
     """
 
-    original_total_term = int(
-        utils.get_parameter(vault=vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    original_total_term = int(utils.get_parameter(vault=vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT))
 
     # this allows us to avoid fetching balances in activation hook
     if effective_datetime == vault.get_account_creation_datetime():
@@ -61,9 +59,7 @@ def term_details(
         return 0, original_total_term
 
     if balances is None:
-        balances = vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
+        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
 
@@ -77,9 +73,7 @@ def term_details(
 
     # This is to handle the scenario where the loan has been fully repaid (as a result of an early
     # repayment or otherwise) but the account has been left open
-    expected_remaining_term = (
-        (original_total_term - elapsed) if principal_balance > Decimal("0") else 0
-    )
+    expected_remaining_term = (original_total_term - elapsed) if principal_balance > Decimal("0") else 0
     if use_expected_term:
         return elapsed, expected_remaining_term
 
@@ -104,12 +98,7 @@ def term_details(
         else Decimal(0)
     )
     adjusted_principal = principal_balance + Decimal(
-        sum(
-            adjustment.calculate_principal_adjustment(
-                vault=vault, balances=balances, denomination=denomination
-            )
-            for adjustment in principal_adjustments or []
-        )
+        sum(adjustment.calculate_principal_adjustment(vault=vault, balances=balances, denomination=denomination) for adjustment in principal_adjustments or [])
     )
 
     remaining = calculate_remaining_term(
@@ -155,9 +144,7 @@ def supervisor_term_details(
     :return: the elapsed and remaining term
     """
 
-    original_total_term = int(
-        utils.get_parameter(vault=loan_vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT)
-    )
+    original_total_term = int(utils.get_parameter(vault=loan_vault, name=lending_params.PARAM_TOTAL_REPAYMENT_COUNT))
 
     # this allows us to avoid fetching balances in activation hook
     if effective_datetime == loan_vault.get_account_creation_datetime():
@@ -165,9 +152,7 @@ def supervisor_term_details(
         return 0, original_total_term
 
     if balances is None:
-        balances = loan_vault.get_balances_observation(
-            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
-        ).balances
+        balances = loan_vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
     if denomination is None:
         denomination = utils.get_parameter(vault=loan_vault, name="denomination")
 
@@ -181,9 +166,7 @@ def supervisor_term_details(
 
     # This is to handle the scenario where the loan has been fully repaid (as a result of an early
     # repayment or otherwise) but the account has been left open
-    expected_remaining_term = (
-        (original_total_term - elapsed) if principal_balance > Decimal("0") else 0
-    )
+    expected_remaining_term = (original_total_term - elapsed) if principal_balance > Decimal("0") else 0
     if use_expected_term:
         return elapsed, expected_remaining_term
 
@@ -278,11 +261,7 @@ def calculate_remaining_term(
     )
 
     # we use ceil to ensure that 'partial' terms, after rounding, are recognised as a full term
-    return int(
-        utils.round_decimal(
-            amount=remaining_term, decimal_places=decimal_places, rounding=rounding
-        ).to_integral_exact(rounding=ROUND_CEILING)
-    )
+    return int(utils.round_decimal(amount=remaining_term, decimal_places=decimal_places, rounding=rounding).to_integral_exact(rounding=ROUND_CEILING))
 
 
 def calculate_emi(
@@ -328,18 +307,9 @@ def calculate_emi(
 
     if principal_adjustments:
         denomination: str = utils.get_parameter(vault=vault, name="denomination")
-        principal += Decimal(
-            sum(
-                adjustment.calculate_principal_adjustment(
-                    vault=vault, balances=balances, denomination=denomination
-                )
-                for adjustment in principal_adjustments
-            )
-        )
+        principal += Decimal(sum(adjustment.calculate_principal_adjustment(vault=vault, balances=balances, denomination=denomination) for adjustment in principal_adjustments))
 
-    return apply_declining_principal_formula(
-        remaining_principal=principal, interest_rate=interest_rate, remaining_term=remaining_term
-    )
+    return apply_declining_principal_formula(remaining_principal=principal, interest_rate=interest_rate, remaining_term=remaining_term)
 
 
 def supervisor_calculate_emi(
@@ -404,9 +374,7 @@ def supervisor_calculate_emi(
             )
         )
 
-    return apply_declining_principal_formula(
-        remaining_principal=principal, interest_rate=interest_rate, remaining_term=remaining_term
-    )
+    return apply_declining_principal_formula(remaining_principal=principal, interest_rate=interest_rate, remaining_term=remaining_term)
 
 
 # extracted from EMI feature - duplication to be removed in subsequent diff
@@ -448,10 +416,7 @@ def apply_declining_principal_formula(
         return utils.round_decimal(remaining_principal / remaining_term, fulfillment_precision)
     else:
         return utils.round_decimal(
-            (remaining_principal - (lump_sum_amount / (1 + interest_rate) ** (remaining_term)))
-            * interest_rate
-            * ((1 + interest_rate) ** remaining_term)
-            / ((1 + interest_rate) ** remaining_term - 1),
+            (remaining_principal - (lump_sum_amount / (1 + interest_rate) ** (remaining_term))) * interest_rate * ((1 + interest_rate) ** remaining_term) / ((1 + interest_rate) ** remaining_term - 1),
             fulfillment_precision,
         )
 
@@ -462,26 +427,14 @@ def _get_declining_principal_formula_terms(
     principal_amount: Decimal | None = None,
     interest_calculation_feature: lending_interfaces.InterestRate | None = None,
 ) -> tuple[Decimal, Decimal]:
-    principal = (
-        utils.get_parameter(vault=vault, name="principal")
-        if principal_amount is None
-        else principal_amount
-    )
+    principal = utils.get_parameter(vault=vault, name="principal") if principal_amount is None else principal_amount
 
-    interest_rate = (
-        Decimal(0)
-        if not interest_calculation_feature
-        else interest_calculation_feature.get_monthly_interest_rate(
-            vault=vault, effective_datetime=effective_datetime
-        )
-    )
+    interest_rate = Decimal(0) if not interest_calculation_feature else interest_calculation_feature.get_monthly_interest_rate(vault=vault, effective_datetime=effective_datetime)
 
     return principal, interest_rate
 
 
-AmortisationFeature = lending_interfaces.Amortisation(
-    calculate_emi=calculate_emi, term_details=term_details, override_final_event=False
-)
+AmortisationFeature = lending_interfaces.Amortisation(calculate_emi=calculate_emi, term_details=term_details, override_final_event=False)
 
 SupervisorAmortisationFeature = lending_interfaces.SupervisorAmortisation(
     calculate_emi=supervisor_calculate_emi,

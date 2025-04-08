@@ -20,25 +20,16 @@ class IntervalFetcher:
             raise exceptions.InvalidSmartContractError(f"{class_name} 'fetcher_id' cannot be empty")
 
         if isinstance(start, RelativeDateTime) and start.origin != DefinedDateTime.EFFECTIVE_TIME:
-            raise exceptions.InvalidSmartContractError(
-                f"{class_name} 'start' origin value must be set to "
-                "'DefinedDateTime.EFFECTIVE_TIME'"
-            )
+            raise exceptions.InvalidSmartContractError(f"{class_name} 'start' origin value must be set to " "'DefinedDateTime.EFFECTIVE_TIME'")
 
         if start == DefinedDateTime.LIVE:
-            raise exceptions.InvalidSmartContractError(
-                f"{class_name} 'start' cannot be set to 'DefinedDateTime.LIVE'"
-            )
+            raise exceptions.InvalidSmartContractError(f"{class_name} 'start' cannot be set to 'DefinedDateTime.LIVE'")
 
         if start == DefinedDateTime.INTERVAL_START:
-            raise exceptions.InvalidSmartContractError(
-                f"{class_name} 'start' cannot be set to 'DefinedDateTime.INTERVAL_START'"
-            )
+            raise exceptions.InvalidSmartContractError(f"{class_name} 'start' cannot be set to 'DefinedDateTime.INTERVAL_START'")
 
         if end == DefinedDateTime.INTERVAL_START:
-            raise exceptions.InvalidSmartContractError(
-                f"{class_name} 'end' cannot be set to 'DefinedDateTime.INTERVAL_START'"
-            )
+            raise exceptions.InvalidSmartContractError(f"{class_name} 'end' cannot be set to 'DefinedDateTime.INTERVAL_START'")
 
         self.fetcher_id = fetcher_id
         self.start = start
@@ -144,14 +135,10 @@ class BalancesObservationFetcher:
         )
 
         if fetcher_id == "":
-            raise exceptions.InvalidSmartContractError(
-                "BalancesObservationFetcher 'fetcher_id' cannot be empty"
-            )
+            raise exceptions.InvalidSmartContractError("BalancesObservationFetcher 'fetcher_id' cannot be empty")
 
         if at == symbols.DefinedDateTime.INTERVAL_START:
-            raise exceptions.InvalidSmartContractError(
-                "BalancesObservationFetcher 'at' cannot be set to 'DefinedDateTime.INTERVAL_START'"
-            )
+            raise exceptions.InvalidSmartContractError("BalancesObservationFetcher 'at' cannot be set to 'DefinedDateTime.INTERVAL_START'")
 
         self.fetcher_id = fetcher_id
         self.at = at
@@ -164,9 +151,7 @@ class BalancesObservationFetcher:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(
-                name="fetcher_id", type="str", docstring="The ID for this fetcher."
-            ),
+            types_utils.ValueSpec(name="fetcher_id", type="str", docstring="The ID for this fetcher."),
             types_utils.ValueSpec(
                 name="at",
                 type="Union[DefinedDateTime, RelativeDateTime]",

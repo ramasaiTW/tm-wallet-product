@@ -19,9 +19,7 @@ class PublicSmartContractsV3100TypesTestCase(
     def test_balances_filter_with_empty_addresses(self):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesFilter(addresses=[])
-        self.assertEqual(
-            str(e.exception), "BalancesFilter addresses must contain at least one address."
-        )
+        self.assertEqual(str(e.exception), "BalancesFilter addresses must contain at least one address.")
 
     def test_balances_filter_with_empty_address_field(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -34,9 +32,7 @@ class PublicSmartContractsV3100TypesTestCase(
     def test_balances_filter_with_duplicate_addresses(self):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesFilter(addresses=["address_1", "address_1"])
-        self.assertEqual(
-            str(e.exception), "BalancesFilter addresses must not contain any duplicate addresses."
-        )
+        self.assertEqual(str(e.exception), "BalancesFilter addresses must not contain any duplicate addresses.")
 
     def test_balances_filter_invalid_argument_type(self):
         with self.assertRaises(StrongTypingError):

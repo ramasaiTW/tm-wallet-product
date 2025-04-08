@@ -83,9 +83,7 @@ class CapitaliseInterestTest(InterestCapitalisationTest):
             denomination=sentinel.denomination,
             address=sentinel.address_pending_capitalisation,
         )
-        mock_round_decimal.assert_called_once_with(
-            amount=sentinel.unrounded_interest, decimal_places=sentinel.application_precision
-        )
+        mock_round_decimal.assert_called_once_with(amount=sentinel.unrounded_interest, decimal_places=sentinel.application_precision)
         mock_accrual_application_postings.assert_called_once_with(
             customer_account=sentinel.account_id,
             denomination=sentinel.denomination,
@@ -132,9 +130,7 @@ class CapitaliseInterestTest(InterestCapitalisationTest):
             denomination=sentinel.denomination,
             address=sentinel.address_pending_capitalisation,
         )
-        mock_round_decimal.assert_called_once_with(
-            amount=sentinel.unrounded_interest, decimal_places=sentinel.application_precision
-        )
+        mock_round_decimal.assert_called_once_with(amount=sentinel.unrounded_interest, decimal_places=sentinel.application_precision)
         mock_create_postings.assert_not_called()
         mock_accrual_application_postings.assert_not_called()
 
@@ -164,9 +160,7 @@ class CapitaliseInterestTest(InterestCapitalisationTest):
             denomination=sentinel.denomination,
             address=sentinel.address_pending_capitalisation,
         )
-        mock_round_decimal.assert_called_once_with(
-            amount=sentinel.unrounded_interest, decimal_places=sentinel.application_precision
-        )
+        mock_round_decimal.assert_called_once_with(amount=sentinel.unrounded_interest, decimal_places=sentinel.application_precision)
         mock_create_postings.assert_not_called()
         mock_accrual_application_postings.assert_not_called()
 
@@ -195,13 +189,7 @@ class HandlePenaltyInterestCapitalisationTest(InterestCapitalisationTest):
     ):
         mock_is_capitalise_penalty_interest.return_value = True
         mock_handle_interest_capitalisation.return_value = [sentinel.custom_instructions]
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                interest_capitalisation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
-                    "effective"
-                )
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={interest_capitalisation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")})  # noqa: E501
         result = interest_capitalisation.handle_penalty_interest_capitalisation(
             vault=mock_vault,
             account_type=sentinel.account_type,
@@ -272,13 +260,7 @@ class HandleInterestCapitalisationTest(InterestCapitalisationTest):
         mock_get_parameter: MagicMock,
         mock_get_denomination: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={
-                interest_capitalisation.fetchers.EOD_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
-                    "effective"
-                )
-            }
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping={interest_capitalisation.fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("effective")})  # noqa: E501
         mock_capitalise_interest.return_value = [sentinel.capitalisation_postings]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {

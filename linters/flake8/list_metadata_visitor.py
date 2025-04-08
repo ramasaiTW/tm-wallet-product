@@ -4,9 +4,7 @@ from typing import Any
 
 from linters.flake8.common import HOOK_FUNCTIONS, ErrorType
 
-ERRORS_CTR002 = (
-    "CTR002 List-type metadata objects should be extended using the unpacking operator (*)"
-)
+ERRORS_CTR002 = "CTR002 List-type metadata objects should be extended using the unpacking operator (*)"
 
 
 class ListMetadataVisitor(ast.NodeVisitor):
@@ -42,11 +40,7 @@ class ListMetadataVisitor(ast.NodeVisitor):
         hook_and_helper_functions = HOOK_FUNCTIONS.copy()
         for node in self.tree.body:
             if isinstance(node, ast.FunctionDef) and node.name in hook_and_helper_functions:
-                called_functions = [
-                    n.func.id
-                    for n in ast.walk(node)
-                    if (isinstance(n, ast.Call) and isinstance(n.func, ast.Name))
-                ]
+                called_functions = [n.func.id for n in ast.walk(node) if (isinstance(n, ast.Call) and isinstance(n.func, ast.Name))]
                 # add called functions to set of hook & helper functions
                 hook_and_helper_functions.update(called_functions)
 

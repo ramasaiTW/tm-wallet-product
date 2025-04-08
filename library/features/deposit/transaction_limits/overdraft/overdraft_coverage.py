@@ -37,8 +37,7 @@ parameters = [
     Parameter(
         name=PARAM_OVERDRAFT_OPT_IN,
         level=ParameterLevel.INSTANCE,
-        description="Defines whether the customer has opted-in to allow the excluded transactions "
-        "to utilise the overdraft limit.",
+        description="Defines whether the customer has opted-in to allow the excluded transactions " "to utilise the overdraft limit.",
         display_name="Overdraft Coverage Enabled",
         update_permission=ParameterUpdatePermission.OPS_EDITABLE,
         shape=OptionalShape(shape=common_parameters.BooleanShape),
@@ -47,9 +46,7 @@ parameters = [
     Parameter(
         name=PARAM_EXCLUDED_OVERDRAFT_COVERAGE_LIST,
         level=ParameterLevel.TEMPLATE,
-        description="Transaction types specifically excluded from utilising the overdraft limit. "
-        "Unless specifically opted-in to do so. "
-        "Expects a string representation of a JSON list.",
+        description="Transaction types specifically excluded from utilising the overdraft limit. " "Unless specifically opted-in to do so. " "Expects a string representation of a JSON list.",
         display_name="Overdraft Coverage List",
         update_permission=ParameterUpdatePermission.OPS_EDITABLE,
         shape=StringShape(),
@@ -92,45 +89,27 @@ def validate(
     if _get_coverage_opt_in(vault=vault, effective_datetime=effective_datetime):
         # Opted into coverage, therefore all transaction types are allowed to utilise the overdraft
         # limit.
-        return overdraft_limit.validate(
-            vault=vault, postings=postings, denomination=denomination, balances=balances
-        )
+        return overdraft_limit.validate(vault=vault, postings=postings, denomination=denomination, balances=balances)
 
     available_balance = utils.get_available_balance(balances=balances, denomination=denomination)
-    excluded_transaction_types = _get_excluded_coverage_list(
-        vault=vault, effective_datetime=effective_datetime
-    )
-    total_overdraft_limit = overdraft_limit.get_arranged_overdraft_amount(
-        vault=vault
-    ) + overdraft_limit.get_unarranged_overdraft_amount(vault=vault)
+    excluded_transaction_types = _get_excluded_coverage_list(vault=vault, effective_datetime=effective_datetime)
+    total_overdraft_limit = overdraft_limit.get_arranged_overdraft_amount(vault=vault) + overdraft_limit.get_unarranged_overdraft_amount(vault=vault)
 
     total_available_balance = available_balance + total_overdraft_limit
     available_balance_for_excluded_transaction_types = available_balance
 
     for posting in postings:
-        balance_impact = utils.get_available_balance(
-            balances=posting.balances(), denomination=denomination
-        )
+        balance_impact = utils.get_available_balance(balances=posting.balances(), denomination=denomination)
         total_available_balance += balance_impact
         available_balance_for_excluded_transaction_types += balance_impact
 
-        is_excluded_transaction_type = transaction_type_utils.match_transaction_type(
-            posting_instruction=posting, values=excluded_transaction_types
-        )
+        is_excluded_transaction_type = transaction_type_utils.match_transaction_type(posting_instruction=posting, values=excluded_transaction_types)
 
-        if (
-            is_excluded_transaction_type
-            and available_balance_for_excluded_transaction_types < Decimal("0")
-        ) or (not is_excluded_transaction_type and total_available_balance < Decimal("0")):
+        if (is_excluded_transaction_type and available_balance_for_excluded_transaction_types < Decimal("0")) or (not is_excluded_transaction_type and total_available_balance < Decimal("0")):
             posting_type = posting.instruction_details.get("type", "")
-            rejection_message = (
-                f"{posting_type=} exceeds the total available balance of the account."
-            )
+            rejection_message = f"{posting_type=} exceeds the total available balance of the account."
             if is_excluded_transaction_type:
-                rejection_message += (
-                    " This transaction is an excluded transaction type which requires "
-                    "overdraft coverage opt-in to utilise the overdraft limit."
-                )
+                rejection_message += " This transaction is an excluded transaction type which requires " "overdraft coverage opt-in to utilise the overdraft limit."
 
             return Rejection(
                 message=rejection_message,
@@ -140,9 +119,7 @@ def validate(
     return None
 
 
-def _get_coverage_opt_in(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> bool:
+def _get_coverage_opt_in(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> bool:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_OVERDRAFT_OPT_IN,
@@ -152,9 +129,7 @@ def _get_coverage_opt_in(
     )
 
 
-def _get_excluded_coverage_list(
-    *, vault: SmartContractVault, effective_datetime: datetime | None = None
-) -> list[str]:
+def _get_excluded_coverage_list(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> list[str]:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_EXCLUDED_OVERDRAFT_COVERAGE_LIST,

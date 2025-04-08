@@ -39,26 +39,10 @@ TEST_DEPENDENCY_GROUPS = [
 def resource_extractors(
     request: dict,
 ) -> tuple[Generator, Generator, Generator, Generator]:
-    customer_extractor = (
-        resource
-        for resource in request["resource_batch"]["resources"]
-        if "customer_resource" in resource
-    )
-    account_extractor = (
-        resource
-        for resource in request["resource_batch"]["resources"]
-        if "account_resource" in resource
-    )
-    customer_flag_extractor = (
-        resource
-        for resource in request["resource_batch"]["resources"]
-        if "flag_resource" in resource and "customer_id" in resource["flag_resource"]
-    )
-    account_flag_extractor = (
-        resource
-        for resource in request["resource_batch"]["resources"]
-        if "flag_resource" in resource and "account_id" in resource["flag_resource"]
-    )
+    customer_extractor = (resource for resource in request["resource_batch"]["resources"] if "customer_resource" in resource)
+    account_extractor = (resource for resource in request["resource_batch"]["resources"] if "account_resource" in resource)
+    customer_flag_extractor = (resource for resource in request["resource_batch"]["resources"] if "flag_resource" in resource and "customer_id" in resource["flag_resource"])
+    account_flag_extractor = (resource for resource in request["resource_batch"]["resources"] if "flag_resource" in resource and "account_id" in resource["flag_resource"])
 
     return (
         customer_extractor,
@@ -95,9 +79,7 @@ class DataLoaderHelperTests(TestCase):
             dependency_groups=self.dependency_groups,
             product_version_id="1",
         ):
-            account_ids.append(
-                [account_id.split("_", 1)[0] for account_id in batch_resource_ids.account_ids]
-            )
+            account_ids.append([account_id.split("_", 1)[0] for account_id in batch_resource_ids.account_ids])
 
         self.assertListEqual(account_ids, [["0", "1", "2"]])
 
@@ -171,9 +153,7 @@ class DataLoaderHelperTests(TestCase):
         ]
 
         # Flag ids are randomly generated, so we patch get_flag_resource to get around this
-        get_flag_resource.side_effect = [
-            {"id": id} for batch_flags in expected_account_flag_ids for id in batch_flags
-        ]
+        get_flag_resource.side_effect = [{"id": id} for batch_flags in expected_account_flag_ids for id in batch_flags]
 
         flag_ids = []
         self.dependency_groups[0]["customer"]["flags"] = []
@@ -202,8 +182,7 @@ class DataLoaderHelperTests(TestCase):
             self.assertEqual(
                 len(request["resource_batch"]["resources"]),
                 18,
-                "Expected 18 resources: 3* (1 customer, 2 customer flags, 1 account, 2 customer"
-                " flags)",
+                "Expected 18 resources: 3* (1 customer, 2 customer flags, 1 account, 2 customer" " flags)",
             )
 
     def test_resources_from_same_instance_not_split_across_batches(self):
@@ -232,9 +211,7 @@ class DataLoaderHelperTests(TestCase):
         ):
             all_requests.append(request)
 
-        batch_resource_counts = [
-            len(request["resource_batch"]["resources"]) for request in all_requests
-        ]
+        batch_resource_counts = [len(request["resource_batch"]["resources"]) for request in all_requests]
         self.assertListEqual(batch_resource_counts, [12, 6])
 
     def test_account_customer_dependencies_set_correctly(self):

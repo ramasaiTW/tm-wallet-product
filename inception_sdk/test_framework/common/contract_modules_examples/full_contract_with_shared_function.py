@@ -95,15 +95,11 @@ def scheduled_code(event_type, effective_date):
     balances = vault.get_balance_timeseries().latest()
 
     if event_type == "ACCRUE_INTEREST":
-        effective_balance = balances[
-            (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
-        ].net
+        effective_balance = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
         amount_to_accrue = 0
         if effective_balance > 0:
             daily_rate = vault.modules["interest"].round_interest_rate(Decimal(interest_rate / 365))
-            amount_to_accrue = vault.modules["interest"].round_accrual(
-                Decimal(effective_balance * daily_rate)
-            )
+            amount_to_accrue = vault.modules["interest"].round_accrual(Decimal(effective_balance * daily_rate))
         if amount_to_accrue > 0:
             posting_ins = vault.make_internal_transfer_instructions(
                 amount=amount_to_accrue,
@@ -115,22 +111,17 @@ def scheduled_code(event_type, effective_date):
                 to_account_address=DEFAULT_ADDRESS,
                 pics=[],
                 instruction_details={
-                    "description": f"Daily interest accrued at {daily_rate} on balance "
-                    f"of {effective_balance}",
+                    "description": f"Daily interest accrued at {daily_rate} on balance " f"of {effective_balance}",
                     "event": "ACCRUE_INTEREST",
                 },
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
             )
-            vault.instruct_posting_batch(
-                posting_instructions=posting_ins, effective_date=effective_date
-            )
+            vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=effective_date)
 
 
 def _get_parameter(vault, name, at=None, is_json=False, optional=False, default_value=None):
-    return vault.modules["interest"].get_parameter(
-        vault, name, at, is_json, optional, default_value
-    )
+    return vault.modules["interest"].get_parameter(vault, name, at, is_json, optional, default_value)
 
 
 def _round_accrual(

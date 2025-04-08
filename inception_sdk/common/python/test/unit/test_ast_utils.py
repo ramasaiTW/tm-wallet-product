@@ -19,9 +19,7 @@ VERSION_ASSIGN_NODE = ast.Assign(
 
 class AssignTargetTest(TestCase):
     def test_get_assign_node_target_name(self):
-        assign_node = ast.Assign(
-            targets=[ast.Name(ctx=ast.Store(), id="days_in_year")], value=ast.Constant(value=365)
-        )
+        assign_node = ast.Assign(targets=[ast.Name(ctx=ast.Store(), id="days_in_year")], value=ast.Constant(value=365))
         target_name = ast_utils.get_assign_node_target_name(assign_node)
         self.assertEqual(target_name, "days_in_year")
 

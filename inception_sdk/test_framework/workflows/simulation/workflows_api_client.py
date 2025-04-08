@@ -19,9 +19,7 @@ class WorkflowsApiClient:
     def post(self, url, payload, auth_token=None, check_status=True):
         auth_token = self.auth_token if auth_token is None else auth_token
         headers = {"content-type": "application/json", "X-Auth-Token": auth_token}
-        response = requests.post(
-            self._create_endpoint_url(url), headers=headers, json=payload, cookies=None
-        )
+        response = requests.post(self._create_endpoint_url(url), headers=headers, json=payload, cookies=None)
         return response
 
     def simulate_workflow(
