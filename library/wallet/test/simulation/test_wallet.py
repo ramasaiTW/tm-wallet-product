@@ -120,7 +120,8 @@ class WalletTest(SimulationTestCase):
 
         sub_tests = [
             SubTest(
-                description="Change customer wallet limit but no balance yet," " so no sweep should happen",
+                description="Change customer wallet limit but no balance yet,"
+                " so no sweep should happen",
                 events=[
                     create_instance_parameter_change_event(
                         timestamp=start_datetime,
@@ -195,7 +196,8 @@ class WalletTest(SimulationTestCase):
                 },
             ),
             SubTest(
-                description="Change wallet limit no sweep should happen since " "wallet is below limit",
+                description="Change wallet limit no sweep should happen since "
+                "wallet is below limit",
                 events=[
                     create_instance_parameter_change_event(
                         timestamp=start_datetime + timedelta(minutes=1),
@@ -1321,7 +1323,9 @@ class WalletTest(SimulationTestCase):
             SubTest(
                 description="Setup auto top-up and authorise payment from empty wallet",
                 events=[
-                    create_flag_definition_event(timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG),
+                    create_flag_definition_event(
+                        timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG
+                    ),
                     create_flag_event(
                         timestamp=start_datetime,
                         flag_definition_id=AUTO_TOP_UP_FLAG,
@@ -1698,7 +1702,8 @@ class WalletTest(SimulationTestCase):
                         start_datetime + timedelta(hours=3),
                         account_id=WALLET_ACCOUNT,
                         rejection_type="InsufficientFunds",
-                        rejection_reason="Postings total GBP -900, which exceeds the available" " balance of GBP 800",
+                        rejection_reason="Postings total GBP -900, which exceeds the available"
+                        " balance of GBP 800",
                     )
                 ],
             ),
@@ -1738,7 +1743,8 @@ class WalletTest(SimulationTestCase):
                         start_datetime + timedelta(hours=1),
                         account_id=WALLET_ACCOUNT,
                         rejection_type="InsufficientFunds",
-                        rejection_reason="Postings total SGD -200, which exceeds the available" " balance of SGD 0 and auto top up is disabled",
+                        rejection_reason="Postings total SGD -200, which exceeds the available"
+                        " balance of SGD 0 and auto top up is disabled",
                     )
                 ],
             ),
@@ -1800,7 +1806,9 @@ class WalletTest(SimulationTestCase):
             SubTest(
                 description="Configure flag and set initial deposit",
                 events=[
-                    create_flag_definition_event(timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG),
+                    create_flag_definition_event(
+                        timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG
+                    ),
                     create_flag_event(
                         timestamp=start_datetime,
                         flag_definition_id=AUTO_TOP_UP_FLAG,
@@ -1861,7 +1869,9 @@ class WalletTest(SimulationTestCase):
             SubTest(
                 description="Setup flags and initial deposit",
                 events=[
-                    create_flag_definition_event(timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG),
+                    create_flag_definition_event(
+                        timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG
+                    ),
                     create_flag_event(
                         timestamp=start_datetime,
                         flag_definition_id=AUTO_TOP_UP_FLAG,
@@ -2001,7 +2011,9 @@ class WalletTest(SimulationTestCase):
             SubTest(
                 description="Setup flag and initial deposit",
                 events=[
-                    create_flag_definition_event(timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG),
+                    create_flag_definition_event(
+                        timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG
+                    ),
                     create_flag_event(
                         timestamp=start_datetime,
                         flag_definition_id=AUTO_TOP_UP_FLAG,
@@ -2020,7 +2032,9 @@ class WalletTest(SimulationTestCase):
                     + timedelta(hours=1): {
                         WALLET_ACCOUNT: [
                             (
-                                BalanceDimensions(address=wallet.TODAYS_SPENDING, denomination="USD"),
+                                BalanceDimensions(
+                                    address=wallet.TODAYS_SPENDING, denomination="USD"
+                                ),
                                 "0",
                             ),
                             (USD_DEFAULT_DIMENSIONS, "10"),
@@ -2043,7 +2057,9 @@ class WalletTest(SimulationTestCase):
                     end_datetime: {
                         WALLET_ACCOUNT: [
                             (
-                                BalanceDimensions(address=wallet.TODAYS_SPENDING, denomination="USD"),
+                                BalanceDimensions(
+                                    address=wallet.TODAYS_SPENDING, denomination="USD"
+                                ),
                                 "0",
                             ),
                             (USD_DEFAULT_DIMENSIONS, "10"),
@@ -2056,7 +2072,8 @@ class WalletTest(SimulationTestCase):
                         start_datetime + timedelta(hours=2),
                         account_id=WALLET_ACCOUNT,
                         rejection_type="InsufficientFunds",
-                        rejection_reason="Postings total USD -200, which exceeds" " the available balance of USD 10",
+                        rejection_reason="Postings total USD -200, which exceeds"
+                        " the available balance of USD 10",
                     ),
                 ],
             ),
@@ -2079,7 +2096,9 @@ class WalletTest(SimulationTestCase):
             SubTest(
                 description="Inbound and outbound postings to reach daily spending limit",
                 events=[
-                    create_flag_definition_event(timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG),
+                    create_flag_definition_event(
+                        timestamp=start_datetime, flag_definition_id=AUTO_TOP_UP_FLAG
+                    ),
                     create_flag_event(
                         timestamp=start_datetime,
                         flag_definition_id=AUTO_TOP_UP_FLAG,
@@ -2686,7 +2705,8 @@ class WalletTest(SimulationTestCase):
                         start_datetime + timedelta(hours=4),
                         account_id=WALLET_ACCOUNT,
                         rejection_type="InsufficientFunds",
-                        rejection_reason="Postings total SGD -300, which exceeds the available " "balance of SGD 200 and auto top up is disabled",
+                        rejection_reason="Postings total SGD -300, which exceeds the available "
+                        "balance of SGD 200 and auto top up is disabled",
                     ),
                 ],
             ),
@@ -2717,7 +2737,8 @@ class WalletTest(SimulationTestCase):
                         start_datetime + timedelta(hours=5),
                         account_id=WALLET_ACCOUNT,
                         rejection_type="InsufficientFunds",
-                        rejection_reason="Postings total SGD -300, which exceeds the available " "balance of SGD 200 and auto top up is disabled",
+                        rejection_reason="Postings total SGD -300, which exceeds the available "
+                        "balance of SGD 200 and auto top up is disabled",
                     ),
                 ],
             ),
@@ -2751,7 +2772,12 @@ class WalletTest(SimulationTestCase):
                         denomination=parameters.TEST_DENOMINATION,
                     ),
                 ],
-                expected_balances_at_ts={start_datetime + timedelta(minutes=2): {WALLET_ACCOUNT: [(SGD_TODAYS_SPENDING_DIMENSIONS, "-50")]}},
+                expected_balances_at_ts={
+                    start_datetime
+                    + timedelta(minutes=2): {
+                        WALLET_ACCOUNT: [(SGD_TODAYS_SPENDING_DIMENSIONS, "-50")]
+                    }
+                },
             ),
             SubTest(
                 description="change status",
@@ -2761,7 +2787,9 @@ class WalletTest(SimulationTestCase):
                         account_id=WALLET_ACCOUNT,
                     ),
                 ],
-                expected_balances_at_ts={end_datetime: {WALLET_ACCOUNT: [(SGD_TODAYS_SPENDING_DIMENSIONS, "0")]}},
+                expected_balances_at_ts={
+                    end_datetime: {WALLET_ACCOUNT: [(SGD_TODAYS_SPENDING_DIMENSIONS, "0")]}
+                },
             ),
         ]
 
@@ -2863,7 +2891,8 @@ class WalletTest(SimulationTestCase):
                 },
             ),
             SubTest(
-                description="The transfer should be accepted without increasing the today's " "spending address",
+                description="The transfer should be accepted without increasing the today's "
+                "spending address",
                 events=[
                     create_transfer_instruction(
                         amount="100",

@@ -106,7 +106,9 @@ class PostParameterChangeHookTest(WalletTestBase):
             ],
             value_datetime=DEFAULT_DATETIME,
         )
-        expected_hook_result = PostParameterChangeHookResult(posting_instructions_directives=[expected_pid])
+        expected_hook_result = PostParameterChangeHookResult(
+            posting_instructions_directives=[expected_pid]
+        )
 
         self.assertEqual(hook_result, expected_hook_result)
 

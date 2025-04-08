@@ -26,7 +26,9 @@ class MaximumOutstandingLoansTest(FeatureTest):
         ]
         mock_get_parameter.side_effect = mock_utils_get_parameter({self.param_name: 2})
 
-        result = maximum_outstanding_loans.validate(main_vault=mock_loc_vault, loans=mock_loan_vaults)
+        result = maximum_outstanding_loans.validate(
+            main_vault=mock_loc_vault, loans=mock_loan_vaults
+        )
         self.assertIsNone(result)
         mock_get_parameter.assert_called_once_with(vault=mock_loc_vault, name=self.param_name)
 
@@ -39,11 +41,14 @@ class MaximumOutstandingLoansTest(FeatureTest):
         mock_get_parameter.side_effect = mock_utils_get_parameter({self.param_name: 2})
 
         expected = Rejection(
-            message="Cannot create new loan due to outstanding loan limit being exceeded. " + "Current number of loans: 2, maximum loan limit: 2.",
+            message="Cannot create new loan due to outstanding loan limit being exceeded. "
+            + "Current number of loans: 2, maximum loan limit: 2.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
-        result = maximum_outstanding_loans.validate(main_vault=mock_loc_vault, loans=mock_loan_vaults)
+        result = maximum_outstanding_loans.validate(
+            main_vault=mock_loc_vault, loans=mock_loan_vaults
+        )
         self.assertEqual(result, expected)
         mock_get_parameter.assert_called_once_with(vault=mock_loc_vault, name=self.param_name)
 
@@ -57,10 +62,13 @@ class MaximumOutstandingLoansTest(FeatureTest):
         mock_get_parameter.side_effect = mock_utils_get_parameter({self.param_name: 2})
 
         expected = Rejection(
-            message="Cannot create new loan due to outstanding loan limit being exceeded. " + "Current number of loans: 3, maximum loan limit: 2.",
+            message="Cannot create new loan due to outstanding loan limit being exceeded. "
+            + "Current number of loans: 3, maximum loan limit: 2.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
-        result = maximum_outstanding_loans.validate(main_vault=mock_loc_vault, loans=mock_loan_vaults)
+        result = maximum_outstanding_loans.validate(
+            main_vault=mock_loc_vault, loans=mock_loan_vaults
+        )
         self.assertEqual(result, expected)
         mock_get_parameter.assert_called_once_with(vault=mock_loc_vault, name=self.param_name)

@@ -50,7 +50,9 @@ def load_file_contents(path: str) -> str:
     except FileNotFoundError:
         return cast(
             str,
-            resources.resource_or_file_string(os.path.join("third_party", "python3", path), utf8=True),
+            resources.resource_or_file_string(
+                os.path.join("third_party", "python3", path), utf8=True
+            ),
         )
 
 

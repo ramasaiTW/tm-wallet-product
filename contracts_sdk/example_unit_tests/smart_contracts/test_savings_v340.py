@@ -8,7 +8,9 @@ from ...versions.version_340.smart_contracts import types
 
 
 class SavingsAccountTestCase(SmartContracts340TestCase):
-    filepath = os.environ.get("DATA_SAVINGS_V340", "contracts_sdk/example_unit_tests/smart_contracts/savings_v340.py")
+    filepath = os.environ.get(
+        "DATA_SAVINGS_V340", "contracts_sdk/example_unit_tests/smart_contracts/savings_v340.py"
+    )
     contract_code = SmartContracts340TestCase.load_contract_code(filepath)
     old_parameter_values = {}
 
@@ -61,7 +63,9 @@ class SavingsAccountTestCase(SmartContracts340TestCase):
         self.vault.get_account_creation_date.return_value = self.creation_date
         parameters = {"key_date": self.key_date}
 
-        parameters = self.run_contract_function(self.contract_code, "pre_parameter_change_code", parameters, self.effective_date)
+        parameters = self.run_contract_function(
+            self.contract_code, "pre_parameter_change_code", parameters, self.effective_date
+        )
 
         self.assertEqual(
             types.OptionalValue(Decimal(self.creation_date.day)).value,
@@ -69,7 +73,9 @@ class SavingsAccountTestCase(SmartContracts340TestCase):
         )
 
     def test_pre_parameter_change_code_does_not_change_parameters(self):
-        parameters = self.run_contract_function(self.contract_code, "pre_parameter_change_code", {}, self.effective_date)
+        parameters = self.run_contract_function(
+            self.contract_code, "pre_parameter_change_code", {}, self.effective_date
+        )
         self.assertEqual({}, parameters)
 
     def test_post_parameter_change_code_does_not_amend_schedule_if_key_date_not_updated(self):
@@ -93,7 +99,9 @@ class SavingsAccountTestCase(SmartContracts340TestCase):
             self.effective_date,
         )
 
-        self.vault.amend_schedule.assert_called_once_with(event_type="APPLY_ACCRUED_INTEREST", new_schedule=None)
+        self.vault.amend_schedule.assert_called_once_with(
+            event_type="APPLY_ACCRUED_INTEREST", new_schedule=None
+        )
 
     def test_get_selected_interest_payday_with_effective_date(self):
         def get_parameter_timeseries(name):
@@ -104,7 +112,9 @@ class SavingsAccountTestCase(SmartContracts340TestCase):
 
         self.vault.get_parameter_timeseries.side_effect = get_parameter_timeseries
 
-        output_payday = self.run_contract_function(self.contract_code, "_get_selected_interest_payday", self.vault, self.effective_date)
+        output_payday = self.run_contract_function(
+            self.contract_code, "_get_selected_interest_payday", self.vault, self.effective_date
+        )
 
         self.vault.get_parameter_timeseries.assert_called_once_with(name="key_date")
         self.assertEqual(Decimal(25), output_payday)
@@ -120,14 +130,18 @@ class SavingsAccountTestCase(SmartContracts340TestCase):
             return timeseries
 
         self.vault.get_parameter_timeseries.side_effect = get_parameter_timeseries
-        output_payday = self.run_contract_function(self.contract_code, "_get_selected_interest_payday", self.vault, None)
+        output_payday = self.run_contract_function(
+            self.contract_code, "_get_selected_interest_payday", self.vault, None
+        )
 
         self.vault.get_parameter_timeseries.assert_called_once_with(name="key_date")
         self.assertEqual(Decimal(15), output_payday)
 
     def test_get_interest_payday_for_same_month_payment(self):
         selected_day = 1
-        output_day = self.run_contract_function(self.contract_code, "_get_interest_payday", selected_day, self.effective_date)
+        output_day = self.run_contract_function(
+            self.contract_code, "_get_interest_payday", selected_day, self.effective_date
+        )
 
         self.assertEqual("1", output_day)
 

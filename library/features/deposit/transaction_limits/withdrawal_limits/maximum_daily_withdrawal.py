@@ -32,7 +32,8 @@ parameters = [
     Parameter(
         name=PARAM_MAX_DAILY_WITHDRAWAL,
         level=ParameterLevel.TEMPLATE,
-        description="The maximum amount that can be withdrawn from the account from" " start of day to end of day.",
+        description="The maximum amount that can be withdrawn from the account from"
+        " start of day to end of day.",
         display_name="Maximum Daily Withdrawal Amount",
         shape=NumberShape(min_value=Decimal("0"), step=Decimal("0.01")),
         default_value=Decimal("10000"),
@@ -87,9 +88,14 @@ def validate(
     if proposed_postings_withdrawn_amount == 0:
         return None
 
-    effective_date_client_transactions = effective_date_client_transactions or vault.get_client_transactions(fetcher_id=fetchers.EFFECTIVE_DATE_POSTINGS_FETCHER_ID)
+    effective_date_client_transactions = (
+        effective_date_client_transactions
+        or vault.get_client_transactions(fetcher_id=fetchers.EFFECTIVE_DATE_POSTINGS_FETCHER_ID)
+    )
 
-    withdrawal_cutoff_datetime: datetime = hook_arguments.effective_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+    withdrawal_cutoff_datetime: datetime = hook_arguments.effective_datetime.replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
 
     # obtain the amount of deposits and withdrawals for the day excluding proposed
     (_, amount_withdrawn_actual) = client_transaction_utils.sum_client_transactions(
@@ -101,11 +107,14 @@ def validate(
     # total withdrawals for the day (including proposed)
     withdrawal_daily_spent = proposed_postings_withdrawn_amount + amount_withdrawn_actual
 
-    max_daily_withdrawal: Decimal = utils.get_parameter(vault=vault, name=PARAM_MAX_DAILY_WITHDRAWAL)
+    max_daily_withdrawal: Decimal = utils.get_parameter(
+        vault=vault, name=PARAM_MAX_DAILY_WITHDRAWAL
+    )
 
     if withdrawal_daily_spent > max_daily_withdrawal:
         return Rejection(
-            message=f"Transactions would cause the maximum daily withdrawal limit of " f"{max_daily_withdrawal} {denomination} to be exceeded.",
+            message=f"Transactions would cause the maximum daily withdrawal limit of "
+            f"{max_daily_withdrawal} {denomination} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 

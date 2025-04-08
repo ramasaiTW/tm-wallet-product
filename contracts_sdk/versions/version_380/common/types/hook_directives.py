@@ -51,7 +51,11 @@ class HookDirectives(types370.HookDirectives):
             types_utils.ValueSpec(
                 name="update_account_event_type_directives",
                 type="List[UpdateAccountEventTypeDirective]",
-                docstring=("A list of " "[UpdateAccountEventTypeDirectives](#classes-UpdateAccountEventTypeDirective). " "**Only available in version 3.8.0+**"),
+                docstring=(
+                    "A list of "
+                    "[UpdateAccountEventTypeDirectives](#classes-UpdateAccountEventTypeDirective). "
+                    "**Only available in version 3.8.0+**"
+                ),
             )
         )
 

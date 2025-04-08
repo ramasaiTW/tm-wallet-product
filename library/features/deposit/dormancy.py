@@ -37,7 +37,9 @@ def is_account_dormant(vault: SmartContractVault, effective_datetime: datetime) 
     )
 
 
-def validate_account_transaction(vault: SmartContractVault, effective_datetime: datetime) -> Rejection | None:
+def validate_account_transaction(
+    vault: SmartContractVault, effective_datetime: datetime
+) -> Rejection | None:
     """
     This function is used to validate account transactions in the pre posting hook only.
 

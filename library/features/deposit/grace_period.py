@@ -40,7 +40,8 @@ parameters = [
     Parameter(
         name=PARAM_GRACE_PERIOD,
         level=ParameterLevel.TEMPLATE,
-        description="The number of days from the account creation datetime when a user can make " "amendments to a deposit account without incurring any fees or penalties.",
+        description="The number of days from the account creation datetime when a user can make "
+        "amendments to a deposit account without incurring any fees or penalties.",
         display_name="Grace Period Length (days)",
         shape=NumberShape(min_value=0, step=1),
         default_value=5,
@@ -50,7 +51,8 @@ parameters = [
         name=PARAM_GRACE_PERIOD_END_DATE,
         level=ParameterLevel.INSTANCE,
         derived=True,
-        description="The grace period will end at 23:59:59.999999 (inclusive) on this day. If " "0001-01-01 is returned, this parameter is not valid for this account.",
+        description="The grace period will end at 23:59:59.999999 (inclusive) on this day. If "
+        "0001-01-01 is returned, this parameter is not valid for this account.",
         display_name="Grace Period End Date",
         shape=DateShape(),
     ),
@@ -105,7 +107,9 @@ def get_grace_period_end_datetime(*, vault: SmartContractVault) -> datetime:
     """
     grace_period = get_grace_period_parameter(vault=vault)
     account_creation_datetime = vault.get_account_creation_datetime()
-    grace_period_end = (account_creation_datetime + relativedelta(days=grace_period)).replace(hour=23, minute=59, second=59, microsecond=999999)
+    grace_period_end = (account_creation_datetime + relativedelta(days=grace_period)).replace(
+        hour=23, minute=59, second=59, microsecond=999999
+    )
     return grace_period_end
 
 
@@ -145,7 +149,9 @@ def validate_deposit(
         denomination=denomination,
     ) > Decimal("0")
 
-    if is_deposit and not is_within_grace_period(vault=vault, effective_datetime=effective_datetime):
+    if is_deposit and not is_within_grace_period(
+        vault=vault, effective_datetime=effective_datetime
+    ):
         # reject deposits after grace period
         return Rejection(
             message="No deposits are allowed after the grace period end",
@@ -170,7 +176,9 @@ def is_withdrawal_subject_to_fees(
         denomination=denomination,
     ) < Decimal("0")
 
-    if is_withdrawal and not is_within_grace_period(vault=vault, effective_datetime=effective_datetime):
+    if is_withdrawal and not is_within_grace_period(
+        vault=vault, effective_datetime=effective_datetime
+    ):
         return True
 
     return False
@@ -220,7 +228,9 @@ def handle_account_closure_notification(
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
     net_balance = utils.get_current_net_balance(balances=balances, denomination=denomination)
 
     # no funds in the the account
@@ -238,5 +248,9 @@ def handle_account_closure_notification(
     return []
 
 
-def get_grace_period_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> int:
-    return int(utils.get_parameter(vault=vault, name=PARAM_GRACE_PERIOD, at_datetime=effective_datetime))
+def get_grace_period_parameter(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> int:
+    return int(
+        utils.get_parameter(vault=vault, name=PARAM_GRACE_PERIOD, at_datetime=effective_datetime)
+    )

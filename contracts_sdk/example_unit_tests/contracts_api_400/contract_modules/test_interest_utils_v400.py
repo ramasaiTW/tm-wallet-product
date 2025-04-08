@@ -80,4 +80,6 @@ class InterestUtilsTestCase(TestCase):
 class ContractAPIUtilsTestCase(TestCase):
     def test_can_use_utils(self):
         tz_aware_utc = datetime(2022, 1, 1, tzinfo=ZoneInfo("UTC"))
-        self.assertEqual(timezone_utils.validate_timezone_is_utc(tz_aware_utc, "", ""), tz_aware_utc)
+        self.assertEqual(
+            timezone_utils.validate_timezone_is_utc(tz_aware_utc, "", ""), tz_aware_utc
+        )

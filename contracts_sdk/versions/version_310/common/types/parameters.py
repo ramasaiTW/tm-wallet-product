@@ -15,42 +15,57 @@ class NumberShape(parameters300.NumberShape):
     @classmethod
     def validate_value(cls, value):
         if not isinstance(value, Decimal) and not isinstance(value, int):
-            raise exceptions.InvalidSmartContractError(f"NumberShape value should be Decimal, instead got {value} of type {type(value)}")
+            raise exceptions.InvalidSmartContractError(
+                f"NumberShape value should be Decimal, instead got {value} of type {type(value)}"
+            )
 
 
 class StringShape(parameters300.StringShape):
     @classmethod
     def validate_value(cls, value):
         if not isinstance(value, str):
-            raise exceptions.InvalidSmartContractError(f"StringShape value should be string, instead got {value} of type {type(value)}")
+            raise exceptions.InvalidSmartContractError(
+                f"StringShape value should be string, instead got {value} of type {type(value)}"
+            )
 
 
 class AccountIdShape(parameters300.AccountIdShape):
     @classmethod
     def validate_value(cls, value):
         if not isinstance(value, str):
-            raise exceptions.InvalidSmartContractError(f"AccountIdShape value should be string, instead got {value} of type " f"{type(value)}")
+            raise exceptions.InvalidSmartContractError(
+                f"AccountIdShape value should be string, instead got {value} of type "
+                f"{type(value)}"
+            )
 
 
 class DenominationShape(parameters300.DenominationShape):
     @classmethod
     def validate_value(cls, value):
         if not isinstance(value, str):
-            raise exceptions.InvalidSmartContractError(f"DenominationShape value should be string, instead got {value} of type " f"{type(value)}")
+            raise exceptions.InvalidSmartContractError(
+                f"DenominationShape value should be string, instead got {value} of type "
+                f"{type(value)}"
+            )
 
 
 class DateShape(parameters300.DateShape):
     @classmethod
     def validate_value(cls, value):
         if not isinstance(value, datetime.datetime):
-            raise exceptions.InvalidSmartContractError(f"DateShape value should be datetime, instead got {value} of type {type(value)}")
+            raise exceptions.InvalidSmartContractError(
+                f"DateShape value should be datetime, instead got {value} of type {type(value)}"
+            )
 
 
 class OptionalShape(parameters300.OptionalShape):
     @classmethod
     def validate_value(cls, value):
         if not isinstance(value, OptionalValue):
-            raise exceptions.InvalidSmartContractError(f"OptionalShape value should be OptionalValue, instead got {value} of type " f"{type(value)}")
+            raise exceptions.InvalidSmartContractError(
+                f"OptionalShape value should be OptionalValue, instead got {value} of type "
+                f"{type(value)}"
+            )
 
         if value.value is not None:
             cls.shape.validate_value(value.value)
@@ -60,9 +75,14 @@ class UnionShape(parameters300.UnionShape):
     @classmethod
     def validate_value(cls, value):
         if not isinstance(value, UnionItemValue):
-            raise exceptions.InvalidSmartContractError(f"UnionShape value should be UnionItemValue, instead got {value} of type " f"{type(value)}")
+            raise exceptions.InvalidSmartContractError(
+                f"UnionShape value should be UnionItemValue, instead got {value} of type "
+                f"{type(value)}"
+            )
         if not any(item.key == value.key for item in cls.items):
-            raise exceptions.InvalidSmartContractError(f"UnionItemValue with key {value.key} not allowed in this UnionShape")
+            raise exceptions.InvalidSmartContractError(
+                f"UnionItemValue with key {value.key} not allowed in this UnionShape"
+            )
 
 
 class Parameter:
@@ -81,12 +101,23 @@ class Parameter:
         optional = issubclass(kwargs.get("shape", None), OptionalShape)
         derived = kwargs["derived"]
         name = kwargs["name"]
-        if level == symbols.ContractParameterLevel.INSTANCE and default_value is None and not optional and not derived:
-            raise exceptions.InvalidSmartContractError(f"Instance Parameters with non optional shapes must have a default value: {name}")
+        if (
+            level == symbols.ContractParameterLevel.INSTANCE
+            and default_value is None
+            and not optional
+            and not derived
+        ):
+            raise exceptions.InvalidSmartContractError(
+                f"Instance Parameters with non optional shapes must have a default value: {name}"
+            )
         if derived and not level == symbols.ContractParameterLevel.INSTANCE:
-            raise exceptions.InvalidSmartContractError(f"Derived Parameters can only be INSTANCE level: {name}")
+            raise exceptions.InvalidSmartContractError(
+                f"Derived Parameters can only be INSTANCE level: {name}"
+            )
         if derived and (default_value or update_permission):
-            raise exceptions.InvalidSmartContractError(f"Derived Parameters cannot have a default value or update permissions: {name}")
+            raise exceptions.InvalidSmartContractError(
+                f"Derived Parameters cannot have a default value or update permissions: {name}"
+            )
 
     @classmethod
     @lru_cache()
@@ -134,7 +165,9 @@ class Parameter:
                 type="Optional[str]",
                 docstring="The name of Parameter as may be show in a front-end user interface.",
             ),
-            types_utils.ValueSpec(name="level", type="Level", docstring="The level of the Parameter."),
+            types_utils.ValueSpec(
+                name="level", type="Level", docstring="The level of the Parameter."
+            ),
             types_utils.ValueSpec(
                 name="value",
                 type="Optional[%s]" % _parameter_value_type_str,
@@ -163,7 +196,10 @@ class Parameter:
             ),
             types_utils.ValueSpec(
                 name="shape",
-                type=("Union[AccountIdShape, DateShape, DenominationShape, NumberShape, " "OptionalShape, StringShape, UnionShape]"),
+                type=(
+                    "Union[AccountIdShape, DateShape, DenominationShape, NumberShape, "
+                    "OptionalShape, StringShape, UnionShape]"
+                ),
                 docstring="The shape of the parameter.",
             ),
         ]

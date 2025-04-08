@@ -60,7 +60,9 @@ class TestProfitAccrual(FeatureTest):
             default_datetime=DEFAULT_DATE,
         )
         mock_vault = self.create_mock(parameter_ts=parameter_ts)
-        actual_schedules = tiered_profit_accrual.scheduled_events(vault=mock_vault, start_datetime=DEFAULT_DATE)
+        actual_schedules = tiered_profit_accrual.scheduled_events(
+            vault=mock_vault, start_datetime=DEFAULT_DATE
+        )
         expected_schedules = {
             ACCRUAL_EVENT: ScheduledEvent(
                 start_datetime=DEFAULT_DATE,
@@ -72,7 +74,9 @@ class TestProfitAccrual(FeatureTest):
 
     @patch.object(tiered_profit_accrual.utils, "get_parameter")
     @patch.object(tiered_profit_accrual.utils, "sum_balances")
-    def test_get_accrual_capital_default_address(self, mock_sum_balances: MagicMock, mock_get_parameter: MagicMock):
+    def test_get_accrual_capital_default_address(
+        self, mock_sum_balances: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_sum_balances.side_effect = [Decimal(100)]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
@@ -80,14 +84,22 @@ class TestProfitAccrual(FeatureTest):
                 "accrued_profit_payable_account": ACCRUED_PROFIT_PAYABLE_ACCOUNT,
             }
         )
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={"EOD_FETCHER": SentinelBalancesObservation("eod")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                "EOD_FETCHER": SentinelBalancesObservation("eod")
+            }
+        )
         tiered_profit_accrual.get_accrual_capital(vault=mock_vault, capital_addresses=["DEFAULT"])
 
-        mock_sum_balances.assert_called_once_with(balances=sentinel.balances_eod, addresses=["DEFAULT"], denomination="GBP")
+        mock_sum_balances.assert_called_once_with(
+            balances=sentinel.balances_eod, addresses=["DEFAULT"], denomination="GBP"
+        )
 
     @patch.object(tiered_profit_accrual.utils, "get_parameter")
     @patch.object(tiered_profit_accrual.utils, "sum_balances")
-    def test_accrue_profit_no_account_tier_rates(self, mock_sum_balances: MagicMock, mock_get_parameter: MagicMock):
+    def test_accrue_profit_no_account_tier_rates(
+        self, mock_sum_balances: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_sum_balances.return_value = Decimal("2000")
         mock_get_parameter.side_effect = mock_utils_get_parameter(self.standard_parameters)
 
@@ -114,7 +126,9 @@ class TestProfitAccrual(FeatureTest):
         mock_sum_balances.return_value = Decimal("2000")
         # 2000 * (0.01/366) = 0.05464480874 (5DP)
         expected_profit = Decimal("0.05464")
-        mock_get_parameter.side_effect = mock_utils_get_parameter({**self.standard_parameters, tiered_profit_accrual.PARAM_DAYS_IN_YEAR: "actual"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {**self.standard_parameters, tiered_profit_accrual.PARAM_DAYS_IN_YEAR: "actual"}
+        )
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER)
         mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("accrual_ci")]
 
@@ -150,7 +164,9 @@ class TestProfitAccrual(FeatureTest):
         mock_sum_balances.return_value = Decimal("2000")
         # 2000 * (0.01/360) = 0.05555555555 (5DP)
         expected_profit = Decimal("0.05556")
-        mock_get_parameter.side_effect = mock_utils_get_parameter({**self.standard_parameters, tiered_profit_accrual.PARAM_DAYS_IN_YEAR: "360"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {**self.standard_parameters, tiered_profit_accrual.PARAM_DAYS_IN_YEAR: "360"}
+        )
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER)
         mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("accrual_ci")]
 
@@ -187,7 +203,9 @@ class TestProfitAccrual(FeatureTest):
         # (5000 * (0.01/365)) + (2000 * (0.05/365)) = 0.41095890411 (5DP)
         expected_profit = Decimal("0.41096")
         effective_datetime = datetime(2021, 1, 5, tzinfo=ZoneInfo("UTC"))
-        mock_get_parameter.side_effect = mock_utils_get_parameter({**self.standard_parameters, tiered_profit_accrual.PARAM_DAYS_IN_YEAR: "365"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {**self.standard_parameters, tiered_profit_accrual.PARAM_DAYS_IN_YEAR: "365"}
+        )
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER)
         mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("accrual_ci")]
         results = tiered_profit_accrual.accrue_profit(
@@ -205,7 +223,8 @@ class TestProfitAccrual(FeatureTest):
             internal_account=ACCRUED_PROFIT_PAYABLE_ACCOUNT,
             payable=True,
             instruction_details=utils.standard_instruction_details(
-                description="Accrual on 5000.00 at annual rate of 1.00%. " "Accrual on 2000.00 at annual rate of 5.00%.",
+                description="Accrual on 5000.00 at annual rate of 1.00%. "
+                "Accrual on 2000.00 at annual rate of 5.00%.",
                 event_type=ACCRUAL_EVENT,
             ),
         )
@@ -244,14 +263,18 @@ class TestProfitAccrual(FeatureTest):
             internal_account=ACCRUED_PROFIT_PAYABLE_ACCOUNT,
             payable=True,
             instruction_details=utils.standard_instruction_details(
-                description="Accrual on 5000.00 at annual rate of 1.00%. " "Accrual on 5000.00 at annual rate of 5.00%. " "Accrual on 1000.00 at annual rate of 10.00%.",
+                description="Accrual on 5000.00 at annual rate of 1.00%. "
+                "Accrual on 5000.00 at annual rate of 5.00%. "
+                "Accrual on 1000.00 at annual rate of 10.00%.",
                 event_type=ACCRUAL_EVENT,
             ),
         )
 
     @patch.object(tiered_profit_accrual.utils, "get_parameter")
     @patch.object(tiered_profit_accrual.utils, "sum_balances")
-    def test_accrue_profit_0_accrual(self, mock_sum_balances: MagicMock, mock_get_parameter: MagicMock):
+    def test_accrue_profit_0_accrual(
+        self, mock_sum_balances: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_sum_balances.return_value = Decimal("0")
         mock_get_parameter.side_effect = mock_utils_get_parameter(self.standard_parameters)
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER)
@@ -294,11 +317,15 @@ class TestProfitAccrual(FeatureTest):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "denomination": "GBP",
-                tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (ACCRUED_PROFIT_PAYABLE_ACCOUNT),
+                tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (
+                    ACCRUED_PROFIT_PAYABLE_ACCOUNT
+                ),
             }
         )
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER)
-        mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("reverse_accrual_ci")]
+        mock_accrual_custom_instruction.return_value = [
+            SentinelCustomInstruction("reverse_accrual_ci")
+        ]
         expected_postings = [SentinelCustomInstruction("reverse_accrual_ci")]
 
         reversal_postings = tiered_profit_accrual.get_profit_reversal_postings(
@@ -317,7 +344,8 @@ class TestProfitAccrual(FeatureTest):
             internal_account=ACCRUED_PROFIT_PAYABLE_ACCOUNT,
             payable=True,
             instruction_details={
-                "description": "Reversal of accrued profit of value 1.5 GBP due " "to account closure.",
+                "description": "Reversal of accrued profit of value 1.5 GBP due "
+                "to account closure.",
                 "event": "sentinel.event_name",
                 "gl_impacted": "True",
                 "account_type": sentinel.account_type,
@@ -337,11 +365,15 @@ class TestProfitAccrual(FeatureTest):
         mock_balance_at_coordinates.return_value = Decimal("1.5")
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
-                tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (ACCRUED_PROFIT_PAYABLE_ACCOUNT),
+                tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (
+                    ACCRUED_PROFIT_PAYABLE_ACCOUNT
+                ),
             }
         )
         mock_vault = self.create_mock()
-        mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("reverse_accrual_ci")]
+        mock_accrual_custom_instruction.return_value = [
+            SentinelCustomInstruction("reverse_accrual_ci")
+        ]
         expected_postings = [SentinelCustomInstruction("reverse_accrual_ci")]
 
         reversal_postings = tiered_profit_accrual.get_profit_reversal_postings(
@@ -362,7 +394,8 @@ class TestProfitAccrual(FeatureTest):
             internal_account=ACCRUED_PROFIT_PAYABLE_ACCOUNT,
             payable=True,
             instruction_details={
-                "description": "Reversal of accrued profit of value 1.5 sentinel.denomination_arg" " due to account closure.",
+                "description": "Reversal of accrued profit of value 1.5 sentinel.denomination_arg"
+                " due to account closure.",
                 "event": "sentinel.event_name",
                 "gl_impacted": "True",
                 "account_type": sentinel.account_type,
@@ -383,7 +416,9 @@ class TestProfitAccrual(FeatureTest):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "denomination": "GBP",
-                tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (ACCRUED_PROFIT_PAYABLE_ACCOUNT),
+                tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (
+                    ACCRUED_PROFIT_PAYABLE_ACCOUNT
+                ),
             }
         )
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER)
@@ -414,19 +449,27 @@ class TestProfitAccrual(FeatureTest):
         self.assertEqual(tier_balance, Decimal("0"))
 
     def test_determine_tier_balance_zero_tier_max_signed(self):
-        tier_balance = tiered_profit_accrual.determine_tier_balance(effective_balance=Decimal("0"), tier_max=Decimal("-0"))
+        tier_balance = tiered_profit_accrual.determine_tier_balance(
+            effective_balance=Decimal("0"), tier_max=Decimal("-0")
+        )
         self.assertEqual(tier_balance, Decimal("0"))
 
     def test_determine_tier_balance_zero_tier_max_valued(self):
-        tier_balance = tiered_profit_accrual.determine_tier_balance(effective_balance=Decimal("0"), tier_max=Decimal("1"))
+        tier_balance = tiered_profit_accrual.determine_tier_balance(
+            effective_balance=Decimal("0"), tier_max=Decimal("1")
+        )
         self.assertEqual(tier_balance, Decimal("0"))
 
     def test_determine_tier_balance_zero_tier_max_none_tier_min_signed(self):
-        tier_balance = tiered_profit_accrual.determine_tier_balance(effective_balance=Decimal("0"), tier_min=Decimal("-1"))
+        tier_balance = tiered_profit_accrual.determine_tier_balance(
+            effective_balance=Decimal("0"), tier_min=Decimal("-1")
+        )
         self.assertEqual(tier_balance, Decimal("0"))
 
     def test_determine_tier_balance_tier_min_greater_than_max_signed(self):
-        tier_balance = tiered_profit_accrual.determine_tier_balance(effective_balance=Decimal("0"), tier_min=Decimal("-1"), tier_max=Decimal("-2"))
+        tier_balance = tiered_profit_accrual.determine_tier_balance(
+            effective_balance=Decimal("0"), tier_min=Decimal("-1"), tier_max=Decimal("-2")
+        )
         self.assertEqual(tier_balance, Decimal("0"))
 
 
@@ -448,7 +491,9 @@ class ProfitAccrualScheduleTest(FeatureTest):
         mock_vault = MagicMock()
         mock_daily_scheduled_event.return_value = sentinel.daily_scheduled_event
 
-        scheduled_events = tiered_profit_accrual.scheduled_events(vault=mock_vault, start_datetime=sentinel.start_datetime)
+        scheduled_events = tiered_profit_accrual.scheduled_events(
+            vault=mock_vault, start_datetime=sentinel.start_datetime
+        )
 
         self.assertDictEqual(
             scheduled_events,

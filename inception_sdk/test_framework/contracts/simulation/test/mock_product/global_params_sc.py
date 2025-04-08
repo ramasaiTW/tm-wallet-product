@@ -64,7 +64,10 @@ def _accrue_interest(vault, event_type: str, effective_date: datetime):
         from_account_address="ACCRUED_OUTGOING",
         to_account_id=vault.account_id,
         to_account_address=ACCRUED_INTEREST_PAYABLE,
-        instruction_details={"description": "Daily interest accrued at %0.5f%% on balance of %0.2f" % (daily_rate_percent, bal)},
+        instruction_details={
+            "description": "Daily interest accrued at %0.5f%% on balance of %0.2f"
+            % (daily_rate_percent, bal)
+        },
         asset=DEFAULT_ASSET,
     )
     vault.instruct_posting_batch(

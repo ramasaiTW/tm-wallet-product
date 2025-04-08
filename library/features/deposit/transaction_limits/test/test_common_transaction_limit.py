@@ -29,7 +29,11 @@ class CommonTransactionLimitTest(FeatureTest):
     ) -> BalanceDefaultDict:
         mapping = {
             self.balance_coordinate(): self.balance(net=default_committed),
-            self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(net=default_pending_outgoing),
-            self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(net=default_pending_incoming),
+            self.balance_coordinate(phase=Phase.PENDING_OUT): self.balance(
+                net=default_pending_outgoing
+            ),
+            self.balance_coordinate(phase=Phase.PENDING_IN): self.balance(
+                net=default_pending_incoming
+            ),
         }
         return BalanceDefaultDict(mapping=mapping)

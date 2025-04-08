@@ -27,6 +27,8 @@ class VaultFunctionsABC(v340_lib.VaultFunctionsABC):
                 Returns the permitted denominations of the account.
             """,
             args=[],
-            return_value=types_utils.ReturnValueSpec(docstring="A list of denominations.", type="List[str]"),
+            return_value=types_utils.ReturnValueSpec(
+                docstring="A list of denominations.", type="List[str]"
+            ),
         )
         return spec

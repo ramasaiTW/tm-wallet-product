@@ -34,7 +34,9 @@ event_types = [
 event_types = [SupervisorContractEventType(name="name1", scheduler_tag_ids=["tag1"])]
 event_types.append(SupervisorContractEventType(name="name2", scheduler_tag_ids=["tag2"]))
 event_types += [SupervisorContractEventType(name="name3", scheduler_tag_ids=["tag3"])]
-event_types[len(event_types) :] = [SupervisorContractEventType(name="name4", scheduler_tag_ids=["tag4"])]
+event_types[len(event_types) :] = [
+    SupervisorContractEventType(name="name4", scheduler_tag_ids=["tag4"])
+]
 
 
 def activation_hook(vault, hook_arguments: SupervisorActivationHookArguments):

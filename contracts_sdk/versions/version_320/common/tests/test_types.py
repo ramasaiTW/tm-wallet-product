@@ -130,7 +130,8 @@ class PublicCommonV320TypesTestCase(PublicCommonV310TypesTestCase):
                 derived=True,
             )
         self.assertIn(
-            "Derived Parameters cannot have a default value or update permissions: " "overdraft_limit",
+            "Derived Parameters cannot have a default value or update permissions: "
+            "overdraft_limit",
             str(ex.exception),
         )
 
@@ -182,7 +183,9 @@ class PublicCommonV320TypesTestCase(PublicCommonV310TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
+        )
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
@@ -223,11 +226,15 @@ class PublicCommonV320TypesTestCase(PublicCommonV310TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
+        )
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs
+        )
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.HARD_SETTLEMENT, **common_kwargs)
@@ -237,7 +244,9 @@ class PublicCommonV320TypesTestCase(PublicCommonV310TypesTestCase):
         pi = PostingInstruction(type=PostingInstructionType.RELEASE, **common_kwargs)
         self.assertFalse(hasattr(pi, "advice"))
 
-        pi = PostingInstruction(type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs
+        )
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.TRANSFER, **common_kwargs)

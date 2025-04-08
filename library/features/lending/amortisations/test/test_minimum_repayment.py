@@ -55,7 +55,9 @@ class TermDetailsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         self.assertEqual(result, (4, 8))
 
     def test_term_details_without_features(
@@ -72,15 +74,23 @@ class TermDetailsTest(FeatureTest):
         )
         mock_calculate_elapsed_term.return_value = 4
 
-        balances_observation_fetchers_mapping = {minimum_repayment.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))}
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        balances_observation_fetchers_mapping = {
+            minimum_repayment.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+                SentinelBalancesObservation("effective")
+            )
+        }
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
         result = minimum_repayment.term_details(
             vault=mock_vault,
             effective_datetime=sentinel.effective_datetime,
             use_expected_term=False,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances_effective, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances_effective, denomination=sentinel.denomination
+        )
         self.assertEqual(result, (4, 8))
 
     def test_term_details_effective_date_equals_account_creation(
@@ -125,7 +135,9 @@ class CalculateEmi(FeatureTest):
         mock_apply_declining_principal_formula.return_value = sentinel.emi
         mock_vault = self.create_mock()
 
-        result = minimum_repayment.calculate_emi(vault=mock_vault, effective_datetime=sentinel.effective_datetime)
+        result = minimum_repayment.calculate_emi(
+            vault=mock_vault, effective_datetime=sentinel.effective_datetime
+        )
 
         mock_term_details.assert_called_once_with(
             vault=mock_vault,

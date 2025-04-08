@@ -61,7 +61,9 @@ class PublicV300VaultFunctionsTestCase(SmartContracts300TestCase):
 
     def test_add_account_note(self):
         def foo(vault):
-            vault.add_account_note(body="some note", note_type="foo", is_visible_to_customer=True, date="some date")
+            vault.add_account_note(
+                body="some note", note_type="foo", is_visible_to_customer=True, date="some date"
+            )
 
         foo(self.vault)
 

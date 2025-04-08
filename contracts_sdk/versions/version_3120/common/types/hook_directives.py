@@ -41,7 +41,9 @@ class HookDirectives(types3110.HookDirectives):
         if not _from_proto:
             self._spec().assert_constructor_args(
                 self._registry,
-                {"instruct_account_notification_directives": instruct_account_notification_directives},  # noqa: E501
+                {
+                    "instruct_account_notification_directives": instruct_account_notification_directives
+                },  # noqa: E501
             )
 
         self.instruct_account_notification_directives = instruct_account_notification_directives

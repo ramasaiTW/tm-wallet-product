@@ -42,7 +42,9 @@ class CommonUtilsTest(TestCase):
         }
 
         # flags in json with one level
-        json_parameter_single_level = {"flag_key": {"US_SAVINGS_ACCOUNT_TIER_UPPER": "500", "example1": "500"}}
+        json_parameter_single_level = {
+            "flag_key": {"US_SAVINGS_ACCOUNT_TIER_UPPER": "500", "example1": "500"}
+        }
         expected_json_parameter_single_level = {
             "E2E_US_SAVINGS_ACCOUNT_TIER_UPPER": "500",
             "E2E_example1": "500",
@@ -99,7 +101,9 @@ class CommonUtilsTest(TestCase):
                     "example3": "300",
                     "example4": {"flag_key": {"example1": "500"}},
                 },
-                "US_SAVINGS_ACCOUNT_TIER_LOWER": {"flag_key": {"example2": "500"}},  # again, example2 is not in mapping
+                "US_SAVINGS_ACCOUNT_TIER_LOWER": {
+                    "flag_key": {"example2": "500"}
+                },  # again, example2 is not in mapping
                 "US_SAVINGS_ACCOUNT_TIER_MIDDLE": {"example5": "500"},
             }
         }
@@ -307,7 +311,8 @@ class IdentifyCLUDependenciesTest(TestCase):
             utils.identify_clu_dependencies(resource_id="dummy_id", resource=resource)
         self.assertEqual(
             ctx.exception.args[0],
-            "Reference `my_dep:field` contains `resource_id:resource_field` CLU syntax " "that is not yet supported by our tooling",
+            "Reference `my_dep:field` contains `resource_id:resource_field` CLU syntax "
+            "that is not yet supported by our tooling",
         )
 
 
@@ -316,7 +321,9 @@ class ReplaceCLUDependenciesTest(TestCase):
     def test_replace_clu_dependency(self, identify_clu_dependencies_mock: mock.Mock):
         #             2           3    4          15
         resource = "bla" + LINE_SEP + "&{target_id}" + LINE_SEP
-        identify_clu_dependencies_mock.return_value = [utils.ResourceDependency("source_id", "target_id", 4, 15)]
+        identify_clu_dependencies_mock.return_value = [
+            utils.ResourceDependency("source_id", "target_id", 4, 15)
+        ]
         mapping = {"target_id": "mapped_target_id"}
 
         modified_resource = utils.replace_clu_dependencies("source_id", resource, mapping)
@@ -362,13 +369,18 @@ class ReplaceCLUDependenciesTest(TestCase):
             utils.replace_clu_dependencies("source_id", "", mapping_1, mapping_2)
         self.assertEqual(
             ctx.exception.__cause__.args[0],
-            "Duplicate resource ids found across id mappings for different resource types: " "{'target_id': ['mapped_target_id_a', 'mapped_target_id_b']}",
+            "Duplicate resource ids found across id mappings for different resource types: "
+            "{'target_id': ['mapped_target_id_a', 'mapped_target_id_b']}",
         )
 
-    def test_replace_with_missing_mappings_no_remove_clu_syntax(self, identify_clu_dependencies_mock: mock.Mock):
+    def test_replace_with_missing_mappings_no_remove_clu_syntax(
+        self, identify_clu_dependencies_mock: mock.Mock
+    ):
         #             2           3    4          15
         resource = "bla" + LINE_SEP + "&{target_id}" + LINE_SEP
-        identify_clu_dependencies_mock.return_value = [utils.ResourceDependency("source_id", "target_id", 4, 15)]
+        identify_clu_dependencies_mock.return_value = [
+            utils.ResourceDependency("source_id", "target_id", 4, 15)
+        ]
         mapping = {"other_target_id": "mapped_target_id"}
 
         with self.assertRaises(utils.CLUMissingMapping) as ctx:
@@ -378,21 +390,33 @@ class ReplaceCLUDependenciesTest(TestCase):
             "Could not find mapping for CLU reference `target_id`",
         )
 
-    def test_replace_with_empty_mappings_and_remove_clu_syntax(self, identify_clu_dependencies_mock: mock.Mock):
+    def test_replace_with_empty_mappings_and_remove_clu_syntax(
+        self, identify_clu_dependencies_mock: mock.Mock
+    ):
         #             2           3    4          15
         resource = "bla" + LINE_SEP + "&{target_id}" + LINE_SEP
-        identify_clu_dependencies_mock.return_value = [utils.ResourceDependency("source_id", "target_id", 4, 15)]
+        identify_clu_dependencies_mock.return_value = [
+            utils.ResourceDependency("source_id", "target_id", 4, 15)
+        ]
 
-        modified_resource = utils.replace_clu_dependencies("source_id", resource, remove_clu_syntax_for_unknown_ids=True)
+        modified_resource = utils.replace_clu_dependencies(
+            "source_id", resource, remove_clu_syntax_for_unknown_ids=True
+        )
         self.assertEqual(modified_resource, "bla" + LINE_SEP + "target_id" + LINE_SEP)
 
-    def test_replace_with_missing_mappings_and_remove_clu_syntax(self, identify_clu_dependencies_mock: mock.Mock):
+    def test_replace_with_missing_mappings_and_remove_clu_syntax(
+        self, identify_clu_dependencies_mock: mock.Mock
+    ):
         #             2           3    4          15
         resource = "bla" + LINE_SEP + "&{target_id}" + LINE_SEP
-        identify_clu_dependencies_mock.return_value = [utils.ResourceDependency("source_id", "target_id", 4, 15)]
+        identify_clu_dependencies_mock.return_value = [
+            utils.ResourceDependency("source_id", "target_id", 4, 15)
+        ]
         mapping = {"other_target_id": "mapped_target_id"}
 
-        modified_resource = utils.replace_clu_dependencies("source_id", resource, mapping, remove_clu_syntax_for_unknown_ids=True)
+        modified_resource = utils.replace_clu_dependencies(
+            "source_id", resource, mapping, remove_clu_syntax_for_unknown_ids=True
+        )
 
         self.assertEqual(modified_resource, "bla" + LINE_SEP + "target_id" + LINE_SEP)
 
@@ -403,14 +427,16 @@ class ReplaceScheduleTagIdsTest(TestCase):
             "EVENT_1": "E2E_AST_1",
         }
         result = utils.replace_schedule_tag_ids_in_contract(
-            contract_data='event_types = [SmartContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["TAG_1"])]',
+            contract_data='event_types = [SmartContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["TAG_1"])]',
             id_mapping=schedule_tag_mapping,
             default_paused_tag_id="E2E_PAUSED_TAG",
         )
         result = format_str(result, mode=Mode(line_length=100))
         self.assertEqual(
             result,
-            'event_types = [SmartContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["E2E_AST_1"])]\n',
+            'event_types = [SmartContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["E2E_AST_1"])]\n',
         )
 
     def test_replace_in_supervisor_event_type_with_single_tag_id(self):
@@ -418,14 +444,16 @@ class ReplaceScheduleTagIdsTest(TestCase):
             "EVENT_1": "E2E_AST_1",
         }
         result = utils.replace_schedule_tag_ids_in_contract(
-            contract_data='event_types = [SupervisorContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["TAG_1"])]',
+            contract_data='event_types = [SupervisorContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["TAG_1"])]',
             id_mapping=schedule_tag_mapping,
             default_paused_tag_id="E2E_PAUSED_TAG",
         )
         result = format_str(result, mode=Mode(line_length=100))
         self.assertEqual(
             result,
-            'event_types = [SupervisorContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["E2E_AST_1"])]\n',
+            'event_types = [SupervisorContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["E2E_AST_1"])]\n',
         )
 
     def test_replace_in_event_type_with_constant_as_name(self):
@@ -433,14 +461,16 @@ class ReplaceScheduleTagIdsTest(TestCase):
             "EVENT_1": "E2E_AST_1",
         }
         result = utils.replace_schedule_tag_ids_in_contract(
-            contract_data='NAME = "EVENT_1"\n' 'event_types = [SmartContractEventType(name=NAME, scheduler_tag_ids=["TAG_1"])]',
+            contract_data='NAME = "EVENT_1"\n'
+            'event_types = [SmartContractEventType(name=NAME, scheduler_tag_ids=["TAG_1"])]',
             id_mapping=schedule_tag_mapping,
             default_paused_tag_id="E2E_PAUSED_TAG",
         )
         result = format_str(result, mode=Mode(line_length=100))
         self.assertEqual(
             result,
-            'NAME = "EVENT_1"\n' 'event_types = [SmartContractEventType(name=NAME, scheduler_tag_ids=["E2E_AST_1"])]\n',
+            'NAME = "EVENT_1"\n'
+            'event_types = [SmartContractEventType(name=NAME, scheduler_tag_ids=["E2E_AST_1"])]\n',
         )
 
     def test_replace_in_event_type_no_tag_ids(self):
@@ -455,7 +485,8 @@ class ReplaceScheduleTagIdsTest(TestCase):
         result = format_str(result, mode=Mode(line_length=100))
         self.assertEqual(
             result,
-            'event_types = [SmartContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["E2E_AST_1"])]\n',
+            'event_types = [SmartContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["E2E_AST_1"])]\n',
         )
 
     def test_replace_in_event_type_multiple_tag_ids(self):
@@ -463,28 +494,32 @@ class ReplaceScheduleTagIdsTest(TestCase):
             "EVENT_1": "E2E_AST_1",
         }
         result = utils.replace_schedule_tag_ids_in_contract(
-            contract_data='event_types=[SmartContractEventType(name="EVENT_1", ' + 'scheduler_tag_ids=["a", "b"])]',
+            contract_data='event_types=[SmartContractEventType(name="EVENT_1", '
+            + 'scheduler_tag_ids=["a", "b"])]',
             id_mapping=schedule_tag_mapping,
             default_paused_tag_id="E2E_PAUSED_TAG",
         )
         result = format_str(result, mode=Mode(line_length=100))
         self.assertEqual(
             result,
-            'event_types = [SmartContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["E2E_AST_1"])]\n',
+            'event_types = [SmartContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["E2E_AST_1"])]\n',
         )
 
     def test_replace_in_event_type_using_default_tag(self):
         schedule_tag_mapping = {}
 
         result = utils.replace_schedule_tag_ids_in_contract(
-            contract_data='event_types=[SmartContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["TAG_1"])]',
+            contract_data='event_types=[SmartContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["TAG_1"])]',
             id_mapping=schedule_tag_mapping,
             default_paused_tag_id="E2E_PAUSED_TAG",
         )
         result = format_str(result, mode=Mode(line_length=100))
         self.assertEqual(
             result,
-            'event_types = [SmartContractEventType(name="EVENT_1", ' 'scheduler_tag_ids=["E2E_PAUSED_TAG"])]\n',
+            'event_types = [SmartContractEventType(name="EVENT_1", '
+            'scheduler_tag_ids=["E2E_PAUSED_TAG"])]\n',
         )
 
     def test_replace_in_event_type_doesnt_affect_non_event_type(self):
@@ -558,7 +593,8 @@ class TestSafeMerge(TestCase):
             utils.safe_merge_dicts([mapping_1, mapping_2])
         self.assertEqual(
             ctx.exception.args[0],
-            "Duplicate resource ids found across id mappings for different resource types: " "{'target_id': ['mapped_target_id_a', 'mapped_target_id_b']}",
+            "Duplicate resource ids found across id mappings for different resource types: "
+            "{'target_id': ['mapped_target_id_a', 'mapped_target_id_b']}",
         )
 
     def test_safe_merge_identical_dictionaries(self):
@@ -567,7 +603,8 @@ class TestSafeMerge(TestCase):
             utils.safe_merge_dicts([mapping_1, mapping_1])
         self.assertEqual(
             ctx.exception.args[0],
-            "Duplicate resource ids found across id mappings for different resource types: " "{'target_id': ['mapped_target_id_a', 'mapped_target_id_a']}",
+            "Duplicate resource ids found across id mappings for different resource types: "
+            "{'target_id': ['mapped_target_id_a', 'mapped_target_id_a']}",
         )
 
     def test_safe_merge_dictionaries_with_overlapping_keys(self):
@@ -577,5 +614,6 @@ class TestSafeMerge(TestCase):
             utils.safe_merge_dicts([mapping_1, mapping_2])
         self.assertEqual(
             ctx.exception.args[0],
-            "Duplicate resource ids found across id mappings for different resource types: " "{'target_id': ['mapped_target_id_a', 'mapped_target_id_b']}",
+            "Duplicate resource ids found across id mappings for different resource types: "
+            "{'target_id': ['mapped_target_id_a', 'mapped_target_id_b']}",
         )

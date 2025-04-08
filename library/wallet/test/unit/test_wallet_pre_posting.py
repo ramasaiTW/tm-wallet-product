@@ -43,7 +43,9 @@ class PrePostingHookTest(WalletTestBase):
     def test_posting_batch_with_additional_denom_and_sufficient_balance_is_accepted(
         self,
     ):
-        posting = self.outbound_hard_settlement(amount=Decimal("30"), denomination=sentinel.add_denomination_1)
+        posting = self.outbound_hard_settlement(
+            amount=Decimal("30"), denomination=sentinel.add_denomination_1
+        )
 
         balance_dict = {
             self.balance_coordinate(
@@ -54,7 +56,9 @@ class PrePostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -71,8 +75,12 @@ class PrePostingHookTest(WalletTestBase):
     def test_posting_batch_with_additional_denom_and_sufficient_balances_is_accepted(
         self,
     ):
-        posting_1 = self.outbound_hard_settlement(amount=Decimal("20"), denomination=sentinel.add_denomination_1)
-        posting_2 = self.outbound_hard_settlement(amount=Decimal("30"), denomination=sentinel.add_denomination_2)
+        posting_1 = self.outbound_hard_settlement(
+            amount=Decimal("20"), denomination=sentinel.add_denomination_1
+        )
+        posting_2 = self.outbound_hard_settlement(
+            amount=Decimal("30"), denomination=sentinel.add_denomination_2
+        )
 
         balance_dict = {
             self.balance_coordinate(
@@ -86,7 +94,9 @@ class PrePostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -101,7 +111,9 @@ class PrePostingHookTest(WalletTestBase):
         self.assertIsNone(hook_result)
 
     def test_posting_batch_with_single_additional_denom_rejected_if_insufficient_balances(self):
-        posting = self.outbound_hard_settlement(amount=Decimal("20"), denomination=sentinel.add_denomination_1)
+        posting = self.outbound_hard_settlement(
+            amount=Decimal("20"), denomination=sentinel.add_denomination_1
+        )
 
         balance_dict = {
             self.balance_coordinate(
@@ -112,7 +124,9 @@ class PrePostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -127,21 +141,28 @@ class PrePostingHookTest(WalletTestBase):
         self.assertIsNotNone(hook_result)
         self.assertEqual(
             hook_result.rejection.message,
-            f"Postings total {sentinel.add_denomination_1} -20, " f"which exceeds the available balance of {sentinel.add_denomination_1} 10",
+            f"Postings total {sentinel.add_denomination_1} -20, "
+            f"which exceeds the available balance of {sentinel.add_denomination_1} 10",
         )
         self.assertEqual(hook_result.rejection.reason_code, RejectionReason.INSUFFICIENT_FUNDS)
 
     def test_posting_batch_with_supported_and_unsupported_denom_is_rejected(self):
         # not supported
-        posting_1 = self.outbound_hard_settlement(denomination=sentinel.unsupported_denomination_1, amount=Decimal(1))
+        posting_1 = self.outbound_hard_settlement(
+            denomination=sentinel.unsupported_denomination_1, amount=Decimal(1)
+        )
         # supported
-        posting_2 = self.outbound_hard_settlement(denomination=sentinel.add_denomination_1, amount=Decimal(1))
+        posting_2 = self.outbound_hard_settlement(
+            denomination=sentinel.add_denomination_1, amount=Decimal(1)
+        )
 
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping={}),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -154,17 +175,23 @@ class PrePostingHookTest(WalletTestBase):
         )
         hook_result = contract.pre_posting_hook(mock_vault, hook_arguments)
         self.assertIsNotNone(hook_result)
-        self.assertEqual(hook_result.rejection.message, "Postings received in unauthorised denominations")
+        self.assertEqual(
+            hook_result.rejection.message, "Postings received in unauthorised denominations"
+        )
         self.assertEqual(hook_result.rejection.reason_code, RejectionReason.WRONG_DENOMINATION)
 
     def test_posting_batch_with_single_unsupported_denom_is_rejected(self):
-        posting = self.outbound_hard_settlement(denomination=sentinel.unsupported_denomination, amount=Decimal(1))
+        posting = self.outbound_hard_settlement(
+            denomination=sentinel.unsupported_denomination, amount=Decimal(1)
+        )
 
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping={}),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -177,17 +204,23 @@ class PrePostingHookTest(WalletTestBase):
         )
         hook_result = contract.pre_posting_hook(mock_vault, hook_arguments)
         self.assertIsNotNone(hook_result)
-        self.assertEqual(hook_result.rejection.message, "Postings received in unauthorised denominations")
+        self.assertEqual(
+            hook_result.rejection.message, "Postings received in unauthorised denominations"
+        )
         self.assertEqual(hook_result.rejection.reason_code, RejectionReason.WRONG_DENOMINATION)
 
     def test_pre_posting_no_money_flag_false(self):
-        posting = self.outbound_hard_settlement(denomination=sentinel.denomination, amount=Decimal("100"))
+        posting = self.outbound_hard_settlement(
+            denomination=sentinel.denomination, amount=Decimal("100")
+        )
 
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping={}),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -203,13 +236,17 @@ class PrePostingHookTest(WalletTestBase):
         self.assertEqual(hook_result.rejection.reason_code, RejectionReason.INSUFFICIENT_FUNDS)
 
     def test_pre_posting_no_money_flag_true(self):
-        posting = self.outbound_hard_settlement(denomination=sentinel.denomination, amount=Decimal("100"))
+        posting = self.outbound_hard_settlement(
+            denomination=sentinel.denomination, amount=Decimal("100")
+        )
 
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping={}),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -225,7 +262,9 @@ class PrePostingHookTest(WalletTestBase):
         self.assertIsNone(hook_result)
 
     def test_pre_posting_code_rejects_if_over_limit(self):
-        posting = self.outbound_hard_settlement(denomination=sentinel.denomination, amount=Decimal("200"))
+        posting = self.outbound_hard_settlement(
+            denomination=sentinel.denomination, amount=Decimal("200")
+        )
 
         balance_dict = {
             self.balance_coordinate(
@@ -236,9 +275,13 @@ class PrePostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
 
         hook_arguments = PrePostingHookArguments(
             effective_datetime=DEFAULT_DATETIME,
@@ -265,7 +308,9 @@ class PrePostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -287,13 +332,17 @@ class PrePostingHookTest(WalletTestBase):
         )
 
         balance_dict = {
-            self.balance_coordinate(denomination=sentinel.denomination): self.balance(net=Decimal("5")),
+            self.balance_coordinate(denomination=sentinel.denomination): self.balance(
+                net=Decimal("5")
+            ),
         }
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,

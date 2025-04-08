@@ -17,9 +17,15 @@ class Parameter:
 
     @staticmethod
     def _validate_attributes(**kwargs):
-        if kwargs["level"] == ContractParameterLevel.INSTANCE and kwargs.get("default_value", None) is None and not issubclass(kwargs.get("shape", None), OptionalShape):
+        if (
+            kwargs["level"] == ContractParameterLevel.INSTANCE
+            and kwargs.get("default_value", None) is None
+            and not issubclass(kwargs.get("shape", None), OptionalShape)
+        ):
             name = kwargs["name"]
-            raise utils_exceptions.InvalidSmartContractError(f"Instance Parameters with non optional shapes must have a default value: {name}")
+            raise utils_exceptions.InvalidSmartContractError(
+                f"Instance Parameters with non optional shapes must have a default value: {name}"
+            )
 
     @classmethod
     @lru_cache()
@@ -67,7 +73,9 @@ class Parameter:
                 type="Optional[str]",
                 docstring="The name of Parameter as may be show in a front-end user interface.",
             ),
-            types_utils.ValueSpec(name="level", type="Level", docstring="The level of the Parameter."),
+            types_utils.ValueSpec(
+                name="level", type="Level", docstring="The level of the Parameter."
+            ),
             types_utils.ValueSpec(
                 name="value",
                 type="Optional[%s]" % _parameter_value_type_str,
@@ -88,7 +96,10 @@ class Parameter:
             ),
             types_utils.ValueSpec(
                 name="shape",
-                type=("Union[AccountIdShape, DateShape, DenominationShape, NumberShape, " "OptionalShape, StringShape, UnionShape]"),
+                type=(
+                    "Union[AccountIdShape, DateShape, DenominationShape, NumberShape, "
+                    "OptionalShape, StringShape, UnionShape]"
+                ),
                 docstring="The shape of the parameter.",
             ),
         ]
@@ -97,10 +108,14 @@ class Parameter:
 class Shape:
     def __new__(cls, **kwargs):
         if not kwargs.pop("_from_proto", False):
-            missing_kwargs = [kwarg for kwarg in kwargs.keys() if kwarg not in cls._attribute_names()]  # noqa: SLF001, E501
+            missing_kwargs = [
+                kwarg for kwarg in kwargs.keys() if kwarg not in cls._attribute_names()
+            ]  # noqa: SLF001, E501
             if missing_kwargs:
                 raise utils_exceptions.InvalidSmartContractError(
-                    f"{cls.__name__} does not have attribute" f"{'s' if len(missing_kwargs) > 1 else ''} " f"{', '.join(repr(missing_kwarg) for missing_kwarg in missing_kwargs)}"
+                    f"{cls.__name__} does not have attribute"
+                    f"{'s' if len(missing_kwargs) > 1 else ''} "
+                    f"{', '.join(repr(missing_kwarg) for missing_kwarg in missing_kwargs)}"
                 )
 
         fields = {}
@@ -360,7 +375,11 @@ class OptionalValue:
         return types_utils.ClassSpec(
             name="OptionalValue",
             docstring="Specifies an optional Parameter value",
-            public_attributes=[types_utils.ValueSpec(name="value", type="Any", docstring="The value, if specified.")],
+            public_attributes=[
+                types_utils.ValueSpec(
+                    name="value", type="Any", docstring="The value, if specified."
+                )
+            ],
             constructor=types_utils.ConstructorSpec(
                 docstring="",
                 args=[
@@ -415,7 +434,11 @@ class UnionShape(Shape):
         if language_code != symbols.Languages.ENGLISH:
             raise ValueError("Language not supported")
 
-        return [types_utils.ValueSpec(name="items", type="List[UnionItem]", docstring="The allowed values.")]
+        return [
+            types_utils.ValueSpec(
+                name="items", type="List[UnionItem]", docstring="The allowed values."
+            )
+        ]
 
 
 class UnionItem:
@@ -451,7 +474,9 @@ class UnionItem:
             types_utils.ValueSpec(
                 name="display_name",
                 type="str",
-                docstring=("The name of the option as could be shown on a front-end user interface."),
+                docstring=(
+                    "The name of the option as could be shown on a front-end user interface."
+                ),
             ),
         ]
 
@@ -507,6 +532,8 @@ class ParameterTimeseries(types_utils.Timeseries(_parameter_value_type_str, "par
             raise ValueError("Language not supported")
 
         return types_utils.merge_class_specs(
-            derived_spec=types_utils.ClassSpec(name="ParameterTimeseries", docstring="A timeseries of Parameter objects."),
+            derived_spec=types_utils.ClassSpec(
+                name="ParameterTimeseries", docstring="A timeseries of Parameter objects."
+            ),
             base_spec=super()._spec(language_code),
         )

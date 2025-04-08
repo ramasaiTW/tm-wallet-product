@@ -34,13 +34,17 @@ class DeactivationHookTest(WalletTestBase):
             self.balance_coordinate(
                 account_address=TODAY_SPENDING,
             ): self.balance(net=balance_amount),
-            self.balance_coordinate(account_address=INTERNAL_CONTRA): self.balance(net=-balance_amount),
+            self.balance_coordinate(account_address=INTERNAL_CONTRA): self.balance(
+                net=-balance_amount
+            ),
         }
         balances_observation = BalancesObservation(
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -100,7 +104,9 @@ class DeactivationHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -120,7 +126,9 @@ class DeactivationHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,

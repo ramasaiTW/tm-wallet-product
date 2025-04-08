@@ -57,7 +57,9 @@ class ProductManifestTest(TestCase):
         self.product_manifest_file_paths = glob(PRODUCTDIR + "*_manifest.yaml")
         if LIBRARY_MANIFEST in self.product_manifest_file_paths:
             self.product_manifest_file_paths.remove(LIBRARY_MANIFEST)
-        self.parsed_product_manifests = tools_utils.parse_product_manifests(self.product_manifest_file_paths)
+        self.parsed_product_manifests = tools_utils.parse_product_manifests(
+            self.product_manifest_file_paths
+        )
         self.parsed_resource_files = parse_resource_files(self.parsed_product_manifests)
         self.resources_by_type = get_all_resources(self.parsed_resource_files)
         self.maxDiff = None
@@ -74,13 +76,17 @@ class ProductManifestTest(TestCase):
             workflow_ids["workflow_resource_id"] = workflow_resource.get("id").lower()
 
             payload = safe_load(workflow_resource["payload"])
-            workflow_resource_filename = extract_filename_from_clu_notation(payload["workflow_definition_version"]["specification"])
+            workflow_resource_filename = extract_filename_from_clu_notation(
+                payload["workflow_definition_version"]["specification"]
+            )
             if workflow_resource_filename in SHARED_WORKFLOWS:
                 continue
 
             workflow_ids["workflow_resource_filename"] = workflow_resource_filename
 
-            workflow_ids["workflow_definition_id"] = payload["workflow_definition_version"]["workflow_definition_id"].lower()
+            workflow_ids["workflow_definition_id"] = payload["workflow_definition_version"][
+                "workflow_definition_id"
+            ].lower()
 
             unique_workflow_ids = set(workflow_ids.values())
 
@@ -93,7 +99,9 @@ class ProductManifestTest(TestCase):
                 )
 
         if len(discrepancies) > 0:
-            raise AssertionError(f"the following workflow naming discrepancies exist: {discrepancies}")
+            raise AssertionError(
+                f"the following workflow naming discrepancies exist: {discrepancies}"
+            )
 
     def test_crosscheck_workflow_resources_and_product_manifest(self):
         """
@@ -103,7 +111,10 @@ class ProductManifestTest(TestCase):
         id_sources = {}
         manifest_ids = []
 
-        id_sources["workflow_resource_ids"] = set(workflow_resource.get("id").lower() for workflow_resource in self.resources_by_type["WORKFLOW_DEFINITION_VERSION"])
+        id_sources["workflow_resource_ids"] = set(
+            workflow_resource.get("id").lower()
+            for workflow_resource in self.resources_by_type["WORKFLOW_DEFINITION_VERSION"]
+        )
 
         manifest_ids = [
             self.parsed_product_manifests[manifest].get("WORKFLOW DEFINITIONS")
@@ -113,10 +124,15 @@ class ProductManifestTest(TestCase):
 
         id_sources["manifest_ids"] = {i.lower() for sublist in manifest_ids for i in sublist}
 
-        resource_id_difference = id_sources["workflow_resource_ids"].difference(id_sources["manifest_ids"])
+        resource_id_difference = id_sources["workflow_resource_ids"].difference(
+            id_sources["manifest_ids"]
+        )
 
         if len(resource_id_difference) > 0:
-            raise AssertionError(f"resources exist in resource file but not in product manifest: " f"{resource_id_difference}")
+            raise AssertionError(
+                f"resources exist in resource file but not in product manifest: "
+                f"{resource_id_difference}"
+            )
 
     def test_all_workflow_files_are_included_in_associated_resource_file(self):
         """
@@ -124,19 +140,31 @@ class ProductManifestTest(TestCase):
         e.g. my_wf.yaml exists in the directory but is not referenced in the resources.yaml
         """
         resource_workflow_file_tags = set()
-        workflow_files = set(path.splitext(path.basename(file))[0] for file in glob(PRODUCTDIR + "*/workflows/*.yaml") if "resources.yaml" not in file)
+        workflow_files = set(
+            path.splitext(path.basename(file))[0]
+            for file in glob(PRODUCTDIR + "*/workflows/*.yaml")
+            if "resources.yaml" not in file
+        )
         for workflow_resource in self.resources_by_type["WORKFLOW_DEFINITION_VERSION"]:
             payload = safe_load(workflow_resource["payload"])
-            resource_workflow_file_tags.add(extract_filename_from_clu_notation(payload["workflow_definition_version"]["specification"]))
+            resource_workflow_file_tags.add(
+                extract_filename_from_clu_notation(
+                    payload["workflow_definition_version"]["specification"]
+                )
+            )
 
         resource_id_difference = workflow_files.difference(resource_workflow_file_tags)
         workflow_files_difference = resource_workflow_file_tags.difference(workflow_files)
 
         if len(resource_id_difference) > 0:
-            raise AssertionError("workflows exist in product folder with no supporting resource in resource file")
+            raise AssertionError(
+                "workflows exist in product folder with no supporting resource in resource file"
+            )
 
         if len(workflow_files_difference) > 0:
-            raise AssertionError("resources exist in resource file with no supporting worfklow file")
+            raise AssertionError(
+                "resources exist in resource file with no supporting worfklow file"
+            )
 
     def test_crosscheck_contract_filename_and_resource_ids(self):
         """
@@ -155,7 +183,8 @@ class ProductManifestTest(TestCase):
             if len(contract_ids) > 1:
                 discrepancies.append(
                     {
-                        "error": f"Contract IDs are inconsistent within the resource: " f"{contract_ids}",
+                        "error": f"Contract IDs are inconsistent within the resource: "
+                        f"{contract_ids}",
                     }
                 )
         if len(discrepancies) > 0:
@@ -171,10 +200,16 @@ class ProductManifestTest(TestCase):
         resource_contract_ids = set()
         contract_files = set(path.basename(file) for file in glob(PRODUCTDIR + "*/contracts/*.py"))
 
-        for contract_resource in self.resources_by_type.get("SMART_CONTRACT_VERSION", []) + self.resources_by_type.get("SUPERVISOR_CONTRACT_VERSION", []):
+        for contract_resource in self.resources_by_type.get(
+            "SMART_CONTRACT_VERSION", []
+        ) + self.resources_by_type.get("SUPERVISOR_CONTRACT_VERSION", []):
             payload = safe_load(contract_resource["payload"])
             if "product_version" in payload:
-                resource_contract_ids.add(extract_filename_from_clu_notation(payload["product_version"]["code"], with_extension=True))
+                resource_contract_ids.add(
+                    extract_filename_from_clu_notation(
+                        payload["product_version"]["code"], with_extension=True
+                    )
+                )
             if "supervisor_contract_version" in payload:
                 resource_contract_ids.add(
                     extract_filename_from_clu_notation(
@@ -187,10 +222,16 @@ class ProductManifestTest(TestCase):
         contract_files_difference = resource_contract_ids.difference(contract_files)
 
         if len(resource_id_difference) > 0:
-            raise AssertionError(f"Contracts exist in product folder with no supporting resource in resource file: " f" {resource_id_difference}")
+            raise AssertionError(
+                f"Contracts exist in product folder with no supporting resource in resource file: "
+                f" {resource_id_difference}"
+            )
 
         if len(contract_files_difference) > 0:
-            raise AssertionError(f"resources exist in resource file with no supporting contract file: " f"{contract_files_difference}")
+            raise AssertionError(
+                f"resources exist in resource file with no supporting contract file: "
+                f"{contract_files_difference}"
+            )
 
     def test_crosscheck_contract_resources_and_product_manifest(self):
         """
@@ -198,7 +239,10 @@ class ProductManifestTest(TestCase):
         associated resource.yaml.
         """
 
-        contract_resource_ids = set(contract_resource["id"] for contract_resource in self.resources_by_type["SMART_CONTRACT_VERSION"])
+        contract_resource_ids = set(
+            contract_resource["id"]
+            for contract_resource in self.resources_by_type["SMART_CONTRACT_VERSION"]
+        )
 
         # some manifests contain multiple smart contracts and do not map 1-to-1 between
         # the <product>_manifest.yaml and the referenced smart contracts (e.g US Products)
@@ -214,10 +258,16 @@ class ProductManifestTest(TestCase):
         manifest_id_difference = manifest_ids.difference(contract_resource_ids)
 
         if len(resource_id_difference) > 0:
-            raise AssertionError(f"resources exist in resource file but not in product manifest: " f" {resource_id_difference}")
+            raise AssertionError(
+                f"resources exist in resource file but not in product manifest: "
+                f" {resource_id_difference}"
+            )
 
         if len(manifest_id_difference) > 0:
-            raise AssertionError(f"resources exist in product manifest but not in resource file: " f" {manifest_id_difference}")
+            raise AssertionError(
+                f"resources exist in product manifest but not in resource file: "
+                f" {manifest_id_difference}"
+            )
 
     def test_internal_accounts_match_internal_account_contracts_in_product_manifest(
         self,
@@ -230,19 +280,32 @@ class ProductManifestTest(TestCase):
 
         for manifest in self.parsed_product_manifests:
             internal_accounts = self.parsed_product_manifests[manifest].get("INTERNAL ACCOUNTS", [])
-            internal_account_contracts = self.parsed_product_manifests[manifest].get("INTERNAL ACCOUNT SMART CONTRACTS", [])
+            internal_account_contracts = self.parsed_product_manifests[manifest].get(
+                "INTERNAL ACCOUNT SMART CONTRACTS", []
+            )
 
-            internal_accounts = set(internal_account.lower() for internal_account in self.parsed_product_manifests[manifest].get("INTERNAL ACCOUNTS", []))
+            internal_accounts = set(
+                internal_account.lower()
+                for internal_account in self.parsed_product_manifests[manifest].get(
+                    "INTERNAL ACCOUNTS", []
+                )
+            )
 
-            internal_account_contracts = set(contract[:-9] if contract.endswith("_contract") else contract for contract in internal_account_contracts)
+            internal_account_contracts = set(
+                contract[:-9] if contract.endswith("_contract") else contract
+                for contract in internal_account_contracts
+            )
 
-            internal_accounts_differences = internal_accounts.symmetric_difference(internal_account_contracts)
+            internal_accounts_differences = internal_accounts.symmetric_difference(
+                internal_account_contracts
+            )
 
             if internal_accounts_differences:
                 discrepancies.append(
                     {
                         "manifest_file": manifest,
-                        "error": f"Not all internal accounts have a matching named contract: " f"{internal_accounts_differences}",
+                        "error": f"Not all internal accounts have a matching named contract: "
+                        f"{internal_accounts_differences}",
                     }
                 )
         if len(discrepancies) > 0:
@@ -273,15 +336,23 @@ class ProductManifestTest(TestCase):
             clu_output = json.loads(clu_output_json[0])
 
             if "validate" not in clu_output:
-                raise AssertionError(f"CLU validation failed for {product_manifest_file_path}: {clu_output}")
+                raise AssertionError(
+                    f"CLU validation failed for {product_manifest_file_path}: {clu_output}"
+                )
 
-            clu_validation_errors.extend((product_manifest_file_path, resource_name, output["error"]) for resource_name, output in clu_output["validate"].items() if not output["valid"])
+            clu_validation_errors.extend(
+                (product_manifest_file_path, resource_name, output["error"])
+                for resource_name, output in clu_output["validate"].items()
+                if not output["valid"]
+            )
 
         if clu_validation_errors:
             raise AssertionError(f"CLU validation errors found: {clu_validation_errors}")
 
 
-def parse_resource_files(parsed_product_manifests: dict[str, dict[str, list[str]]]) -> dict[str, list[dict[str, Any]]]:
+def parse_resource_files(
+    parsed_product_manifests: dict[str, dict[str, list[str]]]
+) -> dict[str, list[dict[str, Any]]]:
     """
     Takes a dict of product manifests and searches for the actual resource
     yaml files associated with the named resource in the manifest.
@@ -305,13 +376,19 @@ def parse_resource_files(parsed_product_manifests: dict[str, dict[str, list[str]
             if RESOURCE_MAPPING.get(resource_type):
                 resource_ext = RESOURCE_MAPPING.get(resource_type)
                 if not resource_ext:
-                    log.warning(f"No mapping found for product `{product}` and " f"resource type `{resource_type}`. Won't retrieve file paths")
+                    log.warning(
+                        f"No mapping found for product `{product}` and "
+                        f"resource type `{resource_type}`. Won't retrieve file paths"
+                    )
                     break
                 resource_file_paths.extend(glob(PRODUCTDIR + product + resource_ext))
             elif COMMON_RESOURCE_MAPPING.get(resource_type):
                 resource_ext = COMMON_RESOURCE_MAPPING.get(resource_type)
                 if not resource_ext:
-                    log.warning(f"No mapping found for product `{product}` and " f"resource type `{resource_type}`. Won't retrieve file paths")
+                    log.warning(
+                        f"No mapping found for product `{product}` and "
+                        f"resource type `{resource_type}`. Won't retrieve file paths"
+                    )
                     break
                 resource_file_paths.extend(glob(PRODUCTDIR + resource_ext))
             else:
@@ -331,18 +408,26 @@ def parse_resource_files(parsed_product_manifests: dict[str, dict[str, list[str]
     return parsed_resources
 
 
-def extract_filename_from_clu_notation(external_file_clu_notation: str, with_extension: bool = False) -> str:
+def extract_filename_from_clu_notation(
+    external_file_clu_notation: str, with_extension: bool = False
+) -> str:
     # regex to retrieve file name between @{.ext}
     # https://regex101.com/r/wWKAQK/1
-    pattern = r"@{(?:.+\/)?([A-Za-z0-9_\.]+)}" if with_extension else r"@{(?:.+\/)?([A-Za-z0-9_]+)\..*}"
+    pattern = (
+        r"@{(?:.+\/)?([A-Za-z0-9_\.]+)}" if with_extension else r"@{(?:.+\/)?([A-Za-z0-9_]+)\..*}"
+    )
     matches = re.search(pattern, external_file_clu_notation)
     if matches := re.search(pattern, external_file_clu_notation):
         return matches.group(1).lower()
     else:
-        raise ValueError(f"Could not retrieve filename from CLU notation `{external_file_clu_notation}`")
+        raise ValueError(
+            f"Could not retrieve filename from CLU notation `{external_file_clu_notation}`"
+        )
 
 
-def get_all_resources(parsed_resource_files: dict[str, list[dict[str, Any]]]) -> dict[str, list[dict[str, Any]]]:
+def get_all_resources(
+    parsed_resource_files: dict[str, list[dict[str, Any]]]
+) -> dict[str, list[dict[str, Any]]]:
     """
     Takes the dict of parsed_resource_files relating to the parsed
     resource.yaml and restructures them so that they grouped
@@ -353,7 +438,9 @@ def get_all_resources(parsed_resource_files: dict[str, list[dict[str, Any]]]) ->
     :return: dict of resource type to list of corresponding resources
     """
     resources_by_type = defaultdict(list)
-    list_of_resources = (resource for product in parsed_resource_files.values() for resource in product)
+    list_of_resources = (
+        resource for product in parsed_resource_files.values() for resource in product
+    )
 
     for resource in list_of_resources:
         resources_by_type[resource.get("type")].append(resource)

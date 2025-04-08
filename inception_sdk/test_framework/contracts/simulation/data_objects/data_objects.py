@@ -58,7 +58,9 @@ class SupervisorConfig:
 
     def __post_init__(self):
         if self.supervisor_file_path is None and self.supervisor_contract is None:
-            raise ValueError("Neither supervisor_file_path or supervisor_contract has been provided.")
+            raise ValueError(
+                "Neither supervisor_file_path or supervisor_contract has been provided."
+            )
 
 
 @dataclass

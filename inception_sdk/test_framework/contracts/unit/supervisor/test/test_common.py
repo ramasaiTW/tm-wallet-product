@@ -18,19 +18,27 @@ from inception_sdk.test_framework.contracts.unit.supervisor.common import Superv
 
 @patch.object(ContractTest, "create_mock")
 class TestCreateSuperviseeMock(TestCase):
-    def test_create_supervisee_mock_inserts_arg_if_missing(self, mocked_super_create_mock: MagicMock):
+    def test_create_supervisee_mock_inserts_arg_if_missing(
+        self, mocked_super_create_mock: MagicMock
+    ):
         test_case = SupervisorContractTest()
         test_case.tside = Tside.ASSET
 
         test_case.create_supervisee_mock()
-        mocked_super_create_mock.assert_called_once_with(supervisee_alias=None, supervisee_hook_result=None, is_supervisee_vault=True)
+        mocked_super_create_mock.assert_called_once_with(
+            supervisee_alias=None, supervisee_hook_result=None, is_supervisee_vault=True
+        )
 
-    def test_create_supervisee_mock_does_not_override_arg_if_present(self, mocked_super_create_mock: MagicMock):
+    def test_create_supervisee_mock_does_not_override_arg_if_present(
+        self, mocked_super_create_mock: MagicMock
+    ):
         test_case = SupervisorContractTest()
         test_case.tside = Tside.ASSET
 
         test_case.create_supervisee_mock(is_supervisee_vault=False)
-        mocked_super_create_mock.assert_called_once_with(supervisee_alias=None, supervisee_hook_result=None, is_supervisee_vault=False)
+        mocked_super_create_mock.assert_called_once_with(
+            supervisee_alias=None, supervisee_hook_result=None, is_supervisee_vault=False
+        )
 
 
 class TestCreateSupervisorMock(TestCase):
@@ -137,7 +145,9 @@ class TestCreateSupervisorMock(TestCase):
                 ),
             ]
         )
-        result = supervisor_mock.get_calendar_events(calendar_ids=["some_calendar", "another_calendar"])
+        result = supervisor_mock.get_calendar_events(
+            calendar_ids=["some_calendar", "another_calendar"]
+        )
         self.assertEqual(len(result), len(expected))
         for index, event in enumerate(result):
             self.assertEqual(event, expected[index])

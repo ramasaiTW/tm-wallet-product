@@ -120,7 +120,9 @@ def daily_accrual_logic(
         customer_accrual_address = ACCRUED_INTEREST_RECEIVABLE
 
     if accrual_internal_account is None:
-        accrual_internal_account = utils.get_parameter(vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT)
+        accrual_internal_account = utils.get_parameter(
+            vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+        )
 
     return interest_accrual_common.daily_accrual(
         customer_account=vault.account_id,
@@ -139,11 +141,15 @@ def daily_accrual_logic(
         event_type=hook_arguments.event_type,
         effective_datetime=midnight,
         payable=False,
-        precision=utils.get_parameter(vault=vault, name=interest_accrual_common.PARAM_ACCRUAL_PRECISION),
+        precision=utils.get_parameter(
+            vault=vault, name=interest_accrual_common.PARAM_ACCRUAL_PRECISION
+        ),
         rounding=ROUND_HALF_UP,
     )
 
 
 def get_accrual_internal_account(vault: SmartContractVault) -> str:
-    accrual_internal_account: str = utils.get_parameter(vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT)
+    accrual_internal_account: str = utils.get_parameter(
+        vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+    )
     return accrual_internal_account

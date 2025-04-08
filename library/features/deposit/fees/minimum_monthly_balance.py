@@ -84,7 +84,8 @@ parameters = [
         name=PARAM_MINIMUM_BALANCE_FEE_DAY,
         shape=NumberShape(min_value=1, max_value=31, step=1),
         level=ParameterLevel.INSTANCE,
-        description="The day of the month on which minimum balance fee is applied." "If day does not exist in application month, applies on last day of month.",
+        description="The day of the month on which minimum balance fee is applied."
+        "If day does not exist in application month, applies on last day of month.",
         display_name="Minimum Balance Fee Application Day",
         update_permission=ParameterUpdatePermission.USER_EDITABLE,
         default_value=1,
@@ -133,7 +134,9 @@ def event_types(product_name: str) -> list[SmartContractEventType]:
     ]
 
 
-def scheduled_events(*, vault: SmartContractVault, start_datetime: datetime) -> dict[str, ScheduledEvent]:
+def scheduled_events(
+    *, vault: SmartContractVault, start_datetime: datetime
+) -> dict[str, ScheduledEvent]:
     """
     Creates scheduled event for minimum balance fee application
     :param vault: Vault object to retrieve application frequency and schedule params
@@ -175,7 +178,9 @@ def apply_minimum_balance_fee(
     """
     fee_custom_instructions: list[CustomInstruction] = []
 
-    minimum_balance_fee = _get_minimum_balance_fee(vault=vault, effective_datetime=effective_datetime)
+    minimum_balance_fee = _get_minimum_balance_fee(
+        vault=vault, effective_datetime=effective_datetime
+    )
 
     if denomination is None:
         denomination = common_parameters.get_denomination_parameter(vault=vault)
@@ -186,7 +191,9 @@ def apply_minimum_balance_fee(
         effective_datetime=effective_datetime,
         denomination=denomination,
     ):
-        minimum_balance_fee_income_account = get_minimum_balance_fee_income_account(vault=vault, effective_datetime=effective_datetime)
+        minimum_balance_fee_income_account = get_minimum_balance_fee_income_account(
+            vault=vault, effective_datetime=effective_datetime
+        )
         fee_custom_instructions = fees.fee_custom_instruction(
             customer_account_id=vault.account_id,
             denomination=denomination,
@@ -197,9 +204,14 @@ def apply_minimum_balance_fee(
                 "event": APPLY_MINIMUM_MONTHLY_BALANCE_EVENT,
             },
         )
-        if are_partial_payments_enabled(vault=vault, effective_datetime=effective_datetime) and fee_custom_instructions:
+        if (
+            are_partial_payments_enabled(vault=vault, effective_datetime=effective_datetime)
+            and fee_custom_instructions
+        ):
             if balances is None:
-                balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+                balances = vault.get_balances_observation(
+                    fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+                ).balances
             return partial_fee.charge_partial_fee(
                 vault=vault,
                 effective_datetime=effective_datetime,
@@ -230,7 +242,9 @@ def _is_monthly_mean_balance_above_threshold(
     :return: bool True if balance is above requirement
     """
     # Threshold is a tier parameter driven by an account-level flag
-    minimum_balance_threshold_tiers = _get_minimum_balance_threshold_by_tier(vault=vault, effective_datetime=effective_datetime)
+    minimum_balance_threshold_tiers = _get_minimum_balance_threshold_by_tier(
+        vault=vault, effective_datetime=effective_datetime
+    )
 
     tier = account_tiers.get_account_tier(vault, effective_datetime)
 
@@ -258,8 +272,11 @@ def _is_monthly_mean_balance_above_threshold(
 
         balances_to_average = [
             utils.balance_at_coordinates(
-                balances=vault.get_balances_observation(fetcher_id=fetchers.PREVIOUS_EOD_OBSERVATION_FETCHERS[i].fetcher_id).balances,
-                denomination=denomination or common_parameters.get_denomination_parameter(vault=vault),
+                balances=vault.get_balances_observation(
+                    fetcher_id=fetchers.PREVIOUS_EOD_OBSERVATION_FETCHERS[i].fetcher_id
+                ).balances,
+                denomination=denomination
+                or common_parameters.get_denomination_parameter(vault=vault),
             )
             for i in range(num_days)
         ]
@@ -275,11 +292,19 @@ def _is_monthly_mean_balance_above_threshold(
     return True
 
 
-def get_minimum_balance_fee_income_account(vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
-    return str(utils.get_parameter(vault, name=PARAM_MINIMUM_BALANCE_FEE_INCOME_ACCOUNT, at_datetime=effective_datetime))
+def get_minimum_balance_fee_income_account(
+    vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> str:
+    return str(
+        utils.get_parameter(
+            vault, name=PARAM_MINIMUM_BALANCE_FEE_INCOME_ACCOUNT, at_datetime=effective_datetime
+        )
+    )
 
 
-def are_partial_payments_enabled(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> bool:
+def are_partial_payments_enabled(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> bool:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_MINIMUM_BALANCE_PARTIAL_FEE_ENABLED,
@@ -291,10 +316,14 @@ def are_partial_payments_enabled(*, vault: SmartContractVault, effective_datetim
 
 
 def _get_minimum_balance_fee(vault: SmartContractVault, effective_datetime: datetime) -> Decimal:
-    return Decimal(utils.get_parameter(vault, name=PARAM_MINIMUM_BALANCE_FEE, at_datetime=effective_datetime))
+    return Decimal(
+        utils.get_parameter(vault, name=PARAM_MINIMUM_BALANCE_FEE, at_datetime=effective_datetime)
+    )
 
 
-def _get_minimum_balance_threshold_by_tier(vault: SmartContractVault, effective_datetime: datetime) -> dict[str, str]:
+def _get_minimum_balance_threshold_by_tier(
+    vault: SmartContractVault, effective_datetime: datetime
+) -> dict[str, str]:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_MINIMUM_BALANCE_THRESHOLD_BY_TIER,
@@ -310,4 +339,6 @@ PARTIAL_FEE_DETAILS = deposit_interfaces.PartialFeeCollection(
 )
 
 
-WAIVE_FEE_WITH_MEAN_BALANCE_ABOVE_THRESHOLD = deposit_interfaces.WaiveFeeCondition(waive_fees=_is_monthly_mean_balance_above_threshold)
+WAIVE_FEE_WITH_MEAN_BALANCE_ABOVE_THRESHOLD = deposit_interfaces.WaiveFeeCondition(
+    waive_fees=_is_monthly_mean_balance_above_threshold
+)

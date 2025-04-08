@@ -86,26 +86,36 @@ def scheduled_code(event_type, effective_date):
                 # Keep track of the mortgage account ID
                 mortgage_account_id = acc_id
                 # We also grab the mortgage account balance via the `supervisee` object.
-                mortgage_balance = _get_effective_balance(supervisee.get_balance_timeseries().latest())
+                mortgage_balance = _get_effective_balance(
+                    supervisee.get_balance_timeseries().latest()
+                )
                 # Inspect the hook directives in order to find the relevant revenue internal account id
                 # used for counterposting:
                 directives = supervisee.get_hook_directives()
                 for posting_directive in directives.posting_instruction_batch_directives:
                     pib = posting_directive.posting_instruction_batch
-                    revenue_account_id = next(posting.account_id for posting in pib if posting.credit)
+                    revenue_account_id = next(
+                        posting.account_id for posting in pib if posting.credit
+                    )
             elif supervisee.tside == Tside.LIABILITY:
                 # keep the savings account ID
                 savings_account_id = acc_id
                 # we grab the savings account balance via the `supervisee` object.
-                savings_balance = _get_effective_balance(supervisee.get_balance_timeseries().latest())
+                savings_balance = _get_effective_balance(
+                    supervisee.get_balance_timeseries().latest()
+                )
                 # inspect the hook directives in order to find the relevant expenses internal account id
                 # used for counterposting:
                 directives = supervisee.get_hook_directives()
                 for posting_directive in directives.posting_instruction_batch_directives:
                     pib = posting_directive.posting_instruction_batch
-                    expenses_account_id = next(posting.account_id for posting in pib if not posting.credit)
+                    expenses_account_id = next(
+                        posting.account_id for posting in pib if not posting.credit
+                    )
             else:
-                raise Rejected("Got unexpected account T-side. It should be either an Asset or Liability type")
+                raise Rejected(
+                    "Got unexpected account T-side. It should be either an Asset or Liability type"
+                )
 
     # Offset logic
     # -------------
@@ -151,7 +161,10 @@ def scheduled_code(event_type, effective_date):
 def _get_effective_balance(balances):
     # For simplicity sake, we consider a common definition of effective balance for interest
     # calculations.
-    return balances[DEFAULT_ADDRESS, DEFAULT_ASSET, _DENOMINATION, Phase.COMMITTED].net + balances[DEFAULT_ADDRESS, DEFAULT_ASSET, _DENOMINATION, Phase.PENDING_OUT].net
+    return (
+        balances[DEFAULT_ADDRESS, DEFAULT_ASSET, _DENOMINATION, Phase.COMMITTED].net
+        + balances[DEFAULT_ADDRESS, DEFAULT_ASSET, _DENOMINATION, Phase.PENDING_OUT].net
+    )
 
 
 # flake8: noqa

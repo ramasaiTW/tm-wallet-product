@@ -152,7 +152,10 @@ def wait_for_messages(
                 delay = time.time() - last_message_time
                 if delay > inter_message_timeout:
                     log.warning(
-                        f"Waited {delay:.1f}s since last message received. " f"Timeout set to {inter_message_timeout:.1f}. Exiting " f"after {len(seen_matched_message_requests)} " f"messages received"
+                        f"Waited {delay:.1f}s since last message received. "
+                        f"Timeout set to {inter_message_timeout:.1f}. Exiting "
+                        f"after {len(seen_matched_message_requests)} "
+                        f"messages received"
                     )
                     break
         else:

@@ -17,7 +17,10 @@ class RejectionReason(EnumRepr, Enum):
     def _spec(cls, language_code=symbols.Languages.ENGLISH) -> EnumSpec:
         return EnumSpec(
             name=cls.__name__,
-            docstring=("May optionally be used as the `reason_code` parameter on the " "[Rejection](#Rejection) class."),
+            docstring=(
+                "May optionally be used as the `reason_code` parameter on the "
+                "[Rejection](#Rejection) class."
+            ),
             members=enum_members(cls),
             show_values=False,
         )
@@ -32,7 +35,9 @@ class Tside(EnumRepr, Enum):
     def _spec(cls, language_code=symbols.Languages.ENGLISH) -> EnumSpec:
         return EnumSpec(
             name=cls.__name__,
-            docstring=("Account treasury side - determine account [Balance](#Balance) " "net sign."),
+            docstring=(
+                "Account treasury side - determine account [Balance](#Balance) " "net sign."
+            ),
             members=enum_members(cls),
             show_values=False,
         )
@@ -75,7 +80,9 @@ class ParameterUpdatePermission(EnumRepr, Enum):
     FIXED = symbols.ContractParameterUpdatePermission.FIXED
     OPS_EDITABLE = symbols.ContractParameterUpdatePermission.OPS_EDITABLE
     USER_EDITABLE = symbols.ContractParameterUpdatePermission.USER_EDITABLE
-    USER_EDITABLE_WITH_OPS_PERMISSION = symbols.ContractParameterUpdatePermission.USER_EDITABLE_WITH_OPS_PERMISSION  # noqa: E501
+    USER_EDITABLE_WITH_OPS_PERMISSION = (
+        symbols.ContractParameterUpdatePermission.USER_EDITABLE_WITH_OPS_PERMISSION
+    )  # noqa: E501
 
     @classmethod
     @lru_cache()

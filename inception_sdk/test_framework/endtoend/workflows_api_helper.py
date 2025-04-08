@@ -43,7 +43,9 @@ class WorkflowInstanceStatus(Enum):
     WORKFLOW_INSTANCE_STATUS_SUSPENDED = "WORKFLOW_INSTANCE_STATUS_SUSPENDED"
 
 
-def batch_get_workflow_definition_versions(ids: list[str], fields_to_include: list[DefinitionVersionField]) -> dict[str, dict[str, Any]]:
+def batch_get_workflow_definition_versions(
+    ids: list[str], fields_to_include: list[DefinitionVersionField]
+) -> dict[str, dict[str, Any]]:
     """
     Get specific workflow definition versions
     :param ids: list of definition version ids to retrieve
@@ -54,7 +56,9 @@ def batch_get_workflow_definition_versions(ids: list[str], fields_to_include: li
         "ids": ids,
         "fields_to_include": [field.value for field in fields_to_include],
     }
-    resp = endtoend.helper.send_request("get", "/v1/workflow-definition-versions:batchGet", params=params)
+    resp = endtoend.helper.send_request(
+        "get", "/v1/workflow-definition-versions:batchGet", params=params
+    )
 
     return resp["workflow_definition_versions"]
 
@@ -150,7 +154,9 @@ def get_workflow_instance_states(
     """
 
     params = {"workflow_instance_id": instance_id, "order_by": order_by.value}
-    return endtoend.helper.list_resources("workflow-instance-states", params=params, result_limit=result_limit)
+    return endtoend.helper.list_resources(
+        "workflow-instance-states", params=params, result_limit=result_limit
+    )
 
 
 def get_workflow_tickets(
@@ -172,7 +178,9 @@ def get_workflow_tickets(
     return resp
 
 
-def get_workflow_instance_events(workflow_instance_id: str, limit: int = 0) -> list[dict[str, dict]]:
+def get_workflow_instance_events(
+    workflow_instance_id: str, limit: int = 0
+) -> list[dict[str, dict]]:
     """
     Get all workflow events for a workflow instance
     :param workflow_instance_id: workflow id
@@ -193,6 +201,8 @@ def get_workflow_instance_events(workflow_instance_id: str, limit: int = 0) -> l
 
 
 def get_workflow_instantiation_context(workflow_instance_id: str) -> dict[str, str]:
-    workflow_instantiation_context = get_workflow_instance_events(workflow_instance_id, limit=1)[0]["context"]
+    workflow_instantiation_context = get_workflow_instance_events(workflow_instance_id, limit=1)[0][
+        "context"
+    ]
 
     return workflow_instantiation_context

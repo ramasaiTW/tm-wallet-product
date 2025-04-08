@@ -39,7 +39,9 @@ from inception_sdk.vault.contracts.extensions.contracts_api_extensions import (
 
 ACCRUAL_EVENT = interest_accrual_common.ACCRUAL_EVENT
 ACCRUED_INTEREST_RECEIVABLE = interest_accrual_common.ACCRUED_INTEREST_RECEIVABLE
-NON_EMI_ACCRUED_INTEREST_RECEIVABLE = interest_accrual_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+NON_EMI_ACCRUED_INTEREST_RECEIVABLE = (
+    interest_accrual_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+)
 INTEREST_DUE = "INTEREST_DUE"
 
 
@@ -48,11 +50,15 @@ ACCRUED_INTEREST_EFF_FETCHER_ID = "ACCRUED_INTEREST_EFFECTIVE_DATETIME_FETCHER"
 accrued_interest_eff_fetcher = BalancesObservationFetcher(
     fetcher_id=ACCRUED_INTEREST_EFF_FETCHER_ID,
     at=DefinedDateTime.EFFECTIVE_DATETIME,
-    filter=BalancesFilter(addresses=[ACCRUED_INTEREST_RECEIVABLE, NON_EMI_ACCRUED_INTEREST_RECEIVABLE]),
+    filter=BalancesFilter(
+        addresses=[ACCRUED_INTEREST_RECEIVABLE, NON_EMI_ACCRUED_INTEREST_RECEIVABLE]
+    ),
 )
 
 # Parameters
-PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = interest_accrual_supervisor.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = (
+    interest_accrual_supervisor.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+)
 PARAM_INTEREST_RECEIVED_ACCOUNT = "interest_received_account"
 PARAM_APPLICATION_PRECISION = "application_precision"
 
@@ -89,7 +95,9 @@ def apply_interest(
     application_precision: int = utils.get_parameter(vault=vault, name=PARAM_APPLICATION_PRECISION)
 
     if balances_at_application is None:
-        balances_at_application = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances_at_application = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
     interest_application_amounts = _get_interest_to_apply(
         balances=balances_at_application,
@@ -115,7 +123,8 @@ def apply_interest(
         # round(emi_accrued_amount + non_emi_accrued_amount)
         # we want the case where we apply
         # round(emi_accrued_amount + non_emi_accrued_amount) across both postings
-        application_amount=interest_application_amounts.total_rounded - interest_application_amounts.emi_rounded_accrued,
+        application_amount=interest_application_amounts.total_rounded
+        - interest_application_amounts.emi_rounded_accrued,
         accrual_amount=interest_application_amounts.non_emi_accrued,
         accrual_customer_address=NON_EMI_ACCRUED_INTEREST_RECEIVABLE,
         accrual_internal_account=accrual_internal_account,
@@ -125,7 +134,9 @@ def apply_interest(
     )
 
 
-def _get_interest_to_apply(balances: BalanceDefaultDict, denomination: str, application_precision: int) -> lending_interfaces.InterestAmounts:
+def _get_interest_to_apply(
+    balances: BalanceDefaultDict, denomination: str, application_precision: int
+) -> lending_interfaces.InterestAmounts:
     emi_accrued_amount, emi_rounded_accrued_amount = _get_emi_interest_to_apply(
         balances=balances,
         denomination=denomination,
@@ -229,7 +240,9 @@ def _get_emi_interest_to_apply(
         )
     )
 
-    return accrued_amount, utils.round_decimal(accrued_amount, decimal_places=precision, rounding=rounding)
+    return accrued_amount, utils.round_decimal(
+        accrued_amount, decimal_places=precision, rounding=rounding
+    )
 
 
 def _get_non_emi_interest_to_apply(
@@ -266,7 +279,9 @@ def _get_non_emi_interest_to_apply(
         )
     )
 
-    return accrued_amount, utils.round_decimal(accrued_amount, decimal_places=precision, rounding=rounding)
+    return accrued_amount, utils.round_decimal(
+        accrued_amount, decimal_places=precision, rounding=rounding
+    )
 
 
 # Putting this method inside interest_application may seem a little unintuitive. Given how we model
@@ -299,10 +314,16 @@ def repay_accrued_interest(
         denomination = utils.get_parameter(vault=vault, name="denomination")
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
-    accrual_internal_account: str = utils.get_parameter(vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT)
-    application_internal_account: str = utils.get_parameter(vault=vault, name=PARAM_INTEREST_RECEIVED_ACCOUNT)
+    accrual_internal_account: str = utils.get_parameter(
+        vault=vault, name=PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+    )
+    application_internal_account: str = utils.get_parameter(
+        vault=vault, name=PARAM_INTEREST_RECEIVED_ACCOUNT
+    )
     application_precision: int = utils.get_parameter(vault=vault, name=PARAM_APPLICATION_PRECISION)
 
     repayment_amount_remaining = repayment_amount

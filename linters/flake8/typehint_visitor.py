@@ -24,7 +24,11 @@ class TypehintVisitor(ast.NodeVisitor):
         self.contract_file_type = contract_file_type
         self.violations: list[ErrorType] = []
 
-        self.hook_mapping = HOOK_TEMPLATE_TYPEHINT_MAPPING if contract_file_type == SmartContractFileType.CONTRACT else SUPERVISOR_HOOK_TEMPLATE_TYPEHINT_MAPPING
+        self.hook_mapping = (
+            HOOK_TEMPLATE_TYPEHINT_MAPPING
+            if contract_file_type == SmartContractFileType.CONTRACT
+            else SUPERVISOR_HOOK_TEMPLATE_TYPEHINT_MAPPING
+        )
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         self._generate_errors(node)

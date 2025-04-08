@@ -107,7 +107,9 @@ class CreatePaymentPostingsTest(PaymentsTestCommon):
                     phase=Phase.COMMITTED,
                 ),
             ],
-            payments.redistribute_postings(amount=Decimal("1"), debit_address=debit_address, **self.common_args),
+            payments.redistribute_postings(
+                amount=Decimal("1"), debit_address=debit_address, **self.common_args
+            ),
         )
 
 
@@ -157,10 +159,18 @@ class DistributeRepaymentsTest(PaymentsTestCommon):
         self.assertDictEqual(
             repayment_per_address,
             {
-                "ADDRESS_1": payments.RepaymentAmounts(unrounded_amount=Decimal("10.00"), rounded_amount=Decimal("10.00")),
-                "ADDRESS_2": payments.RepaymentAmounts(unrounded_amount=Decimal("1.00"), rounded_amount=Decimal("1.00")),
-                "ADDRESS_3": payments.RepaymentAmounts(unrounded_amount=Decimal("0.015"), rounded_amount=Decimal("0.02")),
-                "ADDRESS_4": payments.RepaymentAmounts(unrounded_amount=Decimal("0.1"), rounded_amount=Decimal("0.1")),
+                "ADDRESS_1": payments.RepaymentAmounts(
+                    unrounded_amount=Decimal("10.00"), rounded_amount=Decimal("10.00")
+                ),
+                "ADDRESS_2": payments.RepaymentAmounts(
+                    unrounded_amount=Decimal("1.00"), rounded_amount=Decimal("1.00")
+                ),
+                "ADDRESS_3": payments.RepaymentAmounts(
+                    unrounded_amount=Decimal("0.015"), rounded_amount=Decimal("0.02")
+                ),
+                "ADDRESS_4": payments.RepaymentAmounts(
+                    unrounded_amount=Decimal("0.1"), rounded_amount=Decimal("0.1")
+                ),
             },
         )
         self.assertEqual(overpayment_amount, Decimal("0.00"))
@@ -479,7 +489,9 @@ class DistributeRepaymentsMultipleTargetsTest(PaymentsTestCommon):
             sentinel.remaining_repayment_amount,
         )
 
-        balances_per_target: dict[str, BalanceDefaultDict] = {self.mock_vault_1: sentinel.loan_1_balances}
+        balances_per_target: dict[str, BalanceDefaultDict] = {
+            self.mock_vault_1: sentinel.loan_1_balances
+        }
         result = payments.distribute_repayment_for_multiple_targets(
             balances_per_target=balances_per_target,
             repayment_amount=sentinel.repayment_amount,
@@ -837,7 +849,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
     default_balance_obs = SentinelBalancesObservation("dummy_observation")
     default_date = datetime(2022, 1, 1, tzinfo=ZoneInfo("UTC"))
     default_repayment_amount = Decimal(10.50)
-    default_postings = [PaymentsTestCommon().inbound_hard_settlement(amount=Decimal(default_repayment_amount))]
+    default_postings = [
+        PaymentsTestCommon().inbound_hard_settlement(amount=Decimal(default_repayment_amount))
+    ]
     default_repayment_hierarchy = ["PRINCIPAL_DUE", "INTEREST_DUE"]
 
     def test_do_not_generate_postings_with_repayment_that_rounds_to_0(
@@ -851,7 +865,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={LIVE_BALANCES_BOF_ID: self.default_balance_obs},
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         mock_distribute_repayment_for_single_target.return_value = (
             {
                 "ADDRESS_2": (Decimal("0.0043"), Decimal("0.00")),
@@ -893,7 +909,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={LIVE_BALANCES_BOF_ID: self.default_balance_obs},
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         mock_distribute_repayment_for_single_target.return_value = (
             {
                 "ADDRESS_2": (Decimal("0.0043"), Decimal("0.00")),
@@ -935,7 +953,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
             account_id=self.default_account_id,
             balances_observation_fetchers_mapping={LIVE_BALANCES_BOF_ID: self.default_balance_obs},
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         mock_distribute_repayment_for_single_target.return_value = (
             {
                 "ADDRESS_1": (Decimal("10.00"), Decimal("10.00")),
@@ -1012,7 +1032,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
             {},
             Decimal("0.02"),
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         mock_is_posting_an_early_repayment.return_value = False
 
         hook_args = PostPostingHookArguments(
@@ -1047,7 +1069,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={LIVE_BALANCES_BOF_ID: self.default_balance_obs},
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         overpayment_posting = SentinelPosting("dummy_posting")
         mock_distribute_repayment_for_single_target.return_value = (
             {},
@@ -1101,7 +1125,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
             account_id=self.default_account_id,
             balances_observation_fetchers_mapping={LIVE_BALANCES_BOF_ID: self.default_balance_obs},
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         mock_repayment_posting = SentinelPosting("dummy_repayment_posting")
         mock_overpayment_posting = SentinelPosting("dummy_overpayment_posting")
         mock_distribute_repayment_for_single_target.return_value = (
@@ -1171,7 +1197,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
                 },
             ),
         ]
-        self.assertEqual(repayment_and_overpayment_posting_instructions, expected_posting_instructions)
+        self.assertEqual(
+            repayment_and_overpayment_posting_instructions, expected_posting_instructions
+        )
 
     def test_generate_repayment_postings_with_multiple_overpayment_features(
         self,
@@ -1185,7 +1213,9 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
             account_id=self.default_account_id,
             balances_observation_fetchers_mapping={LIVE_BALANCES_BOF_ID: self.default_balance_obs},
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         mock_repayment_posting = SentinelPosting("dummy_repayment_posting")
         mock_overpayment_posting_1 = SentinelPosting("dummy_overpayment_posting_1")
         mock_overpayment_posting_2 = SentinelPosting("dummy_overpayment_posting_2")
@@ -1266,9 +1296,13 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
                 },
             ),
         ]
-        self.assertEqual(repayment_and_overpayment_posting_instructions, expected_posting_instructions)
+        self.assertEqual(
+            repayment_and_overpayment_posting_instructions, expected_posting_instructions
+        )
 
-    @patch.object(payments.interest_capitalisation, "handle_overpayments_to_penalties_pending_capitalisation")
+    @patch.object(
+        payments.interest_capitalisation, "handle_overpayments_to_penalties_pending_capitalisation"
+    )
     def test_generate_repayment_postings_with_early_repayment_and_early_repayment_fees(
         self,
         mock_handle_overpayments_to_penalties_pending_capitalisation: MagicMock,
@@ -1282,16 +1316,24 @@ class GenerateRepaymentPostingsTest(PaymentsTestCommon):
             account_id=self.default_account_id,
             balances_observation_fetchers_mapping={LIVE_BALANCES_BOF_ID: self.default_balance_obs},
         )
-        mock_handle_overpayments_to_penalties_pending_capitalisation.return_value = [sentinel.instruction_for_penalties_pending_capitalisation]
+        mock_handle_overpayments_to_penalties_pending_capitalisation.return_value = [
+            sentinel.instruction_for_penalties_pending_capitalisation
+        ]
         mock_distribute_repayment_for_single_target.return_value = (
             {},
             Decimal("0.02"),
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": self.default_denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": self.default_denomination}
+        )
         mock_is_posting_an_early_repayment.return_value = True
 
-        charge_early_repayment_fee_mock_1 = MagicMock(return_value=[sentinel.fee_posting_instruction_1])
-        charge_early_repayment_fee_mock_2 = MagicMock(return_value=[sentinel.fee_posting_instruction_2])
+        charge_early_repayment_fee_mock_1 = MagicMock(
+            return_value=[sentinel.fee_posting_instruction_1]
+        )
+        charge_early_repayment_fee_mock_2 = MagicMock(
+            return_value=[sentinel.fee_posting_instruction_2]
+        )
 
         mock_early_repayment_fee_1 = MagicMock(
             charge_early_repayment_fee=charge_early_repayment_fee_mock_1,
@@ -1363,10 +1405,18 @@ class GenerateRepaymentPostingsForMultipleTargets(PaymentsTestCommon):
     repayment_hierarchy = [[ADDRESS_1], [ADDRESS_2], [ADDRESS_3]]
 
     def setUp(self) -> None:
-        self.mock_get_denomination_parameter = patch.object(payments.common_parameters, "get_denomination_parameter").start()
-        self.mock_balance_at_coordinates = patch.object(payments.utils, "balance_at_coordinates").start()
-        self.mock_get_balances_default_dicts_from_timeseries = patch.object(payments.supervisor_utils, "get_balances_default_dicts_from_timeseries").start()
-        self.mock_distribute_repayment_for_multiple_targets = patch.object(payments, "distribute_repayment_for_multiple_targets").start()
+        self.mock_get_denomination_parameter = patch.object(
+            payments.common_parameters, "get_denomination_parameter"
+        ).start()
+        self.mock_balance_at_coordinates = patch.object(
+            payments.utils, "balance_at_coordinates"
+        ).start()
+        self.mock_get_balances_default_dicts_from_timeseries = patch.object(
+            payments.supervisor_utils, "get_balances_default_dicts_from_timeseries"
+        ).start()
+        self.mock_distribute_repayment_for_multiple_targets = patch.object(
+            payments, "distribute_repayment_for_multiple_targets"
+        ).start()
         self.mock_redistribute_postings = patch.object(payments, "redistribute_postings").start()
 
         self.mock_get_denomination_parameter.return_value = self.default_denomination
@@ -1544,7 +1594,9 @@ class GenerateRepaymentPostingsForMultipleTargets(PaymentsTestCommon):
             )
         ]
 
-        self.supervisee_posting_instructions = {self.main_vault.account_id: [self.inbound_hard_settlement(amount=Decimal("100"))]}
+        self.supervisee_posting_instructions = {
+            self.main_vault.account_id: [self.inbound_hard_settlement(amount=Decimal("100"))]
+        }
         self.hook_arguments = SupervisorPostPostingHookArguments(
             effective_datetime=DEFAULT_DATETIME,
             supervisee_posting_instructions=self.supervisee_posting_instructions,
@@ -1691,8 +1743,10 @@ class GenerateRepaymentPostingsForMultipleTargets(PaymentsTestCommon):
     def test_with_overpayment_and_overpayment_features(self):
         expected_result = {
             self.main_vault.account_id: self.main_vault_posting_instructions,
-            self.loan_1_vault.account_id: self.loan_1_vault_posting_instructions + self.loan_1_overpayment_instructions,
-            self.loan_2_vault.account_id: self.loan_2_vault_posting_instructions + self.loan_2_overpayment_instructions,
+            self.loan_1_vault.account_id: self.loan_1_vault_posting_instructions
+            + self.loan_1_overpayment_instructions,
+            self.loan_2_vault.account_id: self.loan_2_vault_posting_instructions
+            + self.loan_2_overpayment_instructions,
         }
 
         result = payments.generate_repayment_postings_for_multiple_targets(
@@ -1725,15 +1779,20 @@ class GenerateRepaymentPostingsForMultipleTargets(PaymentsTestCommon):
             overpayment_feature.handle_overpayment.assert_called_once_with(
                 main_vault=self.main_vault,
                 overpayment_amount=Decimal("50"),
-                balances_per_target_vault={target: self.balances_per_target[target.account_id] for target in [self.main_vault, self.loan_1_vault, self.loan_2_vault]},
+                balances_per_target_vault={
+                    target: self.balances_per_target[target.account_id]
+                    for target in [self.main_vault, self.loan_1_vault, self.loan_2_vault]
+                },
                 denomination=self.default_denomination,
             )
 
     def test_no_hierarchy_provided(self):
         expected_result = {
             self.main_vault.account_id: self.main_vault_posting_instructions,
-            self.loan_1_vault.account_id: self.loan_1_vault_posting_instructions + self.loan_1_overpayment_instructions,
-            self.loan_2_vault.account_id: self.loan_2_vault_posting_instructions + self.loan_2_overpayment_instructions,
+            self.loan_1_vault.account_id: self.loan_1_vault_posting_instructions
+            + self.loan_1_overpayment_instructions,
+            self.loan_2_vault.account_id: self.loan_2_vault_posting_instructions
+            + self.loan_2_overpayment_instructions,
         }
 
         result = payments.generate_repayment_postings_for_multiple_targets(
@@ -1743,7 +1802,9 @@ class GenerateRepaymentPostingsForMultipleTargets(PaymentsTestCommon):
             overpayment_features=self.overpayment_features,
         )
 
-        self.assertEqual(result[self.loan_1_vault.account_id], expected_result[self.loan_1_vault.account_id])
+        self.assertEqual(
+            result[self.loan_1_vault.account_id], expected_result[self.loan_1_vault.account_id]
+        )
 
         self.mock_get_denomination_parameter.assert_called_once_with(vault=self.main_vault)
         self.mock_balance_at_coordinates.assert_called_once_with(
@@ -1758,13 +1819,18 @@ class GenerateRepaymentPostingsForMultipleTargets(PaymentsTestCommon):
             balances_per_target=self.balances_per_target,
             repayment_amount=Decimal("100"),
             denomination=self.default_denomination,
-            repayment_hierarchy=[[address] for address in payments.lending_addresses.REPAYMENT_HIERARCHY],
+            repayment_hierarchy=[
+                [address] for address in payments.lending_addresses.REPAYMENT_HIERARCHY
+            ],
         )
         self.mock_redistribute_postings.assert_has_calls(self.redistribute_postings_calls)
         for overpayment_feature in self.overpayment_features:
             overpayment_feature.handle_overpayment.assert_called_once_with(
                 main_vault=self.main_vault,
                 overpayment_amount=Decimal("50"),
-                balances_per_target_vault={target: self.balances_per_target[target.account_id] for target in [self.main_vault, self.loan_1_vault, self.loan_2_vault]},
+                balances_per_target_vault={
+                    target: self.balances_per_target[target.account_id]
+                    for target in [self.main_vault, self.loan_1_vault, self.loan_2_vault]
+                },
                 denomination=self.default_denomination,
             )

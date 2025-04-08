@@ -74,10 +74,14 @@ class ValidatePrePostingTest(FeatureTest):
     def setUp(self) -> None:
         # mock vault
         self.mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={withdrawal_fees.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")},
+            balances_observation_fetchers_mapping={
+                withdrawal_fees.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")
+            },
         )
         self.mock_vault_with_calendar = self.create_mock(
-            balances_observation_fetchers_mapping={withdrawal_fees.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")},
+            balances_observation_fetchers_mapping={
+                withdrawal_fees.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")
+            },
             calendar_events=[DEFAULT_CALENDAR_EVENT],
         )
 
@@ -96,18 +100,28 @@ class ValidatePrePostingTest(FeatureTest):
         self.mock_get_available_balance.return_value = Decimal("-100")  # withdrawal amount
 
         # get_posting_instructions_balances
-        patch_get_posting_instructions_balances = patch.object(withdrawal_fees.utils, "get_posting_instructions_balances")
-        self.mock_get_posting_instructions_balances = patch_get_posting_instructions_balances.start()
+        patch_get_posting_instructions_balances = patch.object(
+            withdrawal_fees.utils, "get_posting_instructions_balances"
+        )
+        self.mock_get_posting_instructions_balances = (
+            patch_get_posting_instructions_balances.start()
+        )
         self.mock_get_posting_instructions_balances.return_value = sentinel.instruction_balances
 
         # get_current_credit_balance
-        patch_get_current_net_balance = patch.object(withdrawal_fees.utils, "get_current_net_balance")
+        patch_get_current_net_balance = patch.object(
+            withdrawal_fees.utils, "get_current_net_balance"
+        )
         self.mock_get_current_net_balance = patch_get_current_net_balance.start()
         self.mock_get_current_net_balance.return_value = Decimal("150")
 
         # _calculate_maximum_withdrawal_limit
-        patch_calculate_maximum_withdrawal_limit = patch.object(withdrawal_fees, "_calculate_maximum_withdrawal_limit")
-        self.mock_calculate_maximum_withdrawal_limit = patch_calculate_maximum_withdrawal_limit.start()
+        patch_calculate_maximum_withdrawal_limit = patch.object(
+            withdrawal_fees, "_calculate_maximum_withdrawal_limit"
+        )
+        self.mock_calculate_maximum_withdrawal_limit = (
+            patch_calculate_maximum_withdrawal_limit.start()
+        )
         self.mock_calculate_maximum_withdrawal_limit.return_value = Decimal("110")
 
         # balance_at_coordinates
@@ -116,17 +130,23 @@ class ValidatePrePostingTest(FeatureTest):
         self.mock_balance_at_coordinates.return_value = Decimal("0")  # withdrawals tracker
 
         # is_key_in_instruction_details
-        patch_is_key_in_instruction_details = patch.object(withdrawal_fees.utils, "is_key_in_instruction_details")
+        patch_is_key_in_instruction_details = patch.object(
+            withdrawal_fees.utils, "is_key_in_instruction_details"
+        )
         self.mock_is_key_in_instruction_details = patch_is_key_in_instruction_details.start()
         self.mock_is_key_in_instruction_details.return_value = True
 
         # falls_on_calendar_events
-        patch_falls_on_calendar_events = patch.object(withdrawal_fees.utils, "falls_on_calendar_events")
+        patch_falls_on_calendar_events = patch.object(
+            withdrawal_fees.utils, "falls_on_calendar_events"
+        )
         self.mock_falls_on_calendar_events = patch_falls_on_calendar_events.start()
         self.mock_falls_on_calendar_events.return_value = False
 
         # _calculate_withdrawal_fee_amounts
-        patch_calculate_withdrawal_fee_amounts = patch.object(withdrawal_fees, "calculate_withdrawal_fee_amounts")
+        patch_calculate_withdrawal_fee_amounts = patch.object(
+            withdrawal_fees, "calculate_withdrawal_fee_amounts"
+        )
         self.mock_calculate_withdrawal_fee_amounts = patch_calculate_withdrawal_fee_amounts.start()
         self.mock_calculate_withdrawal_fee_amounts.return_value = Decimal("5"), Decimal("15")
 
@@ -141,9 +161,15 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertIsNone(result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
-        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_live, denomination=self.default_denomination)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
+        self.mock_get_current_net_balance.assert_called_once_with(
+            balances=sentinel.balances_live, denomination=self.default_denomination
+        )
         self.mock_calculate_maximum_withdrawal_limit.assert_called_once_with(
             vault=self.mock_vault,
             effective_datetime=DEFAULT_DATETIME,
@@ -155,7 +181,9 @@ class ValidatePrePostingTest(FeatureTest):
             key="calendar_override",
             posting_instructions=sentinel.posting_instructions,
         )
-        self.mock_falls_on_calendar_events.assert_called_once_with(effective_datetime=DEFAULT_DATETIME, calendar_events=[])
+        self.mock_falls_on_calendar_events.assert_called_once_with(
+            effective_datetime=DEFAULT_DATETIME, calendar_events=[]
+        )
         self.mock_calculate_withdrawal_fee_amounts.assert_called_once_with(
             vault=self.mock_vault,
             effective_datetime=DEFAULT_DATETIME,
@@ -176,9 +204,15 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertIsNone(result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=sentinel.provided_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
-        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.provided_balances, denomination=sentinel.provided_denomination)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=sentinel.provided_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
+        self.mock_get_current_net_balance.assert_called_once_with(
+            balances=sentinel.provided_balances, denomination=sentinel.provided_denomination
+        )
         self.mock_calculate_maximum_withdrawal_limit.assert_called_once_with(
             vault=self.mock_vault,
             effective_datetime=DEFAULT_DATETIME,
@@ -190,7 +224,9 @@ class ValidatePrePostingTest(FeatureTest):
             key="calendar_override",
             posting_instructions=sentinel.posting_instructions,
         )
-        self.mock_falls_on_calendar_events.assert_called_once_with(effective_datetime=DEFAULT_DATETIME, calendar_events=[])
+        self.mock_falls_on_calendar_events.assert_called_once_with(
+            effective_datetime=DEFAULT_DATETIME, calendar_events=[]
+        )
         self.mock_calculate_withdrawal_fee_amounts.assert_called_once_with(
             vault=self.mock_vault,
             effective_datetime=DEFAULT_DATETIME,
@@ -214,9 +250,15 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertEqual(result, expected_result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
-        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_live, denomination=self.default_denomination)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
+        self.mock_get_current_net_balance.assert_called_once_with(
+            balances=sentinel.balances_live, denomination=self.default_denomination
+        )
         self.mock_calculate_maximum_withdrawal_limit.assert_not_called()
         self.mock_is_key_in_instruction_details.assert_not_called()
         self.mock_falls_on_calendar_events.assert_not_called()
@@ -228,7 +270,8 @@ class ValidatePrePostingTest(FeatureTest):
         self.mock_calculate_maximum_withdrawal_limit.return_value = Decimal("90")
 
         expected_result = Rejection(
-            message="The withdrawal amount of 70 GBP would exceed " "the available withdrawal limit of 65 GBP.",
+            message="The withdrawal amount of 70 GBP would exceed "
+            "the available withdrawal limit of 65 GBP.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
@@ -239,9 +282,15 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertEqual(result, expected_result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
-        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_live, denomination=self.default_denomination)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
+        self.mock_get_current_net_balance.assert_called_once_with(
+            balances=sentinel.balances_live, denomination=self.default_denomination
+        )
         self.mock_calculate_maximum_withdrawal_limit.assert_called_once_with(
             vault=self.mock_vault,
             effective_datetime=DEFAULT_DATETIME,
@@ -269,9 +318,15 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertEqual(result, expected_result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
-        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_live, denomination=self.default_denomination)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
+        self.mock_get_current_net_balance.assert_called_once_with(
+            balances=sentinel.balances_live, denomination=self.default_denomination
+        )
         self.mock_calculate_maximum_withdrawal_limit.assert_called_once_with(
             vault=self.mock_vault_with_calendar,
             effective_datetime=DEFAULT_DATETIME,
@@ -283,7 +338,9 @@ class ValidatePrePostingTest(FeatureTest):
             key="calendar_override",
             posting_instructions=sentinel.posting_instructions,
         )
-        self.mock_falls_on_calendar_events.assert_called_once_with(effective_datetime=DEFAULT_DATETIME, calendar_events=[DEFAULT_CALENDAR_EVENT])
+        self.mock_falls_on_calendar_events.assert_called_once_with(
+            effective_datetime=DEFAULT_DATETIME, calendar_events=[DEFAULT_CALENDAR_EVENT]
+        )
         self.mock_calculate_withdrawal_fee_amounts.assert_not_called()
 
     def test_withdrawal_on_calendar_event_with_override_does_not_raise_rejection(self):
@@ -296,9 +353,15 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertIsNone(result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
-        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_live, denomination=self.default_denomination)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
+        self.mock_get_current_net_balance.assert_called_once_with(
+            balances=sentinel.balances_live, denomination=self.default_denomination
+        )
         self.mock_calculate_maximum_withdrawal_limit.assert_called_once_with(
             vault=self.mock_vault_with_calendar,
             effective_datetime=DEFAULT_DATETIME,
@@ -310,7 +373,9 @@ class ValidatePrePostingTest(FeatureTest):
             key="calendar_override",
             posting_instructions=sentinel.posting_instructions,
         )
-        self.mock_falls_on_calendar_events.assert_called_once_with(effective_datetime=DEFAULT_DATETIME, calendar_events=[DEFAULT_CALENDAR_EVENT])
+        self.mock_falls_on_calendar_events.assert_called_once_with(
+            effective_datetime=DEFAULT_DATETIME, calendar_events=[DEFAULT_CALENDAR_EVENT]
+        )
         self.mock_calculate_withdrawal_fee_amounts.assert_called_once_with(
             vault=self.mock_vault_with_calendar,
             effective_datetime=DEFAULT_DATETIME,
@@ -323,7 +388,8 @@ class ValidatePrePostingTest(FeatureTest):
     def test_withdrawal_fees_exceed_withdrawal_amount_raises_rejection(self):
         self.mock_calculate_withdrawal_fee_amounts.return_value = Decimal("50"), Decimal("55")
         expected_result = Rejection(
-            message="The withdrawal fees of 105 GBP are not covered by " "the withdrawal amount of 100 GBP.",
+            message="The withdrawal fees of 105 GBP are not covered by "
+            "the withdrawal amount of 100 GBP.",
             reason_code=RejectionReason.INSUFFICIENT_FUNDS,
         )
 
@@ -334,9 +400,15 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertEqual(result, expected_result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
-        self.mock_get_current_net_balance.assert_called_once_with(balances=sentinel.balances_live, denomination=self.default_denomination)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
+        self.mock_get_current_net_balance.assert_called_once_with(
+            balances=sentinel.balances_live, denomination=self.default_denomination
+        )
         self.mock_calculate_maximum_withdrawal_limit.assert_called_once_with(
             vault=self.mock_vault,
             effective_datetime=DEFAULT_DATETIME,
@@ -348,7 +420,9 @@ class ValidatePrePostingTest(FeatureTest):
             key="calendar_override",
             posting_instructions=sentinel.posting_instructions,
         )
-        self.mock_falls_on_calendar_events.assert_called_once_with(effective_datetime=DEFAULT_DATETIME, calendar_events=[])
+        self.mock_falls_on_calendar_events.assert_called_once_with(
+            effective_datetime=DEFAULT_DATETIME, calendar_events=[]
+        )
         self.mock_calculate_withdrawal_fee_amounts.assert_called_once_with(
             vault=self.mock_vault,
             effective_datetime=DEFAULT_DATETIME,
@@ -368,8 +442,12 @@ class ValidatePrePostingTest(FeatureTest):
         )
         self.assertIsNone(result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
         self.mock_get_current_net_balance.assert_not_called()
         self.mock_calculate_maximum_withdrawal_limit.assert_not_called()
         self.mock_calculate_withdrawal_fee_amounts.assert_not_called()
@@ -379,10 +457,16 @@ class HandleWithdrawalsTest(FeatureTest):
     def setUp(self) -> None:
         # mock vault
         self.mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={withdrawal_fees.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")},
+            balances_observation_fetchers_mapping={
+                withdrawal_fees.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live")
+            },
         )
 
-        self.posting_instructions = [self.outbound_hard_settlement(amount=Decimal("100"), client_batch_id="withdrawal_client_batch_id")]
+        self.posting_instructions = [
+            self.outbound_hard_settlement(
+                amount=Decimal("100"), client_batch_id="withdrawal_client_batch_id"
+            )
+        ]
 
         # get_parameter
         patch_get_parameter = patch.object(withdrawal_fees.utils, "get_parameter")
@@ -399,28 +483,46 @@ class HandleWithdrawalsTest(FeatureTest):
         self.mock_get_available_balance.return_value = Decimal("-100")  # withdrawal amount
 
         # get_posting_instructions_balances
-        patch_get_posting_instructions_balances = patch.object(withdrawal_fees.utils, "get_posting_instructions_balances")
-        self.mock_get_posting_instructions_balances = patch_get_posting_instructions_balances.start()
+        patch_get_posting_instructions_balances = patch.object(
+            withdrawal_fees.utils, "get_posting_instructions_balances"
+        )
+        self.mock_get_posting_instructions_balances = (
+            patch_get_posting_instructions_balances.start()
+        )
         self.mock_get_posting_instructions_balances.return_value = sentinel.instruction_balances
 
         # _update_tracked_withdrawals
-        patch_update_tracked_withdrawals = patch.object(withdrawal_fees, "_update_tracked_withdrawals")
+        patch_update_tracked_withdrawals = patch.object(
+            withdrawal_fees, "_update_tracked_withdrawals"
+        )
         self.mock_update_tracked_withdrawals = patch_update_tracked_withdrawals.start()
         self.mock_update_tracked_withdrawals.return_value = [sentinel.withdrawal_tracker]
 
         # get_current_withdrawal_amount_default_balance_adjustment
-        patch_get_current_withdrawal_amount_default_balance_adjustment = patch.object(withdrawal_fees, "get_current_withdrawal_amount_default_balance_adjustment")
-        self.mock_get_current_withdrawal_amount_default_balance_adjustment = patch_get_current_withdrawal_amount_default_balance_adjustment.start()
-        self.mock_get_current_withdrawal_amount_default_balance_adjustment.return_value = sentinel.current_withdrawal_amount_adjustment
+        patch_get_current_withdrawal_amount_default_balance_adjustment = patch.object(
+            withdrawal_fees, "get_current_withdrawal_amount_default_balance_adjustment"
+        )
+        self.mock_get_current_withdrawal_amount_default_balance_adjustment = (
+            patch_get_current_withdrawal_amount_default_balance_adjustment.start()
+        )
+        self.mock_get_current_withdrawal_amount_default_balance_adjustment.return_value = (
+            sentinel.current_withdrawal_amount_adjustment
+        )
 
         # _calculate_withdrawal_fee_amounts
-        patch_calculate_withdrawal_fee_amounts = patch.object(withdrawal_fees, "calculate_withdrawal_fee_amounts")
+        patch_calculate_withdrawal_fee_amounts = patch.object(
+            withdrawal_fees, "calculate_withdrawal_fee_amounts"
+        )
         self.mock_calculate_withdrawal_fee_amounts = patch_calculate_withdrawal_fee_amounts.start()
         self.mock_calculate_withdrawal_fee_amounts.return_value = Decimal("5"), Decimal("10")
 
         # generate_withdrawal_fee_notification
-        patch_generate_withdrawal_fee_notification = patch.object(withdrawal_fees, "generate_withdrawal_fee_notification")
-        self.mock_generate_withdrawal_fee_notification = patch_generate_withdrawal_fee_notification.start()
+        patch_generate_withdrawal_fee_notification = patch.object(
+            withdrawal_fees, "generate_withdrawal_fee_notification"
+        )
+        self.mock_generate_withdrawal_fee_notification = (
+            patch_generate_withdrawal_fee_notification.start()
+        )
         self.mock_generate_withdrawal_fee_notification.return_value = sentinel.notification
 
         self.addCleanup(patch.stopall)
@@ -437,8 +539,12 @@ class HandleWithdrawalsTest(FeatureTest):
         )
         self.assertTupleEqual(result, expected_result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=self.default_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=self.posting_instructions)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=self.default_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=self.posting_instructions
+        )
         self.mock_update_tracked_withdrawals.assert_called_once_with(
             account_id=ACCOUNT_ID,
             withdrawal_amount=Decimal("100"),
@@ -476,8 +582,12 @@ class HandleWithdrawalsTest(FeatureTest):
         )
         self.assertTupleEqual(result, expected_result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=sentinel.provided_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=self.posting_instructions)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=sentinel.provided_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=self.posting_instructions
+        )
         self.mock_update_tracked_withdrawals.assert_called_once_with(
             account_id=ACCOUNT_ID,
             withdrawal_amount=Decimal("100"),
@@ -518,15 +628,21 @@ class HandleWithdrawalsTest(FeatureTest):
         )
         self.assertTupleEqual(result, expected_result)
 
-        self.mock_get_available_balance.assert_called_once_with(balances=sentinel.instruction_balances, denomination=sentinel.provided_denomination)
-        self.mock_get_posting_instructions_balances.assert_called_once_with(posting_instructions=sentinel.posting_instructions)
+        self.mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.instruction_balances, denomination=sentinel.provided_denomination
+        )
+        self.mock_get_posting_instructions_balances.assert_called_once_with(
+            posting_instructions=sentinel.posting_instructions
+        )
         self.mock_update_tracked_withdrawals.assert_not_called()
         self.mock_generate_withdrawal_fee_notification.assert_not_called()
 
 
 class GetCurrentWithdrawalAmountDefaultBalanceAdjustmentTest(FeatureTest):
     def test_get_current_withdrawal_amount_default_balance_adjustment_returns_interface(self):
-        result = withdrawal_fees.get_current_withdrawal_amount_default_balance_adjustment(withdrawal_amount=Decimal("100"))
+        result = withdrawal_fees.get_current_withdrawal_amount_default_balance_adjustment(
+            withdrawal_amount=Decimal("100")
+        )
         self.assertEqual(result.calculate_balance_adjustment(), Decimal("100"))
 
 
@@ -570,8 +686,12 @@ class GetCustomerDepositAmountTest(FeatureTest):
         )
 
     def test_get_customer_deposit_amount_with_balance_adjustments(self):
-        positive_balance_adjustment = withdrawal_fees.deposit_interfaces.DefaultBalanceAdjustment(calculate_balance_adjustment=lambda **kwargs: Decimal("10"))
-        negative_balance_adjustment = withdrawal_fees.deposit_interfaces.DefaultBalanceAdjustment(calculate_balance_adjustment=lambda **kwargs: Decimal("-35"))
+        positive_balance_adjustment = withdrawal_fees.deposit_interfaces.DefaultBalanceAdjustment(
+            calculate_balance_adjustment=lambda **kwargs: Decimal("10")
+        )
+        negative_balance_adjustment = withdrawal_fees.deposit_interfaces.DefaultBalanceAdjustment(
+            calculate_balance_adjustment=lambda **kwargs: Decimal("-35")
+        )
         result = withdrawal_fees.get_customer_deposit_amount(
             vault=self.mock_vault,
             balances=sentinel.balances,
@@ -596,7 +716,9 @@ class GetCustomerDepositAmountTest(FeatureTest):
         )
 
     def test_get_customer_deposit_amount_with_balance_adjustments_with_optional_parameters(self):
-        balance_adjustment = withdrawal_fees.deposit_interfaces.DefaultBalanceAdjustment(calculate_balance_adjustment=lambda **kwargs: Decimal("10"))
+        balance_adjustment = withdrawal_fees.deposit_interfaces.DefaultBalanceAdjustment(
+            calculate_balance_adjustment=lambda **kwargs: Decimal("10")
+        )
         result = withdrawal_fees.get_customer_deposit_amount(
             vault=self.mock_vault,
             balances=sentinel.provided_balances,
@@ -673,7 +795,13 @@ class UpdateWithdrawalsTrackerTest(FeatureTest):
 class ResetWithdrawalsTrackerTest(FeatureTest):
     def setUp(self) -> None:
         # mock vault
-        self.mock_vault = self.create_mock(balances_observation_fetchers_mapping={withdrawal_fees.EARLY_WITHDRAWALS_TRACKER_LIVE_BOF_ID: SentinelBalancesObservation("live_tracker")})
+        self.mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                withdrawal_fees.EARLY_WITHDRAWALS_TRACKER_LIVE_BOF_ID: SentinelBalancesObservation(
+                    "live_tracker"
+                )
+            }
+        )
 
         # get_parameter
         patch_get_parameter = patch.object(withdrawal_fees.utils, "get_parameter")
@@ -786,7 +914,9 @@ class CalculateLimitsTest(FeatureTest):
             }
         )
         # _get_customer_deposit_amount
-        patch_get_customer_deposit_amount = patch.object(withdrawal_fees, "get_customer_deposit_amount")
+        patch_get_customer_deposit_amount = patch.object(
+            withdrawal_fees, "get_customer_deposit_amount"
+        )
         self.mock_get_customer_deposit_amount = patch_get_customer_deposit_amount.start()
         self.mock_get_customer_deposit_amount.return_value = Decimal("100")
 
@@ -838,8 +968,12 @@ class CalculateWithdrawalAmountSubjectToFeeTest(FeatureTest):
         self.mock_balance_at_coordinates = patch_balance_at_coordinates.start()
 
         # _calculate_fee_free_withdrawal_limit
-        patch_calculate_fee_free_withdrawal_limit = patch.object(withdrawal_fees, "_calculate_fee_free_withdrawal_limit")
-        self.mock_calculate_fee_free_withdrawal_limit = patch_calculate_fee_free_withdrawal_limit.start()
+        patch_calculate_fee_free_withdrawal_limit = patch.object(
+            withdrawal_fees, "_calculate_fee_free_withdrawal_limit"
+        )
+        self.mock_calculate_fee_free_withdrawal_limit = (
+            patch_calculate_fee_free_withdrawal_limit.start()
+        )
         self.mock_calculate_fee_free_withdrawal_limit.return_value = Decimal("40")
 
         self.addCleanup(patch.stopall)
@@ -988,8 +1122,12 @@ class CalculateWithdrawalAmountSubjectToFeeTest(FeatureTest):
 class CalculateWithdrawalFeeAmountsTest(FeatureTest):
     def setUp(self) -> None:
         # _calculate_withdrawal_amount_subject_to_fees
-        patch_calculate_withdrawal_amount_subject_to_fees = patch.object(withdrawal_fees, "_calculate_withdrawal_amount_subject_to_fees")
-        self.mock_calculate_withdrawal_amount_subject_to_fees = patch_calculate_withdrawal_amount_subject_to_fees.start()
+        patch_calculate_withdrawal_amount_subject_to_fees = patch.object(
+            withdrawal_fees, "_calculate_withdrawal_amount_subject_to_fees"
+        )
+        self.mock_calculate_withdrawal_amount_subject_to_fees = (
+            patch_calculate_withdrawal_amount_subject_to_fees.start()
+        )
 
         # get_parameter
         patch_get_parameter = patch.object(withdrawal_fees.utils, "get_parameter")
@@ -1064,7 +1202,11 @@ class DerivedParameterHelpersTest(FeatureTest):
     def setUp(self) -> None:
         # mock vault
         self.mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping={withdrawal_fees.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))},
+            balances_observation_fetchers_mapping={
+                withdrawal_fees.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+                    SentinelBalancesObservation("effective")
+                )
+            },
         )
 
         # get_parameter
@@ -1080,7 +1222,9 @@ class DerivedParameterHelpersTest(FeatureTest):
         return super().setUp()
 
     @patch.object(withdrawal_fees, "_calculate_maximum_withdrawal_limit")
-    def test_get_maximum_withdrawal_limit_derived_parameter(self, mock_calculate_maximum_withdrawal_limit: MagicMock):
+    def test_get_maximum_withdrawal_limit_derived_parameter(
+        self, mock_calculate_maximum_withdrawal_limit: MagicMock
+    ):
         mock_calculate_maximum_withdrawal_limit.return_value = Decimal("1")
         result = withdrawal_fees.get_maximum_withdrawal_limit_derived_parameter(
             vault=self.mock_vault,
@@ -1097,7 +1241,9 @@ class DerivedParameterHelpersTest(FeatureTest):
         )
 
     @patch.object(withdrawal_fees, "_calculate_maximum_withdrawal_limit")
-    def test_get_maximum_withdrawal_limit_derived_parameter_with_optional_parameters(self, mock_calculate_maximum_withdrawal_limit: MagicMock):
+    def test_get_maximum_withdrawal_limit_derived_parameter_with_optional_parameters(
+        self, mock_calculate_maximum_withdrawal_limit: MagicMock
+    ):
         mock_calculate_maximum_withdrawal_limit.return_value = Decimal("1")
         result = withdrawal_fees.get_maximum_withdrawal_limit_derived_parameter(
             vault=self.mock_vault,
@@ -1117,7 +1263,9 @@ class DerivedParameterHelpersTest(FeatureTest):
         )
 
     @patch.object(withdrawal_fees, "_calculate_fee_free_withdrawal_limit")
-    def test_get_fee_free_withdrawal_limit_derived_parameter(self, mock__calculate_fee_free_withdrawal_limit: MagicMock):
+    def test_get_fee_free_withdrawal_limit_derived_parameter(
+        self, mock__calculate_fee_free_withdrawal_limit: MagicMock
+    ):
         mock__calculate_fee_free_withdrawal_limit.return_value = Decimal("1")
         result = withdrawal_fees.get_fee_free_withdrawal_limit_derived_parameter(
             vault=self.mock_vault,
@@ -1134,7 +1282,9 @@ class DerivedParameterHelpersTest(FeatureTest):
         )
 
     @patch.object(withdrawal_fees, "_calculate_fee_free_withdrawal_limit")
-    def test_get_fee_free_withdrawal_limit_derived_parameter_with_optional_parameters(self, mock__calculate_fee_free_withdrawal_limit: MagicMock):
+    def test_get_fee_free_withdrawal_limit_derived_parameter_with_optional_parameters(
+        self, mock__calculate_fee_free_withdrawal_limit: MagicMock
+    ):
         mock__calculate_fee_free_withdrawal_limit.return_value = Decimal("1")
         result = withdrawal_fees.get_fee_free_withdrawal_limit_derived_parameter(
             vault=self.mock_vault,

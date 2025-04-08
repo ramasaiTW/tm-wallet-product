@@ -68,7 +68,9 @@ def create_posting_async_operation(pib: dict[str, dict]) -> str:
     return resp["id"]
 
 
-def wait_until_async_operation_is_done(async_id: str, pib: dict[str, dict], timeout: int = 5) -> str:
+def wait_until_async_operation_is_done(
+    async_id: str, pib: dict[str, dict], timeout: int = 5
+) -> str:
     """
     Retrieves the results of an asynchronous posting request when it is marked as done, returning
     the posting instruction batch ID. Also includes a timeout facility to wait for the response.
@@ -86,16 +88,29 @@ def wait_until_async_operation_is_done(async_id: str, pib: dict[str, dict], time
             params=get_body,
         )
 
-        if resp["async_operations"][async_id]["done"] is True and "response" in resp["async_operations"][async_id]:
+        if (
+            resp["async_operations"][async_id]["done"] is True
+            and "response" in resp["async_operations"][async_id]
+        ):
             return resp["async_operations"][async_id]["response"]["id"]
-        elif resp["async_operations"][async_id]["done"] is True and "error" in resp["async_operations"][async_id]:
+        elif (
+            resp["async_operations"][async_id]["done"] is True
+            and "error" in resp["async_operations"][async_id]
+        ):
             errorstr = str(resp["async_operations"][async_id]["error"])
             pibstr = str(pib)
-            raise Exception(f"wait_until_async_operation_is_done got an error, " f"async_id: {async_id}, pib: {pibstr}, error: {errorstr}")
+            raise Exception(
+                f"wait_until_async_operation_is_done got an error, "
+                f"async_id: {async_id}, pib: {pibstr}, error: {errorstr}"
+            )
 
         time.sleep(1)
 
-    raise TimeoutError(f"{datetime.utcnow()} - " "Posting never got accepted or created. Is it formatted correctly?\n" "Posting Instruction Batch:\n{}Async Id:\n{}".format(pib, async_id))
+    raise TimeoutError(
+        f"{datetime.utcnow()} - "
+        "Posting never got accepted or created. Is it formatted correctly?\n"
+        "Posting Instruction Batch:\n{}Async Id:\n{}".format(pib, async_id)
+    )
 
 
 def get_posting_batch(pib_id: str) -> Any:
@@ -107,7 +122,9 @@ def get_posting_batch(pib_id: str) -> Any:
     return send_request("get", f"/v1/posting-instruction-batches/{pib_id}", {})
 
 
-def send_and_wait_for_posting_instruction_batch(pib: dict[str, dict], timeout: int | None = None, migration: bool = False) -> str:
+def send_and_wait_for_posting_instruction_batch(
+    pib: dict[str, dict], timeout: int | None = None, migration: bool = False
+) -> str:
     """
     Sends and waits for a posting response on a kafka topic. Note, when using the migration option,
     posting requests and reponses are received on the dedicated migration topics (as opposed to the
@@ -121,7 +138,9 @@ def send_and_wait_for_posting_instruction_batch(pib: dict[str, dict], timeout: i
     """
     pib_id = ""
     if endtoend.testhandle.use_kafka:
-        request_id = create_and_produce_posting_request(endtoend.testhandle.kafka_producer, pib, migration=migration)
+        request_id = create_and_produce_posting_request(
+            endtoend.testhandle.kafka_producer, pib, migration=migration
+        )
         responses, errors = wait_for_posting_responses([request_id], migration=migration)
         if error := errors.get(request_id):
             raise ValueError(f"Posting {request_id=} resulted in {error=}")
@@ -154,7 +173,10 @@ def inbound_hard_settlement(
     client_id=None,
 ):
     if not account_id and not payment_device_token:
-        raise NameError(f"{datetime.utcnow()} - " "Didn't pass either account_id, or a payment_device_token for payment")
+        raise NameError(
+            f"{datetime.utcnow()} - "
+            "Didn't pass either account_id, or a payment_device_token for payment"
+        )
 
     instruction = generate_instruction(
         is_inbound=True,
@@ -196,7 +218,10 @@ def outbound_hard_settlement(
     client_id=None,
 ):
     if not account_id and not payment_device_token:
-        raise NameError(f"{datetime.utcnow()} - " "Didn't pass either account_id, or a payment_device_token for payment")
+        raise NameError(
+            f"{datetime.utcnow()} - "
+            "Didn't pass either account_id, or a payment_device_token for payment"
+        )
 
     instruction = generate_instruction(
         is_inbound=False,
@@ -237,7 +262,10 @@ def outbound_auth(
     client_id=None,
 ):
     if not account_id and not payment_device_token:
-        raise NameError(f"{datetime.utcnow()} - " "Didn't pass either account_id, or a payment_device_token for payment")
+        raise NameError(
+            f"{datetime.utcnow()} - "
+            "Didn't pass either account_id, or a payment_device_token for payment"
+        )
 
     instruction = generate_instruction(
         is_inbound=False,
@@ -276,7 +304,10 @@ def inbound_auth(
     client_id=None,
 ):
     if not account_id and not payment_device_token:
-        raise NameError(f"{datetime.utcnow()} - " "Didn't pass either account_id, or a payment_device_token for payment")
+        raise NameError(
+            f"{datetime.utcnow()} - "
+            "Didn't pass either account_id, or a payment_device_token for payment"
+        )
 
     instruction = generate_instruction(
         is_inbound=True,
@@ -483,7 +514,9 @@ def wait_for_posting_responses(
     :return: a list of committed posting instruction batch ids (could be accepted or rejected) and a
     dict of errored posting instruction batch create_request_id to the error received
     """
-    posting_response_topic = MIGRATIONS_POSTINGS_RESPONSES_TOPIC if migration else POSTINGS_API_RESPONSE_TOPIC
+    posting_response_topic = (
+        MIGRATIONS_POSTINGS_RESPONSES_TOPIC if migration else POSTINGS_API_RESPONSE_TOPIC
+    )
     consumer = endtoend.testhandle.kafka_consumers[posting_response_topic]
     batch_completion_recorder = BatchCompletionRecorder()
 
@@ -515,7 +548,9 @@ def wait_for_posting_responses(
 
 
 @kafka_only_helper
-def create_and_produce_posting_request(producer, pib: dict[str, Any], key: str | None = None, migration: bool = False) -> str:
+def create_and_produce_posting_request(
+    producer, pib: dict[str, Any], key: str | None = None, migration: bool = False
+) -> str:
     """
     For a given PIB, creates a create_posting_instruction_batch_request and produces it to the
     relevant kafka topic, returning the request's id
@@ -536,7 +571,9 @@ def create_and_produce_posting_request(producer, pib: dict[str, Any], key: str |
     return request_id
 
 
-def produce_posting_messages(producer, account_postings: dict[str, list], tps: int = 200) -> list[str]:
+def produce_posting_messages(
+    producer, account_postings: dict[str, list], tps: int = 200
+) -> list[str]:
     """
     Produces posting requests for the given accounts, returning the corresponding create request ids
     :param producer: the kafka producer to use
@@ -558,7 +595,11 @@ def produce_posting_messages(producer, account_postings: dict[str, list], tps: i
     # was successfully completed
     for posting_index in range(num_postings):
         for account_id, pibs in account_postings.items():
-            create_request_ids.append(create_and_produce_posting_request(producer, pibs[posting_index], key=account_id, migration=True))
+            create_request_ids.append(
+                create_and_produce_posting_request(
+                    producer, pibs[posting_index], key=account_id, migration=True
+                )
+            )
             time.sleep(sleep_time)
     producer.flush()
     return create_request_ids
@@ -588,7 +629,9 @@ def generate_instruction(
 
     internal_account_id = internal_account_id or DUMMY_CONTRA
 
-    internal_account_id = endtoend.testhandle.internal_account_id_to_uploaded_id[internal_account_id]
+    internal_account_id = endtoend.testhandle.internal_account_id_to_uploaded_id[
+        internal_account_id
+    ]
 
     if is_inbound:
         posting = InboundAuthorisation if is_auth else InboundHardSettlement

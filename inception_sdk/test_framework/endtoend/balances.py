@@ -53,7 +53,11 @@ def wait_for_balance_updates(
         pib_id = event_msg["posting_instruction_batch_id"]
         event_request_id = event_msg["event_id"]
         if pib_id in unique_message_ids:
-            items = [item for item in event_msg["balances"] if item["posting_instruction_batch_id"] == pib_id]
+            items = [
+                item
+                for item in event_msg["balances"]
+                if item["posting_instruction_batch_id"] == pib_id
+            ]
             balances.extend(items)
             return pib_id, event_request_id, True
         else:
@@ -103,7 +107,9 @@ def wait_for_all_account_balances(
             )
 
 
-def wait_for_account_balances_by_pib(account_id: str, posting_instruction_batch_id: str | None = None) -> list[dict[str, str]]:
+def wait_for_account_balances_by_pib(
+    account_id: str, posting_instruction_batch_id: str | None = None
+) -> list[dict[str, str]]:
     """
     Posting Instruction Batch ID has been removed from the balances endpoint.
     The current implementation is supported from our side and is a simple
@@ -112,7 +118,11 @@ def wait_for_account_balances_by_pib(account_id: str, posting_instruction_batch_
     balances = get_timerange_balances(account_id)
 
     if posting_instruction_batch_id:
-        return [balance for balance in balances if balance["posting_instruction_batch_id"] == posting_instruction_batch_id]
+        return [
+            balance
+            for balance in balances
+            if balance["posting_instruction_batch_id"] == posting_instruction_batch_id
+        ]
 
     return balances
 
@@ -144,7 +154,12 @@ def wait_for_account_balances_by_ids(
         if event_account_id in unique_message_ids:
             balance_wrapper = event_msg.get("balances")
             actual_balances = create_balance_dict(balance_wrapper)
-            if compare_balances_inner(accounts_expected_balances[event_account_id], actual_balances) == {}:
+            if (
+                compare_balances_inner(
+                    accounts_expected_balances[event_account_id], actual_balances
+                )
+                == {}
+            ):
                 return (
                     event_account_id,
                     event_request_id,
@@ -168,14 +183,20 @@ def wait_for_account_balances_by_ids(
         return failed_account_ids
 
     if len(failed_account_ids) > 0:
-        transformed_outcome = "Failed to retrieve all expected account balance updates for account ids\n"
+        transformed_outcome = (
+            "Failed to retrieve all expected account balance updates for account ids\n"
+        )
 
         for account_id in failed_account_ids.keys():
-            transformed_outcome += f"\n{account_id}: \n" + str(accounts_expected_balances[account_id])
+            transformed_outcome += f"\n{account_id}: \n" + str(
+                accounts_expected_balances[account_id]
+            )
         raise Exception(transformed_outcome)
 
 
-def wait_for_posting_balance_updates(account_id: str, posting_instruction_batch_id: str) -> list[dict[str, str]]:
+def wait_for_posting_balance_updates(
+    account_id: str, posting_instruction_batch_id: str
+) -> list[dict[str, str]]:
     """
     Waits for the balances updates corresponding to a given posting instruction batch
     :param account_id: account id to check balances for
@@ -198,7 +219,8 @@ def wait_for_posting_balance_updates(account_id: str, posting_instruction_batch_
             },
             expected_result=True,
             result_wrapper=lambda x: len(x) > 0,
-            failure_message=f"Balances for pib {posting_instruction_batch_id} and account id " f"{account_id} never updated",
+            failure_message=f"Balances for pib {posting_instruction_batch_id} and account id "
+            f"{account_id} never updated",
         )
 
 
@@ -254,7 +276,9 @@ def create_balance_dict(balances: list[dict[str, str]]) -> defaultdict[BalanceDi
     return balance_default_dict
 
 
-def compare_balances(account_id: str, expected_balances: list[tuple[BalanceDimensions, str]]) -> dict[BalanceDimensions, dict[str, Decimal]]:
+def compare_balances(
+    account_id: str, expected_balances: list[tuple[BalanceDimensions, str]]
+) -> dict[BalanceDimensions, dict[str, Decimal]]:
     """
     Compare the actual live balances to specified expected_balances. Any dimensions not included in
     expected_balances are ignored. Only accounts for net, not cr and dr values
@@ -291,7 +315,11 @@ def get_balances_dict(
     :return: contract-like balance dictionary mapping dimensions to balances
     """
 
-    return create_balance_dict(get_live_balances(account_id) if live else get_timerange_balances(account_id, from_value_time, to_value_time))
+    return create_balance_dict(
+        get_live_balances(account_id)
+        if live
+        else get_timerange_balances(account_id, from_value_time, to_value_time)
+    )
 
 
 def standardise_balance_value_time_format(timestamp: str) -> datetime:

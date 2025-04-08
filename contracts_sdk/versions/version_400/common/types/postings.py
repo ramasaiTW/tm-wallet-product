@@ -151,7 +151,9 @@ class Posting:
 
 
 class TransactionCode:
-    def __init__(self, *, domain: str, family: str, subfamily: str, _from_proto: Optional[bool] = False):
+    def __init__(
+        self, *, domain: str, family: str, subfamily: str, _from_proto: Optional[bool] = False
+    ):
         self.domain = domain
         self.family = family
         self.subfamily = subfamily
@@ -159,9 +161,15 @@ class TransactionCode:
             self._validate_attributes()
 
     def _validate_attributes(self):
-        types_utils.validate_type(self.domain, str, check_empty=True, prefix="TransactionCode.domain")
-        types_utils.validate_type(self.family, str, check_empty=True, prefix="TransactionCode.family")
-        types_utils.validate_type(self.subfamily, str, check_empty=True, prefix="TransactionCode.subfamily")
+        types_utils.validate_type(
+            self.domain, str, check_empty=True, prefix="TransactionCode.domain"
+        )
+        types_utils.validate_type(
+            self.family, str, check_empty=True, prefix="TransactionCode.family"
+        )
+        types_utils.validate_type(
+            self.subfamily, str, check_empty=True, prefix="TransactionCode.subfamily"
+        )
 
     @classmethod
     @lru_cache()
@@ -384,14 +392,19 @@ class PostingInstructionBase:
         account_id = account_id or self._own_account_id
         tside = tside or self._tside
         if not account_id:
-            raise InvalidSmartContractError("An account_id must be specified for the balances calculation.")
+            raise InvalidSmartContractError(
+                "An account_id must be specified for the balances calculation."
+            )
         if self._committed_postings is None:
             instruction_type = self.type.value if self.type else "posting instruction"
             raise InvalidSmartContractError(
-                f"The {instruction_type} posting instruction type does not support the balances " f"method for the non-historical data as committed_postings are not available."
+                f"The {instruction_type} posting instruction type does not support the balances "
+                f"method for the non-historical data as committed_postings are not available."
             )
         if not tside:
-            raise InvalidSmartContractError("A tside must be specified for the balances calculation.")
+            raise InvalidSmartContractError(
+                "A tside must be specified for the balances calculation."
+            )
 
         committed_postings_in_account_id = []
         for committed_postings in self._committed_postings:
@@ -420,7 +433,12 @@ class PostingInstructionBase:
         balances = self._balance_default_dict_class(
             # defaults to 0 net, credit and debit
             lambda *_: self._balance_class(),  # type: ignore
-            {_transform_balance_key(balance_key): _transform_balance_to_versioned_balance(balance_value) for balance_key, balance_value in balance_diffs.items()},
+            {
+                _transform_balance_key(balance_key): _transform_balance_to_versioned_balance(
+                    balance_value
+                )
+                for balance_key, balance_value in balance_diffs.items()
+            },
         )
 
         return balances
@@ -766,7 +784,9 @@ class CustomInstruction(PostingInstructionBase):
 
     def _validate_attributes(self):
         super()._validate_attributes()
-        iterator = types_utils.get_iterator(self.postings, "Posting", name="CustomInstruction.postings", check_empty=True)
+        iterator = types_utils.get_iterator(
+            self.postings, "Posting", name="CustomInstruction.postings", check_empty=True
+        )
         for index, posting in enumerate(iterator):
             types_utils.validate_type(
                 posting,
@@ -803,7 +823,8 @@ class CustomInstruction(PostingInstructionBase):
     def _validate_postings_and_zero_net_sum(self):
         if len(self.postings) > 64:
             raise InvalidSmartContractError(
-                f"Too many postings submitted in the {self.type.value}. " f"Number submitted: {len(self.postings)}. Limit: 64.",
+                f"Too many postings submitted in the {self.type.value}. "
+                f"Number submitted: {len(self.postings)}. Limit: 64.",
             )
 
         balance_dict = {}
@@ -820,7 +841,8 @@ class CustomInstruction(PostingInstructionBase):
             if balance_value["credit"] != balance_value["debit"]:
                 net_sum = abs(balance_value["credit"] - balance_value["debit"])
                 raise InvalidSmartContractError(
-                    f"Net of balance coordinate {balance_key} in the " f"CustomInstruction: {net_sum}, Expected: 0.",
+                    f"Net of balance coordinate {balance_key} in the "
+                    f"CustomInstruction: {net_sum}, Expected: 0.",
                 )
 
     @classmethod
@@ -860,8 +882,12 @@ class AdjustmentAmount:
             self._validate_attributes()
 
     def _validate_attributes(self):
-        if (self.amount is None and self.replacement_amount is None) or (self.amount and self.replacement_amount):
-            raise InvalidSmartContractError("Either amount or replacement amount argument must be set, not both.")
+        if (self.amount is None and self.replacement_amount is None) or (
+            self.amount and self.replacement_amount
+        ):
+            raise InvalidSmartContractError(
+                "Either amount or replacement amount argument must be set, not both."
+            )
 
     @classmethod
     @lru_cache()
@@ -1766,7 +1792,12 @@ class ClientTransactionEffects:
         self.unsettled = unsettled
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.authorised == other.authorised and self.settled == other.settled and self.unsettled == other.unsettled
+        return (
+            self.__class__ == other.__class__
+            and self.authorised == other.authorised
+            and self.settled == other.settled
+            and self.unsettled == other.unsettled
+        )
 
     @classmethod
     @lru_cache()
@@ -1800,7 +1831,9 @@ class ClientTransactionEffects:
             types_utils.ValueSpec(
                 name="authorised",
                 type="Optional[Decimal]",
-                docstring="The total amount that has been authorised. " "Note: value is updated on Adjustment instructions, " "however, is not updated on Settlement or Release instructions.",
+                docstring="The total amount that has been authorised. "
+                "Note: value is updated on Adjustment instructions, "
+                "however, is not updated on Settlement or Release instructions.",
             ),
             types_utils.ValueSpec(
                 name="settled",
@@ -1810,7 +1843,8 @@ class ClientTransactionEffects:
             types_utils.ValueSpec(
                 name="unsettled",
                 type="Optional[Decimal]",
-                docstring="The total amount that has been authorised (including adjustments)" " but is yet to be released or settled.",
+                docstring="The total amount that has been authorised (including adjustments)"
+                " but is yet to be released or settled.",
             ),
         ]
 
@@ -1830,7 +1864,9 @@ class ClientTransaction:
         tside: Tside = None,
         _from_proto: bool = False,
     ):
-        self._client_transaction = SingleAccountClientTransaction(client_transaction_id=client_transaction_id, account_id=account_id)
+        self._client_transaction = SingleAccountClientTransaction(
+            client_transaction_id=client_transaction_id, account_id=account_id
+        )
         self._effects_cache: Dict[Optional[datetime], Optional[ClientTransactionEffects]] = {}
         self._balances_cache: Dict[Optional[datetime], BalanceDefaultDict] = {}
         self.posting_instructions = posting_instructions
@@ -1879,11 +1915,13 @@ class ClientTransaction:
 
             if not item.value_datetime:
                 raise InvalidPostingInstructionException(
-                    f"'ClientTransaction.posting_instructions[{index}]' has its value_datetime " f"attribute set to {item.value_datetime}. Expected value_datetime to be set."
+                    f"'ClientTransaction.posting_instructions[{index}]' has its value_datetime "
+                    f"attribute set to {item.value_datetime}. Expected value_datetime to be set."
                 )
             if isinstance(item, Settlement) and item.final is None:
                 raise InvalidPostingInstructionException(
-                    f"'ClientTransaction.posting_instructions[{index}]' Settlement instruction " f"has its final attribute set to {item.final}. Expected True or False."
+                    f"'ClientTransaction.posting_instructions[{index}]' Settlement instruction "
+                    f"has its final attribute set to {item.final}. Expected True or False."
                 )
 
             postings_iterator = types_utils.get_iterator(
@@ -1897,7 +1935,8 @@ class ClientTransaction:
                     posting_item,
                     Posting,
                     hint="Posting",
-                    prefix=f"ClientTransaction.posting_instructions[{index}]." f"_committed_postings[{posting_index}]",
+                    prefix=f"ClientTransaction.posting_instructions[{index}]."
+                    f"_committed_postings[{posting_index}]",
                 )
 
     def __eq__(self, other):
@@ -1930,7 +1969,9 @@ class ClientTransaction:
             "ClientTransaction.completed()",
         )
         return any(
-            isinstance(posting_instruction, Settlement) and posting_instruction.final is True and value_datetime < effective_datetime
+            isinstance(posting_instruction, Settlement)
+            and posting_instruction.final is True
+            and value_datetime < effective_datetime
             for posting_instruction in self.posting_instructions
             if (value_datetime := posting_instruction.value_datetime) and value_datetime is not None
         )
@@ -1972,7 +2013,9 @@ class ClientTransaction:
         if effective_datetime in self._balances_cache:
             return self._balances_cache[effective_datetime]
 
-        self._balances_cache[effective_datetime] = result = self._balances(effective_datetime=effective_datetime, tside=tside)
+        self._balances_cache[effective_datetime] = result = self._balances(
+            effective_datetime=effective_datetime, tside=tside
+        )
         return result
 
     def _balances(
@@ -1983,7 +2026,9 @@ class ClientTransaction:
     ) -> BalanceDefaultDict:
         tside = tside or self.tside
         if not tside:
-            raise InvalidSmartContractError("A tside must be specified for the balances calculation.")
+            raise InvalidSmartContractError(
+                "A tside must be specified for the balances calculation."
+            )
 
         def _transform_balance_to_versioned_balance(balance_value):
             result = self._balance_class()
@@ -2008,7 +2053,12 @@ class ClientTransaction:
         return self._balance_defaultdict_class(
             # defaults to 0 net, credit and debit
             lambda *_: self._balance_class(),  # type: ignore
-            {_transform_balance_key(balance_key): _transform_balance_to_versioned_balance(balance_value) for balance_key, balance_value in balances.items()},
+            {
+                _transform_balance_key(balance_key): _transform_balance_to_versioned_balance(
+                    balance_value
+                )
+                for balance_key, balance_value in balances.items()
+            },
         )
 
     def effects(self, *, effective_datetime: datetime = None) -> Optional[ClientTransactionEffects]:
@@ -2031,22 +2081,36 @@ class ClientTransaction:
         balances = self.balances(effective_datetime=effective_datetime, tside=Tside.LIABILITY)
         if balances == BalanceDefaultDict():
             return self._client_transaction_effects_class()
-        all_keys = set((key.account_address, key.asset, key.denomination) for key in balances.keys())
+        all_keys = set(
+            (key.account_address, key.asset, key.denomination) for key in balances.keys()
+        )
         if len(all_keys) != 1:
-            raise InvalidPostingInstructionException("ClientTransaction only supports posting instructions with " "the same account_address, denomination and asset attributes.")
+            raise InvalidPostingInstructionException(
+                "ClientTransaction only supports posting instructions with "
+                "the same account_address, denomination and asset attributes."
+            )
         balance_key = all_keys.pop()
         # All PI types except CustomInstructions has one committed posting for the initial
         # ClientTransaction posting instruction.
         committed_postings = self.posting_instructions[0]._committed_postings
         if not committed_postings:
-            raise InvalidSmartContractError("ClientTransaction only supports posting instructions with" "non empty committed postings.")
+            raise InvalidSmartContractError(
+                "ClientTransaction only supports posting instructions with"
+                "non empty committed postings."
+            )
 
         if committed_postings[0].credit:
-            return self._make_inbound_effects(balances, *balance_key, effective_datetime=effective_datetime)
+            return self._make_inbound_effects(
+                balances, *balance_key, effective_datetime=effective_datetime
+            )
         else:
-            return self._make_outbound_effects(balances, *balance_key, effective_datetime=effective_datetime)
+            return self._make_outbound_effects(
+                balances, *balance_key, effective_datetime=effective_datetime
+            )
 
-    def _make_inbound_effects(self, balances, address, asset, denomination, effective_datetime=None):
+    def _make_inbound_effects(
+        self, balances, address, asset, denomination, effective_datetime=None
+    ):
         # This is either authorised, released or settled transaction
         return self._client_transaction_effects_class(
             authorised=balances[
@@ -2081,7 +2145,9 @@ class ClientTransaction:
             ),
         )
 
-    def _make_outbound_effects(self, balances, address, asset, denomination, effective_datetime=None):
+    def _make_outbound_effects(
+        self, balances, address, asset, denomination, effective_datetime=None
+    ):
         # This is either authorised or released or settled transaction
         return self._client_transaction_effects_class(
             authorised=-balances[

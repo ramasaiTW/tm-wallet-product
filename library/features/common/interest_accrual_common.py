@@ -53,7 +53,8 @@ days_in_year_param = Parameter(
         ]
     ),
     level=ParameterLevel.TEMPLATE,
-    description="The days in the year for interest accrual calculation." ' Valid values are "actual", "366", "365", "360"',
+    description="The days in the year for interest accrual calculation."
+    ' Valid values are "actual", "366", "365", "360"',
     display_name="Interest Accrual Days In Year",
     default_value=UnionItemValue(key="365"),
 )
@@ -258,11 +259,14 @@ def calculate_daily_accrual(
 
     return accruals.AccrualDetail(
         amount=accrual_amount,
-        description=f"Daily interest accrued at {(daily_rate * 100):0.5f}%" f" on balance of {effective_balance:0.2f}",
+        description=f"Daily interest accrued at {(daily_rate * 100):0.5f}%"
+        f" on balance of {effective_balance:0.2f}",
     )
 
 
-def get_days_in_year_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
+def get_days_in_year_parameter(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> str:
     return str(
         utils.get_parameter(
             vault=vault,
@@ -273,7 +277,9 @@ def get_days_in_year_parameter(*, vault: SmartContractVault, effective_datetime:
     )
 
 
-def get_accrual_precision_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> int:
+def get_accrual_precision_parameter(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> int:
     return int(
         utils.get_parameter(
             vault=vault,
@@ -283,7 +289,9 @@ def get_accrual_precision_parameter(*, vault: SmartContractVault, effective_date
     )
 
 
-def get_accrued_interest_payable_account_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
+def get_accrued_interest_payable_account_parameter(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> str:
     return str(
         utils.get_parameter(
             vault,
@@ -293,7 +301,9 @@ def get_accrued_interest_payable_account_parameter(*, vault: SmartContractVault,
     )
 
 
-def get_accrued_interest_receivable_account_parameter(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
+def get_accrued_interest_receivable_account_parameter(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> str:
     return str(
         utils.get_parameter(
             vault,

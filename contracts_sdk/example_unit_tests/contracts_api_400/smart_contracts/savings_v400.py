@@ -52,7 +52,9 @@ def activation_hook(vault, hook_arguments):
     logger.debug("Running activation hook")
     start_date = vault.get_account_creation_datetime()
     key_date_timeseries = vault.get_parameter_timeseries(name="key_date")
-    selected_day = interest_utils_v400.get_selected_interest_payday(key_date_timeseries, effective_datetime=start_date)
+    selected_day = interest_utils_v400.get_selected_interest_payday(
+        key_date_timeseries, effective_datetime=start_date
+    )
     if selected_day is None:
         selected_day = start_date.day
     payday = interest_utils_v400.get_interest_payday(selected_day, start_date)

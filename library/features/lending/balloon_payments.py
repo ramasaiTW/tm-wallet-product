@@ -45,7 +45,8 @@ balloon_payment_days_delta_parameter = Parameter(
     name=PARAM_BALLOON_PAYMENT_DAYS_DELTA,
     shape=OptionalShape(shape=NumberShape(min_value=0, step=1)),
     level=ParameterLevel.INSTANCE,
-    description="The number of days between the final repayment event and " "the balloon payment event.",
+    description="The number of days between the final repayment event and "
+    "the balloon payment event.",
     display_name="Balloon Payment Days Delta",
     update_permission=ParameterUpdatePermission.OPS_EDITABLE,
 )
@@ -58,7 +59,8 @@ balloon_payment_amount_parameter = Parameter(
         ),
     ),
     level=ParameterLevel.INSTANCE,
-    description="The balloon payment amount the customer has chosen to pay on the balloon" " payment day. If set, this determines the customer has chosen a fixed balloon payment.",
+    description="The balloon payment amount the customer has chosen to pay on the balloon"
+    " payment day. If set, this determines the customer has chosen a fixed balloon payment.",
     display_name="Balloon Payment Amount",
     update_permission=ParameterUpdatePermission.OPS_EDITABLE,
 )
@@ -71,7 +73,8 @@ balloon_emi_amount_parameter = Parameter(
         ),
     ),
     level=ParameterLevel.INSTANCE,
-    description="The fixed balloon emi amount the customer has chosen to pay each " "month. If set, this determines the customer has chosen a fixed emi payment.",
+    description="The fixed balloon emi amount the customer has chosen to pay each "
+    "month. If set, this determines the customer has chosen a fixed emi payment.",
     display_name="Balloon Payment EMI Amount",
     update_permission=ParameterUpdatePermission.OPS_EDITABLE,
 )
@@ -119,7 +122,9 @@ def disabled_balloon_schedule(account_opening_datetime: datetime) -> dict[str, S
     return {BALLOON_PAYMENT_EVENT: utils.create_end_of_time_schedule(account_opening_datetime)}
 
 
-def scheduled_events(vault: SmartContractVault, account_opening_datetime: datetime, amortisation_method: str) -> dict[str, ScheduledEvent]:
+def scheduled_events(
+    vault: SmartContractVault, account_opening_datetime: datetime, amortisation_method: str
+) -> dict[str, ScheduledEvent]:
     """
     Create monthly scheduled event for due amount calculation, starting one month from account
     opening. This will also return the due date schedule if the schedule is not a no-repayment loan
@@ -136,15 +141,25 @@ def scheduled_events(vault: SmartContractVault, account_opening_datetime: dateti
 
     if skip_due_date:
         # No Repayment Loans
-        total_term = int(utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT))
+        total_term = int(
+            utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT)
+        )
         # Balloon Payment date is the date where the balloon payment will be executed.
-        balloon_payment_datetime = account_opening_datetime + relativedelta(months=total_term, days=balloon_payment_delta_days)
+        balloon_payment_datetime = account_opening_datetime + relativedelta(
+            months=total_term, days=balloon_payment_delta_days
+        )
 
-        balloon_payment_datetime = set_time_from_due_amount_parameter(vault=vault, from_datetime=balloon_payment_datetime)
+        balloon_payment_datetime = set_time_from_due_amount_parameter(
+            vault=vault, from_datetime=balloon_payment_datetime
+        )
 
         schedule_expr = utils.one_off_schedule_expression(balloon_payment_datetime)
-        scheduled_events[BALLOON_PAYMENT_EVENT] = ScheduledEvent(start_datetime=balloon_payment_start_date, expression=schedule_expr)
-        scheduled_events[due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT] = utils.create_end_of_time_schedule(balloon_payment_start_date)
+        scheduled_events[BALLOON_PAYMENT_EVENT] = ScheduledEvent(
+            start_datetime=balloon_payment_start_date, expression=schedule_expr
+        )
+        scheduled_events[
+            due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT
+        ] = utils.create_end_of_time_schedule(balloon_payment_start_date)
     else:
         # Minimum Repayment and Interest Only Loans
 
@@ -152,15 +167,21 @@ def scheduled_events(vault: SmartContractVault, account_opening_datetime: dateti
         # the schedule remains active. It will be triggered by the final Due Date Calc.
         # the schedule start time is set to the day after the account opening date to
         # align behaviour to other schedules
-        scheduled_events[BALLOON_PAYMENT_EVENT] = ScheduledEvent(start_datetime=balloon_payment_start_date, expression=utils.END_OF_TIME_EXPRESSION)
+        scheduled_events[BALLOON_PAYMENT_EVENT] = ScheduledEvent(
+            start_datetime=balloon_payment_start_date, expression=utils.END_OF_TIME_EXPRESSION
+        )
 
         # Attach the due amount calculation schedule to the Min Repayment and Interest only loans.
-        scheduled_events.update(due_amount_calculation.scheduled_events(vault, account_opening_datetime))
+        scheduled_events.update(
+            due_amount_calculation.scheduled_events(vault, account_opening_datetime)
+        )
 
     return scheduled_events
 
 
-def set_time_from_due_amount_parameter(vault: SmartContractVault, from_datetime: datetime) -> datetime:
+def set_time_from_due_amount_parameter(
+    vault: SmartContractVault, from_datetime: datetime
+) -> datetime:
     return _set_datetime_from_parameter(
         vault=vault,
         parameter_prefix=due_amount_calculation.DUE_AMOUNT_CALCULATION_PREFIX,
@@ -168,7 +189,9 @@ def set_time_from_due_amount_parameter(vault: SmartContractVault, from_datetime:
     )
 
 
-def _set_datetime_from_parameter(vault: SmartContractVault, parameter_prefix: str, from_datetime: datetime) -> datetime:
+def _set_datetime_from_parameter(
+    vault: SmartContractVault, parameter_prefix: str, from_datetime: datetime
+) -> datetime:
     """
     replaces a datetime with the hours, minutes, and seconds set from a parameter config
 
@@ -199,7 +222,9 @@ def update_balloon_payment_schedule(
     """
     balloon_payment_delta_days = _get_balloon_payment_delta_days(vault=vault)
     balloon_payment_time = execution_timestamp + relativedelta(days=balloon_payment_delta_days)
-    balloon_payment_time = set_time_from_due_amount_parameter(vault=vault, from_datetime=balloon_payment_time)
+    balloon_payment_time = set_time_from_due_amount_parameter(
+        vault=vault, from_datetime=balloon_payment_time
+    )
     schedule_expr = utils.one_off_schedule_expression(balloon_payment_time)
     return [
         UpdateAccountEventTypeDirective(
@@ -263,19 +288,25 @@ def schedule_logic(
     postings: list[Posting] = []
     customer_account = vault.account_id
     effective_datetime: datetime = hook_arguments.effective_datetime
-    amortisation_method = utils.get_parameter(vault=vault, name="amortisation_method", is_union=True)
+    amortisation_method = utils.get_parameter(
+        vault=vault, name="amortisation_method", is_union=True
+    )
 
     # Not a valid balloon loan
     if not is_balloon_loan(amortisation_method=amortisation_method):
         return []
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
 
-    current_principal = due_amount_calculation.get_principal(balances=balances, denomination=denomination)
+    current_principal = due_amount_calculation.get_principal(
+        balances=balances, denomination=denomination
+    )
 
     postings += due_amount_calculation.transfer_principal_due(
         customer_account=customer_account,
@@ -333,7 +364,9 @@ def get_expected_balloon_payment_amount(
 
     If the interest rate or the EMI is not calculated yet then return 0.
     """
-    amortisation_method = utils.get_parameter(vault=vault, name="amortisation_method", is_union=True)
+    amortisation_method = utils.get_parameter(
+        vault=vault, name="amortisation_method", is_union=True
+    )
 
     principal = utils.balance_at_coordinates(
         balances=balances,
@@ -341,7 +374,9 @@ def get_expected_balloon_payment_amount(
         denomination=utils.get_parameter(vault=vault, name="denomination"),
     )
 
-    if no_repayment.is_no_repayment_loan(amortisation_method=amortisation_method) or interest_only.is_interest_only_loan(amortisation_method=amortisation_method):
+    if no_repayment.is_no_repayment_loan(
+        amortisation_method=amortisation_method
+    ) or interest_only.is_interest_only_loan(amortisation_method=amortisation_method):
         # Applies a bugfix for when decimal is returned as Decimal("-0")
         if principal == Decimal("0.00"):
             return Decimal("0.00")
@@ -349,7 +384,9 @@ def get_expected_balloon_payment_amount(
 
     elif minimum_repayment.is_minimum_repayment_loan(amortisation_method=amortisation_method):
         # it is therefore a minimum repayment balloon loan
-        balloon_payment_amount = utils.get_parameter(vault=vault, name=PARAM_BALLOON_PAYMENT_AMOUNT, is_optional=True)
+        balloon_payment_amount = utils.get_parameter(
+            vault=vault, name=PARAM_BALLOON_PAYMENT_AMOUNT, is_optional=True
+        )
         emi = utils.get_parameter(vault=vault, name=PARAM_BALLOON_EMI_AMOUNT, is_optional=True)
         if balloon_payment_amount is not None:
             # we do not allow overpayments for minimum repayment the balloon payment
@@ -369,9 +406,13 @@ def get_expected_balloon_payment_amount(
                 )
             )
 
-            monthly_interest_rate = interest_rate_feature.get_monthly_interest_rate(vault=vault, effective_datetime=effective_datetime)
+            monthly_interest_rate = interest_rate_feature.get_monthly_interest_rate(
+                vault=vault, effective_datetime=effective_datetime
+            )
 
-            application_precision = int(utils.get_parameter(vault=vault, name="application_precision"))
+            application_precision = int(
+                utils.get_parameter(vault=vault, name="application_precision")
+            )
             return calculate_lump_sum(
                 emi=emi,
                 principal=principal,
@@ -383,7 +424,9 @@ def get_expected_balloon_payment_amount(
     return Decimal("0")
 
 
-def calculate_lump_sum(emi: Decimal, principal: Decimal, rate: Decimal, terms: int, precision: int = 2) -> Decimal:
+def calculate_lump_sum(
+    emi: Decimal, principal: Decimal, rate: Decimal, terms: int, precision: int = 2
+) -> Decimal:
     """
      Amortisation Formula:
         EMI = (P-(L/(1+R)^(N)))*R*(((1+R)^N)/((1+R)^N-1))
@@ -409,9 +452,13 @@ def update_no_repayment_balloon_schedule(
     will return the updated balloon payment schedule if the term length were ever to change
     """
 
-    amortisation_method = utils.get_parameter(vault=vault, name="amortisation_method", is_union=True)
+    amortisation_method = utils.get_parameter(
+        vault=vault, name="amortisation_method", is_union=True
+    )
 
-    _is_no_repayment_loan = no_repayment.is_no_repayment_loan(amortisation_method=amortisation_method)
+    _is_no_repayment_loan = no_repayment.is_no_repayment_loan(
+        amortisation_method=amortisation_method
+    )
     if not _is_no_repayment_loan:
         return {}
 
@@ -424,14 +471,21 @@ def update_no_repayment_balloon_schedule(
     # Parameters will reflect the term change in Conversion 1 leading to
     # a 36 term after multiple conversions
 
-    term_length = utils.get_parameter(vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT)
+    term_length = utils.get_parameter(
+        vault=vault, name=lending_parameters.PARAM_TOTAL_REPAYMENT_COUNT
+    )
 
     account_opening_time = vault.get_account_creation_datetime()
     balloon_payment_delta_days = _get_balloon_payment_delta_days(vault=vault)
-    balloon_payment_datetime = set_time_from_due_amount_parameter(vault=vault, from_datetime=account_opening_time)
+    balloon_payment_datetime = set_time_from_due_amount_parameter(
+        vault=vault, from_datetime=account_opening_time
+    )
     return {
         BALLOON_PAYMENT_EVENT: ScheduledEvent(
             # start time is not defined as this is overriden by the system to the conversion time.
-            expression=utils.one_off_schedule_expression(balloon_payment_datetime + relativedelta(months=term_length, days=balloon_payment_delta_days)),
+            expression=utils.one_off_schedule_expression(
+                balloon_payment_datetime
+                + relativedelta(months=term_length, days=balloon_payment_delta_days)
+            ),
         )
     }

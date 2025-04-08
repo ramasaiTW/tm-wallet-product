@@ -148,14 +148,22 @@ class ValidateCreditLimitTest(FeatureTest):
         mock_get_available_balance: MagicMock,
     ):
         main_vault = self.create_mock(
-            balances_observation_fetchers_mapping={credit_limit.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("balances_observation")},
+            balances_observation_fetchers_mapping={
+                credit_limit.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation(
+                    "balances_observation"
+                )
+            },
         )
         loans = sentinel.loans
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("101"))
 
         mock_get_balance_default_dicts_for_supervisees.return_value = sentinel.balance_default_dicts
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.main_vault_parameters)
-        mock_calculate_associated_original_principal.return_value = sentinel.associated_original_principal
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.main_vault_parameters
+        )
+        mock_calculate_associated_original_principal.return_value = (
+            sentinel.associated_original_principal
+        )
         mock_calculate_unassociated_principal.return_value = sentinel.unassociated_principal
         mock_calculate_available_credit_limit.return_value = Decimal("100")
         mock_get_available_balance.return_value = Decimal("101")
@@ -200,14 +208,22 @@ class ValidateCreditLimitTest(FeatureTest):
         mock_get_available_balance: MagicMock,
     ):
         main_vault = self.create_mock(
-            balances_observation_fetchers_mapping={credit_limit.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("balances_observation")},
+            balances_observation_fetchers_mapping={
+                credit_limit.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation(
+                    "balances_observation"
+                )
+            },
         )
         loans = sentinel.loans
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("99"))
 
         mock_get_balance_default_dicts_for_supervisees.return_value = sentinel.balance_default_dicts
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.main_vault_parameters)
-        mock_calculate_associated_original_principal.return_value = sentinel.associated_original_principal
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.main_vault_parameters
+        )
+        mock_calculate_associated_original_principal.return_value = (
+            sentinel.associated_original_principal
+        )
         mock_calculate_unassociated_principal.return_value = sentinel.unassociated_principal
         mock_calculate_available_credit_limit.return_value = Decimal("100")
         mock_get_available_balance.return_value = Decimal("99")
@@ -247,14 +263,22 @@ class ValidateCreditLimitTest(FeatureTest):
         mock_get_available_balance: MagicMock,
     ):
         main_vault = self.create_mock(
-            balances_observation_fetchers_mapping={credit_limit.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("balances_observation")},
+            balances_observation_fetchers_mapping={
+                credit_limit.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation(
+                    "balances_observation"
+                )
+            },
         )
         loans = sentinel.loans
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("100"))
 
         mock_get_balance_default_dicts_for_supervisees.return_value = sentinel.balance_default_dicts
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.main_vault_parameters)
-        mock_calculate_associated_original_principal.return_value = sentinel.associated_original_principal
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.main_vault_parameters
+        )
+        mock_calculate_associated_original_principal.return_value = (
+            sentinel.associated_original_principal
+        )
         mock_calculate_unassociated_principal.return_value = sentinel.unassociated_principal
         mock_calculate_available_credit_limit.return_value = Decimal("100")
         mock_get_available_balance.return_value = Decimal("100")
@@ -288,30 +312,55 @@ class ValidateCreditLimitTest(FeatureTest):
 @patch.object(credit_limit.utils, "sum_balances")
 @patch.object(credit_limit.utils, "get_parameter")
 class ValidateCreditLimitParameterChangeTest(FeatureTest):
-    def test_rejects_credit_limit_below_total_outstanding_principal(self, mock_get_parameter: MagicMock, mock_sum_balances: MagicMock):
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={credit_limit.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("balances_observation")})
+    def test_rejects_credit_limit_below_total_outstanding_principal(
+        self, mock_get_parameter: MagicMock, mock_sum_balances: MagicMock
+    ):
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                credit_limit.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation(
+                    "balances_observation"
+                )
+            }
+        )
         mock_sum_balances.return_value = Decimal("100")  # this is the total outstanding principal
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": sentinel.denomination}
+        )
 
-        result = credit_limit.validate_credit_limit_parameter_change(vault=mock_vault, proposed_credit_limit=Decimal("99.99"))
+        result = credit_limit.validate_credit_limit_parameter_change(
+            vault=mock_vault, proposed_credit_limit=Decimal("99.99")
+        )
 
         expected = Rejection(
-            message="Cannot set proposed credit limit 99.99 " "to a value below the total outstanding debt of 100",
+            message="Cannot set proposed credit limit 99.99 "
+            "to a value below the total outstanding debt of 100",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
         self.assertEqual(result, expected)
-        mock_get_parameter.assert_called_once_with(vault=mock_vault, name=credit_limit.PARAM_DENOMINATION)
+        mock_get_parameter.assert_called_once_with(
+            vault=mock_vault, name=credit_limit.PARAM_DENOMINATION
+        )
         mock_sum_balances.assert_called_once_with(
             balances=sentinel.balances_balances_observation,
             denomination=sentinel.denomination,
             addresses=credit_limit.addresses.ALL_PRINCIPAL,
         )
 
-    def test_accepts_credit_limit_equal_to_total_outstanding_principal(self, mock_get_parameter: MagicMock, mock_sum_balances: MagicMock):
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={credit_limit.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("balances_observation")})
+    def test_accepts_credit_limit_equal_to_total_outstanding_principal(
+        self, mock_get_parameter: MagicMock, mock_sum_balances: MagicMock
+    ):
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                credit_limit.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation(
+                    "balances_observation"
+                )
+            }
+        )
         mock_sum_balances.return_value = Decimal("100")  # this is the total outstanding principal
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={credit_limit.PARAM_DENOMINATION: sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={credit_limit.PARAM_DENOMINATION: sentinel.denomination}
+        )
 
         result = credit_limit.validate_credit_limit_parameter_change(
             vault=mock_vault,
@@ -319,14 +368,18 @@ class ValidateCreditLimitParameterChangeTest(FeatureTest):
         )
 
         self.assertIsNone(result)
-        mock_get_parameter.assert_called_once_with(vault=mock_vault, name=credit_limit.PARAM_DENOMINATION)
+        mock_get_parameter.assert_called_once_with(
+            vault=mock_vault, name=credit_limit.PARAM_DENOMINATION
+        )
         mock_sum_balances.assert_called_once_with(
             balances=sentinel.balances_balances_observation,
             denomination=sentinel.denomination,
             addresses=credit_limit.addresses.ALL_PRINCIPAL,
         )
 
-    def test_accept_credit_limit_larger_than_total_outstanding_principal_with_non_default_arguments(self, mock_get_parameter: MagicMock, mock_sum_balances: MagicMock):
+    def test_accept_credit_limit_larger_than_total_outstanding_principal_with_non_default_arguments(
+        self, mock_get_parameter: MagicMock, mock_sum_balances: MagicMock
+    ):
         mock_sum_balances.return_value = Decimal("100")  # this is the total outstanding principal
 
         result = credit_limit.validate_credit_limit_parameter_change(

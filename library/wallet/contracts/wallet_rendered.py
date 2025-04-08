@@ -69,39 +69,55 @@ supported_denominations = ["GBP", "SGD", "USD"]
 
 
 @requires(parameters=True)
-def activation_hook(vault: SmartContractVault, hook_arguments: ActivationHookArguments) -> ActivationHookResult | None:
+def activation_hook(
+    vault: SmartContractVault, hook_arguments: ActivationHookArguments
+) -> ActivationHookResult | None:
     effective_datetime = hook_arguments.effective_datetime
     scheduled_events: dict[str, ScheduledEvent] = {}
-    scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault))
+    scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(
+        start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
+    )
     return ActivationHookResult(scheduled_events_return_value=scheduled_events)
 
 
 @requires(parameters=True)
 @fetch_account_data(balances=["EFFECTIVE_FETCHER"])
-def conversion_hook(vault: SmartContractVault, hook_arguments: ConversionHookArguments) -> ConversionHookResult | None:
+def conversion_hook(
+    vault: SmartContractVault, hook_arguments: ConversionHookArguments
+) -> ConversionHookResult | None:
     effective_datetime = hook_arguments.effective_datetime
     scheduled_events = hook_arguments.existing_schedules
     if not scheduled_events:
-        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault))
-    return ConversionHookResult(scheduled_events_return_value=scheduled_events, posting_instructions_directives=[])
+        scheduled_events[ZERO_OUT_DAILY_SPEND_EVENT] = ScheduledEvent(
+            start_datetime=effective_datetime, expression=_get_zero_out_daily_spend_schedule(vault)
+        )
+    return ConversionHookResult(
+        scheduled_events_return_value=scheduled_events, posting_instructions_directives=[]
+    )
 
 
 @requires(parameters=True)
 @fetch_account_data(balances=["live_balances_bof"])
-def deactivation_hook(vault: SmartContractVault, hook_arguments: DeactivationHookArguments) -> DeactivationHookResult | None:
+def deactivation_hook(
+    vault: SmartContractVault, hook_arguments: DeactivationHookArguments
+) -> DeactivationHookResult | None:
     zero_out_daily_spend_directives = _get_zero_out_daily_spend_instructions(
         vault,
         effective_datetime=hook_arguments.effective_datetime,
         balance_fetcher=fetchers_LIVE_BALANCES_BOF_ID,
     )
     if zero_out_daily_spend_directives:
-        return DeactivationHookResult(posting_instructions_directives=zero_out_daily_spend_directives)
+        return DeactivationHookResult(
+            posting_instructions_directives=zero_out_daily_spend_directives
+        )
     return None
 
 
 @requires(parameters=True)
 @fetch_account_data(balances=["live_balances_bof"])
-def post_parameter_change_hook(vault: SmartContractVault, hook_arguments: PostParameterChangeHookArguments) -> PostParameterChangeHookResult | None:
+def post_parameter_change_hook(
+    vault: SmartContractVault, hook_arguments: PostParameterChangeHookArguments
+) -> PostParameterChangeHookResult | None:
     """
     Checks if the customer or bank wallet limit has been lowered and sweep
     to the nominated account if so.
@@ -112,8 +128,12 @@ def post_parameter_change_hook(vault: SmartContractVault, hook_arguments: PostPa
     new_limit: Decimal = updated_parameter_values.get(PARAM_CUSTOMER_WALLET_LIMIT, old_limit)
     if old_limit > new_limit:
         denomination = utils_get_parameter(vault, name=PARAM_DENOMINATION)
-        live_balances = vault.get_balances_observation(fetcher_id=fetchers_LIVE_BALANCES_BOF_ID).balances
-        current_balance = utils_get_available_balance(balances=live_balances, denomination=denomination)
+        live_balances = vault.get_balances_observation(
+            fetcher_id=fetchers_LIVE_BALANCES_BOF_ID
+        ).balances
+        current_balance = utils_get_available_balance(
+            balances=live_balances, denomination=denomination
+        )
         if current_balance > new_limit:
             delta = current_balance - new_limit
             nominated_account = utils_get_parameter(vault, name=PARAM_NOMINATED_ACCOUNT)
@@ -133,7 +153,9 @@ def post_parameter_change_hook(vault: SmartContractVault, hook_arguments: PostPa
 
 @requires(parameters=True, flags=True)
 @fetch_account_data(balances=["live_balances_bof"])
-def post_posting_hook(vault: SmartContractVault, hook_arguments: PostPostingHookArguments) -> PostPostingHookResult | None:
+def post_posting_hook(
+    vault: SmartContractVault, hook_arguments: PostPostingHookArguments
+) -> PostPostingHookResult | None:
     """
     If the posting is a Spend, duplicates the spending to TODAYS_SPENDING to keep track
     of the remaining spending limit.
@@ -146,12 +168,21 @@ def post_posting_hook(vault: SmartContractVault, hook_arguments: PostPostingHook
     effective_datetime = hook_arguments.effective_datetime
     denomination = utils_get_parameter(vault, name=PARAM_DENOMINATION)
     postings_balances = [posting.balances() for posting in postings]
-    postings_delta = Decimal(sum((utils_get_available_balance(balances=balances, denomination=denomination) for balances in postings_balances)))
+    postings_delta = Decimal(
+        sum(
+            (
+                utils_get_available_balance(balances=balances, denomination=denomination)
+                for balances in postings_balances
+            )
+        )
+    )
     auto_top_up_status = vault.get_flag_timeseries(flag=AUTO_TOP_UP_FLAG).latest()
     nominated_account = utils_get_parameter(vault, name=PARAM_NOMINATED_ACCOUNT)
     balances = vault.get_balances_observation(fetcher_id=fetchers_LIVE_BALANCES_BOF_ID).balances
     current_balance = utils_get_available_balance(balances=balances, denomination=denomination)
-    release_and_decreased_auth_amount = _get_release_and_decreased_auth_amount(postings, denomination)
+    release_and_decreased_auth_amount = _get_release_and_decreased_auth_amount(
+        postings, denomination
+    )
     posting_ins = []
     if current_balance < 0 and auto_top_up_status:
         amount_required_from_nominated = abs(current_balance)
@@ -163,9 +194,17 @@ def post_posting_hook(vault: SmartContractVault, hook_arguments: PostPostingHook
         )
     force_override = any(extract_bool_from_postings(postings, "force_override"))
     refund = any(extract_bool_from_postings(postings, "refund"))
-    transfer_to_nominated_acct = any(extract_bool_from_postings(postings, "withdrawal_to_nominated_account"))
-    if postings_delta < 0 and (not (force_override or transfer_to_nominated_acct)) or (postings_delta > 0 and refund):
-        posting_ins += _update_tracked_spend(account_id=vault.account_id, amount=postings_delta, denomination=denomination)
+    transfer_to_nominated_acct = any(
+        extract_bool_from_postings(postings, "withdrawal_to_nominated_account")
+    )
+    if (
+        postings_delta < 0
+        and (not (force_override or transfer_to_nominated_acct))
+        or (postings_delta > 0 and refund)
+    ):
+        posting_ins += _update_tracked_spend(
+            account_id=vault.account_id, amount=postings_delta, denomination=denomination
+        )
     elif postings_delta > 0 and release_and_decreased_auth_amount > 0:
         posting_ins += _update_tracked_spend(
             account_id=vault.account_id,
@@ -184,19 +223,29 @@ def post_posting_hook(vault: SmartContractVault, hook_arguments: PostPostingHook
                 nominated_account=nominated_account,
             )
     if posting_ins:
-        return PostPostingHookResult(posting_instructions_directives=[PostingInstructionsDirective(posting_instructions=posting_ins, value_datetime=effective_datetime)])
+        return PostPostingHookResult(
+            posting_instructions_directives=[
+                PostingInstructionsDirective(
+                    posting_instructions=posting_ins, value_datetime=effective_datetime
+                )
+            ]
+        )
     return None
 
 
 @requires(parameters=True, flags=True)
 @fetch_account_data(balances=["live_balances_bof"])
-def pre_posting_hook(vault: SmartContractVault, hook_arguments: PrePostingHookArguments) -> PrePostingHookResult | None:
+def pre_posting_hook(
+    vault: SmartContractVault, hook_arguments: PrePostingHookArguments
+) -> PrePostingHookResult | None:
     if utils_is_force_override(posting_instructions=hook_arguments.posting_instructions):
         return None
     posting_instructions: utils_PostingInstructionListAlias = hook_arguments.posting_instructions
     spending_limit = utils_get_parameter(vault, name=PARAM_SPENDING_LIMIT)
     default_denomination = utils_get_parameter(vault, name=PARAM_DENOMINATION)
-    account_balances = vault.get_balances_observation(fetcher_id=fetchers_LIVE_BALANCES_BOF_ID).balances
+    account_balances = vault.get_balances_observation(
+        fetcher_id=fetchers_LIVE_BALANCES_BOF_ID
+    ).balances
     todays_spending_balance_coordinate = BalanceCoordinate(
         account_address=TODAY_SPENDING,
         asset=DEFAULT_ASSET,
@@ -205,10 +254,23 @@ def pre_posting_hook(vault: SmartContractVault, hook_arguments: PrePostingHookAr
     )
     todays_spending = account_balances[todays_spending_balance_coordinate].net
     postings_balances = [posting.balances() for posting in posting_instructions]
-    proposed_spend = sum((utils_get_available_balance(balances=balances, denomination=default_denomination) for balances in postings_balances))
+    proposed_spend = sum(
+        (
+            utils_get_available_balance(balances=balances, denomination=default_denomination)
+            for balances in postings_balances
+        )
+    )
     auto_top_up_status = vault.get_flag_timeseries(flag=AUTO_TOP_UP_FLAG).latest()
-    additional_denominations = utils_get_parameter(vault, name=PARAM_ADDITIONAL_DENOMINATIONS, is_json=True)
-    posting_denominations = set((coord.denomination for posting in posting_instructions for coord in posting.balances().keys()))
+    additional_denominations = utils_get_parameter(
+        vault, name=PARAM_ADDITIONAL_DENOMINATIONS, is_json=True
+    )
+    posting_denominations = set(
+        (
+            coord.denomination
+            for posting in posting_instructions
+            for coord in posting.balances().keys()
+        )
+    )
     allowed_denominations = additional_denominations + [default_denomination]
     unallowed_denominations = posting_denominations.difference(allowed_denominations)
     if unallowed_denominations:
@@ -221,7 +283,11 @@ def pre_posting_hook(vault: SmartContractVault, hook_arguments: PrePostingHookAr
     if any(extract_bool_from_postings(posting_instructions, "withdrawal_override")):
         return None
     if proposed_spend < 0:
-        if abs(proposed_spend) + todays_spending > spending_limit and (not any(extract_value_from_postings(posting_instructions, "withdrawal_to_nominated_account"))):
+        if abs(proposed_spend) + todays_spending > spending_limit and (
+            not any(
+                extract_value_from_postings(posting_instructions, "withdrawal_to_nominated_account")
+            )
+        ):
             return PrePostingHookResult(
                 rejection=Rejection(
                     message="Transaction would exceed daily spending limit",
@@ -229,8 +295,15 @@ def pre_posting_hook(vault: SmartContractVault, hook_arguments: PrePostingHookAr
                 )
             )
     for denomination in posting_denominations:
-        available_balance = utils_get_available_balance(balances=account_balances, denomination=denomination)
-        proposed_delta = sum((utils_get_available_balance(balances=balances, denomination=denomination) for balances in postings_balances))
+        available_balance = utils_get_available_balance(
+            balances=account_balances, denomination=denomination
+        )
+        proposed_delta = sum(
+            (
+                utils_get_available_balance(balances=balances, denomination=denomination)
+                for balances in postings_balances
+            )
+        )
         if 0 > proposed_delta and 0 > proposed_delta + available_balance:
             if denomination == default_denomination and (not auto_top_up_status):
                 return PrePostingHookResult(
@@ -242,7 +315,8 @@ def pre_posting_hook(vault: SmartContractVault, hook_arguments: PrePostingHookAr
             elif denomination != default_denomination:
                 return PrePostingHookResult(
                     rejection=Rejection(
-                        message=f"Postings total {denomination} {proposed_delta}, " f"which exceeds the available balance of {denomination} {available_balance}",
+                        message=f"Postings total {denomination} {proposed_delta}, "
+                        f"which exceeds the available balance of {denomination} {available_balance}",
                         reason_code=RejectionReason.INSUFFICIENT_FUNDS,
                     )
                 )
@@ -251,7 +325,9 @@ def pre_posting_hook(vault: SmartContractVault, hook_arguments: PrePostingHookAr
 
 @requires(event_type="ZERO_OUT_DAILY_SPEND", parameters=True)
 @fetch_account_data(event_type="ZERO_OUT_DAILY_SPEND", balances=["EFFECTIVE_FETCHER"])
-def scheduled_event_hook(vault: SmartContractVault, hook_arguments: ScheduledEventHookArguments) -> ScheduledEventHookResult | None:
+def scheduled_event_hook(
+    vault: SmartContractVault, hook_arguments: ScheduledEventHookArguments
+) -> ScheduledEventHookResult | None:
     effective_datetime = hook_arguments.effective_datetime
     pi_directives: list[PostingInstructionsDirective] = []
     if hook_arguments.event_type == ZERO_OUT_DAILY_SPEND_EVENT:
@@ -272,16 +348,28 @@ def scheduled_event_hook(vault: SmartContractVault, hook_arguments: ScheduledEve
 # md5:dcba39f23bd6808d7c243d6f0f8ff8d0
 
 fetchers_EFFECTIVE_OBSERVATION_FETCHER_ID = "EFFECTIVE_FETCHER"
-fetchers_EFFECTIVE_OBSERVATION_FETCHER = BalancesObservationFetcher(fetcher_id=fetchers_EFFECTIVE_OBSERVATION_FETCHER_ID, at=DefinedDateTime.EFFECTIVE_DATETIME)
+fetchers_EFFECTIVE_OBSERVATION_FETCHER = BalancesObservationFetcher(
+    fetcher_id=fetchers_EFFECTIVE_OBSERVATION_FETCHER_ID, at=DefinedDateTime.EFFECTIVE_DATETIME
+)
 fetchers_LIVE_BALANCES_BOF_ID = "live_balances_bof"
-fetchers_LIVE_BALANCES_BOF = BalancesObservationFetcher(fetcher_id=fetchers_LIVE_BALANCES_BOF_ID, at=DefinedDateTime.LIVE)
+fetchers_LIVE_BALANCES_BOF = BalancesObservationFetcher(
+    fetcher_id=fetchers_LIVE_BALANCES_BOF_ID, at=DefinedDateTime.LIVE
+)
 
 # Objects below have been imported from:
 #    library/features/common/utils.py
 # md5:f40b03d6c37bca725037346032ef0728
 
 utils_PostingInstructionTypeAlias = (
-    AuthorisationAdjustment | CustomInstruction | InboundAuthorisation | InboundHardSettlement | OutboundAuthorisation | OutboundHardSettlement | Release | Settlement | Transfer
+    AuthorisationAdjustment
+    | CustomInstruction
+    | InboundAuthorisation
+    | InboundHardSettlement
+    | OutboundAuthorisation
+    | OutboundHardSettlement
+    | Release
+    | Settlement
+    | Transfer
 )
 utils_PostingInstructionListAlias = list[utils_PostingInstructionTypeAlias]
 
@@ -337,12 +425,21 @@ def utils_get_parameter(
     return parameter
 
 
-def utils_is_key_in_instruction_details(*, key: str, posting_instructions: utils_PostingInstructionListAlias) -> bool:
-    return all((utils_str_to_bool(posting_instruction.instruction_details.get(key, "false")) for posting_instruction in posting_instructions))
+def utils_is_key_in_instruction_details(
+    *, key: str, posting_instructions: utils_PostingInstructionListAlias
+) -> bool:
+    return all(
+        (
+            utils_str_to_bool(posting_instruction.instruction_details.get(key, "false"))
+            for posting_instruction in posting_instructions
+        )
+    )
 
 
 def utils_is_force_override(posting_instructions: utils_PostingInstructionListAlias) -> bool:
-    return utils_is_key_in_instruction_details(key="force_override", posting_instructions=posting_instructions)
+    return utils_is_key_in_instruction_details(
+        key="force_override", posting_instructions=posting_instructions
+    )
 
 
 def utils_get_available_balance(
@@ -368,8 +465,12 @@ def utils_get_available_balance(
     :param asset: balance asset
     :return: sum of committed and pending out balance coordinates
     """
-    committed_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
-    pending_out_coordinate = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT)
+    committed_coordinate = BalanceCoordinate(
+        account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
+    )
+    pending_out_coordinate = BalanceCoordinate(
+        account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT
+    )
     return balances[committed_coordinate].net + balances[pending_out_coordinate].net
 
 
@@ -382,7 +483,9 @@ TODAY_SPENDING = "TODAY_SPENDING"
 LIMIT_SHAPE_MIN_VALUE = 0
 LIMIT_SHAPE_MAX_VALUE = 2000
 LIMIT_SHAPE_STEP_VALUE = Decimal("0.01")
-LimitShape = NumberShape(min_value=LIMIT_SHAPE_MIN_VALUE, max_value=LIMIT_SHAPE_MAX_VALUE, step=LIMIT_SHAPE_STEP_VALUE)
+LimitShape = NumberShape(
+    min_value=LIMIT_SHAPE_MIN_VALUE, max_value=LIMIT_SHAPE_MAX_VALUE, step=LIMIT_SHAPE_STEP_VALUE
+)
 AUTO_TOP_UP_FLAG = "&{AUTO_TOP_UP_WALLET}"
 PARAM_CUSTOMER_WALLET_LIMIT = "customer_wallet_limit"
 PARAM_DENOMINATION = "denomination"
@@ -466,7 +569,11 @@ parameters = [
 ]
 ZERO_OUT_DAILY_SPEND_EVENT = "ZERO_OUT_DAILY_SPEND"
 ZERO_OUT_DAILY_SPEND_AST = "WALLET_ZERO_OUT_DAILY_SPEND_AST"
-event_types = [SmartContractEventType(name=ZERO_OUT_DAILY_SPEND_EVENT, scheduler_tag_ids=[ZERO_OUT_DAILY_SPEND_AST])]
+event_types = [
+    SmartContractEventType(
+        name=ZERO_OUT_DAILY_SPEND_EVENT, scheduler_tag_ids=[ZERO_OUT_DAILY_SPEND_AST]
+    )
+]
 data_fetchers = [fetchers_LIVE_BALANCES_BOF, fetchers_EFFECTIVE_OBSERVATION_FETCHER]
 
 
@@ -483,7 +590,9 @@ def _get_zero_out_daily_spend_schedule(vault: Any) -> ScheduleExpression:
     return ScheduleExpression(hour=schedule_hour, minute=schedule_minute, second=schedule_second)
 
 
-def _get_zero_out_daily_spend_instructions(vault: Any, balance_fetcher: str, effective_datetime: datetime) -> list[PostingInstructionsDirective]:
+def _get_zero_out_daily_spend_instructions(
+    vault: Any, balance_fetcher: str, effective_datetime: datetime
+) -> list[PostingInstructionsDirective]:
     """
     Resets TODAYS_SPENDING back to zero.
 
@@ -492,7 +601,11 @@ def _get_zero_out_daily_spend_instructions(vault: Any, balance_fetcher: str, eff
     :return: list of PostingInstructionsDirective objects
     """
     denomination: str = utils_get_parameter(vault=vault, name=PARAM_DENOMINATION)
-    todays_spending = vault.get_balances_observation(fetcher_id=balance_fetcher).balances[TODAY_SPENDING, DEFAULT_ASSET, denomination, Phase.COMMITTED].net
+    todays_spending = (
+        vault.get_balances_observation(fetcher_id=balance_fetcher)
+        .balances[TODAY_SPENDING, DEFAULT_ASSET, denomination, Phase.COMMITTED]
+        .net
+    )
     if todays_spending <= 0:
         return []
     posting_instructions = _update_tracked_spend(
@@ -510,27 +623,42 @@ def _get_zero_out_daily_spend_instructions(vault: Any, balance_fetcher: str, eff
     ]
 
 
-def _get_release_and_decreased_auth_amount(postings: utils_PostingInstructionListAlias, denomination: str) -> Decimal:
+def _get_release_and_decreased_auth_amount(
+    postings: utils_PostingInstructionListAlias, denomination: str
+) -> Decimal:
     """
     Calculate the impact to available balance due to releases and decreased auth amounts
     """
     total = Decimal(0)
     for posting in postings:
         delta = utils_get_available_balance(balances=posting.balances(), denomination=denomination)
-        if posting.type == PostingInstructionType.AUTHORISATION_ADJUSTMENT and delta > 0 or posting.type == PostingInstructionType.RELEASE:
+        if (
+            posting.type == PostingInstructionType.AUTHORISATION_ADJUSTMENT
+            and delta > 0
+            or posting.type == PostingInstructionType.RELEASE
+        ):
             total += delta
     return total
 
 
-def extract_bool_from_postings(postings: utils_PostingInstructionListAlias, instruction_details_key: str) -> list[bool]:
-    return [utils_str_to_bool(posting.instruction_details.get(instruction_details_key, "false")) for posting in postings]
+def extract_bool_from_postings(
+    postings: utils_PostingInstructionListAlias, instruction_details_key: str
+) -> list[bool]:
+    return [
+        utils_str_to_bool(posting.instruction_details.get(instruction_details_key, "false"))
+        for posting in postings
+    ]
 
 
-def extract_value_from_postings(postings: utils_PostingInstructionListAlias, instruction_details_key: str) -> list[str]:
+def extract_value_from_postings(
+    postings: utils_PostingInstructionListAlias, instruction_details_key: str
+) -> list[str]:
     return [posting.instruction_details.get(instruction_details_key, "") for posting in postings]
 
 
-def _sweep_excess_funds(account_id: str, amount: Decimal, denomination: str, nominated_account: str) -> list[CustomInstruction]:
+def _sweep_excess_funds(
+    account_id: str, amount: Decimal, denomination: str, nominated_account: str
+) -> list[CustomInstruction]:
     """
     Create postings to sweep excess funds to nominated account.
     Amount is expected to be positive.
@@ -571,7 +699,9 @@ def _sweep_excess_funds(account_id: str, amount: Decimal, denomination: str, nom
     return [custom_instruction]
 
 
-def _update_tracked_spend(account_id: str, amount: Decimal, denomination: str, zero_out_daily_spend: bool = False) -> list[CustomInstruction]:
+def _update_tracked_spend(
+    account_id: str, amount: Decimal, denomination: str, zero_out_daily_spend: bool = False
+) -> list[CustomInstruction]:
     """
     Create postings to update the spend tracking balance.
 
@@ -608,13 +738,17 @@ def _update_tracked_spend(account_id: str, amount: Decimal, denomination: str, z
     ]
     custom_instruction = CustomInstruction(
         postings=postings,
-        instruction_details={"event_type": "ZERO_OUT_DAILY_SPENDING"} if zero_out_daily_spend else {"description": "UPDATING_TRACKED_SPEND"},
+        instruction_details={"event_type": "ZERO_OUT_DAILY_SPENDING"}
+        if zero_out_daily_spend
+        else {"description": "UPDATING_TRACKED_SPEND"},
         override_all_restrictions=True if zero_out_daily_spend else None,
     )
     return [custom_instruction]
 
 
-def _top_up_balance(account_id: str, amount: Decimal, denomination: str, nominated_account: str) -> list[CustomInstruction]:
+def _top_up_balance(
+    account_id: str, amount: Decimal, denomination: str, nominated_account: str
+) -> list[CustomInstruction]:
     """
     Create postings to top up balance from nominated account.
     Amount is expected to be positive.
@@ -648,7 +782,9 @@ def _top_up_balance(account_id: str, amount: Decimal, denomination: str, nominat
     ]
     custom_instruction = CustomInstruction(
         postings=postings,
-        instruction_details={"description": f"Auto top up transferred from nominated account:{amount}"},
+        instruction_details={
+            "description": f"Auto top up transferred from nominated account:{amount}"
+        },
         override_all_restrictions=None,
     )
     return [custom_instruction]

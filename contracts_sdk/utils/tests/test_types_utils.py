@@ -60,7 +60,9 @@ class PublicTypesUtilsTest(unittest.TestCase):
             yield 1
             yield "hello"
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"ListOfInts item\[1\] expected int but got value 'hello'"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"ListOfInts item\[1\] expected int but got value 'hello'"
+        ):
             ListOfInts(generator())
 
         def generator():
@@ -79,10 +81,14 @@ class PublicTypesUtilsTest(unittest.TestCase):
         self.assertEqual(x[4:], [5, 6, 7])
         self.assertEqual(x[:3], [1, 2, 3])
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"ListOfInts item expected int but got value 'hello'"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"ListOfInts item expected int but got value 'hello'"
+        ):
             x.append("hello")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"ListOfInts item\[1\] expected int but got value 'world'"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"ListOfInts item\[1\] expected int but got value 'world'"
+        ):
             x.extend([8, "world"])
 
         self.assertEqual(x, [1, 2, 3, 4, 5, 6, 7])
@@ -103,13 +109,17 @@ class PublicTypesUtilsTest(unittest.TestCase):
         x[3] = 123
         self.assertEqual(x, [1, 2, 3, 123, 5, 6, 7])
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"ListOfInts item expected int but got value '123'"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"ListOfInts item expected int but got value '123'"
+        ):
             x[3] = "123"
 
         x[3:5] = [123]
         self.assertEqual(x, [1, 2, 3, 123, 6, 7])
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"ListOfInts item expected int but got value 'hmm'"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"ListOfInts item expected int but got value 'hmm'"
+        ):
             x[3:5] = [55555, 0, -323, "hmm", 7]
 
     def test_typed_list_type_check(self):
@@ -127,13 +137,19 @@ class PublicTypesUtilsTest(unittest.TestCase):
             registry.assert_type_name("Any", obj, "")
 
     def test_type_annotation_dict(self):
-        registry.assert_type_name("Dict[int, ListOfInts]", {1: ListOfInts(), 2: ListOfInts([1, 2])}, "")
+        registry.assert_type_name(
+            "Dict[int, ListOfInts]", {1: ListOfInts(), 2: ListOfInts([1, 2])}, ""
+        )
         registry.assert_type_name("Dict[int, ListOfInts]", {}, "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected Dict\[int, ListOfInts\] but got value 'hello'"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected Dict\[int, ListOfInts\] but got value 'hello'"
+        ):
             registry.assert_type_name("Dict[int, ListOfInts]", "hello", "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected Dict\[int, str\] but got value {'5': '5'}"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected Dict\[int, str\] but got value {'5': '5'}"
+        ):
             registry.assert_type_name("Dict[int, str]", {"5": "5"}, "")
 
         with self.assertRaisesRegex(
@@ -146,10 +162,14 @@ class PublicTypesUtilsTest(unittest.TestCase):
         registry.assert_type_name("List[str]", [], "")
         registry.assert_type_name("List[str]", ["hello", "world"], "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected List\[str\] but got value 123"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected List\[str\] but got value 123"
+        ):
             registry.assert_type_name("List[str]", 123, "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected List\[str\] but got value \[123, '456'\]"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected List\[str\] but got value \[123, '456'\]"
+        ):
             registry.assert_type_name("List[str]", [123, "456"], "")
 
         registry.assert_type_name("List[int]", ListOfInts([123, 456]), "")
@@ -160,24 +180,32 @@ class PublicTypesUtilsTest(unittest.TestCase):
         registry.assert_type_name("Optional[ListOfInts]", None, "")
         registry.assert_type_name("Optional[ListOfInts]", ListOfInts([1, 2, 3]), "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected Optional\[int\] but got value 'some string'"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected Optional\[int\] but got value 'some string'"
+        ):
             registry.assert_type_name("Optional[int]", "some string", "")
 
     def test_type_annotation_tuple(self):
         registry.assert_type_name("Tuple[int, str]", (123, "456"), "")
         registry.assert_type_name("Tuple[int, str, List[int]]", (123, "456", [789]), "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected Tuple\[int, str\] but got value \[123, '456'\]"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected Tuple\[int, str\] but got value \[123, '456'\]"
+        ):
             registry.assert_type_name("Tuple[int, str]", [123, "456"], "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected Tuple\[int, str\] but got value 123"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected Tuple\[int, str\] but got value 123"
+        ):
             registry.assert_type_name("Tuple[int, str]", 123, "")
 
     def test_type_annotation_union(self):
         registry.assert_type_name("Union[int, str]", 123, "")
         registry.assert_type_name("Union[int, str]", "123", "")
 
-        with self.assertRaisesRegex(exceptions.StrongTypingError, r"expected Union\[int, str\] but got value 1.23"):
+        with self.assertRaisesRegex(
+            exceptions.StrongTypingError, r"expected Union\[int, str\] but got value 1.23"
+        ):
             registry.assert_type_name("Union[int, str]", 1.23, "")
 
 
@@ -257,8 +285,12 @@ class TestTimeseries(unittest.TestCase):
         ts.append((datetime(year=2020, month=1, day=1, hour=12, minute=0, microsecond=500011), 6))
         ts.append((datetime(year=2020, month=1, day=1, hour=12, minute=0, microsecond=500012), 7))
 
-        at_idx = ts.at(timestamp=datetime(year=2020, month=1, day=1, hour=12, minute=0, microsecond=500010))
-        before_id = ts.before(timestamp=datetime(year=2020, month=1, day=1, hour=12, minute=0, microsecond=500010))
+        at_idx = ts.at(
+            timestamp=datetime(year=2020, month=1, day=1, hour=12, minute=0, microsecond=500010)
+        )
+        before_id = ts.before(
+            timestamp=datetime(year=2020, month=1, day=1, hour=12, minute=0, microsecond=500010)
+        )
 
         self.assertEqual(at_idx, 5)
         self.assertEqual(before_id, 2)
@@ -498,13 +530,17 @@ class PublicTypeValidationHelpersTest(unittest.TestCase):
         items = "not a list"
         with self.assertRaises(exceptions.StrongTypingError) as ex:
             types_utils.get_iterator(items, "list", "argument")
-        self.assertEqual("Expected list of list objects for 'argument', got 'not a list'", str(ex.exception))
+        self.assertEqual(
+            "Expected list of list objects for 'argument', got 'not a list'", str(ex.exception)
+        )
 
     def test_iterator_raises_with_bool(self):
         items = True
         with self.assertRaises(exceptions.StrongTypingError) as ex:
             types_utils.get_iterator(items, "list", "argument")
-        self.assertEqual("Expected list of list objects for 'argument', got 'True'", str(ex.exception))
+        self.assertEqual(
+            "Expected list of list objects for 'argument', got 'True'", str(ex.exception)
+        )
 
     def test_iterator_raises_with_empty_check_if_empty(self):
         items = []
@@ -607,7 +643,9 @@ class PublicTypeValidationHelpersTest(unittest.TestCase):
         item = True
         with self.assertRaises(exceptions.StrongTypingError) as ex:
             types_utils.validate_type(item, (int, str), is_optional=True)
-        self.assertEqual("Expected Union[int, str] if populated, got 'True' of type bool", str(ex.exception))
+        self.assertEqual(
+            "Expected Union[int, str] if populated, got 'True' of type bool", str(ex.exception)
+        )
 
     def test_validate_type_happy_path_bool_multiple_types(self):
         item = True

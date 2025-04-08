@@ -48,7 +48,9 @@ DEFAULT_CALENDAR_EVENT = CalendarEvent(
 class TestProfitApplication(FeatureTest):
     def test_event_types_lower_case_event_name(self):
         expected_tag_id = ["CURRENT_ACCOUNT_APPLY_PROFIT_AST"]
-        test_case = SmartContractEventType(name="current_account", scheduler_tag_ids=expected_tag_id)
+        test_case = SmartContractEventType(
+            name="current_account", scheduler_tag_ids=expected_tag_id
+        )
         result = profit_application.event_types(test_case.name)[0].scheduler_tag_ids
         self.assertEqual(result, test_case.scheduler_tag_ids)
 
@@ -71,19 +73,31 @@ class TestProfitApplication(FeatureTest):
             }
         )
         mock_get_schedule_time_from_parameters.return_value = (0, 0, 0)
-        mock_get_next_schedule_date_calendar_aware.return_value = DEFAULT_DATE + relativedelta(months=1)
+        mock_get_next_schedule_date_calendar_aware.return_value = DEFAULT_DATE + relativedelta(
+            months=1
+        )
         mock_one_off_schedule_expression.return_value = SentinelScheduleExpression("profit_expr")
-        expected_result = {APPLICATION_EVENT: ScheduledEvent(start_datetime=DEFAULT_DATE, expression=SentinelScheduleExpression("profit_expr"))}
-        actual_schedules = profit_application.scheduled_events(vault=mock_vault, start_datetime=DEFAULT_DATE)
+        expected_result = {
+            APPLICATION_EVENT: ScheduledEvent(
+                start_datetime=DEFAULT_DATE, expression=SentinelScheduleExpression("profit_expr")
+            )
+        }
+        actual_schedules = profit_application.scheduled_events(
+            vault=mock_vault, start_datetime=DEFAULT_DATE
+        )
 
-        mock_get_schedule_time_from_parameters.assert_called_once_with(vault=mock_vault, parameter_prefix="profit_application")
+        mock_get_schedule_time_from_parameters.assert_called_once_with(
+            vault=mock_vault, parameter_prefix="profit_application"
+        )
         mock_get_next_schedule_date_calendar_aware.assert_called_once_with(
             start_datetime=DEFAULT_DATE,
             schedule_frequency="monthly",
             intended_day=1,
             calendar_events=[DEFAULT_CALENDAR_EVENT],
         )
-        mock_one_off_schedule_expression.assert_called_once_with(DEFAULT_DATE + relativedelta(months=1, hour=0, minute=0, second=0))
+        mock_one_off_schedule_expression.assert_called_once_with(
+            DEFAULT_DATE + relativedelta(months=1, hour=0, minute=0, second=0)
+        )
         self.assertEqual(actual_schedules[APPLICATION_EVENT], expected_result[APPLICATION_EVENT])
 
     @patch.object(profit_application.utils, "one_off_schedule_expression")
@@ -105,19 +119,31 @@ class TestProfitApplication(FeatureTest):
             }
         )
         mock_get_schedule_time_from_parameters.return_value = (0, 0, 0)
-        mock_get_next_schedule_date_calendar_aware.return_value = DEFAULT_DATE + relativedelta(months=3)
+        mock_get_next_schedule_date_calendar_aware.return_value = DEFAULT_DATE + relativedelta(
+            months=3
+        )
         mock_one_off_schedule_expression.return_value = SentinelScheduleExpression("profit_expr")
-        expected_result = {APPLICATION_EVENT: ScheduledEvent(start_datetime=DEFAULT_DATE, expression=SentinelScheduleExpression("profit_expr"))}
-        actual_schedules = profit_application.scheduled_events(vault=mock_vault, start_datetime=DEFAULT_DATE)
+        expected_result = {
+            APPLICATION_EVENT: ScheduledEvent(
+                start_datetime=DEFAULT_DATE, expression=SentinelScheduleExpression("profit_expr")
+            )
+        }
+        actual_schedules = profit_application.scheduled_events(
+            vault=mock_vault, start_datetime=DEFAULT_DATE
+        )
 
-        mock_get_schedule_time_from_parameters.assert_called_once_with(vault=mock_vault, parameter_prefix="profit_application")
+        mock_get_schedule_time_from_parameters.assert_called_once_with(
+            vault=mock_vault, parameter_prefix="profit_application"
+        )
         mock_get_next_schedule_date_calendar_aware.assert_called_once_with(
             start_datetime=DEFAULT_DATE,
             schedule_frequency="quarterly",
             intended_day=1,
             calendar_events=[DEFAULT_CALENDAR_EVENT],
         )
-        mock_one_off_schedule_expression.assert_called_once_with(DEFAULT_DATE + relativedelta(months=3, hour=0, minute=0, second=0))
+        mock_one_off_schedule_expression.assert_called_once_with(
+            DEFAULT_DATE + relativedelta(months=3, hour=0, minute=0, second=0)
+        )
         self.assertEqual(actual_schedules[APPLICATION_EVENT], expected_result[APPLICATION_EVENT])
 
     @patch.object(profit_application.utils, "one_off_schedule_expression")
@@ -139,19 +165,31 @@ class TestProfitApplication(FeatureTest):
             }
         )
         mock_get_schedule_time_from_parameters.return_value = (0, 0, 0)
-        mock_get_next_schedule_date_calendar_aware.return_value = DEFAULT_DATE + relativedelta(years=1)
+        mock_get_next_schedule_date_calendar_aware.return_value = DEFAULT_DATE + relativedelta(
+            years=1
+        )
         mock_one_off_schedule_expression.return_value = SentinelScheduleExpression("profit_expr")
-        expected_result = {APPLICATION_EVENT: ScheduledEvent(start_datetime=DEFAULT_DATE, expression=SentinelScheduleExpression("profit_expr"))}
-        actual_schedules = profit_application.scheduled_events(vault=mock_vault, start_datetime=DEFAULT_DATE)
+        expected_result = {
+            APPLICATION_EVENT: ScheduledEvent(
+                start_datetime=DEFAULT_DATE, expression=SentinelScheduleExpression("profit_expr")
+            )
+        }
+        actual_schedules = profit_application.scheduled_events(
+            vault=mock_vault, start_datetime=DEFAULT_DATE
+        )
 
-        mock_get_schedule_time_from_parameters.assert_called_once_with(vault=mock_vault, parameter_prefix="profit_application")
+        mock_get_schedule_time_from_parameters.assert_called_once_with(
+            vault=mock_vault, parameter_prefix="profit_application"
+        )
         mock_get_next_schedule_date_calendar_aware.assert_called_once_with(
             start_datetime=DEFAULT_DATE,
             schedule_frequency="annually",
             intended_day=1,
             calendar_events=[DEFAULT_CALENDAR_EVENT],
         )
-        mock_one_off_schedule_expression.assert_called_once_with(DEFAULT_DATE + relativedelta(years=1, hour=0, minute=0, second=0))
+        mock_one_off_schedule_expression.assert_called_once_with(
+            DEFAULT_DATE + relativedelta(years=1, hour=0, minute=0, second=0)
+        )
         self.assertEqual(actual_schedules[APPLICATION_EVENT], expected_result[APPLICATION_EVENT])
 
     @patch.object(profit_application.utils, "standard_instruction_details")
@@ -172,11 +210,17 @@ class TestProfitApplication(FeatureTest):
             {
                 profit_application.PARAM_APPLICATION_PRECISION: 2,
                 profit_application.PARAM_PROFIT_PAID_ACCOUNT: PROFIT_PAID_ACCOUNT,
-                profit_application.tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (ACCRUED_PROFIT_PAYABLE_ACCOUNT),
+                profit_application.tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (
+                    ACCRUED_PROFIT_PAYABLE_ACCOUNT
+                ),
                 "denomination": DEFAULT_DENOMINATION,
             },
         )
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={"EOD_FETCHER": SentinelBalancesObservation("balances_obs")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                "EOD_FETCHER": SentinelBalancesObservation("balances_obs")
+            }
+        )
         mock_accruals_custom_instruction.return_value = [SentinelCustomInstruction("postings")]
         mock_standard_instruction_details.return_value = sentinel.value
 
@@ -215,11 +259,17 @@ class TestProfitApplication(FeatureTest):
             {
                 profit_application.PARAM_APPLICATION_PRECISION: 2,
                 profit_application.PARAM_PROFIT_PAID_ACCOUNT: PROFIT_PAID_ACCOUNT,
-                profit_application.tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (ACCRUED_PROFIT_PAYABLE_ACCOUNT),
+                profit_application.tiered_profit_accrual.PARAM_ACCRUED_PROFIT_PAYABLE_ACCOUNT: (
+                    ACCRUED_PROFIT_PAYABLE_ACCOUNT
+                ),
                 "denomination": DEFAULT_DENOMINATION,
             },
         )
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={"EOD_FETCHER": SentinelBalancesObservation("balances_obs")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                "EOD_FETCHER": SentinelBalancesObservation("balances_obs")
+            }
+        )
 
         custom_instructions = profit_application.apply_profit(vault=mock_vault)
 
@@ -240,9 +290,17 @@ class TestProfitApplication(FeatureTest):
                 profit_application.PARAM_PROFIT_APPLICATION_DAY: "1",
             }
         )
-        mock_scheduled_events.return_value = {"APPLY_PROFIT": ScheduledEvent(start_datetime=test_start_date, expression=SentinelScheduleExpression("expression"))}
-        update_result = profit_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=test_start_date)
-        expected_result = UpdateAccountEventTypeDirective(event_type=APPLICATION_EVENT, expression=SentinelScheduleExpression("expression"))
+        mock_scheduled_events.return_value = {
+            "APPLY_PROFIT": ScheduledEvent(
+                start_datetime=test_start_date, expression=SentinelScheduleExpression("expression")
+            )
+        }
+        update_result = profit_application.update_next_schedule_execution(
+            vault=sentinel.vault, effective_datetime=test_start_date
+        )
+        expected_result = UpdateAccountEventTypeDirective(
+            event_type=APPLICATION_EVENT, expression=SentinelScheduleExpression("expression")
+        )
 
         self.assertEquals(update_result, expected_result)
 
@@ -260,9 +318,15 @@ class TestProfitApplication(FeatureTest):
                 profit_application.PARAM_PROFIT_APPLICATION_DAY: "31",
             }
         )
-        mock_scheduled_events.return_value = {"APPLY_PROFIT": ScheduledEvent(start_datetime=test_start_date, expression=SentinelScheduleExpression("expression"))}
+        mock_scheduled_events.return_value = {
+            "APPLY_PROFIT": ScheduledEvent(
+                start_datetime=test_start_date, expression=SentinelScheduleExpression("expression")
+            )
+        }
 
-        update_result = profit_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=test_start_date)
+        update_result = profit_application.update_next_schedule_execution(
+            vault=sentinel.vault, effective_datetime=test_start_date
+        )
         expected_result = UpdateAccountEventTypeDirective(
             event_type=APPLICATION_EVENT,
             expression=SentinelScheduleExpression("expression"),
@@ -272,7 +336,9 @@ class TestProfitApplication(FeatureTest):
 
     @patch.object(profit_application, "scheduled_events")
     @patch.object(profit_application.utils, "get_parameter")
-    def test_update_next_schedule_execution_quarterly(self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock):
+    def test_update_next_schedule_execution_quarterly(
+        self, mock_get_parameter: MagicMock, mock_scheduled_events: MagicMock
+    ):
         mock_scheduled_events.return_value = {
             APPLICATION_EVENT: ScheduledEvent(
                 start_datetime=DEFAULT_DATE,
@@ -285,9 +351,13 @@ class TestProfitApplication(FeatureTest):
                 profit_application.PARAM_PROFIT_APPLICATION_DAY: "1",
             }
         )
-        update_result = profit_application.update_next_schedule_execution(vault=sentinel.vault, effective_datetime=DEFAULT_DATE)
+        update_result = profit_application.update_next_schedule_execution(
+            vault=sentinel.vault, effective_datetime=DEFAULT_DATE
+        )
 
-        mock_scheduled_events.assert_called_once_with(vault=sentinel.vault, start_datetime=DEFAULT_DATE)
+        mock_scheduled_events.assert_called_once_with(
+            vault=sentinel.vault, start_datetime=DEFAULT_DATE
+        )
         self.assertEquals(
             update_result,
             UpdateAccountEventTypeDirective(

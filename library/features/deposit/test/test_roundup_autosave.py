@@ -31,7 +31,9 @@ class AutoSaveTest(FeatureTest):
         feature.PARAM_ROUNDUP_AUTOSAVE_TRANSACTION_TYPES: dumps("[ATM]"),
     }
 
-    def test_return_no_posting_when_feature_is_disabled(self, mock_str_to_bool: MagicMock, mock_get_parameter: MagicMock):
+    def test_return_no_posting_when_feature_is_disabled(
+        self, mock_str_to_bool: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_str_to_bool.return_value = False
         mock_get_parameter.return_value = sentinel.param
 
@@ -97,7 +99,9 @@ class AutoSaveTest(FeatureTest):
                 feature.PARAM_ROUNDUP_AUTOSAVE_ACCOUNT,
             ],
         )
-        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
     @patch.object(feature.utils, "get_available_balance")
     @patch.object(feature.utils, "are_optional_parameters_set")
@@ -135,7 +139,9 @@ class AutoSaveTest(FeatureTest):
                 feature.PARAM_ROUNDUP_AUTOSAVE_ACCOUNT,
             ],
         )
-        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
     @patch.object(feature.utils, "get_available_balance")
     @patch.object(feature.utils, "are_optional_parameters_set")
@@ -178,7 +184,9 @@ class AutoSaveTest(FeatureTest):
                 feature.PARAM_ROUNDUP_AUTOSAVE_ACCOUNT,
             ],
         )
-        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances, denomination=DEFAULT_DENOMINATION)
+        mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.balances, denomination=DEFAULT_DENOMINATION
+        )
 
     @patch.object(feature.utils, "get_available_balance")
     @patch.object(feature.utils, "are_optional_parameters_set")
@@ -226,7 +234,9 @@ class AutoSaveTest(FeatureTest):
                 feature.PARAM_ROUNDUP_AUTOSAVE_ACCOUNT,
             ],
         )
-        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances, denomination=DEFAULT_DENOMINATION)
+        mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.balances, denomination=DEFAULT_DENOMINATION
+        )
 
     @patch.object(feature.utils, "create_postings")
     @patch.object(feature.utils, "get_available_balance")
@@ -278,7 +288,11 @@ class AutoSaveTest(FeatureTest):
             balances=sentinel.balances,
         )
 
-        instruction_details = f"Roundup Autosave: {DEFAULT_DENOMINATION} 4 " f"using round up to {DEFAULT_DENOMINATION} 10 for transfer of " f"{DEFAULT_DENOMINATION} 6\n "
+        instruction_details = (
+            f"Roundup Autosave: {DEFAULT_DENOMINATION} 4 "
+            f"using round up to {DEFAULT_DENOMINATION} 10 for transfer of "
+            f"{DEFAULT_DENOMINATION} 6\n "
+        )
 
         expected_result = [
             CustomInstruction(
@@ -298,7 +312,9 @@ class AutoSaveTest(FeatureTest):
                 feature.PARAM_ROUNDUP_AUTOSAVE_ACCOUNT,
             ],
         )
-        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances, denomination=DEFAULT_DENOMINATION)
+        mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.balances, denomination=DEFAULT_DENOMINATION
+        )
 
     @patch.object(feature.utils, "create_postings")
     @patch.object(feature.utils, "get_available_balance")
@@ -337,7 +353,11 @@ class AutoSaveTest(FeatureTest):
             ),
         ]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={feature.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live_balances")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                feature.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live_balances")
+            }
+        )
         result = feature.apply(
             vault=mock_vault,
             postings=postings,  # type: ignore
@@ -369,7 +389,9 @@ class AutoSaveTest(FeatureTest):
                 feature.PARAM_ROUNDUP_AUTOSAVE_ACCOUNT,
             ],
         )
-        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances_live_balances, denomination=DEFAULT_DENOMINATION)
+        mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.balances_live_balances, denomination=DEFAULT_DENOMINATION
+        )
 
     @patch.object(feature.utils, "create_postings")
     @patch.object(feature.utils, "get_available_balance")
@@ -413,7 +435,11 @@ class AutoSaveTest(FeatureTest):
             ),
         ]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={feature.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live_balances")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                feature.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live_balances")
+            }
+        )
         result = feature.apply(
             vault=mock_vault,
             postings=postings,  # type: ignore
@@ -445,4 +471,6 @@ class AutoSaveTest(FeatureTest):
                 feature.PARAM_ROUNDUP_AUTOSAVE_ACCOUNT,
             ],
         )
-        mock_get_available_balance.assert_called_once_with(balances=sentinel.balances_live_balances, denomination=DEFAULT_DENOMINATION)
+        mock_get_available_balance.assert_called_once_with(
+            balances=sentinel.balances_live_balances, denomination=DEFAULT_DENOMINATION
+        )

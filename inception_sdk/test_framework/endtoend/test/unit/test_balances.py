@@ -66,13 +66,17 @@ class BalancesTest(TestCase):
 
     def test_create_balance_dict(self):
         expected_balance_dict = {}
-        expected_balance_dict[BalanceDimensions("DEFAULT", "COMMERCIAL_BANK_MONEY", "GBP", "POSTING_PHASE_COMMITTED")] = Balance(
+        expected_balance_dict[
+            BalanceDimensions("DEFAULT", "COMMERCIAL_BANK_MONEY", "GBP", "POSTING_PHASE_COMMITTED")
+        ] = Balance(
             net="60",
             credit="60",
             debit="0",
             value_timestamp=datetime(2021, 1, 1, 0, 0, 0),
         )
-        expected_balance_dict[BalanceDimensions("OTHER", "COMMERCIAL_BANK_MONEY", "GBP", "POSTING_PHASE_COMMITTED")] = Balance(
+        expected_balance_dict[
+            BalanceDimensions("OTHER", "COMMERCIAL_BANK_MONEY", "GBP", "POSTING_PHASE_COMMITTED")
+        ] = Balance(
             net="20",
             credit="20",
             debit="0",

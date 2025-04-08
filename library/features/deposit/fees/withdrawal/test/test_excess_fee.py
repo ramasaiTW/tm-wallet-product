@@ -26,7 +26,9 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_sentinels import 
 )
 
 DEFAULT_INSTRUCTION_DETAILS = {"transaction_type": "ATM"}
-POSTING_INTERVAL_FETCHER = {"MONTH_TO_EFFECTIVE_POSTINGS_FETCHER": [SentinelCustomInstruction("dummy_ci")]}
+POSTING_INTERVAL_FETCHER = {
+    "MONTH_TO_EFFECTIVE_POSTINGS_FETCHER": [SentinelCustomInstruction("dummy_ci")]
+}
 
 
 @patch.object(feature.client_transaction_utils, "extract_debits_by_instruction_details_key")
@@ -258,7 +260,8 @@ class ValidatePrePostingTest(FeatureTest):
             denomination=DEFAULT_DENOMINATION,
         )
         expected_result = Rejection(
-            message=f"Transactions would cause the maximum monthly withdrawal limit of " f"{self.excess_fee_parameters['permitted_withdrawals']} to be exceeded.",
+            message=f"Transactions would cause the maximum monthly withdrawal limit of "
+            f"{self.excess_fee_parameters['permitted_withdrawals']} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
         self.assertEqual(feature_result, expected_result)
@@ -327,7 +330,9 @@ class TestApplyExcessFee(FeatureTest):
         proposed_client_transactions = {sentinel.ctx_id_1: sentinel.ct_1}
         monthly_client_transactions = {sentinel.ctx_id_2: sentinel.ct_2}
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.excess_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.excess_fee_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = [
             [],
             [sentinel.ct_id_2_pi],
@@ -409,7 +414,9 @@ class TestApplyExcessFee(FeatureTest):
             )
         }
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.excess_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.excess_fee_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = [
             [sentinel.ct_id_2_pi],
             [],
@@ -450,7 +457,8 @@ class TestApplyExcessFee(FeatureTest):
                     },
                     client_transaction_ids_to_ignore=list(proposed_client_transactions.keys()),
                     denomination="GBP",
-                    cutoff_datetime=DEFAULT_DATETIME + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
+                    cutoff_datetime=DEFAULT_DATETIME
+                    + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
                     key=feature.INSTRUCTION_DETAIL_KEY,
                     value="ATM",
                 ),
@@ -492,7 +500,9 @@ class TestApplyExcessFee(FeatureTest):
             )
         }
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.excess_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.excess_fee_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = [
             [sentinel.ct_id_2_pi],
             [sentinel.ct_id_1_pi],
@@ -546,7 +556,8 @@ class TestApplyExcessFee(FeatureTest):
                     },
                     client_transaction_ids_to_ignore=list(proposed_client_transactions.keys()),
                     denomination="GBP",
-                    cutoff_datetime=DEFAULT_DATETIME + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
+                    cutoff_datetime=DEFAULT_DATETIME
+                    + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
                     key=feature.INSTRUCTION_DETAIL_KEY,
                     value="ATM",
                 ),
@@ -572,7 +583,9 @@ class TestApplyExcessFee(FeatureTest):
             "CTX_ID_4": sentinel.ct_4,
         }
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.excess_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.excess_fee_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = [
             [sentinel.cti_id_3_pi, sentinel.cti_id_4_pi],
             [sentinel.cti_id_1_pi, sentinel.cti_id_2_pi],
@@ -628,7 +641,8 @@ class TestApplyExcessFee(FeatureTest):
                     },
                     client_transaction_ids_to_ignore=list(proposed_client_transactions.keys()),
                     denomination="GBP",
-                    cutoff_datetime=DEFAULT_DATETIME + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
+                    cutoff_datetime=DEFAULT_DATETIME
+                    + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
                     key=feature.INSTRUCTION_DETAIL_KEY,
                     value="ATM",
                 ),

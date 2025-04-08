@@ -8,11 +8,15 @@ from ...versions.version_380.smart_contracts import types
 
 
 class SimpleTestCase(SmartContracts380TestCase):
-    filepath = os.environ.get("DATA_SIMPLE_V380", "contracts_sdk/example_unit_tests/smart_contracts/simple_v380.py")
+    filepath = os.environ.get(
+        "DATA_SIMPLE_V380", "contracts_sdk/example_unit_tests/smart_contracts/simple_v380.py"
+    )
     contract_code = SmartContracts380TestCase.load_contract_code(filepath)
     account_id = "account_id"
 
-    PercentageShape = types.NumberShape(kind=types.NumberKind.PERCENTAGE, min_value=0, max_value=1, step=0.00001)
+    PercentageShape = types.NumberShape(
+        kind=types.NumberKind.PERCENTAGE, min_value=0, max_value=1, step=0.00001
+    )
 
     monthly_overdraft_rate = types.Parameter(
         name="monthly_overdraft_rate",
@@ -45,7 +49,9 @@ class SimpleTestCase(SmartContracts380TestCase):
             if date == self.creation_date:
                 local_datetime.isoformat.return_value = self.creation_date.isoformat()
             if date == (self.creation_date + timedelta(minutes=1)):
-                local_datetime.isoformat.return_value = (self.creation_date + timedelta(minutes=1)).isoformat()
+                local_datetime.isoformat.return_value = (
+                    self.creation_date + timedelta(minutes=1)
+                ).isoformat()
 
             return local_datetime
 
@@ -53,20 +59,26 @@ class SimpleTestCase(SmartContracts380TestCase):
         schedules = self.run_contract_function(self.contract_code, "execution_schedules")
 
         self.assertEqual("TEST_EVENT", schedules[0][0])
-        self.assertEqual((self.creation_date + timedelta(minutes=1)).isoformat(), schedules[0][1]["end_date"])
+        self.assertEqual(
+            (self.creation_date + timedelta(minutes=1)).isoformat(), schedules[0][1]["end_date"]
+        )
 
     def test_derived_parameters_fails_when_invalid_permitted_denominations_provided(self):
         self.vault.get_permitted_denominations.return_value = ["GBP", "INR", "EUR"]
 
         with self.assertRaises(types.Rejected) as ex:
-            self.run_contract_function(self.contract_code, "derived_parameters", effective_date=self.effective_date)
+            self.run_contract_function(
+                self.contract_code, "derived_parameters", effective_date=self.effective_date
+            )
 
         self.assertIn("Invalid denominations used within this contract", str(ex.exception))
 
     def test_derived_parameters_return_permitted_denominations(self):
         self.vault.get_permitted_denominations.return_value = ["GBP", "USD", "EUR"]
 
-        parameters = self.run_contract_function(self.contract_code, "derived_parameters", self.effective_date)
+        parameters = self.run_contract_function(
+            self.contract_code, "derived_parameters", self.effective_date
+        )
 
         self.assertEqual("USD", parameters["denomination"])
 
@@ -104,7 +116,9 @@ class SimpleTestCase(SmartContracts380TestCase):
         self.vault.get_calendar_events.side_effect = get_calendar_events
 
         with self.assertRaises(types.Rejected) as ex:
-            self.run_contract_function(self.contract_code, "pre_posting_code", {}, self.effective_date)
+            self.run_contract_function(
+                self.contract_code, "pre_posting_code", {}, self.effective_date
+            )
 
         self.assertIn("Wrong number of calendar events found", str(ex.exception))
 
@@ -135,7 +149,9 @@ class SimpleTestCase(SmartContracts380TestCase):
 
         self.vault.get_calendar_events.side_effect = get_calendar_events
         with self.assertRaises(types.Rejected) as ex:
-            self.run_contract_function(self.contract_code, "pre_posting_code", {}, self.effective_date)
+            self.run_contract_function(
+                self.contract_code, "pre_posting_code", {}, self.effective_date
+            )
 
         self.assertIn("Calendar event start_timestamp incorrect", str(ex.exception))
 
@@ -197,7 +213,9 @@ class SimpleTestCase(SmartContracts380TestCase):
         ]
 
         self.vault.get_postings.return_value = posting_instructions
-        self.run_contract_function(self.contract_code, "post_posting_code", None, self.effective_date)
+        self.run_contract_function(
+            self.contract_code, "post_posting_code", None, self.effective_date
+        )
 
         self.vault.add_account_note.assert_called_once_with(
             body="1",
@@ -216,7 +234,9 @@ class SimpleTestCase(SmartContracts380TestCase):
             )
 
             balance_dict = types.BalanceDefaultDict()
-            balance_dict[balance_key_1] = types.Balance(net=Decimal(20), credit=Decimal("2018.11"), debit=Decimal())
+            balance_dict[balance_key_1] = types.Balance(
+                net=Decimal(20), credit=Decimal("2018.11"), debit=Decimal()
+            )
             balance_timeseries = types.BalanceTimeseries(
                 [
                     (self.effective_date, balance_dict),
@@ -227,7 +247,9 @@ class SimpleTestCase(SmartContracts380TestCase):
         self.vault.get_balance_timeseries.side_effect = get_balance_timeseries
         self.vault.account_id = self.account_id
         self.vault.get_parameter_timeseries.side_effect = self.get_parameter_timeseries
-        self.run_contract_function(self.contract_code, "scheduled_code", "ACCRUE_INTEREST", self.effective_date)
+        self.run_contract_function(
+            self.contract_code, "scheduled_code", "ACCRUE_INTEREST", self.effective_date
+        )
 
         # 0.17 USD interest generated.
         self.vault.make_internal_transfer_instructions.assert_called_once_with(
@@ -252,7 +274,9 @@ class SimpleTestCase(SmartContracts380TestCase):
             )
 
             balance_dict = types.BalanceDefaultDict()
-            balance_dict[balance_key_1] = types.Balance(net=Decimal(-20), credit=Decimal("2018.11"), debit=Decimal())
+            balance_dict[balance_key_1] = types.Balance(
+                net=Decimal(-20), credit=Decimal("2018.11"), debit=Decimal()
+            )
             balance_timeseries = types.BalanceTimeseries(
                 [
                     (self.effective_date, balance_dict),
@@ -263,7 +287,9 @@ class SimpleTestCase(SmartContracts380TestCase):
         self.vault.get_balance_timeseries.side_effect = get_balance_timeseries
         self.vault.account_id = self.account_id
         self.vault.get_parameter_timeseries.side_effect = self.get_parameter_timeseries
-        self.run_contract_function(self.contract_code, "scheduled_code", "ACCRUE_INTEREST", self.effective_date)
+        self.run_contract_function(
+            self.contract_code, "scheduled_code", "ACCRUE_INTEREST", self.effective_date
+        )
 
         self.vault.make_internal_transfer_instructions.assert_not_called()
         self.vault.instruct_posting_batch.assert_not_called()
@@ -277,7 +303,9 @@ class SimpleTestCase(SmartContracts380TestCase):
                 types.Phase.COMMITTED,
             )
             balance_dict = types.BalanceDefaultDict()
-            balance_dict[balance_key_1] = types.Balance(net=Decimal(20), credit=Decimal(20), debit=Decimal(0))
+            balance_dict[balance_key_1] = types.Balance(
+                net=Decimal(20), credit=Decimal(20), debit=Decimal(0)
+            )
             balance_timeseries = types.BalanceTimeseries(
                 [
                     (self.effective_date, balance_dict),
@@ -293,7 +321,9 @@ class SimpleTestCase(SmartContracts380TestCase):
                 types.Phase.COMMITTED,
             )
             balance_dict = types.BalanceDefaultDict()
-            balance_dict[balance_key_1] = types.Balance(net=Decimal(-30), credit=Decimal(0), debit=Decimal(-30))
+            balance_dict[balance_key_1] = types.Balance(
+                net=Decimal(-30), credit=Decimal(0), debit=Decimal(-30)
+            )
             return balance_dict
 
         pi = types.PostingInstruction(
@@ -334,7 +364,9 @@ class SimpleTestCase(SmartContracts380TestCase):
         self.vault.get_balance_timeseries.side_effect = get_balance_timeseries_historical
 
         with self.assertRaises(types.Rejected) as ex:
-            self.run_contract_function(self.contract_code, "pre_posting_code", postings, self.effective_date)
+            self.run_contract_function(
+                self.contract_code, "pre_posting_code", postings, self.effective_date
+            )
 
         self.assertEqual("Account Default address cannot go into overdraft", str(ex.exception))
 
@@ -347,7 +379,9 @@ class SimpleTestCase(SmartContracts380TestCase):
                 types.Phase.COMMITTED,
             )
             balance_dict = types.BalanceDefaultDict()
-            balance_dict[balance_key_1] = types.Balance(net=Decimal(10), credit=Decimal(10), debit=Decimal(0))
+            balance_dict[balance_key_1] = types.Balance(
+                net=Decimal(10), credit=Decimal(10), debit=Decimal(0)
+            )
             return balance_dict
 
         def get_effects():
@@ -409,4 +443,6 @@ class SimpleTestCase(SmartContracts380TestCase):
             client_batch_id="123",
         )
 
-        self.run_contract_function(self.contract_code, "pre_posting_code", postings, self.effective_date)
+        self.run_contract_function(
+            self.contract_code, "pre_posting_code", postings, self.effective_date
+        )

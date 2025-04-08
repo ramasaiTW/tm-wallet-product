@@ -44,7 +44,9 @@ class PublicCommonV3120TypesTestCase(PublicCommonV3110TypesTestCase):
         with self.assertRaises(StrongTypingError) as e:
             SupervisedHooks(pre_posting_code="test")
 
-        self.assertIn("expected Optional[SupervisionExecutionMode] but got value 'test'", str(e.exception))
+        self.assertIn(
+            "expected Optional[SupervisionExecutionMode] but got value 'test'", str(e.exception)
+        )
 
     def test_supervised_hooks_argument_required(self):
         with self.assertRaises(InvalidSmartContractError) as e:
@@ -139,12 +141,24 @@ class PublicCommonV3120TypesTestCase(PublicCommonV3110TypesTestCase):
                 )
             ],
         )
-        self.assertEqual(self.request_id_3120, hook_directives.add_account_note_directives[0].idempotency_key)
-        self.assertEqual(self.request_id_3120, hook_directives.amend_schedule_directives[0].request_id)
-        self.assertEqual(self.request_id_3120, hook_directives.remove_schedules_directives[0].request_id)
-        self.assertEqual(self.request_id_3120, hook_directives.posting_instruction_batch_directives[0].request_id)
-        self.assertEqual(self.request_id_3120, hook_directives.workflow_start_directives[0].idempotency_key)
-        self.assertEqual(self.account_id_3120, hook_directives.update_account_event_type_directives[0].account_id)
+        self.assertEqual(
+            self.request_id_3120, hook_directives.add_account_note_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.request_id_3120, hook_directives.amend_schedule_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3120, hook_directives.remove_schedules_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3120, hook_directives.posting_instruction_batch_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3120, hook_directives.workflow_start_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.account_id_3120, hook_directives.update_account_event_type_directives[0].account_id
+        )
         self.assertEqual(
             self.account_id_3120,
             hook_directives.instruct_account_notification_directives[0].account_id,
@@ -232,7 +246,10 @@ class PublicCommonV3120TypesTestCase(PublicCommonV3110TypesTestCase):
                 ],
             )
         self.assertIn(
-            ("__init__() missing 1 required keyword-only argument: " "'instruct_account_notification_directives'"),
+            (
+                "__init__() missing 1 required keyword-only argument: "
+                "'instruct_account_notification_directives'"
+            ),
             str(ex.exception),
         )
 
@@ -250,7 +267,10 @@ class PublicCommonV3120TypesTestCase(PublicCommonV3110TypesTestCase):
             )
 
         self.assertIn(
-            ("'instruct_account_notification_directives' expected " "List[InstructAccountNotificationDirective] but got value 'bad'"),
+            (
+                "'instruct_account_notification_directives' expected "
+                "List[InstructAccountNotificationDirective] but got value 'bad'"
+            ),
             str(ex.exception),
         )
 
@@ -265,5 +285,9 @@ class PublicCommonV3120TypesTestCase(PublicCommonV3110TypesTestCase):
             notification_details=notification_details,
         )
         self.assertEqual(account_id, instruct_account_notification_directive.account_id)
-        self.assertEqual(notification_type, instruct_account_notification_directive.notification_type)
-        self.assertEqual(notification_details, instruct_account_notification_directive.notification_details)
+        self.assertEqual(
+            notification_type, instruct_account_notification_directive.notification_type
+        )
+        self.assertEqual(
+            notification_details, instruct_account_notification_directive.notification_details
+        )

@@ -72,10 +72,19 @@ def get_interest_reversal_postings(
     if denomination is None:
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
-    balances = balances or vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+    balances = (
+        balances
+        or vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
+    )
 
-    accrued_interest_payable_account = interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
-    accrued_interest_receivable_account = interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
+    accrued_interest_payable_account = (
+        interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
+    )
+    accrued_interest_receivable_account = (
+        interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
+    )
 
     if accrued_interest_receivable := utils.sum_balances(
         balances=balances,
@@ -91,7 +100,8 @@ def get_interest_reversal_postings(
                 internal_account=accrued_interest_receivable_account,
                 payable=False,
                 instruction_details=utils.standard_instruction_details(
-                    description=f"Reversing {accrued_interest_receivable} {denomination} " "of accrued interest",
+                    description=f"Reversing {accrued_interest_receivable} {denomination} "
+                    "of accrued interest",
                     event_type=event_name,
                     gl_impacted=True,
                     account_type=account_type,
@@ -114,7 +124,8 @@ def get_interest_reversal_postings(
                 internal_account=accrued_interest_payable_account,
                 payable=True,
                 instruction_details=utils.standard_instruction_details(
-                    description=f"Reversing {accrued_interest_payable} {denomination} " "of accrued interest",
+                    description=f"Reversing {accrued_interest_payable} {denomination} "
+                    "of accrued interest",
                     event_type=event_name,
                     gl_impacted=True,
                     account_type=account_type,
@@ -146,9 +157,13 @@ def get_target_customer_address_and_internal_account(
     :return: target customer address, target internal account
     """
     if accrued_interest_payable_account is None:
-        accrued_interest_payable_account = interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
+        accrued_interest_payable_account = (
+            interest_accrual_common.get_accrued_interest_payable_account_parameter(vault=vault)
+        )
     if accrued_interest_receivable_account is None:
-        accrued_interest_receivable_account = interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
+        accrued_interest_receivable_account = (
+            interest_accrual_common.get_accrued_interest_receivable_account_parameter(vault=vault)
+        )
 
     return (
         (interest_accrual_common.ACCRUED_INTEREST_PAYABLE, accrued_interest_payable_account)

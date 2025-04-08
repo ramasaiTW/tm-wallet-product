@@ -48,7 +48,9 @@ class SimpleTestCaseV400(TestCase):
         # Define the vault data values for the vault mocks
         test_event = "EXAMPLE_EVENT"
         effective_datetime = datetime(2022, 10, 10, 1, 1, tzinfo=ZoneInfo("UTC"))
-        hook_args = ScheduledEventHookArguments(effective_datetime=effective_datetime, event_type=test_event)
+        hook_args = ScheduledEventHookArguments(
+            effective_datetime=effective_datetime, event_type=test_event
+        )
         # Create and mock the vault
         mock_vault = mock.create_autospec(smart_contracts_lib.VaultFunctionsABC)
         # Call the simple account scheduled event hook

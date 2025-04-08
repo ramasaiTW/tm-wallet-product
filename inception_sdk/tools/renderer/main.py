@@ -44,14 +44,16 @@ flags.DEFINE_bool(
     name=USE_FULL_FILEPATH_IN_HEADERS,
     default=True,
     required=False,
-    help="rendered output module headers will contain full filepaths to the modules they were " "rendered from",
+    help="rendered output module headers will contain full filepaths to the modules they were "
+    "rendered from",
 )
 
 flags.DEFINE_bool(
     name=USE_GIT,
     default=True,
     required=False,
-    help="if set, Git commit hashes are added to rendered output module headers. The input " "template must be in a valid Git repository for this feature to work.",
+    help="if set, Git commit hashes are added to rendered output module headers. The input "
+    "template must be in a valid Git repository for this feature to work.",
 )
 
 flags.DEFINE_bool(
@@ -121,7 +123,10 @@ def main(argv: list[str]):
     try:
         render_smart_contract(getattr(FLAGS, INPUT_TEMPLATE), config)
     except ModuleNotFoundError:
-        log.exception("Rendering failed due to a ModuleNotFoundError. Does your " "PYTHONPATH include all relevant template and feature folders?")
+        log.exception(
+            "Rendering failed due to a ModuleNotFoundError. Does your "
+            "PYTHONPATH include all relevant template and feature folders?"
+        )
 
 
 if __name__ == "__main__":

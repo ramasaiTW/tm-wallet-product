@@ -99,7 +99,9 @@ def get_next_overdue_derived_parameter(
     vault: SmartContractVault,
     previous_due_amount_calculation_datetime: datetime,
 ) -> datetime:
-    return previous_due_amount_calculation_datetime + relativedelta(days=get_repayment_period_parameter(vault=vault))
+    return previous_due_amount_calculation_datetime + relativedelta(
+        days=get_repayment_period_parameter(vault=vault)
+    )
 
 
 def event_types(product_name: str) -> list[SmartContractEventType]:
@@ -149,7 +151,9 @@ def scheduled_events(
     :return: a dictionary containing the check late repayment schedule
     """
     repayment_period = int(utils.get_parameter(vault=vault, name=PARAM_REPAYMENT_PERIOD))
-    next_overdue_check_datetime = first_due_amount_calculation_datetime + relativedelta(days=repayment_period)
+    next_overdue_check_datetime = first_due_amount_calculation_datetime + relativedelta(
+        days=repayment_period
+    )
 
     year = next_overdue_check_datetime.year if is_one_off else None
     month = next_overdue_check_datetime.month if is_one_off else None
@@ -190,7 +194,9 @@ def schedule_logic(
     postings: list[Posting] = []
     denomination: str = utils.get_parameter(vault=vault, name="denomination")
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
     account_id = vault.account_id
     due_amounts = {}
@@ -291,4 +297,6 @@ def get_overdue_datetime(
     send a due notification reminder to the user.
     :return: datetime
     """
-    return due_amount_notification_datetime + relativedelta(days=int(notification_period + repayment_period))
+    return due_amount_notification_datetime + relativedelta(
+        days=int(notification_period + repayment_period)
+    )

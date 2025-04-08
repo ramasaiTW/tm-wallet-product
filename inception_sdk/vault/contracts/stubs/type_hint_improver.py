@@ -32,7 +32,9 @@ class TypeHintImprover(ast.NodeTransformer):
 if __name__ == "__main__":
     stub_directory = sys.argv[1]
     if os.path.exists(stub_directory):
-        for stub_filepath in glob.glob(f"{os.path.join(stub_directory, '**', '*.pyi')}", recursive=True):
+        for stub_filepath in glob.glob(
+            f"{os.path.join(stub_directory, '**', '*.pyi')}", recursive=True
+        ):
             with open(stub_filepath, mode="r") as stream:
                 contents = stream.read()
                 module = ast.parse(source=contents)

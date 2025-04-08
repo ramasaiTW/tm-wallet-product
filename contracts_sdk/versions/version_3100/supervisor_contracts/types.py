@@ -42,9 +42,15 @@ class UpdatePlanEventTypeDirective(types390.UpdatePlanEventTypeDirective):
         if not _from_proto:
             if _validate_missing_params:
                 if not schedule and not schedule_method and not end_datetime:
-                    raise InvalidSmartContractError("UpdatePlanEventTypeDirective object has to have either an end_datetime, " "a schedule or schedule_method defined")
+                    raise InvalidSmartContractError(
+                        "UpdatePlanEventTypeDirective object has to have either an end_datetime, "
+                        "a schedule or schedule_method defined"
+                    )
             if schedule is not None and schedule_method is not None:
-                raise InvalidSmartContractError("UpdatePlanEventTypeDirective cannot contain both" " schedule and schedule_method fields")
+                raise InvalidSmartContractError(
+                    "UpdatePlanEventTypeDirective cannot contain both"
+                    " schedule and schedule_method fields"
+                )
             self._spec().assert_constructor_args(
                 self._registry,
                 {

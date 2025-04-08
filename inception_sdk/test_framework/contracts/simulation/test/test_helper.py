@@ -58,11 +58,15 @@ class SimulationHelperTest(TestCase):
                         str(ex.exception),
                     )
             else:
-                result = simulation_helper.create_template_parameter_change_event(**test_case["input"])
+                result = simulation_helper.create_template_parameter_change_event(
+                    **test_case["input"]
+                )
 
                 self.assertEqual(
                     result.time,
                     test_case["input"]["timestamp"],
                     test_case["description"],
                 )
-                self.assertDictEqual(result.event, test_case["expected_event"], test_case["description"])
+                self.assertDictEqual(
+                    result.event, test_case["expected_event"], test_case["description"]
+                )

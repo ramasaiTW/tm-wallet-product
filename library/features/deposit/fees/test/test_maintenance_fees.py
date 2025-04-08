@@ -45,7 +45,9 @@ def generate_mock_waive_fee_condition(waive_fee: bool):
 
 class TestMonthlyMaintenanceFees(FeatureTest):
     def test_monthly_maintenance_fee_event_types(self):
-        event_types = maintenance_fees.event_types(product_name="product_a", frequency=maintenance_fees.MONTHLY)
+        event_types = maintenance_fees.event_types(
+            product_name="product_a", frequency=maintenance_fees.MONTHLY
+        )
         self.assertListEqual(
             event_types,
             [
@@ -70,14 +72,20 @@ class TestMonthlyMaintenanceFees(FeatureTest):
                 "maintenance_fee_application_day": "17",
             }
         )
-        scheduled_events = maintenance_fees.scheduled_events(vault=sentinel.vault, start_datetime=DEFAULT_DATETIME, frequency="QUARTERLY")
+        scheduled_events = maintenance_fees.scheduled_events(
+            vault=sentinel.vault, start_datetime=DEFAULT_DATETIME, frequency="QUARTERLY"
+        )
 
         self.assertEquals(scheduled_events, {})
 
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.utils, "monthly_scheduled_event")
-    def test_monthly_maintenance_fee_scheduled_event(self, mock_monthly_scheduled_event: MagicMock, mock_get_parameter: MagicMock):
-        mock_monthly_scheduled_event.return_value = SentinelScheduledEvent(maintenance_fees.APPLY_MONTHLY_FEE_EVENT)
+    def test_monthly_maintenance_fee_scheduled_event(
+        self, mock_monthly_scheduled_event: MagicMock, mock_get_parameter: MagicMock
+    ):
+        mock_monthly_scheduled_event.return_value = SentinelScheduledEvent(
+            maintenance_fees.APPLY_MONTHLY_FEE_EVENT
+        )
 
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
@@ -93,7 +101,11 @@ class TestMonthlyMaintenanceFees(FeatureTest):
 
         self.assertDictEqual(
             scheduled_events,
-            {maintenance_fees.APPLY_MONTHLY_FEE_EVENT: SentinelScheduledEvent(maintenance_fees.APPLY_MONTHLY_FEE_EVENT)},
+            {
+                maintenance_fees.APPLY_MONTHLY_FEE_EVENT: SentinelScheduledEvent(
+                    maintenance_fees.APPLY_MONTHLY_FEE_EVENT
+                )
+            },
         )
 
         mock_monthly_scheduled_event.assert_called_once_with(
@@ -103,7 +115,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
             day=17,
         )
 
-    @patch.object(maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.fees, "fee_custom_instruction")
     def test_monthly_maintenance_fee_applied(
@@ -131,7 +145,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
 
         mock_fee_custom_instruction.return_value = [sentinel.fee_custom_instruction]
         mock_vault = self.create_mock()
-        fee_postings = maintenance_fees.apply_monthly_fee(vault=mock_vault, effective_datetime=sentinel.datetime)
+        fee_postings = maintenance_fees.apply_monthly_fee(
+            vault=mock_vault, effective_datetime=sentinel.datetime
+        )
 
         self.assertListEqual(fee_postings, [sentinel.fee_custom_instruction])
         mock_fee_custom_instruction.assert_called_once_with(
@@ -145,7 +161,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
             },
         )
 
-    @patch.object(maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.partial_fee, "charge_partial_fee")
     @patch.object(maintenance_fees.fees, "fee_custom_instruction")
@@ -230,7 +248,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
             available_balance_feature=sentinel.available_balance,
         )
 
-    @patch.object(maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.partial_fee, "charge_partial_fee")
     @patch.object(maintenance_fees.fees, "fee_custom_instruction")
@@ -259,7 +279,13 @@ class TestMonthlyMaintenanceFees(FeatureTest):
         mock_get_tiered_parameter_value_based_on_account_tier.return_value = Decimal("10")
         mock_partial_fee.return_value = [sentinel.updated_fee_custom_instruction]
         mock_fee_custom_instruction.return_value = [sentinel.fee_custom_instruction]
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={maintenance_fees.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")})  # noqa: E501
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                maintenance_fees.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                    "effective"
+                )
+            }
+        )  # noqa: E501
 
         fee_postings = maintenance_fees.apply_monthly_fee(
             vault=mock_vault,
@@ -317,7 +343,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
 
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.account_tiers, "get_account_tier")
-    @patch.object(maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(maintenance_fees.fees, "fee_custom_instruction")
     def test_monthly_maintenance_fee_not_applied(
         self,
@@ -345,7 +373,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
         mock_vault = self.create_mock()
 
         mock_fee_custom_instruction.return_value = []
-        fee_postings = maintenance_fees.apply_monthly_fee(vault=mock_vault, effective_datetime=sentinel.datetime)
+        fee_postings = maintenance_fees.apply_monthly_fee(
+            vault=mock_vault, effective_datetime=sentinel.datetime
+        )
 
         self.assertEqual(fee_postings, [])
 
@@ -387,7 +417,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
 
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.account_tiers, "get_account_tier")
-    @patch.object(maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(maintenance_fees.fees, "fee_custom_instruction")
     def test_monthly_maintenance_fee_value_not_defined_for_tier(
         self,
@@ -413,7 +445,9 @@ class TestMonthlyMaintenanceFees(FeatureTest):
         )
         mock_vault = self.create_mock()
         mock_fee_custom_instruction.return_value = []
-        fee_postings = maintenance_fees.apply_monthly_fee(vault=mock_vault, effective_datetime=sentinel.datetime)
+        fee_postings = maintenance_fees.apply_monthly_fee(
+            vault=mock_vault, effective_datetime=sentinel.datetime
+        )
 
         self.assertEqual(fee_postings, [])
 
@@ -555,21 +589,27 @@ class TestAnnualMaintenanceFees(FeatureTest):
         mock_get_parameter: MagicMock,
     ):
         mock_get_next_schedule_date.return_value = DEFAULT_DATETIME
-        mock_get_schedule_expression_from_parameters.return_value = SentinelScheduleExpression("get_schedule_expression_from_parameters")
+        mock_get_schedule_expression_from_parameters.return_value = SentinelScheduleExpression(
+            "get_schedule_expression_from_parameters"
+        )
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "maintenance_fee_application_day": "17",
             }
         )
 
-        scheduled_events = maintenance_fees.scheduled_events(vault=sentinel, start_datetime=DEFAULT_DATETIME, frequency=maintenance_fees.ANNUALLY)
+        scheduled_events = maintenance_fees.scheduled_events(
+            vault=sentinel, start_datetime=DEFAULT_DATETIME, frequency=maintenance_fees.ANNUALLY
+        )
 
         self.assertDictEqual(
             scheduled_events,
             {
                 maintenance_fees.APPLY_ANNUAL_FEE_EVENT: ScheduledEvent(
                     start_datetime=DEFAULT_DATETIME + relativedelta(years=1),
-                    expression=SentinelScheduleExpression("get_schedule_expression_from_parameters"),
+                    expression=SentinelScheduleExpression(
+                        "get_schedule_expression_from_parameters"
+                    ),
                 )
             },
         )
@@ -586,7 +626,9 @@ class TestAnnualMaintenanceFees(FeatureTest):
             year=None,
         )
 
-    @patch.object(maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(maintenance_fees.account_tiers, "get_account_tier")
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.fees, "fee_custom_instruction")
@@ -611,7 +653,9 @@ class TestAnnualMaintenanceFees(FeatureTest):
         mock_vault = self.create_mock()
 
         mock_fee_custom_instruction.return_value = [sentinel.fee_custom_instruction]
-        fee_postings = maintenance_fees.apply_annual_fee(vault=mock_vault, effective_datetime=sentinel.datetime)
+        fee_postings = maintenance_fees.apply_annual_fee(
+            vault=mock_vault, effective_datetime=sentinel.datetime
+        )
 
         self.assertListEqual(fee_postings, [sentinel.fee_custom_instruction])
         mock_get_tiered_parameter_value_based_on_account_tier.assert_called_once_with(
@@ -632,7 +676,9 @@ class TestAnnualMaintenanceFees(FeatureTest):
             },
         )
 
-    @patch.object(maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        maintenance_fees.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(maintenance_fees.account_tiers, "get_account_tier")
     @patch.object(maintenance_fees.utils, "get_parameter")
     @patch.object(maintenance_fees.fees, "fee_custom_instruction")
@@ -657,7 +703,9 @@ class TestAnnualMaintenanceFees(FeatureTest):
 
         mock_fee_custom_instruction.return_value = []
         mock_vault = self.create_mock()
-        fee_postings = maintenance_fees.apply_annual_fee(vault=mock_vault, effective_datetime=sentinel.datetime)
+        fee_postings = maintenance_fees.apply_annual_fee(
+            vault=mock_vault, effective_datetime=sentinel.datetime
+        )
 
         self.assertEqual(fee_postings, [])
 
@@ -701,7 +749,9 @@ class TestPrivateHelpers(TestCase):
     def test_get_monthly_internal_income_account(self, mock_get_param: MagicMock):
         mock_get_param.return_value = sentinel.income_account
 
-        resp = maintenance_fees._get_monthly_internal_income_account(vault=sentinel.vault, effective_datetime=sentinel.datetime)
+        resp = maintenance_fees._get_monthly_internal_income_account(
+            vault=sentinel.vault, effective_datetime=sentinel.datetime
+        )
 
         self.assertEqual(resp, sentinel.income_account)
         mock_get_param.assert_called_once_with(

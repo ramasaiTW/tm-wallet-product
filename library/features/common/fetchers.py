@@ -12,11 +12,15 @@ from contracts_api import (
 EOD_FETCHER_ID = "EOD_FETCHER"
 EOD_FETCHER = BalancesObservationFetcher(
     fetcher_id=EOD_FETCHER_ID,
-    at=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)),
+    at=RelativeDateTime(
+        origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)
+    ),
 )
 
 EFFECTIVE_OBSERVATION_FETCHER_ID = "EFFECTIVE_FETCHER"
-EFFECTIVE_OBSERVATION_FETCHER = BalancesObservationFetcher(fetcher_id=EFFECTIVE_OBSERVATION_FETCHER_ID, at=DefinedDateTime.EFFECTIVE_DATETIME)
+EFFECTIVE_OBSERVATION_FETCHER = BalancesObservationFetcher(
+    fetcher_id=EFFECTIVE_OBSERVATION_FETCHER_ID, at=DefinedDateTime.EFFECTIVE_DATETIME
+)
 
 LIVE_BALANCES_BOF_ID = "live_balances_bof"
 LIVE_BALANCES_BOF = BalancesObservationFetcher(
@@ -413,7 +417,9 @@ PREVIOUS_EOD_OBSERVATION_FETCHER_IDS = [
 EFFECTIVE_DATE_POSTINGS_FETCHER_ID = "EFFECTIVE_DATE_POSTINGS_FETCHER"
 EFFECTIVE_DATE_POSTINGS_FETCHER = PostingsIntervalFetcher(
     fetcher_id=EFFECTIVE_DATE_POSTINGS_FETCHER_ID,
-    start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)),
+    start=RelativeDateTime(
+        origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)
+    ),
     end=DefinedDateTime.EFFECTIVE_DATETIME,
 )
 
@@ -438,6 +444,8 @@ MONTHLY_POSTINGS_FETCHER = PostingsIntervalFetcher(
 MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID = "MONTH_TO_EFFECTIVE_POSTINGS_FETCHER"
 MONTH_TO_EFFECTIVE_POSTINGS_FETCHER = PostingsIntervalFetcher(
     fetcher_id=MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID,
-    start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(day=1, hour=0, minute=0, second=0)),
+    start=RelativeDateTime(
+        origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(day=1, hour=0, minute=0, second=0)
+    ),
     end=DefinedDateTime.EFFECTIVE_DATETIME,
 )

@@ -87,7 +87,9 @@ class SmartContractRendererTest(TestCase):
         This test is to ensure that only imported symbols are renamed when sharing the same
         object names across the root module and imported module.
         """
-        self._run_render_test(import_single_module, TEST_EXPECTED_OUTPUT_ROOT + "test_import/output.txt")
+        self._run_render_test(
+            import_single_module, TEST_EXPECTED_OUTPUT_ROOT + "test_import/output.txt"
+        )
 
     def test_import_multiple_children(self):
         """
@@ -123,7 +125,9 @@ class SmartContractRendererTest(TestCase):
 
     def test_invalid_import_no_alias(self):
         with self.assertRaises(RenderException) as test:
-            scr = SmartContractRenderer(import_no_alias, renderer_config=self._get_renderer_config())
+            scr = SmartContractRenderer(
+                import_no_alias, renderer_config=self._get_renderer_config()
+            )
             scr.render(write_to_file=False)
         self.assertIn("Import statements must include an 'as' alias", test.exception.args[0])
 
@@ -140,7 +144,8 @@ class SmartContractRendererTest(TestCase):
             scr = SmartContractRenderer(import_sys, renderer_config=self._get_renderer_config())
             scr.render(write_to_file=False)
         self.assertEqual(
-            "import 'sys' (Line: 2 Col: 0) : <module 'sys' (built-in)> is not a whitelisted " "module.",
+            "import 'sys' (Line: 2 Col: 0) : <module 'sys' (built-in)> is not a whitelisted "
+            "module.",
             test.exception.args[0],
         )
 
@@ -200,7 +205,9 @@ class SmartContractRendererTest(TestCase):
             )
             scr.render(write_to_file=False)
         self.assertIn(
-            "`from <x> import <y>` syntax is only available for native python modules exposed by " "the Contracts API. `pathlib` is not such a module. Use `import <x.y> as y` syntax " "instead.",
+            "`from <x> import <y>` syntax is only available for native python modules exposed by "
+            "the Contracts API. `pathlib` is not such a module. Use `import <x.y> as y` syntax "
+            "instead.",
             e.exception.args[0],
         )
 

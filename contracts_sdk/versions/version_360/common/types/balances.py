@@ -40,7 +40,9 @@ class BalanceDefaultDict(types350.BalanceDefaultDict):
         aggregated_balance_dict = deepcopy(self)
         for balance_key, balance in other.items():
             if balance_key in aggregated_balance_dict:
-                aggregated_balance_dict[balance_key] = aggregated_balance_dict[balance_key] + balance
+                aggregated_balance_dict[balance_key] = (
+                    aggregated_balance_dict[balance_key] + balance
+                )
             else:
                 aggregated_balance_dict[balance_key] = balance
 
@@ -67,4 +69,6 @@ class BalanceDefaultDict(types350.BalanceDefaultDict):
 
 
 class BalanceTimeseries(types350.BalanceTimeseries):
-    return_on_empty = lambda *_: BalanceDefaultDict(lambda *_: Balance(_from_proto=True), _from_proto=True)
+    return_on_empty = lambda *_: BalanceDefaultDict(
+        lambda *_: Balance(_from_proto=True), _from_proto=True
+    )

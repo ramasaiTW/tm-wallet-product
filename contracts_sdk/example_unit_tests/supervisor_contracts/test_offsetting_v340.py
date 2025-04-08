@@ -234,7 +234,9 @@ class OffsettingTestCase(SupervisorContracts340TestCase):
             event_type="APPLY_MONTHLY_INTEREST_OFFSETTING",
             effective_date=effective_date,
         )
-        self.vault.supervisees["mortgage"].make_internal_transfer_instructions.assert_called_once_with(
+        self.vault.supervisees[
+            "mortgage"
+        ].make_internal_transfer_instructions.assert_called_once_with(
             amount=Decimal(0.1) * Decimal(12),
             denomination="GBP",
             client_transaction_id="some_client_transaction_id",
@@ -242,7 +244,9 @@ class OffsettingTestCase(SupervisorContracts340TestCase):
             to_account_id="mortgage",
             asset=types.defaultAsset.fixed_value,
         )
-        self.vault.supervisees["mortgage"].instruct_posting_batch.assert_called_once_with(posting_instructions=[savings_posting_instruction_directive])
+        self.vault.supervisees["mortgage"].instruct_posting_batch.assert_called_once_with(
+            posting_instructions=[savings_posting_instruction_directive]
+        )
 
     def test_scheduled_code_with_higher_savings_balance(self):
         effective_date = datetime(year=2020, month=2, day=15)
@@ -377,7 +381,9 @@ class OffsettingTestCase(SupervisorContracts340TestCase):
             event_type="APPLY_MONTHLY_INTEREST_OFFSETTING",
             effective_date=effective_date,
         )
-        self.vault.supervisees["savings"].make_internal_transfer_instructions.assert_called_once_with(
+        self.vault.supervisees[
+            "savings"
+        ].make_internal_transfer_instructions.assert_called_once_with(
             amount=Decimal(0.1) * Decimal(12),
             denomination="GBP",
             client_transaction_id="some_client_transaction_id",
@@ -385,4 +391,6 @@ class OffsettingTestCase(SupervisorContracts340TestCase):
             to_account_id="savings",
             asset=types.defaultAsset.fixed_value,
         )
-        self.vault.supervisees["savings"].instruct_posting_batch.assert_called_once_with(posting_instructions=[savings_posting_instruction_directive])
+        self.vault.supervisees["savings"].instruct_posting_batch.assert_called_once_with(
+            posting_instructions=[savings_posting_instruction_directive]
+        )

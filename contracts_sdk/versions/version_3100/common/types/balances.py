@@ -31,7 +31,9 @@ class BalancesObservation:
                 specific data fetching when only a single data point is needed.
             """,
             public_attributes=cls._public_attributes(language_code),
-            constructor=types_utils.ConstructorSpec(docstring="", args=cls._public_attributes(language_code)),
+            constructor=types_utils.ConstructorSpec(
+                docstring="", args=cls._public_attributes(language_code)
+            ),
         )
 
     @classmethod

@@ -72,10 +72,13 @@ class TestLimitValidation(CommonTransactionLimitTest):
         mock_get_account_tier.return_value = "LOWER_TIER"
         mock_sum_client_transactions.side_effect = [(0, 501), (0, 0)]
         mock_filter_client_transactions.side_effect = [{CTX_ID_1: proposed_ctx}, {}]
-        mock_vault = self.create_mock(client_transactions_mapping={"EFFECTIVE_DATE_POSTINGS_FETCHER": {}})
+        mock_vault = self.create_mock(
+            client_transactions_mapping={"EFFECTIVE_DATE_POSTINGS_FETCHER": {}}
+        )
 
         expected_rejection = Rejection(
-            message=f"Transactions would cause the maximum daily ATM withdrawal limit of " f"500 {DEFAULT_DENOMINATION} to be exceeded.",
+            message=f"Transactions would cause the maximum daily ATM withdrawal limit of "
+            f"500 {DEFAULT_DENOMINATION} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
         # call to function
@@ -315,7 +318,8 @@ class TestLimitValidation(CommonTransactionLimitTest):
         )
 
         expected_rejection = Rejection(
-            message=f"Transactions would cause the maximum daily ATM withdrawal limit of " f"1500 {DEFAULT_DENOMINATION} to be exceeded.",
+            message=f"Transactions would cause the maximum daily ATM withdrawal limit of "
+            f"1500 {DEFAULT_DENOMINATION} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
@@ -332,7 +336,9 @@ class TestLimitValidation(CommonTransactionLimitTest):
     ):
         # mocks
         mock_get_account_tier.return_value = "LOWER_TIER"
-        mock_get_parameter.side_effect = mock_utils_get_parameter({**self.mocked_parameters, "denomination": "GBP"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {**self.mocked_parameters, "denomination": "GBP"}
+        )
         mock_get_limit_per_transaction_type.return_value = {"ATM": "500"}
         mock_filter_client_transactions.return_value = {}
         mock_vault = MagicMock()
@@ -401,12 +407,16 @@ class TestLimitValidation(CommonTransactionLimitTest):
         )
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({**self.mocked_parameters, "daily_withdrawal_limit_by_transaction_type": {"X": "500"}})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {**self.mocked_parameters, "daily_withdrawal_limit_by_transaction_type": {"X": "500"}}
+        )
         mock_get_limit_per_transaction_type.return_value = {"ATM": "500", "X": "500"}
         mock_get_account_tier.return_value = "LOWER_TIER"
         mock_sum_client_transactions.side_effect = [(501, 0), (0, 0)]
         mock_filter_client_transactions.side_effect = [{CTX_ID_1: proposed_ctx}, {}, {}]
-        mock_vault = self.create_mock(client_transactions_mapping={"EFFECTIVE_DATE_POSTINGS_FETCHER": {}})
+        mock_vault = self.create_mock(
+            client_transactions_mapping={"EFFECTIVE_DATE_POSTINGS_FETCHER": {}}
+        )
 
         # call to function
         result = feature.validate(
@@ -472,7 +482,9 @@ class TestLimitValidation(CommonTransactionLimitTest):
         )
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"tiered_daily_withdrawal_limits": {}, "daily_withdrawal_limit_by_transaction_type": {}})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"tiered_daily_withdrawal_limits": {}, "daily_withdrawal_limit_by_transaction_type": {}}
+        )
         mock_get_account_tier.return_value = "LOWER_TIER"
         # call to function
         result = feature.validate(
@@ -495,49 +507,73 @@ class TestLimitValidation(CommonTransactionLimitTest):
 @patch.object(feature.account_tiers, "get_account_tier")
 @patch.object(feature.utils, "get_parameter")
 class TestParameterChangeValidation(CommonTransactionLimitTest):
-    def test_account_tier_not_in_tiered_daily_limits_returns_none(self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock):
+    def test_account_tier_not_in_tiered_daily_limits_returns_none(
+        self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock
+    ):
         # mocks
         mock_get_account_tier.return_value = sentinel.tier
-        mock_get_parameter.side_effect = mock_utils_get_parameter({PARAM_TIERED_LIMIT: {"OTHER_TIER": {}}})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {PARAM_TIERED_LIMIT: {"OTHER_TIER": {}}}
+        )
 
         # call to function
-        result = feature.validate_parameter_change(vault=sentinel.vault, proposed_parameter_value=dumps({"ATM": "11"}))
+        result = feature.validate_parameter_change(
+            vault=sentinel.vault, proposed_parameter_value=dumps({"ATM": "11"})
+        )
 
         # assertions
         self.assertIsNone(result)
 
-    def test_validate_parameter_change_rejection(self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock):
+    def test_validate_parameter_change_rejection(
+        self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock
+    ):
         # mocks
         tiered_limit_dict = {"ATM": "10"}
         mock_get_account_tier.return_value = sentinel.tier
-        mock_get_parameter.side_effect = mock_utils_get_parameter({PARAM_TIERED_LIMIT: {sentinel.tier: tiered_limit_dict}, "denomination": "GBP"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {PARAM_TIERED_LIMIT: {sentinel.tier: tiered_limit_dict}, "denomination": "GBP"}
+        )
 
         # call to function
-        result = feature.validate_parameter_change(vault=sentinel.vault, proposed_parameter_value=dumps({"X": "1", "ATM": "11"}))
+        result = feature.validate_parameter_change(
+            vault=sentinel.vault, proposed_parameter_value=dumps({"X": "1", "ATM": "11"})
+        )
         expected_rejection = Rejection(
-            message=f"Cannot update ATM transaction type limit for " "Maximum Daily Withdrawal Amount because 11 GBP exceeds " f"tiered limit of 10 GBP for active {sentinel.tier}.",
+            message=f"Cannot update ATM transaction type limit for "
+            "Maximum Daily Withdrawal Amount because 11 GBP exceeds "
+            f"tiered limit of 10 GBP for active {sentinel.tier}.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
         # assertions
         self.assertEqual(result, expected_rejection)
 
-    def test_no_tiered_daily_limits_returns_none(self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock):
+    def test_no_tiered_daily_limits_returns_none(
+        self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock
+    ):
         # mocks
         mock_get_account_tier.return_value = sentinel.tier
         mock_get_parameter.side_effect = mock_utils_get_parameter({PARAM_TIERED_LIMIT: {}})
         # call to function
-        result = feature.validate_parameter_change(vault=sentinel.vault, proposed_parameter_value=dumps({"X": "1", "ATM": "9"}))
+        result = feature.validate_parameter_change(
+            vault=sentinel.vault, proposed_parameter_value=dumps({"X": "1", "ATM": "9"})
+        )
         # assertions
         self.assertIsNone(result)
 
-    def test_new_parameter_value_is_equal_to_tiered_limit_value(self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock):
+    def test_new_parameter_value_is_equal_to_tiered_limit_value(
+        self, mock_get_parameter: MagicMock, mock_get_account_tier: MagicMock
+    ):
         # mocks
         tiered_limit_dict = {"ATM": "10"}
         mock_get_account_tier.return_value = sentinel.tier
-        mock_get_parameter.side_effect = mock_utils_get_parameter({PARAM_TIERED_LIMIT: {sentinel.tier: tiered_limit_dict}, "denomination": "GBP"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {PARAM_TIERED_LIMIT: {sentinel.tier: tiered_limit_dict}, "denomination": "GBP"}
+        )
         # call to function
-        result = feature.validate_parameter_change(vault=sentinel.vault, proposed_parameter_value=dumps({"X": "1", "ATM": "10"}))
+        result = feature.validate_parameter_change(
+            vault=sentinel.vault, proposed_parameter_value=dumps({"X": "1", "ATM": "10"})
+        )
         # assertions
         self.assertIsNone(result)
 
@@ -549,7 +585,9 @@ class TestFeatureHelperFunctions(CommonTransactionLimitTest):
         daily_limit_dict = {"ATM": "501", "X": "1"}
 
         # call to function
-        result = feature._get_limit_per_transaction_type(tiered_limit_dict=tiered_limit_dict, daily_limit_dict=daily_limit_dict)
+        result = feature._get_limit_per_transaction_type(
+            tiered_limit_dict=tiered_limit_dict, daily_limit_dict=daily_limit_dict
+        )
         expected_dict = {"ATM": "500", "X": "1"}
 
         # assertions

@@ -19,9 +19,13 @@ class EventTypesGroup:
         if self.name is None or self.name == "":
             raise exceptions.InvalidSmartContractError("EventTypesGroup 'name' must be populated")
 
-        types_utils.get_iterator(self.event_types_order, "str", "event_types_order", check_empty=True)
+        types_utils.get_iterator(
+            self.event_types_order, "str", "event_types_order", check_empty=True
+        )
         if len(self.event_types_order) < 2:
-            raise exceptions.InvalidSmartContractError("An EventTypesGroup must have at least two event types")
+            raise exceptions.InvalidSmartContractError(
+                "An EventTypesGroup must have at least two event types"
+            )
 
     @classmethod
     @lru_cache()
@@ -187,17 +191,29 @@ class ScheduleExpression:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(name="day", type="Optional[Union[str, int]]", docstring="Day of the month (1-31)."),
+            types_utils.ValueSpec(
+                name="day", type="Optional[Union[str, int]]", docstring="Day of the month (1-31)."
+            ),
             types_utils.ValueSpec(
                 name="day_of_week",
                 type="Optional[Union[str, int]]",
                 docstring="Day of the week (0-6 or mon-sun).",
             ),
-            types_utils.ValueSpec(name="hour", type="Optional[Union[str, int]]", docstring="Hour (0-23)."),
-            types_utils.ValueSpec(name="minute", type="Optional[Union[str, int]]", docstring="Minute (0-59)."),
-            types_utils.ValueSpec(name="second", type="Optional[Union[str, int]]", docstring="Second (0-59)."),
-            types_utils.ValueSpec(name="month", type="Optional[Union[str, int]]", docstring="Month (1-12)."),
-            types_utils.ValueSpec(name="year", type="Optional[Union[str, int]]", docstring="Year (4-digit year)."),
+            types_utils.ValueSpec(
+                name="hour", type="Optional[Union[str, int]]", docstring="Hour (0-23)."
+            ),
+            types_utils.ValueSpec(
+                name="minute", type="Optional[Union[str, int]]", docstring="Minute (0-59)."
+            ),
+            types_utils.ValueSpec(
+                name="second", type="Optional[Union[str, int]]", docstring="Second (0-59)."
+            ),
+            types_utils.ValueSpec(
+                name="month", type="Optional[Union[str, int]]", docstring="Month (1-12)."
+            ),
+            types_utils.ValueSpec(
+                name="year", type="Optional[Union[str, int]]", docstring="Year (4-digit year)."
+            ),
         ]
 
     @classmethod
@@ -219,7 +235,10 @@ class ScheduleExpression:
             ),
             public_attributes=cls._public_attributes(language_code),
             constructor=types_utils.ConstructorSpec(
-                docstring=("Constructs a new ScheduleExpression. At least one of the optional attributes " "must be provided."),
+                docstring=(
+                    "Constructs a new ScheduleExpression. At least one of the optional attributes "
+                    "must be provided."
+                ),
                 args=cls._public_attributes(language_code),
             ),
         )
@@ -352,11 +371,18 @@ class ScheduledEvent:
 
         if not self.skip:
             if not self.end_datetime and not self.expression and not self.schedule_method:
-                raise exceptions.InvalidSmartContractError("ScheduledEvent must have an end_datetime, expression, schedule_method " "or skip set")
+                raise exceptions.InvalidSmartContractError(
+                    "ScheduledEvent must have an end_datetime, expression, schedule_method "
+                    "or skip set"
+                )
             if self.expression and self.schedule_method:
-                raise exceptions.InvalidSmartContractError("ScheduledEvent must not have both expression and schedule_method set")
+                raise exceptions.InvalidSmartContractError(
+                    "ScheduledEvent must not have both expression and schedule_method set"
+                )
             if not self.expression and not self.schedule_method:
-                raise exceptions.InvalidSmartContractError("ScheduledEvent must have exactly one of expression or schedule_method set")
+                raise exceptions.InvalidSmartContractError(
+                    "ScheduledEvent must have exactly one of expression or schedule_method set"
+                )
 
     @classmethod
     @lru_cache()
@@ -467,7 +493,9 @@ class EventType:
                 [conversion_hook](../../smart_contracts_api_reference4xx/hooks/#conversion_hook).
             """,
             public_attributes=cls._public_attributes(language_code),
-            constructor=types_utils.ConstructorSpec(docstring="Constructs a new EventType", args=cls._public_attributes(language_code)),
+            constructor=types_utils.ConstructorSpec(
+                docstring="Constructs a new EventType", args=cls._public_attributes(language_code)
+            ),
         )
 
     @classmethod
@@ -545,7 +573,9 @@ class SupervisorContractEventType(EventType):
         super()._validate_attributes()
 
         if self.overrides_event_types:
-            iterator = types_utils.get_iterator(self.overrides_event_types, "Tuple[str, str]", "overrides_event_types")
+            iterator = types_utils.get_iterator(
+                self.overrides_event_types, "Tuple[str, str]", "overrides_event_types"
+            )
             for item in iterator:
                 types_utils.validate_type(item, tuple, hint="Tuple[str, str]")
 

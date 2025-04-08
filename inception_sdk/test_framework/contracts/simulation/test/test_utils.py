@@ -48,9 +48,15 @@ from inception_sdk.test_framework.contracts.simulation.utils import (
     print_postings,
 )
 
-SIMULATOR_RESPONSE_FILE = "inception_sdk/test_framework/contracts/simulation/test/sample_simulator_response"
-BACKDATED_SIMULATOR_RESPONSE_FILE = "inception_sdk/test_framework/contracts/simulation/test/backdated_simulator_response"
-SUPERVISOR_RESPONSE_FILE = "inception_sdk/test_framework/contracts/simulation/test/sample_supervisor_response"
+SIMULATOR_RESPONSE_FILE = (
+    "inception_sdk/test_framework/contracts/simulation/test/sample_simulator_response"
+)
+BACKDATED_SIMULATOR_RESPONSE_FILE = (
+    "inception_sdk/test_framework/contracts/simulation/test/backdated_simulator_response"
+)
+SUPERVISOR_RESPONSE_FILE = (
+    "inception_sdk/test_framework/contracts/simulation/test/sample_supervisor_response"
+)
 
 
 class TestSimulationTestCase(TestCase):
@@ -139,7 +145,9 @@ class TestSimulationTestCase(TestCase):
             ]
         )
         self.assertEqual(mock_renderer.call_count, 2)
-        mock_renderer_instance.render.assert_has_calls([call(write_to_file=False), call(write_to_file=False)])
+        mock_renderer_instance.render.assert_has_calls(
+            [call(write_to_file=False), call(write_to_file=False)]
+        )
 
         mock_load_test_config_method.assert_called_once()
         mock_load_input_data_method.assert_called_once()
@@ -222,7 +230,9 @@ class UtilsTest(SimulationTestCase):
         self.assertEqual(internal_balances.latest()[BalanceDimensions()].net, Decimal("-1030"))
 
     def test_get_flag_definition_created(self):
-        is_flag_created = get_flag_definition_created(res=self.sample_res, flag_definition_id="debug_flag")
+        is_flag_created = get_flag_definition_created(
+            res=self.sample_res, flag_definition_id="debug_flag"
+        )
 
         self.assertTrue(is_flag_created)
 
@@ -250,7 +260,9 @@ class UtilsTest(SimulationTestCase):
 
         self.assertNotIn('account "Main account"', account_logs_1)
         self.assertIn('account "1"', account_logs_1)
-        account_logs_supervisor = get_account_logs(res=self.supervisor_res, account_id="Savings Account")
+        account_logs_supervisor = get_account_logs(
+            res=self.supervisor_res, account_id="Savings Account"
+        )
 
         self.assertNotIn('account "Checking Account"', account_logs_supervisor)
         self.assertIn('account "Savings Account"', account_logs_supervisor)
@@ -271,20 +283,28 @@ class UtilsTest(SimulationTestCase):
 
         self.assertTrue(plan_created)
 
-        plan_not_existing_id = get_plan_created(res=self.supervisor_res, plan_id="1", supervisor_version_id="5")
+        plan_not_existing_id = get_plan_created(
+            res=self.supervisor_res, plan_id="1", supervisor_version_id="5"
+        )
 
         self.assertFalse(plan_not_existing_id)
 
     def test_get_plan_assoc_created(self):
-        checking_account_plan_created = get_plan_assoc_created(res=self.supervisor_res, plan_id="1", account_id="Checking Account")
+        checking_account_plan_created = get_plan_assoc_created(
+            res=self.supervisor_res, plan_id="1", account_id="Checking Account"
+        )
 
         self.assertTrue(checking_account_plan_created)
 
-        savings_account_plan_created = get_plan_assoc_created(res=self.supervisor_res, plan_id="1", account_id="Savings Account")
+        savings_account_plan_created = get_plan_assoc_created(
+            res=self.supervisor_res, plan_id="1", account_id="Savings Account"
+        )
 
         self.assertTrue(savings_account_plan_created)
 
-        plan_not_created = get_plan_assoc_created(res=self.supervisor_res, plan_id="1", account_id="Youth Account")
+        plan_not_created = get_plan_assoc_created(
+            res=self.supervisor_res, plan_id="1", account_id="Youth Account"
+        )
 
         self.assertFalse(plan_not_created)
 
@@ -322,7 +342,9 @@ class UtilsTest(SimulationTestCase):
 
     def test_get_posting_instruction_batch_at_with_one_result(self):
         account_id = "Main account"
-        pibs = get_posting_instruction_batch(res=self.sample_res, event_type="outbound_hard_settlement")
+        pibs = get_posting_instruction_batch(
+            res=self.sample_res, event_type="outbound_hard_settlement"
+        )
 
         self.assertListEqual(
             pibs[account_id].at(datetime(2019, 1, 1, tzinfo=timezone.utc)),
@@ -394,11 +416,15 @@ class UtilsTest(SimulationTestCase):
         self.assertEqual(len(pibs), 0)
 
     def test_get_num_default_postings(self):
-        num_postings = get_num_postings(res=self.sample_res, balance_dimensions=BalanceDimensions(address="DEFAULT"))
+        num_postings = get_num_postings(
+            res=self.sample_res, balance_dimensions=BalanceDimensions(address="DEFAULT")
+        )
         self.assertEqual(num_postings, 4)
 
     def test_get_processed_scheduled_events(self):
-        scheduled_events_timestamp = get_processed_scheduled_events(res=self.sample_res, event_id="ACCRUE_INTEREST", account_id="1")
+        scheduled_events_timestamp = get_processed_scheduled_events(
+            res=self.sample_res, event_id="ACCRUE_INTEREST", account_id="1"
+        )
 
         self.assertEqual("2019-01-01T00:00:00Z", scheduled_events_timestamp[0])
         self.assertEqual("2019-01-02T00:00:00Z", scheduled_events_timestamp[1])
@@ -498,7 +524,8 @@ class UtilsTest(SimulationTestCase):
                 contract_notifications=notifications,
             )
         self.assertIn(
-            "Notification found for type and resource id but with different details: " "{'some_key': 'some_value'}.\\nExpected {'some_other_key': 'some_other_value'}",
+            "Notification found for type and resource id but with different details: "
+            "{'some_key': 'some_value'}.\\nExpected {'some_other_key': 'some_other_value'}",
             str(ctx.exception),
         )
 
@@ -533,7 +560,11 @@ class UtilsTest(SimulationTestCase):
                         rejection_reason="dummy_rejection_reason",
                     )
                 ],
-                logs_with_timestamp={datetime(2019, 3, 5, tzinfo=timezone.utc): ["account parameters update rejected: dummy_rejection_reason"]},
+                logs_with_timestamp={
+                    datetime(2019, 3, 5, tzinfo=timezone.utc): [
+                        "account parameters update rejected: dummy_rejection_reason"
+                    ]
+                },
             )
         )
 
@@ -546,7 +577,11 @@ class UtilsTest(SimulationTestCase):
         with self.assertRaises(AssertionError) as ctx:
             self.check_parameter_change_rejections(
                 expected_rejections=[test_rejection],
-                logs_with_timestamp={datetime(2019, 3, 5, tzinfo=timezone.utc): ["account parameters update rejected: other_rejection_reason"]},
+                logs_with_timestamp={
+                    datetime(2019, 3, 5, tzinfo=timezone.utc): [
+                        "account parameters update rejected: other_rejection_reason"
+                    ]
+                },
             )
         self.assertIn(
             f"expected values not found: {[test_rejection]}",
@@ -562,7 +597,11 @@ class UtilsTest(SimulationTestCase):
         with self.assertRaises(AssertionError) as ctx:
             self.check_parameter_change_rejections(
                 expected_rejections=[test_rejection],
-                logs_with_timestamp={datetime(2019, 3, 5, 1, tzinfo=timezone.utc): ["account parameters update rejected: dummy_rejection_reason"]},
+                logs_with_timestamp={
+                    datetime(2019, 3, 5, 1, tzinfo=timezone.utc): [
+                        "account parameters update rejected: dummy_rejection_reason"
+                    ]
+                },
             )
         self.assertIn(
             f"expected values not found: {[test_rejection]}",
@@ -589,12 +628,20 @@ class UtilsTest(SimulationTestCase):
 
     def test_run_test_scenario_no_configs(self):
         with self.assertRaises(ValueError) as ctx:
-            self.run_test_scenario(SimulationTestScenario(sub_tests=[], start=datetime(2020, 1, 1), end=datetime(2020, 1, 2)))
-        self.assertEqual(ctx.exception.args[0], "Test scenario must have supervisor or contract config!")
+            self.run_test_scenario(
+                SimulationTestScenario(
+                    sub_tests=[], start=datetime(2020, 1, 1), end=datetime(2020, 1, 2)
+                )
+            )
+        self.assertEqual(
+            ctx.exception.args[0], "Test scenario must have supervisor or contract config!"
+        )
 
     @mock.patch.object(utils, "compile_chrono_events")
     @mock.patch.object(utils, "load_file_contents")
-    def test_run_test_scenario_supervisor_config(self, load_file_contents_mock, compile_chrono_events_mock):
+    def test_run_test_scenario_supervisor_config(
+        self, load_file_contents_mock, compile_chrono_events_mock
+    ):
         compile_chrono_events_mock.return_value = [], []
         load_file_contents_mock.side_effect = lambda x: x + "_contents"
         supervisor_config = SupervisorConfig(
@@ -662,7 +709,9 @@ class UtilsTest(SimulationTestCase):
 
     @mock.patch.object(utils, "compile_chrono_events")
     @mock.patch.object(utils, "load_file_contents")
-    def test_run_test_scenario_error_expectation(self, load_file_contents_mock, compile_chrono_events_mock):
+    def test_run_test_scenario_error_expectation(
+        self, load_file_contents_mock, compile_chrono_events_mock
+    ):
         compile_chrono_events_mock.return_value = [], []
         load_file_contents_mock.side_effect = lambda x: x + "_contents"
         sample_config = ContractConfig(
@@ -796,7 +845,9 @@ def sys_stdout(func, *args, **kwargs):
 class TestGetContractContents(TestCase):
     def test_get_prepopulated_contract_content(self):
         test_content = "some_content"
-        contract_configs = [ContractConfig(template_params={}, account_configs=[], contract_content=test_content)]
+        contract_configs = [
+            ContractConfig(template_params={}, account_configs=[], contract_content=test_content)
+        ]
         contents = get_contract_contents(contract_configs)
         self.assertEqual(contents, [test_content])
 
@@ -805,7 +856,9 @@ class TestGetContractContents(TestCase):
         test_content = "some_content"
         mock_load_file_contents_method.return_value = test_content
 
-        contract_configs = [ContractConfig(template_params={}, account_configs=[], contract_file_path="some_path")]
+        contract_configs = [
+            ContractConfig(template_params={}, account_configs=[], contract_file_path="some_path")
+        ]
         contents = get_contract_contents(contract_configs)
         self.assertEqual(contents, [test_content])
 
@@ -865,7 +918,9 @@ class TestDataObjects(TestCase):
         # check supervisee contract configs
         expected_supervisee_contracts = [supervisee_1, supervisee_2]
         for i, supervisee_contract in enumerate(supervisor_config.supervisee_contracts):
-            self.assertEqual(supervisee_contract.clu_resource_id, expected_supervisee_contracts[i].contract_id)
+            self.assertEqual(
+                supervisee_contract.clu_resource_id, expected_supervisee_contracts[i].contract_id
+            )
             self.assertEqual(
                 supervisee_contract.contract_file_path,
                 expected_supervisee_contracts[i].contract_file,

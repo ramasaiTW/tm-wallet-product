@@ -144,7 +144,9 @@ class RendererTest(TestCase):
                     name="function_1",
                     namespaced_name="module_1_function_1",
                     module_from=module_1,
-                    stmt=ast.parse("def module_1_function_1():\n\treturn module_2_attribute_1").body[0],
+                    stmt=ast.parse(
+                        "def module_1_function_1():\n\treturn module_2_attribute_1"
+                    ).body[0],
                 ),
                 ImportedObject(
                     name="attribute_1",
@@ -221,7 +223,9 @@ class RendererTest(TestCase):
         )
 
     @patch.object(renderer, "get_stmt_attribute_data")
-    def test_remove_unused_objects_unreferenced_child_objects(self, mock_get_stmt_attribute_data: Mock):
+    def test_remove_unused_objects_unreferenced_child_objects(
+        self, mock_get_stmt_attribute_data: Mock
+    ):
         """
         This test ensures that where a feature is imported that contains a function that references
         another function from the same feature, both are removed if they aren't referenced by any
@@ -247,7 +251,9 @@ class RendererTest(TestCase):
                 name="get_schedules",
                 namespaced_name="module_1_get_schedules",
                 module_from=module_1,
-                stmt=ast.parse("def get_schedules():\n\t return module_1_feature_schedules").body[0],
+                stmt=ast.parse("def get_schedules():\n\t return module_1_feature_schedules").body[
+                    0
+                ],
             ),
         ]
 
@@ -258,7 +264,9 @@ class RendererTest(TestCase):
 
     @patch.object(renderer, "combine_module_and_object_name")
     @patch.object(renderer, "RenameDefinitionTransformer")
-    def test_rename_imported_object_definitions(self, mock_RenameDefinitionTransformer: Mock, mock_combine_module_and_object_name: Mock):
+    def test_rename_imported_object_definitions(
+        self, mock_RenameDefinitionTransformer: Mock, mock_combine_module_and_object_name: Mock
+    ):
         """
         Ensure all imported objects are renamed. That is, all objects from module_2 and module_3.
         """
@@ -309,11 +317,15 @@ class RendererTest(TestCase):
             module_3: [module_3_attribute_1],
         }
         scr._rename_imported_object_definitions()
-        mock_RenameDefinitionTransformer.assert_any_call([module_2_attribute_1, module_2_attribute_2, module_2_function_1])
+        mock_RenameDefinitionTransformer.assert_any_call(
+            [module_2_attribute_1, module_2_attribute_2, module_2_function_1]
+        )
         mock_RenameDefinitionTransformer.assert_any_call([module_3_attribute_1])
 
     @patch.object(renderer, "combine_module_and_object_name")
-    def test_rename_imported_object_declarations_tuple_throws_exception(self, mock_combine_module_and_object_name: Mock):
+    def test_rename_imported_object_declarations_tuple_throws_exception(
+        self, mock_combine_module_and_object_name: Mock
+    ):
         """
         Ensure all imported objects are renamed. That is, all objects from module_2 and module_3.
         """
@@ -341,7 +353,9 @@ class RendererTest(TestCase):
             ObjectDiscovery(scr, module_2).visit(imported_tuple.stmt)
         self.assertEqual(
             test.exception.args[0],
-            "Unable to assign to target of type " "<class 'ast.Tuple'> in inception_sdk.tools.renderer.test.unit.input.module_2 " "(Line: 1 Col: 0)",
+            "Unable to assign to target of type "
+            "<class 'ast.Tuple'> in inception_sdk.tools.renderer.test.unit.input.module_2 "
+            "(Line: 1 Col: 0)",
         )
 
     def test_append_node(self):
@@ -391,7 +405,9 @@ class RendererTest(TestCase):
             ).body[0],
             module_from=mock_module,
         )
-        self.assertEqual(mock_scr.module_object_definitions[mock_module][0], expected_imported_object)
+        self.assertEqual(
+            mock_scr.module_object_definitions[mock_module][0], expected_imported_object
+        )
         self.assertTrue(
             compare_ast(
                 mock_scr.module_object_definitions[mock_module][0].stmt,
@@ -433,7 +449,9 @@ class RendererTest(TestCase):
             ).body[0],
             module_from=mock_module,
         )
-        self.assertEqual(mock_scr.module_object_definitions[mock_module][0], expected_imported_object)
+        self.assertEqual(
+            mock_scr.module_object_definitions[mock_module][0], expected_imported_object
+        )
         self.assertTrue(
             compare_ast(
                 mock_scr.module_object_definitions[mock_module][0].stmt,
@@ -475,7 +493,9 @@ class RendererTest(TestCase):
             ).body[0],
             module_from=mock_module,
         )
-        self.assertEqual(mock_scr.module_object_definitions[mock_module][0], expected_imported_object)
+        self.assertEqual(
+            mock_scr.module_object_definitions[mock_module][0], expected_imported_object
+        )
         self.assertTrue(
             compare_ast(
                 mock_scr.module_object_definitions[mock_module][0].stmt,
@@ -519,7 +539,9 @@ class RendererTest(TestCase):
             ).body[0],
             module_from=mock_module,
         )
-        self.assertEqual(mock_scr.module_object_definitions[mock_module][0], expected_imported_object)
+        self.assertEqual(
+            mock_scr.module_object_definitions[mock_module][0], expected_imported_object
+        )
         self.assertTrue(
             compare_ast(
                 mock_scr.module_object_definitions[mock_module][0].stmt,
@@ -601,10 +623,16 @@ class RendererTest(TestCase):
         scr = SmartContractRenderer(v4_contract_template)
         aus_mortgage = Mock(name="aus_mortgage", __name__="aus_mortgage")
         utils = Mock(name="utils", __name__="library.features.common.utils")
-        interest_accrual = Mock(name="interest_accrual", __name__="library.features.lending.interest_accrual")
-        interest_application = Mock(name="interest_application", __name__="library.features.interest.interest_application")
+        interest_accrual = Mock(
+            name="interest_accrual", __name__="library.features.lending.interest_accrual"
+        )
+        interest_application = Mock(
+            name="interest_application", __name__="library.features.interest.interest_application"
+        )
         fixed_rate = Mock(name="fixed_rate", __name__="library.features.interest.fixed_rate")
-        variable_rate = Mock(name="variable_rate", __name__="library.features.interest.variable_rate")
+        variable_rate = Mock(
+            name="variable_rate", __name__="library.features.interest.variable_rate"
+        )
         fixed_to_variable_rate = Mock(
             name="fixed_to_variable_rate",
             __name__="library.features.interest.fixed_to_variable_rate",
@@ -776,7 +804,9 @@ class RendererTest(TestCase):
         mock_write_smart_contract_to_file.assert_not_called()
 
     @patch.object(renderer, "is_module_in_contracts_language_v4")
-    def test_render_init_fails_for_non_v4_contracts(self, mock_is_module_in_contracts_language_v4: Mock):
+    def test_render_init_fails_for_non_v4_contracts(
+        self, mock_is_module_in_contracts_language_v4: Mock
+    ):
         mock_is_module_in_contracts_language_v4.return_value = False
         with self.assertRaises(ValueError):
             SmartContractRenderer(module_1)

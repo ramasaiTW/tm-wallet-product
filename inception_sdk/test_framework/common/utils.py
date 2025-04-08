@@ -67,7 +67,10 @@ def _parse_clu_reference(reference: str) -> str:
     """
 
     if ":" in reference:
-        raise ValueError(f"Reference `{reference}` contains `resource_id:resource_field` CLU syntax " f"that is not yet supported by our tooling")
+        raise ValueError(
+            f"Reference `{reference}` contains `resource_id:resource_field` CLU syntax "
+            f"that is not yet supported by our tooling"
+        )
 
     return reference
 
@@ -88,7 +91,9 @@ def identify_clu_dependencies(resource_id: str, resource: str) -> list[ResourceD
         if resource[index] == "{" and resource[index - 1] == "&":
             # dependency_start_idx is only non-0 if we're already inside a `&{` block
             if dependency_start_idx > 0:
-                raise ValueError(f"Nested dependency reference in resource `{resource_id}` at position `{index}`")
+                raise ValueError(
+                    f"Nested dependency reference in resource `{resource_id}` at position `{index}`"
+                )
             dependency_start_idx = index + 1
         elif dependency_start_idx > 0 and resource[index] == "}":
             dependencies.append(
@@ -101,7 +106,10 @@ def identify_clu_dependencies(resource_id: str, resource: str) -> list[ResourceD
             )
             dependency_start_idx = 0
         elif resource[index] == os.linesep and dependency_start_idx > 0:
-            raise ValueError(f"Dependency reference split across lines in resource `{resource_id}` " f"at position `{index}`")
+            raise ValueError(
+                f"Dependency reference split across lines in resource `{resource_id}` "
+                f"at position `{index}`"
+            )
 
     return dependencies
 
@@ -113,7 +121,10 @@ def safe_merge_dicts(dicts: Iterable[dict]) -> dict:
     """
 
     if duplicates := _identify_duplicate_dict_keys(*dicts):  # noqa
-        raise KeyError(f"Duplicate resource ids found across id mappings for different resource types: " f"{duplicates}")
+        raise KeyError(
+            f"Duplicate resource ids found across id mappings for different resource types: "
+            f"{duplicates}"
+        )
     return _merge_dicts(dicts)
 
 
@@ -168,12 +179,22 @@ def replace_clu_dependencies(
     # process backwards so that indices aren't affected by replacements
     for dependency in reversed(dependencies):
         if dependency_replacement := merged_mapping.get(dependency.target_id):
-            resource = resource[: dependency.start_position] + dependency_replacement + resource[dependency.end_position + 1 :]
+            resource = (
+                resource[: dependency.start_position]
+                + dependency_replacement
+                + resource[dependency.end_position + 1 :]
+            )
         elif remove_clu_syntax_for_unknown_ids:
             # This just removes the `&{` prefix and `}` suffix
-            resource = resource[: dependency.start_position] + dependency.target_id + resource[dependency.end_position + 1 :]
+            resource = (
+                resource[: dependency.start_position]
+                + dependency.target_id
+                + resource[dependency.end_position + 1 :]
+            )
         else:
-            raise CLUMissingMapping(f"Could not find mapping for CLU reference `{dependency.target_id}`")
+            raise CLUMissingMapping(
+                f"Could not find mapping for CLU reference `{dependency.target_id}`"
+            )
 
     return resource
 
@@ -191,7 +212,12 @@ class ScheduleTagReplacer(ast.NodeTransformer):
 
         # We consider any assignment of a str value to single name as a module constant
         self.module_constants = {
-            x.targets[0].id: x.value.value for x in node.body if type(x) is ast.Assign and isinstance(x.value, ast.Str) and len(x.targets) == 1 and isinstance(x.targets[0], ast.Name)
+            x.targets[0].id: x.value.value
+            for x in node.body
+            if type(x) is ast.Assign
+            and isinstance(x.value, ast.Str)
+            and len(x.targets) == 1
+            and isinstance(x.targets[0], ast.Name)
         }
 
         return self.generic_visit(node)
@@ -216,7 +242,9 @@ class ScheduleTagReplacer(ast.NodeTransformer):
             return self.generic_visit(node)
 
         if event_type_name is None:
-            raise ValueError("SmartContractEventType/SupervisorContractEventType has no `name` kwarg")
+            raise ValueError(
+                "SmartContractEventType/SupervisorContractEventType has no `name` kwarg"
+            )
         # We're assuming the __repr__ have been replaced, evaluating the tag ids to a string
         # (ast.Constant) or leaving it as a variable (ast.Name)
         elif isinstance(event_type_name.value, ast.Constant):
@@ -224,10 +252,14 @@ class ScheduleTagReplacer(ast.NodeTransformer):
         elif isinstance(event_type_name.value, ast.Name):
             event_type_name_value = self.module_constants.get(event_type_name.value.id, "")
         else:
-            log.warning(f"EventType name {event_type_name} has unrecognised type. Tag ids won't be replaced")
+            log.warning(
+                f"EventType name {event_type_name} has unrecognised type. Tag ids won't be replaced"
+            )
             return self.generic_visit(node)
 
-        desired_tag_id = self.event_type_name_to_tag_ids.get(event_type_name_value, self.default_tag_id)
+        desired_tag_id = self.event_type_name_to_tag_ids.get(
+            event_type_name_value, self.default_tag_id
+        )
 
         log.debug(f"Upserting scheduler_tag_ids for {event_type_name_value} to {desired_tag_id}")
         keyword_value = ast.List(elts=[ast.Constant(value=desired_tag_id)])
@@ -240,7 +272,9 @@ class ScheduleTagReplacer(ast.NodeTransformer):
         return self.generic_visit(node)
 
 
-def replace_schedule_tag_ids_in_contract(contract_data: str, id_mapping: dict[str, str], default_paused_tag_id: str) -> str:
+def replace_schedule_tag_ids_in_contract(
+    contract_data: str, id_mapping: dict[str, str], default_paused_tag_id: str
+) -> str:
     """
     Replaces the original scheduler tag ids inside a smart contract with the run-specific ids
     :param contract_data: the smart contract code
@@ -256,7 +290,9 @@ def replace_schedule_tag_ids_in_contract(contract_data: str, id_mapping: dict[st
     return rendered_contract
 
 
-def replace_flags_in_parameter(param_value: dict[str, Any], id_mapping: dict[str, str]) -> dict[str, Any] | list[str]:
+def replace_flags_in_parameter(
+    param_value: dict[str, Any], id_mapping: dict[str, str]
+) -> dict[str, Any] | list[str]:
     """
     Replaces the original flag definition ids inside a parameter value with the run-specific ids
     Examples of parameter values json strings that contain flags are
@@ -298,7 +334,9 @@ def replace_flags_in_parameter(param_value: dict[str, Any], id_mapping: dict[str
     return return_value
 
 
-def _replace_flags_in_dict(value_dict: dict[str, Any], id_mapping: dict[str, str]) -> dict[str, Any]:
+def _replace_flags_in_dict(
+    value_dict: dict[str, Any], id_mapping: dict[str, str]
+) -> dict[str, Any]:
     """
     Replace the flags in a dictionary with the run-specific ids
     :param value_dict: dictionary from the key-value pair {"flag_key": dict}

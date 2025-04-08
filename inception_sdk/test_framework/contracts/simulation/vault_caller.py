@@ -74,7 +74,9 @@ class Client:
         self._set_session_headers()
 
     @_auth_required
-    def _api_get(self, url: str, params: dict[str, Any], timeout: str, debug=False) -> list[dict[str, Any]]:
+    def _api_get(
+        self, url: str, params: dict[str, Any], timeout: str, debug=False
+    ) -> list[dict[str, Any]]:
         response: requests.Response = self._session.get(
             url=self._core_api_url + url,
             params=params,
@@ -84,7 +86,9 @@ class Client:
         return self._handle_response(response, debug)
 
     @_auth_required
-    def _api_post(self, url: str, payload: dict[str, Any], timeout: str, debug=False) -> list[dict[str, Any]]:
+    def _api_post(
+        self, url: str, payload: dict[str, Any], timeout: str, debug=False
+    ) -> list[dict[str, Any]]:
         response: requests.Response = self._session.post(
             self._core_api_url + url,
             headers={"grpc-timeout": timeout},
@@ -186,7 +190,9 @@ class Client:
                     tside = internal_account_ids.get(internal_account_id, "LIABILITY")
                 else:
                     tside = "LIABILITY"
-                contract_file_path = EMPTY_ASSET_CONTRACT if tside == "ASSET" else EMPTY_LIABILITY_CONTRACT
+                contract_file_path = (
+                    EMPTY_ASSET_CONTRACT if tside == "ASSET" else EMPTY_LIABILITY_CONTRACT
+                )
                 internal_account = account_to_simulate(
                     timestamp=start_timestamp,
                     account_id=internal_account_id,
@@ -200,7 +206,9 @@ class Client:
 
         if flag_definition_ids:
             for flag_definition_id in flag_definition_ids:
-                flag_definition_event = create_flag_definition_event(timestamp=start_timestamp, flag_definition_id=flag_definition_id)
+                flag_definition_event = create_flag_definition_event(
+                    timestamp=start_timestamp, flag_definition_id=flag_definition_id
+                )
                 default_events.append(flag_definition_event)
 
         for account in account_creation_events:
@@ -212,7 +220,10 @@ class Client:
 
         if supervisor_contract_code is not None:
             if not supervisee_version_id_mapping:
-                raise ValueError("supervisee_version_id_mapping missing or empty for a test using " "supervisor_contract_code")
+                raise ValueError(
+                    "supervisee_version_id_mapping missing or empty for a test using "
+                    "supervisor_contract_code"
+                )
 
             supervisor_contract_code = replace_clu_dependencies(
                 "UNKNOWN",
@@ -221,9 +232,20 @@ class Client:
                 remove_clu_syntax_for_unknown_ids=True,
             )
 
-        contract_codes = [replace_clu_dependencies("UNKNOWN", contract, remove_clu_syntax_for_unknown_ids=True) for contract in contract_codes]
+        contract_codes = [
+            replace_clu_dependencies("UNKNOWN", contract, remove_clu_syntax_for_unknown_ids=True)
+            for contract in contract_codes
+        ]
 
-        contract_configs = [contract_config] if contract_config else (supervisor_contract_config.supervisee_contracts if supervisor_contract_config else [])
+        contract_configs = (
+            [contract_config]
+            if contract_config
+            else (
+                supervisor_contract_config.supervisee_contracts
+                if supervisor_contract_config
+                else []
+            )
+        )
 
         (
             contract_module_linking_events,
@@ -236,11 +258,17 @@ class Client:
             {
                 "start_timestamp": _datetime_to_rfc_3339(start_timestamp),
                 "end_timestamp": _datetime_to_rfc_3339(end_timestamp),
-                "smart_contracts": _smart_contract_to_json(contract_codes, templates_parameters, smart_contract_version_ids),
-                "supervisor_contracts": _supervisor_contract_to_json(supervisor_contract_code, supervisor_contract_version_id),
+                "smart_contracts": _smart_contract_to_json(
+                    contract_codes, templates_parameters, smart_contract_version_ids
+                ),
+                "supervisor_contracts": _supervisor_contract_to_json(
+                    supervisor_contract_code, supervisor_contract_version_id
+                ),
                 "contract_modules": contract_modules_to_simulate,
                 "instructions": [_event_to_json(event) for event in default_events + events],
-                "outputs": create_derived_parameters_instructions(output_account_ids, output_timestamps),
+                "outputs": create_derived_parameters_instructions(
+                    output_account_ids, output_timestamps
+                ),
             },
             timeout=timeout,
             debug=debug,
@@ -279,7 +307,9 @@ def _smart_contract_to_json(
             "smart_contract_param_vals": template_parameter,
             "smart_contract_version_id": smart_contract_version_id,
         }
-        for code, template_parameter, smart_contract_version_id in zip(contract_codes, templates_parameters, smart_contract_version_ids)
+        for code, template_parameter, smart_contract_version_id in zip(
+            contract_codes, templates_parameters, smart_contract_version_ids
+        )
     ]
 
 
@@ -303,7 +333,9 @@ def _supervisor_contract_to_json(supervisor_contract_code, supervisor_contract_v
     return supervisor_contracts
 
 
-def _create_smart_contract_module_links(start: datetime, contract_configs: list[ContractConfig]) -> tuple[list[SimulationEvent], list[dict[str, str]]]:
+def _create_smart_contract_module_links(
+    start: datetime, contract_configs: list[ContractConfig]
+) -> tuple[list[SimulationEvent], list[dict[str, str]]]:
     events = []
     contract_modules_to_simulate = []
     existing_contract_modules = []
@@ -311,7 +343,9 @@ def _create_smart_contract_module_links(start: datetime, contract_configs: list[
         alias_to_sc_version_id = {}
         if contract_config.linked_contract_modules:
             for contract_module in contract_config.linked_contract_modules:
-                existing_module_version_id = get_existing_module_version_id(contract_module, existing_contract_modules)
+                existing_module_version_id = get_existing_module_version_id(
+                    contract_module, existing_contract_modules
+                )
                 if existing_module_version_id is not None:
                     contract_module_version_id = existing_module_version_id
 
@@ -334,7 +368,8 @@ def _create_smart_contract_module_links(start: datetime, contract_configs: list[
             events.append(
                 create_smart_contract_module_versions_link(
                     timestamp=start,
-                    link_id=f"sim_link_modules_{aliases_as_str}_with_contract_" f"{contract_config.smart_contract_version_id}",
+                    link_id=f"sim_link_modules_{aliases_as_str}_with_contract_"
+                    f"{contract_config.smart_contract_version_id}",
                     smart_contract_version_id=contract_config.smart_contract_version_id,
                     alias_to_contract_module_version_id=alias_to_sc_version_id,
                 )

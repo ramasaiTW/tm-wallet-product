@@ -38,7 +38,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_threshold_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_threshold_fees_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("4001"),
@@ -52,7 +54,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         ]
         mock_standard_instruction_details.return_value = {"sentinel": "dictionary"}
 
-        results = payment_type_threshold_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_threshold_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         expected = [
             CustomInstruction(
@@ -68,7 +72,8 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         self.assertListEqual(results, expected)
         mock_fee_postings.assert_called_once()
         mock_standard_instruction_details.assert_called_once_with(
-            description="payment fee on withdrawal more than 4000 for payment with type " "DUITNOW_ACC",
+            description="payment fee on withdrawal more than 4000 for payment with type "
+            "DUITNOW_ACC",
             event_type="APPLY_PAYMENT_TYPE_THRESHOLD_FEE",
             gl_impacted=True,
         )
@@ -80,7 +85,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_threshold_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_threshold_fees_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("3999"),
@@ -88,7 +95,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
             )
         ]
 
-        results = payment_type_threshold_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_threshold_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         self.assertListEqual(results, [])
         mock_fee_postings.assert_not_called()
@@ -101,7 +110,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_threshold_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_threshold_fees_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("4000"),
@@ -109,7 +120,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
             )
         ]
 
-        results = payment_type_threshold_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_threshold_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         self.assertListEqual(results, [])
         mock_fee_postings.assert_not_called()
@@ -122,7 +135,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_threshold_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_threshold_fees_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("5001"),
@@ -136,7 +151,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         ]
         mock_standard_instruction_details.return_value = {"sentinel": "dictionary"}
 
-        results = payment_type_threshold_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_threshold_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         expected = [
             CustomInstruction(
@@ -152,7 +169,8 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         self.assertListEqual(results, expected)
         mock_fee_postings.assert_called_once()
         mock_standard_instruction_details.assert_called_once_with(
-            description="payment fee on withdrawal more than 5000 for payment with type " "ATM_IBFT_SANS",
+            description="payment fee on withdrawal more than 5000 for payment with type "
+            "ATM_IBFT_SANS",
             event_type="APPLY_PAYMENT_TYPE_THRESHOLD_FEE",
             gl_impacted=True,
         )
@@ -164,7 +182,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_threshold_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_threshold_fees_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("5001"),
@@ -172,7 +192,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
             )
         ]
 
-        results = payment_type_threshold_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_threshold_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         self.assertListEqual(results, [])
         mock_fee_postings.assert_not_called()
@@ -185,7 +207,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_threshold_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_threshold_fees_parameters
+        )
         postings = [
             self.inbound_hard_settlement(
                 amount=Decimal("5001"),
@@ -193,7 +217,9 @@ class TestPaymentTypeThresholdFee(FeatureTest):
             )
         ]
 
-        results = payment_type_threshold_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_threshold_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         self.assertListEqual(results, [])
         mock_fee_postings.assert_not_called()

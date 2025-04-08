@@ -27,7 +27,9 @@ flags.DEFINE_enum(
 FLAGS = flags.FLAGS
 
 
-def _parse_argument_list(argv: list[str] | None = None, positional_only=False, allow_unknown: bool = False):
+def _parse_argument_list(
+    argv: list[str] | None = None, positional_only=False, allow_unknown: bool = False
+):
     remaining = FLAGS(argv, known_only=allow_unknown)[1:]  # First one is the binary name
     if allow_unknown:
         logger.warning(f"Ignoring unrecognised flags {remaining}")
@@ -40,7 +42,9 @@ def _parse_argument_list(argv: list[str] | None = None, positional_only=False, a
     return remaining
 
 
-def parse_flags(argv: list[str] | None = None, positional: bool = True, allow_unknown: bool = False):
+def parse_flags(
+    argv: list[str] | None = None, positional: bool = True, allow_unknown: bool = False
+):
     """Parses incoming command-line flags.
 
     :param argv: Command line given to the app. Will use sys.argv if not passed.
@@ -56,7 +60,9 @@ def parse_flags(argv: list[str] | None = None, positional: bool = True, allow_un
       passed to exec(), typically the path to this binary).
     """
     try:
-        args = _parse_argument_list(argv or sys.argv, positional_only=positional, allow_unknown=allow_unknown)
+        args = _parse_argument_list(
+            argv or sys.argv, positional_only=positional, allow_unknown=allow_unknown
+        )
         if FLAGS.help:
             logger.info(str(FLAGS))
             sys.exit(0)

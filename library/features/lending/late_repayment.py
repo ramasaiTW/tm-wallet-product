@@ -95,7 +95,9 @@ def event_types(product_name: str) -> list[SmartContractEventType]:
     ]
 
 
-def scheduled_events(vault: SmartContractVault, start_datetime: datetime, skip: bool = False) -> dict[str, ScheduledEvent]:
+def scheduled_events(
+    vault: SmartContractVault, start_datetime: datetime, skip: bool = False
+) -> dict[str, ScheduledEvent]:
     """
     Create a check late repayment schedule, starting at the specified date, and using the
     `check_late_repayment_<>` schedule time parameters. This is a monthly schedule starting on the
@@ -131,7 +133,9 @@ def get_total_overdue_amount(
     :return: due balance in Decimal
     """
     denomination: str = utils.get_parameter(vault=vault, name=PARAM_DENOMINATION)
-    balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+    balances = vault.get_balances_observation(
+        fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+    ).balances
     return utils.sum_balances(
         balances=balances,
         addresses=lending_addresses.OVERDUE_ADDRESSES,
@@ -162,7 +166,9 @@ def schedule_logic(
     :return: list of the late repayment fee custom instruction
     """
     fee_amount: Decimal = utils.get_parameter(vault, name=PARAM_LATE_REPAYMENT_FEE)
-    late_repayment_fee_income_account: str = utils.get_parameter(vault, name=PARAM_LATE_REPAYMENT_FEE_INCOME_ACCOUNT)
+    late_repayment_fee_income_account: str = utils.get_parameter(
+        vault, name=PARAM_LATE_REPAYMENT_FEE_INCOME_ACCOUNT
+    )
     if (check_total_overdue_amount and get_total_overdue_amount(vault) <= 0) or not fee_amount:
         return []
 

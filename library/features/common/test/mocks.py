@@ -40,7 +40,9 @@ def mock_supervisor_get_supervisees_for_alias(supervisees: dict[str, list[Any]])
     return get_supervisees_for_alias
 
 
-def mock_utils_get_parameter_for_multiple_vaults(parameters_per_vault: dict[SmartContractVault | SuperviseeContractVault, dict[str, Any]]) -> Callable:
+def mock_utils_get_parameter_for_multiple_vaults(
+    parameters_per_vault: dict[SmartContractVault | SuperviseeContractVault, dict[str, Any]]
+) -> Callable:
     """A re-usable mock for improved legibility
 
     :param parameters: a dictionary of vaults to a dictionary of parameter name to parameter value.

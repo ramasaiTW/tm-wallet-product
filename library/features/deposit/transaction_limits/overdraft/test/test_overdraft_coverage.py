@@ -37,7 +37,9 @@ class TestOverdraftLimit(CommonTransactionLimitTest):
             }
         )
 
-        patch_get_available_balances = patch.object(overdraft_coverage.utils, "get_available_balance")
+        patch_get_available_balances = patch.object(
+            overdraft_coverage.utils, "get_available_balance"
+        )
         self.mock_get_available_balance = patch_get_available_balances.start()
         # side_effect of the above instance mock is expected to be set in each test as required
 
@@ -57,7 +59,9 @@ class TestOverdraftLimit(CommonTransactionLimitTest):
         return super().setUp()
 
     @patch.object(overdraft_coverage.overdraft_limit, "validate")
-    def test_validate_returns_overdraft_limit_if_opted_in(self, mock_overdraft_limit_validate: MagicMock):
+    def test_validate_returns_overdraft_limit_if_opted_in(
+        self, mock_overdraft_limit_validate: MagicMock
+    ):
         mock_overdraft_limit_validate.return_value = sentinel.overdraft_limit
         self.mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -79,7 +83,9 @@ class TestOverdraftLimit(CommonTransactionLimitTest):
         )
 
     @patch.object(overdraft_coverage.overdraft_limit, "validate")
-    def test_validate_returns_overdraft_limit_if_opted_in_optional_args_not_provided(self, mock_overdraft_limit_validate: MagicMock):
+    def test_validate_returns_overdraft_limit_if_opted_in_optional_args_not_provided(
+        self, mock_overdraft_limit_validate: MagicMock
+    ):
         mock_overdraft_limit_validate.return_value = sentinel.overdraft_limit
         self.mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -87,7 +93,13 @@ class TestOverdraftLimit(CommonTransactionLimitTest):
                 overdraft_coverage.common_parameters.PARAM_DENOMINATION: sentinel.denomination,
             }
         )
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overdraft_coverage.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation("live_observation")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overdraft_coverage.fetchers.LIVE_BALANCES_BOF_ID: SentinelBalancesObservation(
+                    "live_observation"
+                )
+            }
+        )
         result = overdraft_coverage.validate(
             vault=mock_vault,
             postings=sentinel.posting_instructions,

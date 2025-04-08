@@ -40,7 +40,10 @@ class PublicSupervisorContractsV3100TypesTestCase(
             )
 
         self.assertIn(
-            ("UpdatePlanEventTypeDirective object has to have either an end_datetime, a " "schedule or schedule_method defined"),
+            (
+                "UpdatePlanEventTypeDirective object has to have either an end_datetime, a "
+                "schedule or schedule_method defined"
+            ),
             str(ex.exception),
         )
 
@@ -63,6 +66,7 @@ class PublicSupervisorContractsV3100TypesTestCase(
                 schedule=EventTypeSchedule(day="1"),
             )
         self.assertEqual(
-            "UpdatePlanEventTypeDirective cannot contain both" " schedule and schedule_method fields",
+            "UpdatePlanEventTypeDirective cannot contain both"
+            " schedule and schedule_method fields",
             str(ex.exception),
         )

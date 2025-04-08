@@ -270,7 +270,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             own_account_id=cls.account_id,
             tside=Tside.LIABILITY,
         )
-        cls.hard_settle = InboundHardSettlement(denomination="GBP", target_account_id="123", amount=Decimal(20), internal_account_id="1")
+        cls.hard_settle = InboundHardSettlement(
+            denomination="GBP", target_account_id="123", amount=Decimal(20), internal_account_id="1"
+        )
         cls.hard_settle._set_output_attributes(  # noqa: SLF001
             insertion_datetime=cls.posting_datetime,
             value_datetime=cls.posting_datetime,
@@ -333,21 +335,26 @@ class PublicCommonV400TypesTestCase(TestCase):
             Parameter(name="name", shape=None, level=None)
         self.assertEqual(
             str(ex.exception),
-            "Parameter attribute 'shape' expected Union[AccountIdShape, DateShape, " "DenominationShape, NumberShape, OptionalShape, StringShape, UnionShape]," " got None",
+            "Parameter attribute 'shape' expected Union[AccountIdShape, DateShape, "
+            "DenominationShape, NumberShape, OptionalShape, StringShape, UnionShape],"
+            " got None",
         )
 
         with self.assertRaises(StrongTypingError) as ex:
             Parameter(name="name", shape=Decimal, level=None)
         self.assertEqual(
             str(ex.exception),
-            "Parameter attribute 'shape' expected Union[AccountIdShape, DateShape, " "DenominationShape, NumberShape, OptionalShape, StringShape, UnionShape], got " "'<class 'decimal.Decimal'>'",
+            "Parameter attribute 'shape' expected Union[AccountIdShape, DateShape, "
+            "DenominationShape, NumberShape, OptionalShape, StringShape, UnionShape], got "
+            "'<class 'decimal.Decimal'>'",
         )
 
         with self.assertRaises(StrongTypingError) as ex:
             Parameter(name="name", shape=StringShape, level=None)
         self.assertEqual(
             str(ex.exception),
-            "Parameter init arg 'shape' for parameter 'name' must be an instance of the " "StringShape class",
+            "Parameter init arg 'shape' for parameter 'name' must be an instance of the "
+            "StringShape class",
         )
 
         with self.assertRaises(StrongTypingError) as ex:
@@ -410,7 +417,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
         self.assertEqual(
             str(ex.exception),
-            "Parameter attribute 'default_value' expected Union[Decimal, str, datetime, " "OptionalValue, UnionItemValue, int] if populated, got 'StringShape'",
+            "Parameter attribute 'default_value' expected Union[Decimal, str, datetime, "
+            "OptionalValue, UnionItemValue, int] if populated, got 'StringShape'",
         )
 
         with self.assertRaises(StrongTypingError) as ex:
@@ -426,7 +434,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
         self.assertEqual(
             str(ex.exception),
-            "Parameter attribute 'update_permission' expected ParameterUpdatePermission if " "populated, got 'True' of type bool",
+            "Parameter attribute 'update_permission' expected ParameterUpdatePermission if "
+            "populated, got 'True' of type bool",
         )
 
     def test_parameter_cannot_use_optional_default_value(self):
@@ -488,7 +497,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(StrongTypingError) as ex:
             OptionalValue(value=True)
         self.assertEqual(
-            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if " "populated, got 'True' of type bool",
+            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if "
+            "populated, got 'True' of type bool",
             str(ex.exception),
         )
 
@@ -722,8 +732,12 @@ class PublicCommonV400TypesTestCase(TestCase):
                 (datetime(2020, 2, 1, tzinfo=ZoneInfo("UTC")), "Second value"),
             ]
         )
-        self.assertEqual("First value", parameters.at(at_datetime=datetime(2020, 1, 10, tzinfo=ZoneInfo("UTC"))))
-        self.assertEqual("Second value", parameters.at(at_datetime=datetime(2020, 2, 10, tzinfo=ZoneInfo("UTC"))))
+        self.assertEqual(
+            "First value", parameters.at(at_datetime=datetime(2020, 1, 10, tzinfo=ZoneInfo("UTC")))
+        )
+        self.assertEqual(
+            "Second value", parameters.at(at_datetime=datetime(2020, 2, 10, tzinfo=ZoneInfo("UTC")))
+        )
 
     def test_parameter_timeseries_raises_with_naive_datetime(self):
         with self.assertRaises(InvalidSmartContractError) as e:
@@ -798,7 +812,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         with self.assertRaises(InvalidSmartContractError) as e:
             parameters.at(at_datetime=datetime(2020, 1, 10))
-        self.assertEqual("'at_datetime' of ParameterTimeseries.at() is not timezone aware.", str(e.exception))
+        self.assertEqual(
+            "'at_datetime' of ParameterTimeseries.at() is not timezone aware.", str(e.exception)
+        )
 
     def test_parameter_timeseries_before_raises_with_non_utc_timezone(self):
         parameters = ParameterTimeseries(
@@ -837,7 +853,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         with self.assertRaises(InvalidSmartContractError) as e:
             parameters.before(at_datetime=datetime(2020, 1, 10))
-        self.assertEqual("'at_datetime' of ParameterTimeseries.before() is not timezone aware.", str(e.exception))
+        self.assertEqual(
+            "'at_datetime' of ParameterTimeseries.before() is not timezone aware.", str(e.exception)
+        )
 
     def test_parameter_not_using_shape_instance(self):
         with self.assertRaises(StrongTypingError) as ex:
@@ -852,7 +870,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
         self.assertEqual(
             str(ex.exception),
-            "Parameter init arg 'shape' for parameter 'day_of_month' must be an instance of the " "NumberShape class",
+            "Parameter init arg 'shape' for parameter 'day_of_month' must be an instance of the "
+            "NumberShape class",
         )
 
     def test_parameter_invalid_shape(self):
@@ -868,7 +887,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
         self.assertEqual(
             str(ex.exception),
-            "Parameter attribute 'shape' expected Union[AccountIdShape, DateShape, " "DenominationShape, NumberShape, OptionalShape, StringShape, UnionShape], got " "'<class 'decimal.Decimal'>'",
+            "Parameter attribute 'shape' expected Union[AccountIdShape, DateShape, "
+            "DenominationShape, NumberShape, OptionalShape, StringShape, UnionShape], got "
+            "'<class 'decimal.Decimal'>'",
         )
 
     def test_derived_parameters_cannot_have_default_values(self):
@@ -882,7 +903,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 derived=True,
             )
         self.assertIn(
-            "Derived Parameters cannot have a default value or update permissions: " "overdraft_limit",
+            "Derived Parameters cannot have a default value or update permissions: "
+            "overdraft_limit",
             str(ex.exception),
         )
 
@@ -899,7 +921,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
         self.assertEqual(
             str(ex.exception),
-            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if " "populated, got 'OptionalValue'",
+            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if "
+            "populated, got 'OptionalValue'",
         )
 
     def test_parameter_timeseries_all_method(self):
@@ -972,11 +995,15 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_date_shape_init(self):
         with self.assertRaises(StrongTypingError) as ex:
             DateShape(min_date="")
-        self.assertEqual(str(ex.exception), "'min_date' expected datetime if populated, got '' of type str")
+        self.assertEqual(
+            str(ex.exception), "'min_date' expected datetime if populated, got '' of type str"
+        )
 
         with self.assertRaises(StrongTypingError) as ex:
             DateShape(min_date=datetime(1999, 1, 1, tzinfo=ZoneInfo("UTC")), max_date="")
-        self.assertEqual(str(ex.exception), "'max_date' expected datetime if populated, got '' of type str")
+        self.assertEqual(
+            str(ex.exception), "'max_date' expected datetime if populated, got '' of type str"
+        )
 
         with self.assertRaises(InvalidSmartContractError) as ex:
             DateShape(
@@ -999,7 +1026,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_union_shape_init(self):
         with self.assertRaises(TypeError) as ex:
             UnionShape()
-        self.assertEqual(str(ex.exception), "__init__() missing 1 required keyword-only argument: 'items'")
+        self.assertEqual(
+            str(ex.exception), "__init__() missing 1 required keyword-only argument: 'items'"
+        )
 
         with self.assertRaises(StrongTypingError) as ex:
             UnionShape(items=1)
@@ -1014,7 +1043,9 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         with self.assertRaises(StrongTypingError) as ex:
             UnionShape(items=[1, 2, 3])
-        self.assertEqual(str(ex.exception), "UnionShape __init__ Expected UnionItem, got '1' of type int")
+        self.assertEqual(
+            str(ex.exception), "UnionShape __init__ Expected UnionItem, got '1' of type int"
+        )
 
         union_item = UnionItem(key="key", display_name="display_name")
         valid_union_shape = UnionShape(items=[union_item])
@@ -1044,17 +1075,22 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_optional_shape_init(self):
         with self.assertRaises(TypeError) as ex:
             OptionalShape()
-        self.assertEqual(str(ex.exception), "__init__() missing 1 required keyword-only argument: 'shape'")
+        self.assertEqual(
+            str(ex.exception), "__init__() missing 1 required keyword-only argument: 'shape'"
+        )
 
         with self.assertRaises(TypeError) as ex:
             OptionalShape(1)
-        self.assertEqual(str(ex.exception), "__init__() takes 1 positional argument but 2 were given")
+        self.assertEqual(
+            str(ex.exception), "__init__() takes 1 positional argument but 2 were given"
+        )
 
         with self.assertRaises(StrongTypingError) as ex:
             OptionalShape(shape=1)
         self.assertEqual(
             str(ex.exception),
-            "'shape' expected Union[AccountIdShape, DateShape, DenominationShape, NumberShape, " "StringShape, UnionShape], got '1' of type int",
+            "'shape' expected Union[AccountIdShape, DateShape, DenominationShape, NumberShape, "
+            "StringShape, UnionShape], got '1' of type int",
         )
 
         with self.assertRaises(StrongTypingError) as ex:
@@ -1073,14 +1109,16 @@ class PublicCommonV400TypesTestCase(TestCase):
             OptionalValue(AccountIdShape())
         self.assertEqual(
             str(ex.exception),
-            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if " "populated, got 'AccountIdShape'",
+            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if "
+            "populated, got 'AccountIdShape'",
         )
 
         with self.assertRaises(StrongTypingError) as ex:
             OptionalValue([])
         self.assertEqual(
             str(ex.exception),
-            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if " "populated, got '[]' of type list",
+            "'OptionalValue.value' expected Union[Decimal, str, datetime, UnionItemValue, int] if "
+            "populated, got '[]' of type list",
         )
 
         self.assertEqual(OptionalValue("").value, "")
@@ -1164,7 +1202,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 ),
             ),
         }
-        supervisor_activation_hook_result = SupervisorActivationHookResult(scheduled_events_return_value=scheduled_events_return_value)
+        supervisor_activation_hook_result = SupervisorActivationHookResult(
+            scheduled_events_return_value=scheduled_events_return_value
+        )
         self.assertEqual(
             scheduled_events_return_value,
             supervisor_activation_hook_result.scheduled_events_return_value,
@@ -1201,7 +1241,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 ),
             ),
         }
-        supervisor_conversion_hook_result = SupervisorConversionHookResult(scheduled_events_return_value=scheduled_events_return_value)
+        supervisor_conversion_hook_result = SupervisorConversionHookResult(
+            scheduled_events_return_value=scheduled_events_return_value
+        )
         self.assertEqual(
             scheduled_events_return_value,
             supervisor_conversion_hook_result.scheduled_events_return_value,
@@ -1225,7 +1267,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             ]
         )
         self.assertTrue(flags.at(at_datetime=datetime(2020, 3, 25, 13, 45, tzinfo=ZoneInfo("UTC"))))
-        self.assertFalse(flags.at(at_datetime=datetime(2020, 3, 25, 23, 15, tzinfo=ZoneInfo("UTC"))))
+        self.assertFalse(
+            flags.at(at_datetime=datetime(2020, 3, 25, 23, 15, tzinfo=ZoneInfo("UTC")))
+        )
 
     def test_flag_timeseries_raises_with_naive_datetime(self):
         with self.assertRaises(InvalidSmartContractError) as e:
@@ -1272,7 +1316,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         with self.assertRaises(InvalidSmartContractError) as e:
             flags.at(at_datetime=datetime(2020, 3, 25, 13, 45))
-        self.assertEqual("'at_datetime' of FlagTimeseries.at() is not timezone aware.", str(e.exception))
+        self.assertEqual(
+            "'at_datetime' of FlagTimeseries.at() is not timezone aware.", str(e.exception)
+        )
 
     def test_flag_timeseries_at_raises_with_non_utc_timezone(self):
         flags = FlagTimeseries(
@@ -1311,7 +1357,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         with self.assertRaises(InvalidSmartContractError) as e:
             flags.before(at_datetime=datetime(2020, 3, 25, 13, 45))
-        self.assertEqual("'at_datetime' of FlagTimeseries.before() is not timezone aware.", str(e.exception))
+        self.assertEqual(
+            "'at_datetime' of FlagTimeseries.before() is not timezone aware.", str(e.exception)
+        )
 
     def test_flag_timeseries_before_raises_with_non_utc_timezone(self):
         flags = FlagTimeseries(
@@ -1348,7 +1396,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 (datetime(2020, 3, 25, 22, 30, tzinfo=ZoneInfo("UTC")), False),
             ]
         )
-        self.assertIsInstance(flags.all(), FlagTimeseries, "FlagTimeseries.all() must be of type FlagTimeseries")
+        self.assertIsInstance(
+            flags.all(), FlagTimeseries, "FlagTimeseries.all() must be of type FlagTimeseries"
+        )
         self.assertEqual(len(flags.all()), 2)
         self.assertEqual(
             flags.all()[0],
@@ -1368,7 +1418,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(len(flags.all()), 1)
 
         timeseries_item = flags.all()[0]
-        self.assertEqual(timeseries_item.at_datetime, datetime(2020, 3, 25, 10, 30, tzinfo=ZoneInfo("UTC")))
+        self.assertEqual(
+            timeseries_item.at_datetime, datetime(2020, 3, 25, 10, 30, tzinfo=ZoneInfo("UTC"))
+        )
         self.assertEqual(timeseries_item.value, True)
 
     # ScheduleExpression
@@ -1495,7 +1547,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(expected, str(ex.exception))
 
     def test_event_types_group_can_be_created(self):
-        event_types_group = EventTypesGroup(name="TestEventTypesGroup", event_types_order=["EVENT_TYPE1", "EVENT_TYPE2"])
+        event_types_group = EventTypesGroup(
+            name="TestEventTypesGroup", event_types_order=["EVENT_TYPE1", "EVENT_TYPE2"]
+        )
         self.assertEqual(event_types_group.name, "TestEventTypesGroup")
         self.assertEqual(event_types_group.event_types_order, ["EVENT_TYPE1", "EVENT_TYPE2"])
 
@@ -1522,7 +1576,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             end_datetime=self.test_zoned_datetime_utc,
         )
         self.assertEqual(update_account_event_type_directive.event_type, "event_type_1")
-        self.assertEqual(update_account_event_type_directive.end_datetime, self.test_zoned_datetime_utc)
+        self.assertEqual(
+            update_account_event_type_directive.end_datetime, self.test_zoned_datetime_utc
+        )
 
     def test_update_account_event_type_directive_raises_with_naive_end_datetime(self):
         with self.assertRaises(InvalidSmartContractError) as ex:
@@ -1553,7 +1609,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "UpdateAccountEventTypeDirective object must " "have either an end_datetime, an expression",
+            "UpdateAccountEventTypeDirective object must "
+            "have either an end_datetime, an expression",
             str(ex.exception),
         )
 
@@ -1574,7 +1631,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="1"),
             )
         self.assertEqual(
-            "UpdateAccountEventTypeDirective cannot contain both" " expression and schedule_method fields",
+            "UpdateAccountEventTypeDirective cannot contain both"
+            " expression and schedule_method fields",
             str(ex.exception),
         )
 
@@ -1596,7 +1654,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_update_account_event_type_directive_skip_some_time(self):
         update_account_event_type_directive = UpdateAccountEventTypeDirective(
             event_type="event_type_1",
-            skip=ScheduleSkip(end=datetime(year=2021, month=6, day=28, tzinfo=ZoneInfo("US/Pacific"))),
+            skip=ScheduleSkip(
+                end=datetime(year=2021, month=6, day=28, tzinfo=ZoneInfo("US/Pacific"))
+            ),
         )
         self.assertEqual(
             datetime(year=2021, month=6, day=28, tzinfo=ZoneInfo("US/Pacific")),
@@ -1924,7 +1984,10 @@ class PublicCommonV400TypesTestCase(TestCase):
         hook_args = DerivedParameterHookArguments(effective_datetime=self.test_zoned_datetime_utc)
 
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "DerivedParameterHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -1934,7 +1997,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_derived_parameters_arguments_public_attributes(self):
         hook_args = DerivedParameterHookArguments(effective_datetime=self.test_zoned_datetime_utc)
 
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 1)
         effective_datetime_attribute = public_attributes[0]
@@ -1960,26 +2025,39 @@ class PublicCommonV400TypesTestCase(TestCase):
     # SupervisorActivationHookArguments
 
     def test_supervisor_activation_hook_arguments_attributes_can_be_set(self):
-        hook_args = SupervisorActivationHookArguments(effective_datetime=self.test_zoned_datetime_utc)
+        hook_args = SupervisorActivationHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc
+        )
         self.assertEqual(self.test_zoned_datetime_utc, hook_args.effective_datetime)
 
     def test_only_set_supervisor_activation_hook_arguments_attributes_can_be_accessed(self):
-        hook_args = SupervisorActivationHookArguments(effective_datetime=self.test_zoned_datetime_utc)
+        hook_args = SupervisorActivationHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc
+        )
         self.assertEqual({"effective_datetime": self.test_zoned_datetime_utc}, hook_args.__dict__)
         self.assertRaises(AttributeError, getattr, hook_args, "old_parameter_values")
 
     def test_supervisor_activation_hook_arguments_spec(self):
-        hook_args = SupervisorActivationHookArguments(effective_datetime=self.test_zoned_datetime_utc)
+        hook_args = SupervisorActivationHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc
+        )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
         self.assertEqual("SupervisorActivationHookArguments", spec.name)
         self.assertEqual(public_attributes_dict.keys(), spec.public_attributes.keys())
         self.assertEqual(public_attributes_dict.keys(), spec.constructor.args.keys())
         self.assertEqual({}, spec.public_methods)
 
     def test_supervisor_activation_hook_arguments_public_attributes(self):
-        hook_args = SupervisorActivationHookArguments(effective_datetime=self.test_zoned_datetime_utc)
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        hook_args = SupervisorActivationHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc
+        )
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEqual(1, len(public_attributes))
         effective_datetime_attribute = public_attributes[0]
@@ -1991,7 +2069,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             SupervisorActivationHookArguments(
                 effective_datetime=self.test_naive_datetime,
             )
-        expected = "'effective_datetime' of SupervisorActivationHookArguments is not timezone aware."
+        expected = (
+            "'effective_datetime' of SupervisorActivationHookArguments is not timezone aware."
+        )
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_activation_hook_arguments_raises_with_non_utc_effective_datetime(self):
@@ -2011,7 +2091,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = SupervisorConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = SupervisorConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
         self.assertEqual(self.test_zoned_datetime_utc, hook_args.effective_datetime)
         self.assertEquals(existing_schedules, hook_args.existing_schedules)
 
@@ -2022,7 +2104,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = SupervisorConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = SupervisorConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
         self.assertEquals(
             {
                 "effective_datetime": self.test_zoned_datetime_utc,
@@ -2039,9 +2123,14 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = SupervisorConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = SupervisorConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual("SupervisorConversionHookArguments", spec.name)
         self.assertEqual(public_attributes_dict.keys(), spec.public_attributes.keys())
@@ -2055,9 +2144,13 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = SupervisorConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = SupervisorConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
 
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
         self.assertEqual(2, len(public_attributes))
         effective_datetime_attribute = public_attributes[0]
         self.assertEquals("effective_datetime", effective_datetime_attribute.name)
@@ -2072,7 +2165,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 effective_datetime=self.test_naive_datetime,
                 existing_schedules={},
             )
-        expected = "'effective_datetime' of SupervisorConversionHookArguments is not timezone aware."
+        expected = (
+            "'effective_datetime' of SupervisorConversionHookArguments is not timezone aware."
+        )
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_conversion_hook_arguments_raises_with_non_utc_effective_datetime(self):
@@ -2102,7 +2197,10 @@ class PublicCommonV400TypesTestCase(TestCase):
         hook_args = ActivationHookArguments(effective_datetime=self.test_zoned_datetime_utc)
 
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "ActivationHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -2112,7 +2210,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_post_activate_code_arguments_public_attributes(self):
         hook_args = ActivationHookArguments(effective_datetime=self.test_zoned_datetime_utc)
 
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 1)
         effective_datetime_attribute = public_attributes[0]
@@ -2144,7 +2244,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = ConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = ConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
         self.assertEquals(self.test_zoned_datetime_utc, hook_args.effective_datetime)
         self.assertEquals(existing_schedules, hook_args.existing_schedules)
 
@@ -2155,7 +2257,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = ConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = ConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
         self.assertEquals(
             {
                 "effective_datetime": self.test_zoned_datetime_utc,
@@ -2172,10 +2276,15 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = ConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = ConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
 
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals("ConversionHookArguments", spec.name)
         self.assertEquals(public_attributes_dict.keys(), spec.public_attributes.keys())
@@ -2189,9 +2298,13 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             ),
         }
-        hook_args = ConversionHookArguments(effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules)
+        hook_args = ConversionHookArguments(
+            effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
+        )
 
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEquals(2, len(public_attributes))
         effective_datetime_attribute = public_attributes[0]
@@ -2269,7 +2382,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             updated_parameter_values=updated_parameter_values,
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PostParameterChangeHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -2284,7 +2400,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             old_parameter_values=old_parameter_values,
             updated_parameter_values=updated_parameter_values,
         )
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 3)
         effective_datetime_attr, old_param_vals_attr, updated_param_vals_attr = public_attributes
@@ -2362,7 +2480,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             Posting()
 
         self.assertIn(
-            ("__init__() missing 7 required keyword-only arguments: 'credit', 'amount', " "'denomination', 'account_id', 'account_address', 'asset', and 'phase'"),
+            (
+                "__init__() missing 7 required keyword-only arguments: 'credit', 'amount', "
+                "'denomination', 'account_id', 'account_address', 'asset', and 'phase'"
+            ),
             str(ex.exception),
         )
 
@@ -2379,7 +2500,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            ("Postings missing required argument(s): " "['denomination', 'account_id', 'account_address', 'asset']"),
+            (
+                "Postings missing required argument(s): "
+                "['denomination', 'account_id', 'account_address', 'asset']"
+            ),
             str(ex.exception),
         )
 
@@ -2492,7 +2616,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         # Check that balances() method on individual ClientTransactions
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_custom}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_custom}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2503,7 +2629,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(0), debit=Decimal(10), net=Decimal("-10")),
         )
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2514,7 +2642,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0)),
         )
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2525,7 +2655,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(0), net=Decimal("20")),
         )
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_transfer}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_transfer}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2563,7 +2695,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             client_transactions={},
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PostPostingHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -2707,7 +2842,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         # Check that balances() method on individual ClientTransactions
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_custom}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_custom}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2718,7 +2855,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(0), debit=Decimal(10), net=Decimal("-10")),
         )
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2729,7 +2868,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0)),
         )
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2740,7 +2881,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(0), net=Decimal("20")),
         )
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_transfer}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_transfer}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2769,7 +2912,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 supervisee_posting_instructions={},
                 supervisee_client_transactions={},
             )
-        expected = "'effective_datetime' of SupervisorPostPostingHookArguments is not timezone aware."
+        expected = (
+            "'effective_datetime' of SupervisorPostPostingHookArguments is not timezone aware."
+        )
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_post_posting_hook_raises_with_non_utc_effective_datetime(self):
@@ -2790,7 +2935,10 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
 
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual(spec.name, "SupervisorPostPostingHookArguments")
         self.assertEqual(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -2893,7 +3041,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         # Check that balances() method on individual ClientTransactions
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_custom}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_custom}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2904,7 +3054,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(0), debit=Decimal(10), net=Decimal("-10")),
         )
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2915,7 +3067,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0)),
         )
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2926,7 +3080,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(0), net=Decimal("20")),
         )
         self.assertEqual(
-            hook_args.client_transactions[f"{self.client_id}_{self.client_transaction_id_transfer}"].balances()[
+            hook_args.client_transactions[
+                f"{self.client_id}_{self.client_transaction_id_transfer}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -2964,7 +3120,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             client_transactions={},
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PrePostingHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3108,7 +3267,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         # Check that balances() method on individual ClientTransactions
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_custom}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_custom}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -3119,7 +3280,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(0), debit=Decimal(10), net=Decimal("-10")),
         )
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -3130,7 +3293,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0)),
         )
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_settle}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_settle}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -3141,7 +3306,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             Balance(credit=Decimal(20), debit=Decimal(0), net=Decimal("20")),
         )
         self.assertEqual(
-            hook_args.supervisee_client_transactions[self.account_id][f"{self.client_id}_{self.client_transaction_id_transfer}"].balances()[
+            hook_args.supervisee_client_transactions[self.account_id][
+                f"{self.client_id}_{self.client_transaction_id_transfer}"
+            ].balances()[
                 BalanceCoordinate(
                     account_address=DEFAULT_ADDRESS,
                     asset=DEFAULT_ASSET,
@@ -3170,7 +3337,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 supervisee_posting_instructions={},
                 supervisee_client_transactions={},
             )
-        expected = "'effective_datetime' of SupervisorPrePostingHookArguments is not timezone aware."
+        expected = (
+            "'effective_datetime' of SupervisorPrePostingHookArguments is not timezone aware."
+        )
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_pre_posting_hook_raises_with_non_utc_effective_datetime(self):
@@ -3190,7 +3359,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             supervisee_client_transactions={},
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "SupervisorPrePostingHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3271,7 +3443,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             updated_parameter_values=parameters,
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PreParameterChangeHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3284,7 +3459,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             effective_datetime=self.test_zoned_datetime_utc,
             updated_parameter_values=parameters,
         )
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 2)
         effective_datetime_attr, parameters_attr = public_attributes
@@ -3404,7 +3581,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             pause_at_datetime=datetime(2022, 10, 12, tzinfo=ZoneInfo("UTC")),
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual(spec.name, "ScheduledEventHookArguments")
         self.assertEqual(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3419,7 +3599,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             event_type=event_type,
             pause_at_datetime=pause_at_datetime,
         )
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEqual(len(public_attributes), 3)
         effective_datetime_attr, event_type_attr, scheduled_job_attr = public_attributes
@@ -3447,7 +3629,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         self.assertEqual(hook_args.effective_datetime, self.test_zoned_datetime_utc)
         self.assertEqual(hook_args.event_type, event_type)
-        self.assertEqual(hook_args.pause_at_datetime, datetime(2022, 10, 12, tzinfo=ZoneInfo("UTC")))
+        self.assertEqual(
+            hook_args.pause_at_datetime, datetime(2022, 10, 12, tzinfo=ZoneInfo("UTC"))
+        )
         self.assertEqual(hook_args.supervisee_pause_at_datetime, supervisee_pause_at_datetime)
 
     def test_supervisor_scheduled_event_hook_arguments_raises_with_naive_effective_datetime(self):
@@ -3460,7 +3644,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime={},
             )
-        expected = "'effective_datetime' of SupervisorScheduledEventHookArguments is not timezone aware."
+        expected = (
+            "'effective_datetime' of SupervisorScheduledEventHookArguments is not timezone aware."
+        )
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_scheduled_event_hook_arguments_raises_with_non_datetime_pause_at_datetime(
@@ -3500,7 +3686,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime={},
             )
-        expected = "'pause_at_datetime' of SupervisorScheduledEventHookArguments is not timezone aware."
+        expected = (
+            "'pause_at_datetime' of SupervisorScheduledEventHookArguments is not timezone aware."
+        )
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_scheduled_event_hook_arguments_raises_with_non_utc_pause_at_datetime(self):
@@ -3615,7 +3803,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             pause_at_datetime=pause_at_datetime,
         )
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
-        public_attributes_dict = {attribute.name: attribute for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)}  # noqa: SLF001
+        public_attributes_dict = {
+            attribute.name: attribute
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual(spec.name, "SupervisorScheduledEventHookArguments")
         self.assertEqual(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3632,7 +3823,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             pause_at_datetime=pause_at_datetime,
         )
-        public_attributes = hook_args._public_attributes(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
+            language_code=symbols.Languages.ENGLISH
+        )  # noqa: SLF001
 
         self.assertEqual(len(public_attributes), 4)
         (
@@ -3693,13 +3886,19 @@ class PublicCommonV400TypesTestCase(TestCase):
     # ScheduleSkip
 
     def test_schedule_skip_with_end_datetime(self):
-        skip_schedule = ScheduleSkip(end=datetime(year=2021, month=12, day=31, tzinfo=ZoneInfo("UTC")))
-        self.assertEqual(skip_schedule.end, datetime(year=2021, month=12, day=31, tzinfo=ZoneInfo("UTC")))
+        skip_schedule = ScheduleSkip(
+            end=datetime(year=2021, month=12, day=31, tzinfo=ZoneInfo("UTC"))
+        )
+        self.assertEqual(
+            skip_schedule.end, datetime(year=2021, month=12, day=31, tzinfo=ZoneInfo("UTC"))
+        )
 
     def test_schedule_skip_raises_with_end_datetime_not_provided(self):
         with self.assertRaises(TypeError) as ex:
             ScheduleSkip()
-        self.assertEqual("__init__() missing 1 required keyword-only argument: 'end'", str(ex.exception))
+        self.assertEqual(
+            "__init__() missing 1 required keyword-only argument: 'end'", str(ex.exception)
+        )
 
     def test_schedule_skip_raises_with_end_datetime_none(self):
         with self.assertRaises(InvalidSmartContractError) as ex:
@@ -3716,12 +3915,16 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_authorised_amount_both_arguments_not_set(self):
         with self.assertRaises(InvalidSmartContractError) as ex:
             AdjustmentAmount()
-        self.assertEqual("Either amount or replacement amount argument must be set, not both.", str(ex.exception))
+        self.assertEqual(
+            "Either amount or replacement amount argument must be set, not both.", str(ex.exception)
+        )
 
     def test_authorised_amount_both_arguments_set(self):
         with self.assertRaises(InvalidSmartContractError) as ex:
             AdjustmentAmount(amount=Decimal(1), replacement_amount=Decimal(2))
-        self.assertEqual("Either amount or replacement amount argument must be set, not both.", str(ex.exception))
+        self.assertEqual(
+            "Either amount or replacement amount argument must be set, not both.", str(ex.exception)
+        )
 
     def test_authorised_amount_init(self):
         auth_amount = AdjustmentAmount(amount=Decimal(-10))
@@ -3732,7 +3935,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(auth_amount.replacement_amount, Decimal(1))
 
     def test_authorised_amount_skips_validation_with_from_proto(self):
-        auth_amount = AdjustmentAmount(amount=Decimal(-10), replacement_amount=Decimal(1), _from_proto=True)
+        auth_amount = AdjustmentAmount(
+            amount=Decimal(-10), replacement_amount=Decimal(1), _from_proto=True
+        )
         self.assertEqual(auth_amount.amount, Decimal(-10))
         self.assertEqual(auth_amount.replacement_amount, Decimal(1))
 
@@ -3744,7 +3949,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(TypeError) as ex:
             OutboundAuthorisation(amount=Decimal(10))
         self.assertEqual(
-            "__init__() missing 4 required keyword-only arguments: 'client_transaction_id', " "'denomination', 'target_account_id', and 'internal_account_id'",
+            "__init__() missing 4 required keyword-only arguments: 'client_transaction_id', "
+            "'denomination', 'target_account_id', and 'internal_account_id'",
             str(ex.exception),
         )
 
@@ -3869,7 +4075,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'OutboundAuthorisation.instruction_details' expected Dict[str, str] if populated, " "got '123' of type int",
+            "'OutboundAuthorisation.instruction_details' expected Dict[str, str] if populated, "
+            "got '123' of type int",
             str(ex.exception),
         )
 
@@ -3885,7 +4092,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'OutboundAuthorisation.transaction_code' expected TransactionCode if populated, got " "'123' of type int",
+            "'OutboundAuthorisation.transaction_code' expected TransactionCode if populated, got "
+            "'123' of type int",
             str(ex.exception),
         )
 
@@ -3914,7 +4122,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         pi._set_output_attributes(own_account_id=self.test_account_id)  # noqa: SLF001
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The OutboundAuthorisation posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The OutboundAuthorisation posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -4295,7 +4504,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(TypeError) as ex:
             InboundAuthorisation(amount=Decimal(10))
         self.assertEqual(
-            "__init__() missing 4 required keyword-only arguments: 'client_transaction_id', " "'denomination', 'target_account_id', and 'internal_account_id'",
+            "__init__() missing 4 required keyword-only arguments: 'client_transaction_id', "
+            "'denomination', 'target_account_id', and 'internal_account_id'",
             str(ex.exception),
         )
 
@@ -4420,7 +4630,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'InboundAuthorisation.instruction_details' expected Dict[str, str] if populated, got " "'123' of type int",
+            "'InboundAuthorisation.instruction_details' expected Dict[str, str] if populated, got "
+            "'123' of type int",
             str(ex.exception),
         )
 
@@ -4436,7 +4647,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'InboundAuthorisation.transaction_code' expected TransactionCode if populated, got " "'123' of type int",
+            "'InboundAuthorisation.transaction_code' expected TransactionCode if populated, got "
+            "'123' of type int",
             str(ex.exception),
         )
 
@@ -4465,7 +4677,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         pi._set_output_attributes(own_account_id=self.test_account_id)  # noqa: SLF001
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The InboundAuthorisation posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The InboundAuthorisation posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -4541,7 +4754,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(TypeError) as ex:
             AuthorisationAdjustment()
         self.assertEqual(
-            "__init__() missing 2 required keyword-only arguments: 'client_transaction_id' " "and 'adjustment_amount'",
+            "__init__() missing 2 required keyword-only arguments: 'client_transaction_id' "
+            "and 'adjustment_amount'",
             str(ex.exception),
         )
 
@@ -4567,7 +4781,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 override_all_restrictions=True,
             )
         self.assertEqual(
-            "'AuthorisationAdjustment.adjustment_amount' expected AdjustmentAmount, got '234' of " "type int",
+            "'AuthorisationAdjustment.adjustment_amount' expected AdjustmentAmount, got '234' of "
+            "type int",
             str(ex.exception),
         )
 
@@ -4634,7 +4849,9 @@ class PublicCommonV400TypesTestCase(TestCase):
 
     def test_auth_adjust_posting_instruction_default_attributes_no_output_attrs(self):
         adjustment_amount = AdjustmentAmount(replacement_amount=Decimal(50))
-        pi = AuthorisationAdjustment(client_transaction_id="xx", adjustment_amount=adjustment_amount)
+        pi = AuthorisationAdjustment(
+            client_transaction_id="xx", adjustment_amount=adjustment_amount
+        )
         # Direct attributes
         self.assertEqual("xx", pi.client_transaction_id)
         self.assertFalse(pi.advice)
@@ -4688,7 +4905,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'AuthorisationAdjustment.instruction_details' expected Dict[str, str] if populated, " "got '123' of type int",
+            "'AuthorisationAdjustment.instruction_details' expected Dict[str, str] if populated, "
+            "got '123' of type int",
             str(ex.exception),
         )
 
@@ -4703,7 +4921,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'AuthorisationAdjustment.transaction_code' expected TransactionCode if populated, " "got '123' of type int",
+            "'AuthorisationAdjustment.transaction_code' expected TransactionCode if populated, "
+            "got '123' of type int",
             str(ex.exception),
         )
 
@@ -4735,7 +4954,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         pi._set_output_attributes(own_account_id=self.test_account_id)  # noqa: SLF001
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The AuthorisationAdjustment posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The AuthorisationAdjustment posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -4975,7 +5195,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'Settlement.instruction_details' expected Dict[str, str] if populated, got '123' of " "type int",
+            "'Settlement.instruction_details' expected Dict[str, str] if populated, got '123' of "
+            "type int",
             str(ex.exception),
         )
 
@@ -4990,7 +5211,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'Settlement.transaction_code' expected TransactionCode if populated, got '123' of " "type int",
+            "'Settlement.transaction_code' expected TransactionCode if populated, got '123' of "
+            "type int",
             str(ex.exception),
         )
 
@@ -5025,7 +5247,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The Settlement posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The Settlement posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -5237,16 +5460,20 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'Release.instruction_details' expected Dict[str, str] if populated, got '123' of " "type int",
+            "'Release.instruction_details' expected Dict[str, str] if populated, got '123' of "
+            "type int",
             str(ex.exception),
         )
 
     def test_release_posting_instruction_raises_with_invalid_transaction_code_type(self):
         with self.assertRaises(StrongTypingError) as ex:
-            Release(client_transaction_id="xx", override_all_restrictions=True, transaction_code=123)
+            Release(
+                client_transaction_id="xx", override_all_restrictions=True, transaction_code=123
+            )
 
         self.assertIn(
-            "'Release.transaction_code' expected TransactionCode if populated, got '123' of type " "int",
+            "'Release.transaction_code' expected TransactionCode if populated, got '123' of type "
+            "int",
             str(ex.exception),
         )
 
@@ -5275,7 +5502,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The Release posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The Release posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -5378,7 +5606,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_custom_instruction_raises_with_missing_attributes(self):
         with self.assertRaises(TypeError) as ex:
             CustomInstruction()
-        self.assertEqual("__init__() missing 1 required keyword-only argument: 'postings'", str(ex.exception))
+        self.assertEqual(
+            "__init__() missing 1 required keyword-only argument: 'postings'", str(ex.exception)
+        )
 
     def test_custom_instruction_all_attributes(self):
         pi_datetime = datetime(2002, 2, 2, tzinfo=ZoneInfo("UTC"))
@@ -5537,7 +5767,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'CustomInstruction.transaction_code' expected TransactionCode if populated, got " "'123' of type int",
+            "'CustomInstruction.transaction_code' expected TransactionCode if populated, got "
+            "'123' of type int",
             str(ex.exception),
         )
 
@@ -5559,7 +5790,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'CustomInstruction.instruction_details' expected Dict[str, str] if populated, got " "'123' of type int",
+            "'CustomInstruction.instruction_details' expected Dict[str, str] if populated, got "
+            "'123' of type int",
             str(ex.exception),
         )
 
@@ -5604,7 +5836,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             transaction_code=TransactionCode(domain="A", family="B", subfamily="C"),
             instruction_details={"testy": "test"},
         )
-        pi._set_output_attributes(own_account_id=self.test_account_id, tside=Tside.ASSET)  # noqa: SLF001
+        pi._set_output_attributes(
+            own_account_id=self.test_account_id, tside=Tside.ASSET
+        )  # noqa: SLF001
         pi._committed_postings = []  # noqa: SLF001
 
         balances = pi.balances()
@@ -5728,7 +5962,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(TypeError) as ex:
             InboundHardSettlement()
         self.assertEqual(
-            "__init__() missing 4 required keyword-only arguments: 'amount', " "'denomination', 'target_account_id', and 'internal_account_id'",
+            "__init__() missing 4 required keyword-only arguments: 'amount', "
+            "'denomination', 'target_account_id', and 'internal_account_id'",
             str(ex.exception),
         )
 
@@ -5872,7 +6107,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The InboundHardSettlement posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The InboundHardSettlement posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -5951,7 +6187,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(TypeError) as ex:
             OutboundHardSettlement()
         self.assertEqual(
-            "__init__() missing 4 required keyword-only arguments: 'amount', " "'denomination', 'target_account_id', and 'internal_account_id'",
+            "__init__() missing 4 required keyword-only arguments: 'amount', "
+            "'denomination', 'target_account_id', and 'internal_account_id'",
             str(ex.exception),
         )
 
@@ -6095,7 +6332,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The OutboundHardSettlement posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The OutboundHardSettlement posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -6174,7 +6412,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(TypeError) as ex:
             Transfer()
         self.assertEqual(
-            "__init__() missing 4 required keyword-only arguments: 'amount', " "'denomination', 'debtor_target_account_id', and 'creditor_target_account_id'",
+            "__init__() missing 4 required keyword-only arguments: 'amount', "
+            "'denomination', 'debtor_target_account_id', and 'creditor_target_account_id'",
             str(ex.exception),
         )
 
@@ -6289,7 +6528,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'Transfer.instruction_details' expected Dict[str, str] if populated, got '123' of " "type int",
+            "'Transfer.instruction_details' expected Dict[str, str] if populated, got '123' of "
+            "type int",
             str(ex.exception),
         )
 
@@ -6305,7 +6545,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
 
         self.assertIn(
-            "'Transfer.transaction_code' expected TransactionCode if populated, got '123' of type " "int",
+            "'Transfer.transaction_code' expected TransactionCode if populated, got '123' of type "
+            "int",
             str(ex.exception),
         )
 
@@ -6340,7 +6581,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         with self.assertRaisesRegex(
             InvalidSmartContractError,
-            "The Transfer posting instruction type does not support the balances " "method for the non-historical data as committed_postings are not available.",
+            "The Transfer posting instruction type does not support the balances "
+            "method for the non-historical data as committed_postings are not available.",
         ):
             pi.balances()
 
@@ -6995,7 +7237,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 denomination="CAMELS",
             ),
         ]
-        pi2 = AuthorisationAdjustment(client_transaction_id="out", adjustment_amount=AdjustmentAmount(amount=7))
+        pi2 = AuthorisationAdjustment(
+            client_transaction_id="out", adjustment_amount=AdjustmentAmount(amount=7)
+        )
         pi2._set_output_attributes(  # noqa: SLF001
             insertion_datetime=post_two_datetime,
             value_datetime=post_two_datetime,
@@ -7377,7 +7621,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         self.assertEqual(False, trans.completed())
         self.assertEqual(True, trans.released())
-        self.assertEqual(False, trans.released(effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC"))))
+        self.assertEqual(
+            False, trans.released(effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC")))
+        )
         self.assertEqual(
             Balance(
                 credit=Decimal("0.1"),
@@ -7524,7 +7770,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         self.assertEqual(False, trans.released())
         self.assertEqual(True, trans.completed())
-        self.assertEqual(False, trans.completed(effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC"))))
+        self.assertEqual(
+            False, trans.completed(effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC")))
+        )
         self.assertEqual(
             Balance(
                 credit=Decimal("10"),
@@ -7640,7 +7888,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             trans.effects()
         self.assertEqual(
             str(ex.exception),
-            "ClientTransaction only supports posting instructions with the same " "account_address, denomination and asset attributes.",
+            "ClientTransaction only supports posting instructions with the same "
+            "account_address, denomination and asset attributes.",
         )
         self.assertEqual("ClientTransaction(2 posting instruction(s))", str(trans))
 
@@ -7692,7 +7941,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 tside=Tside.LIABILITY,
             )
         self.assertEqual(
-            "'ClientTransaction.posting_instructions[0]' has its value_datetime attribute set " "to None. Expected value_datetime to be set.",
+            "'ClientTransaction.posting_instructions[0]' has its value_datetime attribute set "
+            "to None. Expected value_datetime to be set.",
             str(ex.exception),
         )
 
@@ -7721,7 +7971,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 tside=Tside.LIABILITY,
             )
         self.assertEqual(
-            "'ClientTransaction.posting_instructions[0]._committed_postings' " "must be a non empty list, got None",
+            "'ClientTransaction.posting_instructions[0]._committed_postings' "
+            "must be a non empty list, got None",
             str(ex.exception),
         )
 
@@ -7750,7 +8001,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 tside=Tside.LIABILITY,
             )
         self.assertEqual(
-            "'ClientTransaction.posting_instructions[0]._committed_postings[0]' " "expected Posting, got '0' of type int",
+            "'ClientTransaction.posting_instructions[0]._committed_postings[0]' "
+            "expected Posting, got '0' of type int",
             str(ex.exception),
         )
 
@@ -7824,7 +8076,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 tside=Tside.LIABILITY,
             )
         self.assertEqual(
-            "'ClientTransaction.posting_instructions[1]' Settlement instruction " "has its final attribute set to None. Expected True or False.",
+            "'ClientTransaction.posting_instructions[1]' Settlement instruction "
+            "has its final attribute set to None. Expected True or False.",
             str(ex.exception),
         )
 
@@ -7864,7 +8117,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         with self.assertRaises(InvalidSmartContractError) as ex:
             trans.balances()
-        self.assertEqual(str(ex.exception), "A tside must be specified for the balances calculation.")
+        self.assertEqual(
+            str(ex.exception), "A tside must be specified for the balances calculation."
+        )
         self.assertEqual("ClientTransaction(1 posting instruction(s))", str(trans))
 
     def test_client_transaction_effects_with_no_committed_postings(self):
@@ -7906,7 +8161,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             trans.effects()
         self.assertEqual(
             str(ex.exception),
-            "ClientTransaction only supports posting instructions with" "non empty committed postings.",
+            "ClientTransaction only supports posting instructions with"
+            "non empty committed postings.",
         )
         self.assertEqual("ClientTransaction(1 posting instruction(s))", str(trans))
 
@@ -7997,11 +8253,17 @@ class PublicCommonV400TypesTestCase(TestCase):
         # Can get balances for in-flight CustomInstructions being directed
         self.assertEqual(
             Decimal(10),
-            posting_instructions_directive.posting_instructions[0].balances(account_id="internal", tside=Tside.LIABILITY)[self.balance_key_committed].net,
+            posting_instructions_directive.posting_instructions[0]
+            .balances(account_id="internal", tside=Tside.LIABILITY)[self.balance_key_committed]
+            .net,
         )
         self.assertEqual(
             Decimal(-10),
-            posting_instructions_directive.posting_instructions[0].balances(account_id=self.test_account_id, tside=Tside.LIABILITY)[self.balance_key_committed].net,
+            posting_instructions_directive.posting_instructions[0]
+            .balances(account_id=self.test_account_id, tside=Tside.LIABILITY)[
+                self.balance_key_committed
+            ]
+            .net,
         )
 
     def test_posting_instructions_directive_value_datetime_raises_with_naive_datetime(self):
@@ -8179,11 +8441,17 @@ class PublicCommonV400TypesTestCase(TestCase):
         # Can get balances for in-flight CustomInstructions being directed
         self.assertEqual(
             Decimal(10),
-            posting_instructions_directive.posting_instructions[0].balances(account_id="internal", tside=Tside.LIABILITY)[(self.balance_key_committed)].net,
+            posting_instructions_directive.posting_instructions[0]
+            .balances(account_id="internal", tside=Tside.LIABILITY)[(self.balance_key_committed)]
+            .net,
         )
         self.assertEqual(
             Decimal(-10),
-            posting_instructions_directive.posting_instructions[0].balances(account_id=self.test_account_id, tside=Tside.LIABILITY)[self.balance_key_committed].net,
+            posting_instructions_directive.posting_instructions[0]
+            .balances(account_id=self.test_account_id, tside=Tside.LIABILITY)[
+                self.balance_key_committed
+            ]
+            .net,
         )
         # Can get balances for in-flight CustomInstructions being directed
         self.assertEqual(
@@ -8237,9 +8505,12 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(1, len(posting_instructions_directive.posting_instructions))
         # Cannot get balances for in-flight Release
         with self.assertRaises(InvalidSmartContractError) as ex:
-            posting_instructions_directive.posting_instructions[0].balances(account_id=self.test_account_id, tside=Tside.LIABILITY)
+            posting_instructions_directive.posting_instructions[0].balances(
+                account_id=self.test_account_id, tside=Tside.LIABILITY
+            )
         self.assertEqual(
-            "The Release posting instruction type does not support the balances method " "for the non-historical data as committed_postings are not available.",
+            "The Release posting instruction type does not support the balances method "
+            "for the non-historical data as committed_postings are not available.",
             str(ex.exception),
         )
 
@@ -8294,7 +8565,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 ],
             )
         self.assertEqual(
-            "Net of balance coordinate ('COMMERCIAL_BANK_MONEY', 'GBP', Phase.PENDING_OUT)" " in the CustomInstruction: 3, Expected: 0.",
+            "Net of balance coordinate ('COMMERCIAL_BANK_MONEY', 'GBP', Phase.PENDING_OUT)"
+            " in the CustomInstruction: 3, Expected: 0.",
             str(ex.exception),
         )
 
@@ -8428,7 +8700,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 * 65,
             )
         self.assertIn(
-            "Too many posting instructions submitted in the Posting Instructions Directive. " "Number submitted: 65. Limit: 64.",
+            "Too many posting instructions submitted in the Posting Instructions Directive. "
+            "Number submitted: 65. Limit: 64.",
             str(ex.exception),
         )
 
@@ -8455,7 +8728,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 ],
             )
         self.assertIn(
-            "Too many postings submitted in the CustomInstruction. " "Number submitted: 65. Limit: 64.",
+            "Too many postings submitted in the CustomInstruction. "
+            "Number submitted: 65. Limit: 64.",
             str(ex.exception),
         )
 
@@ -8487,7 +8761,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 batch_details="One Team, One Meme",
             )
         self.assertEqual(
-            "'PostingInstructionsDirective.batch_details' expected Dict[str, str] if " "populated, got 'One Team, One Meme' of type str",
+            "'PostingInstructionsDirective.batch_details' expected Dict[str, str] if "
+            "populated, got 'One Team, One Meme' of type str",
             str(ex.exception),
         )
 
@@ -8574,9 +8849,15 @@ class PublicCommonV400TypesTestCase(TestCase):
         address = "DEFAULT"
         asset = "COMMERCIAL_BANK_MONEY"
         denomination = "GBP"
-        balance_key_committed = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
-        balance_key_out = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT)
-        balance_key_in = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN)
+        balance_key_committed = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
+        )
+        balance_key_out = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT
+        )
+        balance_key_in = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN
+        )
 
         balance_default_dict_1 = BalanceDefaultDict()
         balance_default_dict_1[balance_key_committed] = balance_1
@@ -8594,14 +8875,18 @@ class PublicCommonV400TypesTestCase(TestCase):
         expected_aggregated_balance_default_dict[balance_key_out] = balance_1 + balance_2
         expected_aggregated_balance_default_dict[balance_key_in] = balance_2
 
-        self.assertDictEqual(expected_aggregated_balance_default_dict, aggregated_balance_default_dict)
+        self.assertDictEqual(
+            expected_aggregated_balance_default_dict, aggregated_balance_default_dict
+        )
 
     def test_balance_aggregation_radd(self):
         balance_1 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
         balance_2 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
         balance_3 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
         aggregated_balance = sum([balance_1, balance_2, balance_3], Balance())
-        self.assertEqual(Balance(credit=Decimal(60), debit=Decimal(60), net=Decimal(0)), aggregated_balance)
+        self.assertEqual(
+            Balance(credit=Decimal(60), debit=Decimal(60), net=Decimal(0)), aggregated_balance
+        )
 
     def test_balance_dict_aggregation_radd(self):
         balance_1 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
@@ -8609,9 +8894,15 @@ class PublicCommonV400TypesTestCase(TestCase):
         address = "DEFAULT"
         asset = "COMMERCIAL_BANK_MONEY"
         denomination = "GBP"
-        balance_key_committed = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
-        balance_key_out = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT)
-        balance_key_in = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN)
+        balance_key_committed = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
+        )
+        balance_key_out = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT
+        )
+        balance_key_in = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN
+        )
 
         balance_default_dict_1 = BalanceDefaultDict()
         balance_default_dict_1[balance_key_committed] = balance_1
@@ -8631,7 +8922,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         expected_aggregated_balance_default_dict[balance_key_out] = balance_1 + balance_2
         expected_aggregated_balance_default_dict[balance_key_in] = balance_2
 
-        self.assertDictEqual(expected_aggregated_balance_default_dict, aggregated_balance_default_dict)
+        self.assertDictEqual(
+            expected_aggregated_balance_default_dict, aggregated_balance_default_dict
+        )
 
     def test_balance_dict_repr(self):
         balance_1 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
@@ -8639,9 +8932,15 @@ class PublicCommonV400TypesTestCase(TestCase):
         address = "DEFAULT"
         asset = "COMMERCIAL_BANK_MONEY"
         denomination = "GBP"
-        balance_key_committed = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED)
-        balance_key_out = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT)
-        balance_key_in = BalanceCoordinate(account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN)
+        balance_key_committed = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.COMMITTED
+        )
+        balance_key_out = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_OUT
+        )
+        balance_key_in = BalanceCoordinate(
+            account_address=address, asset=asset, denomination=denomination, phase=Phase.PENDING_IN
+        )
 
         balance_dict = BalanceDefaultDict()
         balance_dict[balance_key_committed] = balance_1
@@ -8786,7 +9085,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
-            balances.before(at_datetime=datetime(2020, 1, 15, 11, 20, 0, tzinfo=ZoneInfo("US/Pacific")))
+            balances.before(
+                at_datetime=datetime(2020, 1, 15, 11, 20, 0, tzinfo=ZoneInfo("US/Pacific"))
+            )
         self.assertEqual(
             "'at_datetime' of BalanceTimeseries.before() must have timezone UTC, currently US/Pacific.",  # noqa: E501
             str(e.exception),
@@ -8870,7 +9171,9 @@ class PublicCommonV400TypesTestCase(TestCase):
 
     def test_balances_timeseries_return_on_empty(self):
         balances = BalanceTimeseries()
-        self.assertEqual(balances.latest(), Balance(credit=Decimal("0"), debit=Decimal("0"), net=Decimal("0")))
+        self.assertEqual(
+            balances.latest(), Balance(credit=Decimal("0"), debit=Decimal("0"), net=Decimal("0"))
+        )
 
     def test_balance_default_dict_default_factory_happy_path(self):
         balance_default_dict = BalanceDefaultDict()
@@ -8954,7 +9257,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(len(balances.all()), 1)
 
         timeseries_item = balances.all()[0]
-        self.assertEqual(timeseries_item.at_datetime, datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")))
+        self.assertEqual(
+            timeseries_item.at_datetime, datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC"))
+        )
         self.assertEqual(timeseries_item.value, purchase)
 
     # Shift, Override, Next, Previous
@@ -9003,37 +9308,51 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             Shift()
 
-        self.assertEqual(str(e.exception), "Shift object needs to be populated with at least one attribute.")
+        self.assertEqual(
+            str(e.exception), "Shift object needs to be populated with at least one attribute."
+        )
 
     def test_shift_raises_if_invalid_year_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Shift(years="1")
-        self.assertEqual(str(e.exception), "'Shift.years' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Shift.years' expected int if populated, got '1' of type str"
+        )
 
     def test_shift_raises_if_invalid_month_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Shift(months="1")
-        self.assertEqual(str(e.exception), "'Shift.months' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Shift.months' expected int if populated, got '1' of type str"
+        )
 
     def test_shift_raises_if_invalid_day_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Shift(days="1")
-        self.assertEqual(str(e.exception), "'Shift.days' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Shift.days' expected int if populated, got '1' of type str"
+        )
 
     def test_shift_raises_if_invalid_hour_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Shift(hours="1")
-        self.assertEqual(str(e.exception), "'Shift.hours' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Shift.hours' expected int if populated, got '1' of type str"
+        )
 
     def test_shift_raises_if_invalid_minute_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Shift(minutes="1")
-        self.assertEqual(str(e.exception), "'Shift.minutes' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Shift.minutes' expected int if populated, got '1' of type str"
+        )
 
     def test_shift_raises_if_invalid_second_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Shift(seconds="1")
-        self.assertEqual(str(e.exception), "'Shift.seconds' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Shift.seconds' expected int if populated, got '1' of type str"
+        )
 
     def test_defined_date_time_enum(self):
         self.assertEqual(DefinedDateTime.LIVE.value, -1)
@@ -9077,7 +9396,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             Override()
 
-        self.assertEqual(str(e.exception), "Override object needs to be populated with at least one attribute.")
+        self.assertEqual(
+            str(e.exception), "Override object needs to be populated with at least one attribute."
+        )
 
     def test_override_raises_if_invalid_year_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9210,7 +9531,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_next_raises_if_invalid_month_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(month="1", day=1)
-        self.assertEqual(str(e.exception), "'Next.month' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Next.month' expected int if populated, got '1' of type str"
+        )
 
     def test_next_raises_if_invalid_day_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9220,22 +9543,30 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_next_raises_if_invalid_hour_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(hour="1", day=1)
-        self.assertEqual(str(e.exception), "'Next.hour' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Next.hour' expected int if populated, got '1' of type str"
+        )
 
     def test_next_raises_if_invalid_minute_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(minute="1", day=1)
-        self.assertEqual(str(e.exception), "'Next.minute' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Next.minute' expected int if populated, got '1' of type str"
+        )
 
     def test_next_raises_if_invalid_second_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(second="1", day=1)
-        self.assertEqual(str(e.exception), "'Next.second' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Next.second' expected int if populated, got '1' of type str"
+        )
 
     def test_next_raises_if_invalid_month_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(month=True, day=1)
-        self.assertEqual(str(e.exception), "'Next.month' expected int if populated, got 'True' of type bool")
+        self.assertEqual(
+            str(e.exception), "'Next.month' expected int if populated, got 'True' of type bool"
+        )
 
     def test_next_raises_if_invalid_day_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9245,17 +9576,23 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_next_raises_if_invalid_hour_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(hour=True, day=1)
-        self.assertEqual(str(e.exception), "'Next.hour' expected int if populated, got 'True' of type bool")
+        self.assertEqual(
+            str(e.exception), "'Next.hour' expected int if populated, got 'True' of type bool"
+        )
 
     def test_next_raises_if_invalid_minute_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(minute=True, day=1)
-        self.assertEqual(str(e.exception), "'Next.minute' expected int if populated, got 'True' of type bool")
+        self.assertEqual(
+            str(e.exception), "'Next.minute' expected int if populated, got 'True' of type bool"
+        )
 
     def test_next_raises_if_invalid_second_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
             Next(second=True, day=1)
-        self.assertEqual(str(e.exception), "'Next.second' expected int if populated, got 'True' of type bool")
+        self.assertEqual(
+            str(e.exception), "'Next.second' expected int if populated, got 'True' of type bool"
+        )
 
     def test_previous_with_all_values_not_provided(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9265,7 +9602,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_previous_raises_if_invalid_month_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous(month="1", day=1)
-        self.assertEqual(str(e.exception), "'Previous.month' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Previous.month' expected int if populated, got '1' of type str"
+        )
 
     def test_previous_raises_if_invalid_day_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9275,22 +9614,30 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_previous_raises_if_invalid_hour_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous(hour="1", day=1)
-        self.assertEqual(str(e.exception), "'Previous.hour' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Previous.hour' expected int if populated, got '1' of type str"
+        )
 
     def test_previous_raises_if_invalid_minute_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous(minute="1", day=1)
-        self.assertEqual(str(e.exception), "'Previous.minute' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Previous.minute' expected int if populated, got '1' of type str"
+        )
 
     def test_previous_raises_if_invalid_second_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous(second="1", day=1)
-        self.assertEqual(str(e.exception), "'Previous.second' expected int if populated, got '1' of type str")
+        self.assertEqual(
+            str(e.exception), "'Previous.second' expected int if populated, got '1' of type str"
+        )
 
     def test_previous_raises_if_invalid_month_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous(month=True, day=1)
-        self.assertEqual(str(e.exception), "'Previous.month' expected int if populated, got 'True' of type bool")
+        self.assertEqual(
+            str(e.exception), "'Previous.month' expected int if populated, got 'True' of type bool"
+        )
 
     def test_previous_raises_if_invalid_day_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9300,7 +9647,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_previous_raises_if_invalid_hour_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous(hour=True, day=1)
-        self.assertEqual(str(e.exception), "'Previous.hour' expected int if populated, got 'True' of type bool")
+        self.assertEqual(
+            str(e.exception), "'Previous.hour' expected int if populated, got 'True' of type bool"
+        )
 
     def test_previous_raises_if_invalid_minute_types_provided_bool(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9392,7 +9741,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(5, relative_date_time_native_object.find.minute)
         self.assertEqual(6, relative_date_time_native_object.find.second)
 
-        self.assertEqual(DefinedDateTime.EFFECTIVE_DATETIME, relative_date_time_native_object.origin)
+        self.assertEqual(
+            DefinedDateTime.EFFECTIVE_DATETIME, relative_date_time_native_object.origin
+        )
 
     def test_relative_date_time_with_previous(self):
         relative_date_time_native_object = RelativeDateTime(
@@ -9414,7 +9765,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(7, relative_date_time_native_object.find.minute)
         self.assertEqual(25, relative_date_time_native_object.find.second)
 
-        self.assertEqual(DefinedDateTime.EFFECTIVE_DATETIME, relative_date_time_native_object.origin)
+        self.assertEqual(
+            DefinedDateTime.EFFECTIVE_DATETIME, relative_date_time_native_object.origin
+        )
 
     def test_relative_date_time_raises_if_invalid_shift_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -9429,7 +9782,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             RelativeDateTime(find="1", origin=DefinedDateTime.EFFECTIVE_DATETIME)
         self.assertEqual(
             str(e.exception),
-            "'RelativeDateTime.find' expected Union[Next, Previous, Override] if populated, got " "'1' of type str",
+            "'RelativeDateTime.find' expected Union[Next, Previous, Override] if populated, got "
+            "'1' of type str",
         )
 
     def test_relative_date_time_with_shift_and_find_not_populated(self):
@@ -9462,7 +9816,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(9, relative_date_time_native_object.find.minute)
         self.assertEqual(53, relative_date_time_native_object.find.second)
 
-        self.assertEqual(DefinedDateTime.EFFECTIVE_DATETIME, relative_date_time_native_object.origin)
+        self.assertEqual(
+            DefinedDateTime.EFFECTIVE_DATETIME, relative_date_time_native_object.origin
+        )
 
     def test_relative_date_time_with_origin_interval_start(self):
         relative_date_time_native_object = RelativeDateTime(
@@ -9504,7 +9860,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_postings_interval_fetcher_with_relative_datetime_start(self):
         postings_interval_fetcher = PostingsIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+            ),
             end=DefinedDateTime.EFFECTIVE_DATETIME,
         )
 
@@ -9519,13 +9877,16 @@ class PublicCommonV400TypesTestCase(TestCase):
             PostingsIntervalFetcher(fetcher_id="fetcher_id", end=DefinedDateTime.EFFECTIVE_DATETIME)
         self.assertEqual(
             str(e.exception),
-            "'PostingsIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], " "got None",
+            "'PostingsIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], "
+            "got None",
         )
 
     def test_postings_interval_fetcher_errors_without_id(self):
         with self.assertRaises(InvalidSmartContractError) as e:
             PostingsIntervalFetcher(
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_DATETIME,
             )
         self.assertEqual(
@@ -9537,7 +9898,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             PostingsIntervalFetcher(
                 fetcher_id="",
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_DATETIME,
             )
         self.assertEqual(
@@ -9548,7 +9911,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_postings_interval_fetcher_succeeds_without_end(self):
         postings_interval_fetcher = PostingsIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+            ),
         )
         self.assertEqual("fetcher_id", postings_interval_fetcher.fetcher_id)
 
@@ -9557,7 +9922,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(DefinedDateTime.LIVE, postings_interval_fetcher.end)
 
     def test_postings_interval_fetcher_with_defined_datetime_start(self):
-        postings_interval_fetcher = PostingsIntervalFetcher(fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_DATETIME)
+        postings_interval_fetcher = PostingsIntervalFetcher(
+            fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_DATETIME
+        )
         self.assertEqual("fetcher_id", postings_interval_fetcher.fetcher_id)
         self.assertEqual(DefinedDateTime.EFFECTIVE_DATETIME, postings_interval_fetcher.start)
         self.assertEqual(DefinedDateTime.LIVE, postings_interval_fetcher.end)
@@ -9609,11 +9976,14 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             PostingsIntervalFetcher(
                 fetcher_id="fetcher_id",
-                start=RelativeDateTime(origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)
+                ),
             )
         self.assertEqual(
             str(e.exception),
-            "PostingsIntervalFetcher 'start' origin value must be set to " "'DefinedDateTime.EFFECTIVE_DATETIME'",
+            "PostingsIntervalFetcher 'start' origin value must be set to "
+            "'DefinedDateTime.EFFECTIVE_DATETIME'",
         )
 
     def test_postings_interval_fetcher_raises_with_invalid_start_type(self):
@@ -9625,7 +9995,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         self.assertEqual(
             str(e.exception),
-            "'PostingsIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], " "got 'foo' of type str",
+            "'PostingsIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], "
+            "got 'foo' of type str",
         )
 
     def test_postings_interval_fetcher_raises_with_invalid_end_type(self):
@@ -9638,7 +10009,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         self.assertEqual(
             str(e.exception),
-            "'PostingsIntervalFetcher.end' expected Union[RelativeDateTime, DefinedDateTime] if " "populated, got 'foo' of type str",
+            "'PostingsIntervalFetcher.end' expected Union[RelativeDateTime, DefinedDateTime] if "
+            "populated, got 'foo' of type str",
         )
 
     # BalancesIntervalFetcher
@@ -9646,7 +10018,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_balances_interval_fetcher_with_relative_datetime_start(self):
         balances_interval_fetcher = BalancesIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+            ),
             end=DefinedDateTime.EFFECTIVE_DATETIME,
         )
 
@@ -9661,13 +10035,16 @@ class PublicCommonV400TypesTestCase(TestCase):
             BalancesIntervalFetcher(fetcher_id="fetcher_id", end=DefinedDateTime.EFFECTIVE_DATETIME)
         self.assertEqual(
             str(e.exception),
-            "'BalancesIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], " "got None",
+            "'BalancesIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], "
+            "got None",
         )
 
     def test_balances_interval_fetcher_errors_without_id(self):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesIntervalFetcher(
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_DATETIME,
             )
         self.assertEqual(
@@ -9679,7 +10056,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesIntervalFetcher(
                 fetcher_id="",
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_DATETIME,
             )
         self.assertEqual(
@@ -9690,7 +10069,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_balances_interval_fetcher_succeeds_without_end(self):
         balances_interval_fetcher = BalancesIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_DATETIME, shift=Shift(years=-1, months=2)
+            ),
         )
         self.assertEqual("fetcher_id", balances_interval_fetcher.fetcher_id)
 
@@ -9699,7 +10080,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(DefinedDateTime.LIVE, balances_interval_fetcher.end)
 
     def test_balances_interval_fetcher_with_defined_datetime_start(self):
-        balances_interval_fetcher = BalancesIntervalFetcher(fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_DATETIME)
+        balances_interval_fetcher = BalancesIntervalFetcher(
+            fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_DATETIME
+        )
         self.assertEqual("fetcher_id", balances_interval_fetcher.fetcher_id)
         self.assertEqual(DefinedDateTime.EFFECTIVE_DATETIME, balances_interval_fetcher.start)
         self.assertEqual(DefinedDateTime.LIVE, balances_interval_fetcher.end)
@@ -9751,11 +10134,14 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesIntervalFetcher(
                 fetcher_id="fetcher_id",
-                start=RelativeDateTime(origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)
+                ),
             )
         self.assertEqual(
             str(e.exception),
-            "BalancesIntervalFetcher 'start' origin value must be set to " "'DefinedDateTime.EFFECTIVE_DATETIME'",
+            "BalancesIntervalFetcher 'start' origin value must be set to "
+            "'DefinedDateTime.EFFECTIVE_DATETIME'",
         )
 
     def test_balances_interval_fetcher_with_filter(self):
@@ -9781,7 +10167,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         self.assertEqual(
             str(e.exception),
-            "'BalancesIntervalFetcher.filter' expected BalancesFilter if populated, got '123' of " "type int",
+            "'BalancesIntervalFetcher.filter' expected BalancesFilter if populated, got '123' of "
+            "type int",
         )
 
     def test_balances_interval_fetcher_raises_with_invalid_start_type(self):
@@ -9793,7 +10180,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         self.assertEqual(
             str(e.exception),
-            "'BalancesIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], " "got 'foo' of type str",
+            "'BalancesIntervalFetcher.start' expected Union[RelativeDateTime, DefinedDateTime], "
+            "got 'foo' of type str",
         )
 
     def test_balances_interval_fetcher_raises_with_invalid_end_type(self):
@@ -9806,28 +10194,37 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         self.assertEqual(
             str(e.exception),
-            "'BalancesIntervalFetcher.end' expected Union[RelativeDateTime, DefinedDateTime] if " "populated, got 'foo' of type str",
+            "'BalancesIntervalFetcher.end' expected Union[RelativeDateTime, DefinedDateTime] if "
+            "populated, got 'foo' of type str",
         )
 
     # BalancesObservationFetcher
 
     def test_balances_observation_fetcher_with_defined_datetime(self):
         filter = BalancesFilter(addresses=["CUSTOM_ADDRESS", "DEFAULT_ADDRESS"])
-        balances_observation_fetcher = BalancesObservationFetcher(fetcher_id="fetcher_id", at=DefinedDateTime.EFFECTIVE_DATETIME, filter=filter)
+        balances_observation_fetcher = BalancesObservationFetcher(
+            fetcher_id="fetcher_id", at=DefinedDateTime.EFFECTIVE_DATETIME, filter=filter
+        )
         self.assertEqual("fetcher_id", balances_observation_fetcher.fetcher_id)
         self.assertEqual(DefinedDateTime.EFFECTIVE_DATETIME, balances_observation_fetcher.at)
         self.assertEqual(filter, balances_observation_fetcher.filter)
 
     def test_balances_observation_fetcher_with_relative_datetime(self):
         filter = BalancesFilter(addresses=["CUSTOM_ADDRESS", "DEFAULT_ADDRESS"])
-        relative_date_time = RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME)
-        balances_observation_fetcher = BalancesObservationFetcher(fetcher_id="fetcher_id", at=relative_date_time, filter=filter)
+        relative_date_time = RelativeDateTime(
+            shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME
+        )
+        balances_observation_fetcher = BalancesObservationFetcher(
+            fetcher_id="fetcher_id", at=relative_date_time, filter=filter
+        )
         self.assertEqual("fetcher_id", balances_observation_fetcher.fetcher_id)
         self.assertEqual(relative_date_time, balances_observation_fetcher.at)
         self.assertEqual(filter, balances_observation_fetcher.filter)
 
     def test_balances_observation_fetcher_with_no_filter(self):
-        relative_date_time = RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME)
+        relative_date_time = RelativeDateTime(
+            shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME
+        )
         balances_observation_fetcher = BalancesObservationFetcher(
             fetcher_id="fetcher_id",
             at=relative_date_time,
@@ -9839,14 +10236,22 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesObservationFetcher(
                 fetcher_id="",
-                at=RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME),
+                at=RelativeDateTime(
+                    shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME
+                ),
             )
 
-        self.assertEqual(str(e.exception), "'BalancesObservationFetcher.fetcher_id' must be a non-empty string")
+        self.assertEqual(
+            str(e.exception), "'BalancesObservationFetcher.fetcher_id' must be a non-empty string"
+        )
 
     def test_balances_observation_fetcher_raises_with_fetcher_id_not_populated(self):
         with self.assertRaises(StrongTypingError) as e:
-            BalancesObservationFetcher(at=RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME))
+            BalancesObservationFetcher(
+                at=RelativeDateTime(
+                    shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME
+                )
+            )
 
         self.assertEqual(
             str(e.exception),
@@ -9857,7 +10262,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(StrongTypingError) as e:
             BalancesObservationFetcher(
                 fetcher_id=42,
-                at=RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME),
+                at=RelativeDateTime(
+                    shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME
+                ),
             )
 
         self.assertEqual(
@@ -9889,12 +10296,15 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
 
     def test_balances_observation_fetcher_raises_with_invalid_filter_type(self):
-        relative_date_time = RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME)
+        relative_date_time = RelativeDateTime(
+            shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_DATETIME
+        )
         with self.assertRaises(StrongTypingError) as e:
             BalancesObservationFetcher(fetcher_id="fetcher_id", at=relative_date_time, filter=123)
         self.assertEqual(
             str(e.exception),
-            "'BalancesObservationFetcher.filter' expected BalancesFilter if populated, got '123' " "of type int",
+            "'BalancesObservationFetcher.filter' expected BalancesFilter if populated, got '123' "
+            "of type int",
         )
 
     def test_balances_observation_fetcher_raises_with_invalid_at_type(self):
@@ -9902,7 +10312,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             BalancesObservationFetcher(fetcher_id="fetcher_id", at="foo")
         self.assertEqual(
             str(e.exception),
-            "'BalancesObservationFetcher.at' expected Union[DefinedDateTime, RelativeDateTime], " "got 'foo' of type str",
+            "'BalancesObservationFetcher.at' expected Union[DefinedDateTime, RelativeDateTime], "
+            "got 'foo' of type str",
         )
 
     # BalancesObservation
@@ -9917,7 +10328,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         balance_dict = BalanceDefaultDict()
         balance_dict[balance_key_1] = Balance(net=Decimal("20"), credit=Decimal("20"))
-        balances_observation = BalancesObservation(value_datetime=value_datetime, balances=balance_dict)
+        balances_observation = BalancesObservation(
+            value_datetime=value_datetime, balances=balance_dict
+        )
         self.assertEqual(balance_dict, balances_observation.balances)
         self.assertEqual(value_datetime, balances_observation.value_datetime)
 
@@ -9946,7 +10359,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             BalancesObservation(value_datetime=value_datetime, balances=balance_dict)
         self.assertEqual(
             str(e.exception),
-            "'value_datetime' of BalancesObservation must have timezone UTC, currently " "US/Pacific.",
+            "'value_datetime' of BalancesObservation must have timezone UTC, currently "
+            "US/Pacific.",
         )
 
     def test_balances_observation_raises_with_non_zoneinfo_timezone(self):
@@ -10049,7 +10463,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             )
         self.assertEqual(
-            "'ScheduledEvent.start_datetime' expected datetime if populated, " "got 'True' of type bool",
+            "'ScheduledEvent.start_datetime' expected datetime if populated, "
+            "got 'True' of type bool",
             str(e.exception),
         )
 
@@ -10073,7 +10488,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="5"),
             )
         self.assertEqual(
-            "'ScheduledEvent.end_datetime' expected datetime if populated, got 'True' of type " "bool",
+            "'ScheduledEvent.end_datetime' expected datetime if populated, got 'True' of type "
+            "bool",
             str(e.exception),
         )
 
@@ -10108,7 +10524,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=True,
             )
         self.assertEqual(
-            "'ScheduledEvent.expression' expected ScheduleExpression if populated, got 'True' of " "type bool",
+            "'ScheduledEvent.expression' expected ScheduleExpression if populated, got 'True' of "
+            "type bool",
             str(e.exception),
         )
 
@@ -10120,7 +10537,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 schedule_method=True,
             )
         self.assertEqual(
-            "'ScheduledEvent.schedule_method' expected EndOfMonthSchedule if populated, got " "'True' of type bool",
+            "'ScheduledEvent.schedule_method' expected EndOfMonthSchedule if populated, got "
+            "'True' of type bool",
             str(e.exception),
         )
 
@@ -10147,7 +10565,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 skip="not-a-skip",
             )
         self.assertEqual(
-            "'ScheduledEvent.skip' expected Union[bool, ScheduleSkip] if populated, got " "'not-a-skip' of type str",
+            "'ScheduledEvent.skip' expected Union[bool, ScheduleSkip] if populated, got "
+            "'not-a-skip' of type str",
             str(e.exception),
         )
 
@@ -10221,7 +10640,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(ScheduleFailover.FIRST_VALID_DAY_BEFORE, end_of_month_schedule.failover)
 
     def test_end_of_month_schedule_type_can_set_values(self):
-        end_of_month_schedule = EndOfMonthSchedule(day=15, hour=10, minute=20, second=5, failover=ScheduleFailover.FIRST_VALID_DAY_BEFORE)
+        end_of_month_schedule = EndOfMonthSchedule(
+            day=15, hour=10, minute=20, second=5, failover=ScheduleFailover.FIRST_VALID_DAY_BEFORE
+        )
         self.assertEqual(15, end_of_month_schedule.day)
         self.assertEqual(10, end_of_month_schedule.hour)
         self.assertEqual(20, end_of_month_schedule.minute)
@@ -10257,7 +10678,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 EndOfMonthSchedule(**value)
             self.assertEqual(
                 str(e.exception),
-                f"Argument {time_component} of EndOfMonthSchedule" f" object is out of range({low}-{high}).",
+                f"Argument {time_component} of EndOfMonthSchedule"
+                f" object is out of range({low}-{high}).",
             )
 
     # SupervisedHooks
@@ -10423,7 +10845,9 @@ class PublicCommonV400TypesTestCase(TestCase):
                 ),
             ]
         )
-        posting_instructions_directives = [PostingInstructionsDirective(posting_instructions=[custom_instructions])]
+        posting_instructions_directives = [
+            PostingInstructionsDirective(posting_instructions=[custom_instructions])
+        ]
         update_account_event_type_directives = [
             UpdateAccountEventTypeDirective(
                 event_type="event_type_1",
@@ -10579,7 +11003,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
 
     def test_post_posting_hook_result_from_proto_skips_validation(self):
-        post_posting_hook_result = PostPostingHookResult(update_account_event_type_directives=True, _from_proto=True)
+        post_posting_hook_result = PostPostingHookResult(
+            update_account_event_type_directives=True, _from_proto=True
+        )
         self.assertEqual(True, post_posting_hook_result.update_account_event_type_directives)
 
     def test_pre_parameter_change_hook_result(self):
@@ -10594,7 +11020,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_pre_parameter_change_hook_result_raises_with_invalid_type(self):
         with self.assertRaises(StrongTypingError) as ex:
             PreParameterChangeHookResult(rejection=True)
-        self.assertEqual("'rejection' expected Rejection, got 'True' of type bool", str(ex.exception))
+        self.assertEqual(
+            "'rejection' expected Rejection, got 'True' of type bool", str(ex.exception)
+        )
 
     def test_pre_posting_hook_result(self):
         rejection = Rejection(message="Rejection", reason_code=RejectionReason.INSUFFICIENT_FUNDS)
@@ -10746,7 +11174,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 rejection=rejection,
             )
         self.assertEqual(
-            "ActivationHookResult allows the population of directives/events or rejection, " "but not both",
+            "ActivationHookResult allows the population of directives/events or rejection, "
+            "but not both",
             str(ex.exception),
         )
 
@@ -10768,7 +11197,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 rejection=rejection,
             )
         self.assertEqual(
-            "ActivationHookResult allows the population of directives/events or rejection, " "but not both",
+            "ActivationHookResult allows the population of directives/events or rejection, "
+            "but not both",
             str(ex.exception),
         )
 
@@ -10793,7 +11223,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 rejection=rejection,
             )
         self.assertEqual(
-            "ActivationHookResult allows the population of directives/events or rejection, " "but not both",
+            "ActivationHookResult allows the population of directives/events or rejection, "
+            "but not both",
             str(ex.exception),
         )
 
@@ -10870,7 +11301,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
 
     def test_scheduled_event_hook_result_from_proto_skips_validation(self):
-        scheduled_event_hook_result = ScheduledEventHookResult(update_account_event_type_directives=True, _from_proto=True)
+        scheduled_event_hook_result = ScheduledEventHookResult(
+            update_account_event_type_directives=True, _from_proto=True
+        )
         self.assertEqual(True, scheduled_event_hook_result.update_account_event_type_directives)
 
     def test_supervisor_post_posting_hook_result_without_directives(self):
@@ -10878,9 +11311,15 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual([], supervisor_post_posting_hook_result.plan_notification_directives)
         self.assertEqual([], supervisor_post_posting_hook_result.update_plan_event_type_directives)
 
-        self.assertEqual({}, supervisor_post_posting_hook_result.supervisee_account_notification_directives)
-        self.assertEqual({}, supervisor_post_posting_hook_result.supervisee_posting_instructions_directives)
-        self.assertEqual({}, supervisor_post_posting_hook_result.supervisee_update_account_event_type_directives)
+        self.assertEqual(
+            {}, supervisor_post_posting_hook_result.supervisee_account_notification_directives
+        )
+        self.assertEqual(
+            {}, supervisor_post_posting_hook_result.supervisee_posting_instructions_directives
+        )
+        self.assertEqual(
+            {}, supervisor_post_posting_hook_result.supervisee_update_account_event_type_directives
+        )
 
     def test_supervisor_post_posting_hook_result_with_directives(self):
         plan_notification_directives = [
@@ -10992,10 +11431,16 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_supervisor_scheduled_event_hook_result_without_directives(self):
         supervisor_scheduled_event_hook_result = SupervisorScheduledEventHookResult()
         self.assertEqual([], supervisor_scheduled_event_hook_result.plan_notification_directives)
-        self.assertEqual([], supervisor_scheduled_event_hook_result.update_plan_event_type_directives)
+        self.assertEqual(
+            [], supervisor_scheduled_event_hook_result.update_plan_event_type_directives
+        )
 
-        self.assertEqual({}, supervisor_scheduled_event_hook_result.supervisee_account_notification_directives)
-        self.assertEqual({}, supervisor_scheduled_event_hook_result.supervisee_posting_instructions_directives)
+        self.assertEqual(
+            {}, supervisor_scheduled_event_hook_result.supervisee_account_notification_directives
+        )
+        self.assertEqual(
+            {}, supervisor_scheduled_event_hook_result.supervisee_posting_instructions_directives
+        )
         self.assertEqual(
             {},
             supervisor_scheduled_event_hook_result.supervisee_update_account_event_type_directives,
@@ -11178,11 +11623,17 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_conversion_hook_result_raises_with_invalid_type(self):
         with self.assertRaises(StrongTypingError) as ex:
             ConversionHookResult(account_notification_directives=True)
-        expected = "Expected list of AccountNotificationDirective objects for 'account_directives', got " "'True'"
+        expected = (
+            "Expected list of AccountNotificationDirective objects for 'account_directives', got "
+            "'True'"
+        )
         self.assertEqual(expected, str(ex.exception))
         with self.assertRaises(StrongTypingError) as ex:
             ConversionHookResult(posting_instructions_directives=True)
-        expected = "Expected list of PostingInstructionsDirective objects for 'posting_directives', got " "'True'"
+        expected = (
+            "Expected list of PostingInstructionsDirective objects for 'posting_directives', got "
+            "'True'"
+        )
         self.assertEqual(expected, str(ex.exception))
         with self.assertRaises(StrongTypingError) as ex:
             ConversionHookResult(scheduled_events_return_value=True)
@@ -11199,7 +11650,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 expression=ScheduleExpression(day="1"),
             )
         self.assertEqual(
-            "UpdatePlanEventTypeDirective cannot contain both" " expression and schedule_method fields",
+            "UpdatePlanEventTypeDirective cannot contain both"
+            " expression and schedule_method fields",
             str(ex.exception),
         )
 
@@ -11303,7 +11755,9 @@ class PublicCommonV400TypesTestCase(TestCase):
 
     def test_smart_contract_descriptor_raises_if_alias_not_populated(self):
         with self.assertRaises(StrongTypingError) as ex:
-            SmartContractDescriptor(alias=None, smart_contract_version_id="test_smart_contract_version_id")
+            SmartContractDescriptor(
+                alias=None, smart_contract_version_id="test_smart_contract_version_id"
+            )
         self.assertIn("SmartContractDescriptor 'alias' must be populated", str(ex.exception))
 
     def test_smart_contract_descriptor_raises_if_smart_contract_version_id_not_populated(self):
@@ -11315,7 +11769,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
 
     def test_smart_contract_descriptor_no_supervised_hooks(self):
-        supervised_smart_contract = SmartContractDescriptor(alias="test1", smart_contract_version_id="test_smart_contract_version_id")
+        supervised_smart_contract = SmartContractDescriptor(
+            alias="test1", smart_contract_version_id="test_smart_contract_version_id"
+        )
         self.assertEqual("test1", supervised_smart_contract.alias)
         self.assertIsNone(supervised_smart_contract.supervised_hooks)
 
@@ -11327,7 +11783,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 supervised_hooks="foo",
             )
         self.assertIn(
-            "'SmartContractDescriptor.supervised_hooks' expected SupervisedHooks if populated, got " "'foo' of type str",
+            "'SmartContractDescriptor.supervised_hooks' expected SupervisedHooks if populated, got "
+            "'foo' of type str",
             str(ex.exception),
         )
 
@@ -11400,7 +11857,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_balances_filter_raises_with_duplicate_addresses(self):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesFilter(addresses=["address_1", "address_1"])
-        self.assertEqual(str(e.exception), "BalancesFilter addresses must not contain any duplicate addresses.")
+        self.assertEqual(
+            str(e.exception), "BalancesFilter addresses must not contain any duplicate addresses."
+        )
 
     def test_balances_filter_raises_invalid_argument_type(self):
         with self.assertRaises(StrongTypingError):
@@ -11421,7 +11880,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_smart_contract_event_type_when_scheduler_tag_ids_invalid(self):
         with self.assertRaises(StrongTypingError) as ex:
             SmartContractEventType(name="name", scheduler_tag_ids="invalid")
-        self.assertIn("Expected list of str objects for 'scheduler_tag_ids', got 'invalid'", str(ex.exception))
+        self.assertIn(
+            "Expected list of str objects for 'scheduler_tag_ids', got 'invalid'", str(ex.exception)
+        )
 
     # SupervisorContractEventType
 
@@ -11451,7 +11912,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_supervisor_contract_event_type_when_scheduler_tag_ids_invalid(self):
         with self.assertRaises(StrongTypingError) as ex:
             SupervisorContractEventType(name="name", scheduler_tag_ids="invalid")
-        self.assertIn("Expected list of str objects for 'scheduler_tag_ids', got 'invalid'", str(ex.exception))
+        self.assertIn(
+            "Expected list of str objects for 'scheduler_tag_ids', got 'invalid'", str(ex.exception)
+        )
 
     def test_supervisor_contract_event_type_when_scheduler_tag_ids_invalid_type(self):
         with self.assertRaises(StrongTypingError) as ex:
@@ -11460,9 +11923,12 @@ class PublicCommonV400TypesTestCase(TestCase):
 
     def test_supervisor_contract_event_type_when_overrides_event_types_invalid(self):
         with self.assertRaises(StrongTypingError) as ex:
-            SupervisorContractEventType(name="name", scheduler_tag_ids=["TAG"], overrides_event_types="invalid")
+            SupervisorContractEventType(
+                name="name", scheduler_tag_ids=["TAG"], overrides_event_types="invalid"
+            )
         self.assertIn(
-            "Expected list of Tuple[str, str] objects for 'overrides_event_types', got " "'invalid'",
+            "Expected list of Tuple[str, str] objects for 'overrides_event_types', got "
+            "'invalid'",
             str(ex.exception),
         )
 
@@ -11478,15 +11944,21 @@ class PublicCommonV400TypesTestCase(TestCase):
     # AddressDetails
 
     def test_address_details(self):
-        address_details = AddressDetails(account_address="DEFAULT", description="Some desc", tags=["one", "two"])
+        address_details = AddressDetails(
+            account_address="DEFAULT", description="Some desc", tags=["one", "two"]
+        )
 
         self.assertEqual("DEFAULT", address_details.account_address)
         self.assertEqual("Some desc", address_details.description)
         self.assertEqual(["one", "two"], address_details.tags)
 
     def test_address_details_equality(self):
-        default = AddressDetails(account_address="DEFAULT", description="Default address", tags=["default"])
-        other_default = AddressDetails(account_address="DEFAULT", description="Default address", tags=["default"])
+        default = AddressDetails(
+            account_address="DEFAULT", description="Default address", tags=["default"]
+        )
+        other_default = AddressDetails(
+            account_address="DEFAULT", description="Default address", tags=["default"]
+        )
         self.assertEqual(default, other_default)
 
     def test_address_details_raises_with_no_address(self):
@@ -11510,7 +11982,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual("'tags' expected list, got 'False' of type bool", str(ex.exception))
 
     def test_address_details_skips_validation(self):
-        address = AddressDetails(account_address="foo", description=None, tags=None, _from_proto=True)
+        address = AddressDetails(
+            account_address="foo", description=None, tags=None, _from_proto=True
+        )
         self.assertEqual("foo", address.account_address)
 
     # Logger

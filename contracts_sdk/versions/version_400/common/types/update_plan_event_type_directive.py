@@ -42,7 +42,10 @@ class UpdatePlanEventTypeDirective:
             )
         if self.skip is None:
             if not self.expression and not self.schedule_method and not self.end_datetime:
-                raise InvalidSmartContractError("UpdatePlanEventTypeDirective object has to have either an end_datetime, an " "expression, schedule_method, or skip defined")
+                raise InvalidSmartContractError(
+                    "UpdatePlanEventTypeDirective object has to have either an end_datetime, an "
+                    "expression, schedule_method, or skip defined"
+                )
 
         else:
             try:
@@ -56,7 +59,10 @@ class UpdatePlanEventTypeDirective:
                 )
 
         if self.expression is not None and self.schedule_method is not None:
-            raise InvalidSmartContractError("UpdatePlanEventTypeDirective cannot contain both" " expression and schedule_method fields")
+            raise InvalidSmartContractError(
+                "UpdatePlanEventTypeDirective cannot contain both"
+                " expression and schedule_method fields"
+            )
 
     @classmethod
     @lru_cache()
@@ -81,7 +87,9 @@ class UpdatePlanEventTypeDirective:
         if language_code != symbols.Languages.ENGLISH:
             raise ValueError("Language not supported")
         return [
-            types_utils.ValueSpec(name="event_type", type="str", docstring="The `event_type` that is to be modified."),
+            types_utils.ValueSpec(
+                name="event_type", type="str", docstring="The `event_type` that is to be modified."
+            ),
             types_utils.ValueSpec(
                 name="expression",
                 type="Optional[ScheduleExpression]",

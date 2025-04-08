@@ -43,7 +43,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(cutoff_datetime=CUT_OFF_DATE, client_transactions={CTX_ID_1: ctx}, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            cutoff_datetime=CUT_OFF_DATE, client_transactions={CTX_ID_1: ctx}, denomination="GBP"
+        )
         self.assertEqual(result, (501, 0))
 
     def test_sum_client_transactions_handles_hard_settlement_withdrawals(self):
@@ -61,7 +63,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(cutoff_datetime=CUT_OFF_DATE, client_transactions={CTX_ID_1: ctx}, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            cutoff_datetime=CUT_OFF_DATE, client_transactions={CTX_ID_1: ctx}, denomination="GBP"
+        )
         self.assertEqual(result, (0, 502))
 
     def test_sum_client_transactions_handles_mix_of_txns(self):
@@ -126,7 +130,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP"
+        )
         self.assertEqual(result, (0, 105))
 
     def test_sum_client_transactions_handles_partial_settlements(self):
@@ -154,7 +160,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP"
+        )
 
         self.assertEqual(result, (0, 105))
 
@@ -181,7 +189,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP"
+        )
 
         self.assertEqual(result, (0, 0))
 
@@ -204,7 +214,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="USD")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="USD"
+        )
 
         self.assertEqual(result, (0, 501))
 
@@ -227,7 +239,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="USD")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="USD"
+        )
 
         self.assertEqual(result, (0, 501))
 
@@ -251,7 +265,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             tside=self.tside,
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="USD")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="USD"
+        )
 
         self.assertEqual(result, (0, 0))
 
@@ -319,7 +335,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             ],
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP"
+        )
 
         self.assertEqual(result, (0, 40))
 
@@ -345,7 +363,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             ],
         )
 
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP"
+        )
 
         self.assertEqual(result, (40, 0))
 
@@ -374,7 +394,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             ],
             tside=self.tside,
         )
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP"
+        )
         self.assertEqual(result, (0, 0))
 
     def test_custom_instruction_client_transaction_has_zero_sum(self):
@@ -389,7 +411,9 @@ class TestSumClientTransactions(TestTransactionLimitUtils):
             ],
             tside=self.tside,
         )
-        result = client_transaction_utils.sum_client_transactions(client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP")
+        result = client_transaction_utils.sum_client_transactions(
+            client_transactions={CTX_ID_1: ctx}, cutoff_datetime=CUT_OFF_DATE, denomination="GBP"
+        )
         self.assertEqual(result, (0, 0))
 
 
@@ -579,7 +603,9 @@ class TestFilterClientTransactions(TestTransactionLimitUtils):
 class TestSumDebitsByInstructionDetails(TestTransactionLimitUtils):
     @patch.object(client_transaction_utils, "sum_client_transactions")
     @patch.object(client_transaction_utils, "filter_client_transactions")
-    def test_sum_debits_by_instruction_details(self, mock_filter_transactions: MagicMock, mock_sum_client_transaction: MagicMock):
+    def test_sum_debits_by_instruction_details(
+        self, mock_filter_transactions: MagicMock, mock_sum_client_transaction: MagicMock
+    ):
         mock_filter_transactions.return_value = sentinel.filtered_transactions
         mock_sum_client_transaction.return_value = sentinel.net_credit, sentinel.net_debit
 
@@ -629,7 +655,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
         }
         return super().setUp()
 
-    def test_extract_debits_filters_client_transactions(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_filters_client_transactions(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         mock_filter_client_transactions.return_value = {}
         self.assertListEqual(
             client_transaction_utils.extract_debits_by_instruction_details_key(
@@ -650,7 +678,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             value=sentinel.value,
         )
 
-    def test_extract_debits_outbound_auth_settle_across_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_settle_across_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # settle has no net debit impact to a previous auth
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -686,7 +716,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [],
         )
 
-    def test_extract_debits_outbound_auth_oversettle_across_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_oversettle_across_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # oversettle has net debit impact == over settlement amount
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -722,7 +754,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [settle_posting],
         )
 
-    def test_extract_debits_outbound_auth_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # auth/settle after cut-off has net debit impact == auth amount
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -758,7 +792,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [auth_posting],
         )
 
-    def test_extract_debits_outbound_auth_over_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_over_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # auth over settle after cut-off has net debit impact == auth + over settlement amount
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -794,7 +830,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [auth_posting, settle_posting],
         )
 
-    def test_extract_debits_outbound_auth_and_decrease_auth_adjustment_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_and_decrease_auth_adjustment_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # decreasing auth is a net credit, so only the original auth is a net debit
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -829,7 +867,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [auth_posting],
         )
 
-    def test_extract_debits_outbound_auth_and_increase_auth_adjustment_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_and_increase_auth_adjustment_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # increasing auth is a net debit, so both auth and adjustment are returned
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -864,7 +904,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [auth_posting, adjust_posting],
         )
 
-    def test_extract_debits_outbound_hard_settle_before_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_hard_settle_before_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # outbound hard settlement before cut-off is net 0 after the cut-off
         outbound_hard_settle_posting = self.outbound_hard_settlement(
             amount=Decimal("1"),
@@ -894,7 +936,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [],
         )
 
-    def test_extract_debits_outbound_hard_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_hard_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # outbound hard settlement after cut-off is net debit after the cut-off for hard settlement
         # amount
         outbound_hard_settle_posting = self.outbound_hard_settlement(
@@ -925,7 +969,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [outbound_hard_settle_posting],
         )
 
-    def test_extract_debits_inbound_auth_settle_across_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_auth_settle_across_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
         auth_posting = self.inbound_auth(
             amount=Decimal("1"),
@@ -961,7 +1007,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [],
         )
 
-    def test_extract_debits_inbound_auth_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_auth_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
 
         auth_posting = self.inbound_auth(
@@ -998,7 +1046,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [],
         )
 
-    def test_extract_debits_inbound_hard_settle_before_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_hard_settle_before_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
         inbound_hard_settle_posting = self.inbound_hard_settlement(
             amount=Decimal("1"),
@@ -1028,7 +1078,9 @@ class TestExtractDebitsByInstructionDetails(TestTransactionLimitUtils):
             [],
         )
 
-    def test_extract_debits_inbound_hard_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_hard_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
         inbound_hard_settle_posting = self.inbound_hard_settlement(
             amount=Decimal("1"),
@@ -1327,7 +1379,9 @@ class TestFilterClientTransactionsByType(TestTransactionLimitUtils):
 class TestSumDebitsByType(TestTransactionLimitUtils):
     @patch.object(client_transaction_utils, "sum_client_transactions")
     @patch.object(client_transaction_utils, "filter_client_transactions_by_type")
-    def test_sum_debits_by_instruction_details(self, mock_filter_transactions: MagicMock, mock_sum_client_transaction: MagicMock):
+    def test_sum_debits_by_instruction_details(
+        self, mock_filter_transactions: MagicMock, mock_sum_client_transaction: MagicMock
+    ):
         mock_filter_transactions.return_value = {
             sentinel.value_1: sentinel.filtered_transactions_1,
             sentinel.value_2: sentinel.filtered_transactions_2,
@@ -1375,7 +1429,9 @@ class TestSumDebitsByType(TestTransactionLimitUtils):
 # it's tested within sum_client_transactions, so we're repeating some tests
 @patch.object(client_transaction_utils, "filter_client_transactions_by_type")
 class TestExtractDebitsByType(TestTransactionLimitUtils):
-    def test_extract_debits_filters_client_transactions(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_filters_client_transactions(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         mock_filter_client_transactions.return_value = {}
         self.assertDictEqual(
             client_transaction_utils.extract_debits_by_type(
@@ -1396,7 +1452,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             values=[sentinel.value],
         )
 
-    def test_extract_debits_outbound_auth_settle_across_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_settle_across_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # settle has no net debit impact to a previous auth
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -1434,7 +1492,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": []},
         )
 
-    def test_extract_debits_outbound_auth_oversettle_across_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_oversettle_across_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # oversettle has net debit impact == over settlement amount
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -1472,7 +1532,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": [settle_posting]},
         )
 
-    def test_extract_debits_outbound_auth_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # auth/settle after cut-off has net debit impact == auth amount
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -1510,7 +1572,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": [auth_posting]},
         )
 
-    def test_extract_debits_outbound_auth_over_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_over_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # auth over settle after cut-off has net debit impact == auth + over settlement amount
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -1548,7 +1612,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": [auth_posting, settle_posting]},
         )
 
-    def test_extract_debits_outbound_auth_and_decrease_auth_adjustment_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_and_decrease_auth_adjustment_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # decreasing auth is a net credit, so only the original auth is a net debit
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -1585,7 +1651,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": [auth_posting]},
         )
 
-    def test_extract_debits_outbound_auth_and_increase_auth_adjustment_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_auth_and_increase_auth_adjustment_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # increasing auth is a net debit, so both auth and adjustment are returned
         auth_posting = self.outbound_auth(
             amount=Decimal("1"),
@@ -1622,7 +1690,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": [auth_posting, adjust_posting]},
         )
 
-    def test_extract_debits_outbound_hard_settle_before_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_hard_settle_before_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # outbound hard settlement before cut-off is net 0 after the cut-off
         outbound_hard_settle_posting = self.outbound_hard_settlement(
             amount=Decimal("1"),
@@ -1654,7 +1724,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": []},
         )
 
-    def test_extract_debits_outbound_hard_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_outbound_hard_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # outbound hard settlement after cut-off is net debit after the cut-off for hard settlement
         # amount
         outbound_hard_settle_posting = self.outbound_hard_settlement(
@@ -1687,7 +1759,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": [outbound_hard_settle_posting]},
         )
 
-    def test_extract_debits_inbound_auth_settle_across_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_auth_settle_across_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
         auth_posting = self.inbound_auth(
             amount=Decimal("1"),
@@ -1725,7 +1799,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": []},
         )
 
-    def test_extract_debits_inbound_auth_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_auth_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
 
         auth_posting = self.inbound_auth(
@@ -1764,7 +1840,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": []},
         )
 
-    def test_extract_debits_inbound_hard_settle_before_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_hard_settle_before_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
         inbound_hard_settle_posting = self.inbound_hard_settlement(
             amount=Decimal("1"),
@@ -1796,7 +1874,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
             {"atm": []},
         )
 
-    def test_extract_debits_inbound_hard_settle_after_cut_off(self, mock_filter_client_transactions: MagicMock):
+    def test_extract_debits_inbound_hard_settle_after_cut_off(
+        self, mock_filter_client_transactions: MagicMock
+    ):
         # inbound postings are credits and are never included
         inbound_hard_settle_posting = self.inbound_hard_settlement(
             amount=Decimal("1"),
@@ -1901,7 +1981,9 @@ class TestExtractDebitsByType(TestTransactionLimitUtils):
         }
         other_client_transactions: dict[str, dict[str, ClientTransaction]] = {"other": {}}
 
-        mock_filter_client_transactions.return_value = pos_client_transactions | atm_client_transactions | other_client_transactions
+        mock_filter_client_transactions.return_value = (
+            pos_client_transactions | atm_client_transactions | other_client_transactions
+        )
         self.assertDictEqual(
             client_transaction_utils.extract_debits_by_type(
                 denomination=sentinel.denomination,

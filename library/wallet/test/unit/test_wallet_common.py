@@ -43,4 +43,10 @@ class WalletTestBase(ContractTest):
     default_denomination = sentinel.denomination
 
     def create_mock(self, creation_date: datetime = DEFAULT_DATETIME, **kwargs) -> Mock:
-        return super().create_mock(creation_date=creation_date, parameter_ts=construct_parameter_timeseries(default_parameters, default_datetime=DEFAULT_DATETIME), **kwargs)
+        return super().create_mock(
+            creation_date=creation_date,
+            parameter_ts=construct_parameter_timeseries(
+                default_parameters, default_datetime=DEFAULT_DATETIME
+            ),
+            **kwargs
+        )

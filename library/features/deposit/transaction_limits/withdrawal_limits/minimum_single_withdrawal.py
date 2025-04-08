@@ -18,7 +18,8 @@ parameters = [
     Parameter(
         name=PARAM_MIN_WITHDRAWAL,
         level=ParameterLevel.TEMPLATE,
-        description="The minimum amount that can be withdrawn from the account" " in a single transaction.",
+        description="The minimum amount that can be withdrawn from the account"
+        " in a single transaction.",
         display_name="Minimum Withdrawal Amount",
         shape=NumberShape(min_value=Decimal("0"), step=Decimal("0.01")),
         default_value=Decimal("0.01"),
@@ -26,7 +27,9 @@ parameters = [
 ]
 
 
-def validate(*, vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str) -> Rejection | None:
+def validate(
+    *, vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str
+) -> Rejection | None:
     """
     Reject the posting if the value is less than the minimum allowed withdrawal limit.
     :param vault: Vault object for the account whose limits are being validated
@@ -38,7 +41,9 @@ def validate(*, vault: SmartContractVault, postings: utils.PostingInstructionLis
     minimum_withdrawal: Decimal = utils.get_parameter(vault, PARAM_MIN_WITHDRAWAL)
     if minimum_withdrawal:
         for posting in postings:
-            withdrawal_value = utils.get_available_balance(balances=posting.balances(), denomination=denomination)
+            withdrawal_value = utils.get_available_balance(
+                balances=posting.balances(), denomination=denomination
+            )
 
             if withdrawal_value < 0 and abs(withdrawal_value) < minimum_withdrawal:
                 minimum_withdrawal = Decimal(minimum_withdrawal).quantize(Decimal("1.e-3"))

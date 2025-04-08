@@ -23,7 +23,9 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_extension import 
 @patch.object(maximum_daily_deposit.client_transaction_utils, "sum_client_transactions")
 @patch.object(maximum_daily_deposit.utils, "get_parameter")
 class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
-    def test_maximum_daily_deposit_ignore_withdrawal(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_deposit_ignore_withdrawal(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
@@ -49,14 +51,19 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
         self.assertIsNone(result)
         mock_get_parameter.assert_not_called()
 
-    def test_maximum_daily_deposit_exceeded(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_deposit_exceeded(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
         expected_rejection = Rejection(
-            message=f"Transactions would cause the maximum daily deposit limit of " f"500 {sentinel.denomination} to be exceeded.",
+            message=f"Transactions would cause the maximum daily deposit limit of "
+            f"500 {sentinel.denomination} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_deposit": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_deposit": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("501"), Decimal("0")),
             (Decimal("0"), Decimal("0")),
@@ -76,13 +83,19 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
 
         # assertions
         self.assertEqual(result, expected_rejection)
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="maximum_daily_deposit")
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="maximum_daily_deposit"
+        )
 
-    def test_maximum_daily_deposit_met(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_deposit_met(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_deposit": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_deposit": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("300"), Decimal("0")),
             (Decimal("200"), Decimal("0")),
@@ -103,16 +116,24 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
         # assertions
         self.assertIsNone(result)
 
-    def test_maximum_daily_deposit_met_transactions_not_provided(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_deposit_met_transactions_not_provided(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_deposit": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_deposit": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("300"), Decimal("0")),
             (Decimal("200"), Decimal("0")),
         ]
-        mock_vault = self.create_mock(client_transactions_mapping=({"EFFECTIVE_DATE_POSTINGS_FETCHER": sentinel.effective_date_transactions}))
+        mock_vault = self.create_mock(
+            client_transactions_mapping=(
+                {"EFFECTIVE_DATE_POSTINGS_FETCHER": sentinel.effective_date_transactions}
+            )
+        )
 
         # call to the validation function
         result = maximum_daily_deposit.validate(
@@ -143,11 +164,15 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
             ]
         )
 
-    def test_maximum_daily_deposit_not_exceeded(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_deposit_not_exceeded(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_deposit": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_deposit": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("100"), Decimal("0")),
             (Decimal("200"), Decimal("0")),
@@ -168,14 +193,19 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
         # assertions
         self.assertIsNone(result)
 
-    def test_maximum_daily_deposit_exceeded_reject_when_one_transaction_over_limit(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_deposit_exceeded_reject_when_one_transaction_over_limit(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
         expected_rejection = Rejection(
-            message=f"Transactions would cause the maximum daily deposit limit of " f"500 {sentinel.denomination} to be exceeded.",
+            message=f"Transactions would cause the maximum daily deposit limit of "
+            f"500 {sentinel.denomination} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_deposit": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_deposit": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("100"), Decimal("0")),
             (Decimal("450"), Decimal("0")),

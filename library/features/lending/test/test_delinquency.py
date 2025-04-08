@@ -31,18 +31,28 @@ class DelinquencyTest(FeatureTest):
 
 class ScheduleLogicTest(DelinquencyTest):
     def setUp(self):
-        self.mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("balances_obs")})
+        self.mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                    "balances_obs"
+                )
+            }
+        )
         self.product_name = "PRODUCT_A"
 
     def test_delinquency_notification_type(
         self,
     ):
-        expected_notification_type = f"{self.product_name}{delinquency.MARK_DELINQUENT_NOTIFICATION_SUFFIX}"
+        expected_notification_type = (
+            f"{self.product_name}{delinquency.MARK_DELINQUENT_NOTIFICATION_SUFFIX}"
+        )
         notification_type = delinquency.notification_type(product_name=self.product_name)
         self.assertEqual(notification_type, expected_notification_type)
 
     @patch.object(delinquency.utils, "sum_balances")
-    def test_schedule_logic_has_remaining_debt_notification_sent(self, mock_sum_balances: MagicMock):
+    def test_schedule_logic_has_remaining_debt_notification_sent(
+        self, mock_sum_balances: MagicMock
+    ):
         mock_sum_balances.return_value = Decimal("0.1")
         expected_notification_details = {"account_id": str(self.mock_vault.account_id)}
         expected_notification_directive = [
@@ -66,7 +76,9 @@ class ScheduleLogicTest(DelinquencyTest):
         )
 
     @patch.object(delinquency.utils, "sum_balances")
-    def test_schedule_logic_has_no_remaining_debt_no_notification_sent(self, mock_sum_balances: MagicMock):
+    def test_schedule_logic_has_no_remaining_debt_no_notification_sent(
+        self, mock_sum_balances: MagicMock
+    ):
         mock_sum_balances.return_value = Decimal("0")
         result = delinquency.schedule_logic(
             vault=self.mock_vault,
@@ -83,7 +95,9 @@ class ScheduleLogicTest(DelinquencyTest):
         )
 
     @patch.object(delinquency.utils, "sum_balances")
-    def test_schedule_logic_has_negative_remaining_debt_no_notification_sent(self, mock_sum_balances: MagicMock):
+    def test_schedule_logic_has_negative_remaining_debt_no_notification_sent(
+        self, mock_sum_balances: MagicMock
+    ):
         mock_sum_balances.return_value = Decimal("-0.1")
         result = delinquency.schedule_logic(
             vault=self.mock_vault,
@@ -169,7 +183,9 @@ class ScheduleEventsTest(DelinquencyTest):
         sched_expr = SentinelScheduleExpression(delinquency.CHECK_DELINQUENCY_EVENT)
         mock_get_schedule_expression_from_parameters.return_value = sched_expr
 
-        result = delinquency.scheduled_events(vault=mock_vault, start_datetime=start_dt, is_one_off=True)
+        result = delinquency.scheduled_events(
+            vault=mock_vault, start_datetime=start_dt, is_one_off=True
+        )
         expected = {
             delinquency.CHECK_DELINQUENCY_EVENT: ScheduledEvent(
                 start_datetime=start_dt.replace(hour=0, minute=0, second=0),

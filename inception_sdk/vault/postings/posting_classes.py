@@ -104,7 +104,10 @@ class PostingInstruction:
     def to_dict(self):
         return {
             "client_transaction_id": self.client_transaction_id,
-            "instruction_details": self.instruction.instruction_details if hasattr(self.instruction, "instruction_details") and self.instruction.instruction_details else self.instruction_details,
+            "instruction_details": self.instruction.instruction_details
+            if hasattr(self.instruction, "instruction_details")
+            and self.instruction.instruction_details
+            else self.instruction_details,
             "override": self.override.to_dict(),
             **self.instruction.to_dict(),
         }

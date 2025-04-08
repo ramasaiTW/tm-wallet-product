@@ -89,7 +89,10 @@ def get_file_checksum_from_commit_hash(
                     return get_hash(hashing_algorithm, modified_file.source_code)
                 elif modified_file.change_type == ModificationType.RENAME:
                     return get_file_checksum(filepath, hashing_algorithm)
-    raise GitException(f"Unable to find the file {get_relative_filepath(filepath, repo)} in commit {commit_hash}. " "Ensure that remote is up-to-date.")
+    raise GitException(
+        f"Unable to find the file {get_relative_filepath(filepath, repo)} in commit {commit_hash}. "
+        "Ensure that remote is up-to-date."
+    )
 
 
 def get_current_commit_hash(filepath: str, repo: Repo) -> str:
@@ -97,7 +100,9 @@ def get_current_commit_hash(filepath: str, repo: Repo) -> str:
         return repo.git.log("-n", "1", "--pretty=format:%H", filepath)
     except GitCommandError as e:
         log.exception(e)
-        raise GitException(f"Unable to find file {get_relative_filepath(filepath, repo)} in the Git repo.")
+        raise GitException(
+            f"Unable to find file {get_relative_filepath(filepath, repo)} in the Git repo."
+        )
 
 
 def get_validated_commit_hash_for_file_checksum(
@@ -116,4 +121,7 @@ def get_validated_commit_hash_for_file_checksum(
     if checksum == committed_file_checksum:
         return commit_hash
     else:
-        raise GitException(f"The checksum of {get_relative_filepath(filepath, repo)} does not match the latest " "checksum in the Git repo. Ensure that all changes are committed.")
+        raise GitException(
+            f"The checksum of {get_relative_filepath(filepath, repo)} does not match the latest "
+            "checksum in the Git repo. Ensure that all changes are committed."
+        )

@@ -60,7 +60,10 @@ class EventTypesTest(FeatureTest):
             [
                 SmartContractEventType(
                     name=overpayment_allowance.CHECK_OVERPAYMENT_ALLOWANCE_EVENT,
-                    scheduler_tag_ids=[f"SOME_ACCOUNT_{overpayment_allowance.CHECK_OVERPAYMENT_ALLOWANCE_EVENT}" "_AST"],
+                    scheduler_tag_ids=[
+                        f"SOME_ACCOUNT_{overpayment_allowance.CHECK_OVERPAYMENT_ALLOWANCE_EVENT}"
+                        "_AST"
+                    ],
                 )
             ],
         )
@@ -68,11 +71,15 @@ class EventTypesTest(FeatureTest):
 
 @patch.object(overpayment_allowance.utils, "get_schedule_expression_from_parameters")
 class ScheduledEventsTest(FeatureTest):
-    def test_scheduled_event_runs_on_yearly_basis(self, mock_get_schedule_expression_from_parameters: MagicMock):
+    def test_scheduled_event_runs_on_yearly_basis(
+        self, mock_get_schedule_expression_from_parameters: MagicMock
+    ):
         sentinel_expression = SentinelScheduleExpression("handle_allowance")
         mock_get_schedule_expression_from_parameters.return_value = sentinel_expression
 
-        scheduled_events = overpayment_allowance.scheduled_events(vault=sentinel.vault, allowance_period_start_datetime=DEFAULT_DATE)
+        scheduled_events = overpayment_allowance.scheduled_events(
+            vault=sentinel.vault, allowance_period_start_datetime=DEFAULT_DATE
+        )
 
         self.assertDictEqual(
             scheduled_events,
@@ -95,7 +102,9 @@ class ScheduledEventsTest(FeatureTest):
 class HandleAllowanceHelpersTest(FeatureTest):
     @patch.object(overpayment_allowance.utils, "round_decimal")
     @patch.object(overpayment_allowance.utils, "balance_at_coordinates")
-    def test_get_allowance_for_period(self, mock_balance_at_coordinates: MagicMock, mock_round_decimal: MagicMock):
+    def test_get_allowance_for_period(
+        self, mock_balance_at_coordinates: MagicMock, mock_round_decimal: MagicMock
+    ):
         mock_balance_at_coordinates.return_value = Decimal("1000")
         mock_round_decimal.return_value = sentinel.rounded_allowance
 
@@ -112,7 +121,11 @@ class HandleAllowanceHelpersTest(FeatureTest):
 
     @patch.object(overpayment_allowance.utils, "balance_at_coordinates")
     def test_get_allowance_usage(self, mock_balance_at_coordinates: MagicMock):
-        mock_balance_at_coordinates.side_effect = lambda balances, address, denomination: Decimal("100") if balances == sentinel.start_of_period_balances else Decimal("200")
+        mock_balance_at_coordinates.side_effect = (
+            lambda balances, address, denomination: Decimal("100")
+            if balances == sentinel.start_of_period_balances
+            else Decimal("200")
+        )
 
         self.assertEqual(
             overpayment_allowance.get_allowance_usage(
@@ -140,7 +153,11 @@ class HandleAllowanceHelpersTest(FeatureTest):
 
     @patch.object(overpayment_allowance.utils, "balance_at_coordinates")
     def test_get_allowance_usage_at_least_0(self, mock_balance_at_coordinates: MagicMock):
-        mock_balance_at_coordinates.side_effect = lambda balances, address, denomination: Decimal("100") if balances == sentinel.start_of_period_balances else Decimal("0")
+        mock_balance_at_coordinates.side_effect = (
+            lambda balances, address, denomination: Decimal("100")
+            if balances == sentinel.start_of_period_balances
+            else Decimal("0")
+        )
 
         self.assertEqual(
             overpayment_allowance.get_allowance_usage(
@@ -191,9 +208,15 @@ class HandleAllowanceUsageTest(FeatureTest):
     standard_params = mock_utils_get_parameter(
         parameters={
             "denomination": sentinel.denomination,
-            overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE: (sentinel.overpayment_percentage),
-            overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: (sentinel.allowance_fee_percentage),
-            overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT: (sentinel.allowance_fee_income_account),
+            overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE: (
+                sentinel.overpayment_percentage
+            ),
+            overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: (
+                sentinel.allowance_fee_percentage
+            ),
+            overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT: (
+                sentinel.allowance_fee_income_account
+            ),
         }
     )
 
@@ -213,10 +236,16 @@ class HandleAllowanceUsageTest(FeatureTest):
         mock_get_allowance_usage.return_value = sentinel.used_allowance
         mock_get_allowance_usage_fee.return_value = sentinel.allowance_fee
         mock_fee_custom_instruction.return_value = [sentinel.fee_custom_instruction]
-        mock_balance_at_coordinates.return_value = sentinel.remaining_overpayment_allowance_tracker_balance
-        mock_set_overpayment_allowance_for_period.return_value = [sentinel.set_overpayment_allowance]
+        mock_balance_at_coordinates.return_value = (
+            sentinel.remaining_overpayment_allowance_tracker_balance
+        )
+        mock_set_overpayment_allowance_for_period.return_value = [
+            sentinel.set_overpayment_allowance
+        ]
         mock_standard_instruction_details.return_value = {"sentinel": "details"}
-        mock_get_parameter.side_effect = mock_get_parameter.side_effect = HandleAllowanceUsageTest.standard_params
+        mock_get_parameter.side_effect = (
+            mock_get_parameter.side_effect
+        ) = HandleAllowanceUsageTest.standard_params
         eod_observation = SentinelBalancesObservation("eod")
         one_year_observation = SentinelBalancesObservation("one_year")
         mock_vault = self.create_mock(
@@ -228,7 +257,9 @@ class HandleAllowanceUsageTest(FeatureTest):
 
         result = overpayment_allowance.handle_allowance_usage(mock_vault, sentinel.account_type)
 
-        self.assertListEqual(result, [sentinel.set_overpayment_allowance, sentinel.fee_custom_instruction])
+        self.assertListEqual(
+            result, [sentinel.set_overpayment_allowance, sentinel.fee_custom_instruction]
+        )
 
         mock_get_allowance_for_period.assert_has_calls(
             [
@@ -336,7 +367,9 @@ class HandleAllowanceUsageTest(FeatureTest):
 
         mock_vault = self.create_mock(
             balances_interval_fetchers_mapping=balances_interval_fetchers_mapping,
-            last_execution_datetimes={overpayment_allowance.CHECK_OVERPAYMENT_ALLOWANCE_EVENT: sentinel.last_exec_time},
+            last_execution_datetimes={
+                overpayment_allowance.CHECK_OVERPAYMENT_ALLOWANCE_EVENT: sentinel.last_exec_time
+            },
         )
 
         result = overpayment_allowance.handle_allowance_usage_adhoc(
@@ -480,20 +513,30 @@ class OverpaymentAllowanceStatusTest(FeatureTest):
         }
         mock_vault = self.create_mock(
             balances_interval_fetchers_mapping=balances_interval_fetchers_mapping,
-            last_execution_datetimes={overpayment_allowance.CHECK_OVERPAYMENT_ALLOWANCE_EVENT: sentinel.last_exec_time},
+            last_execution_datetimes={
+                overpayment_allowance.CHECK_OVERPAYMENT_ALLOWANCE_EVENT: sentinel.last_exec_time
+            },
         )
 
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "denomination": sentinel.denomination,
-                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE: (sentinel.overpayment_percentage),
-                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: (sentinel.allowance_fee_percentage),
-                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT: (sentinel.allowance_fee_income_account),
+                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE: (
+                    sentinel.overpayment_percentage
+                ),
+                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: (
+                    sentinel.allowance_fee_percentage
+                ),
+                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT: (
+                    sentinel.allowance_fee_income_account
+                ),
             }
         )
 
         self.assertEqual(
-            overpayment_allowance.get_overpayment_allowance_status(vault=mock_vault, effective_datetime=effective_datetime),
+            overpayment_allowance.get_overpayment_allowance_status(
+                vault=mock_vault, effective_datetime=effective_datetime
+            ),
             (expected_allowance, expected_allowance_used),
         )
 
@@ -730,8 +773,14 @@ class GetOverpaymentAllowanceFeeForEarlyRepaymentTest(FeatureTest):
         mock_balance_at_coordinates: MagicMock,
         mock_sum_balances: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: Decimal("0.01")})
-        mock_sum_balances.side_effect = self.mock_sum_balances({"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={
+                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: Decimal("0.01")
+            }
+        )
+        mock_sum_balances.side_effect = self.mock_sum_balances(
+            {"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")}
+        )
         # the balance of the overpayment allowance tracker
         mock_balance_at_coordinates.return_value = Decimal("3000")
         mock_round_decimal.return_value = Decimal("0")
@@ -765,8 +814,14 @@ class GetOverpaymentAllowanceFeeForEarlyRepaymentTest(FeatureTest):
         mock_balance_at_coordinates: MagicMock,
         mock_sum_balances: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: Decimal("0.01")})
-        mock_sum_balances.side_effect = self.mock_sum_balances({"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={
+                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: Decimal("0.01")
+            }
+        )
+        mock_sum_balances.side_effect = self.mock_sum_balances(
+            {"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")}
+        )
         # the balance of the overpayment allowance tracker
         mock_balance_at_coordinates.return_value = Decimal("4000")
         mock_round_decimal.return_value = Decimal("0")
@@ -800,9 +855,15 @@ class GetOverpaymentAllowanceFeeForEarlyRepaymentTest(FeatureTest):
         mock_balance_at_coordinates: MagicMock,
         mock_sum_balances: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: Decimal("0.01")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={
+                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE: Decimal("0.01")
+            }
+        )
 
-        mock_sum_balances.side_effect = self.mock_sum_balances({"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")})
+        mock_sum_balances.side_effect = self.mock_sum_balances(
+            {"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")}
+        )
         # the balance of the overpayment allowance tracker
         mock_balance_at_coordinates.return_value = Decimal("2000")
         mock_round_decimal.return_value = Decimal("10")
@@ -844,11 +905,17 @@ class GetOverpaymentAllowanceFeeForEarlyRepaymentTest(FeatureTest):
             }
         )
 
-        mock_sum_balances.side_effect = self.mock_sum_balances({"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")})
+        mock_sum_balances.side_effect = self.mock_sum_balances(
+            {"ALL_OUTSTANDING": Decimal("5000"), "REPAYMENT_HIERARCHY": Decimal("2000")}
+        )
         # the balance of the overpayment allowance tracker
         mock_balance_at_coordinates.return_value = Decimal("2000")
         mock_round_decimal.return_value = Decimal("10")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={"live_balances_bof": SentinelBalancesObservation("dummy_balances")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                "live_balances_bof": SentinelBalancesObservation("dummy_balances")
+            }
+        )
 
         self.assertEqual(
             overpayment_allowance.get_overpayment_allowance_fee_for_early_repayment(
@@ -885,23 +952,39 @@ class UpdateScheduleEventTest(FeatureTest):
     def test_update_schedule_event(self, mock_get_schedule_expression_from_parameters: MagicMock):
         schedule_expression = SentinelScheduleExpression("overpayment_allowance_expression")
         mock_get_schedule_expression_from_parameters.return_value = schedule_expression
-        expected_skip = DEFAULT_DATE.replace(hour=0, minute=0, second=0, microsecond=0) + relativedelta(years=1, seconds=-1)
+        expected_skip = DEFAULT_DATE.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ) + relativedelta(years=1, seconds=-1)
 
-        expected_result = {"CHECK_OVERPAYMENT_ALLOWANCE": ScheduledEvent(expression=schedule_expression, skip=ScheduleSkip(end=expected_skip))}
-        result = overpayment_allowance.update_scheduled_event(vault=sentinel.vault, effective_datetime=DEFAULT_DATE)
+        expected_result = {
+            "CHECK_OVERPAYMENT_ALLOWANCE": ScheduledEvent(
+                expression=schedule_expression, skip=ScheduleSkip(end=expected_skip)
+            )
+        }
+        result = overpayment_allowance.update_scheduled_event(
+            vault=sentinel.vault, effective_datetime=DEFAULT_DATE
+        )
         self.assertEqual(expected_result, result)
 
 
 @patch.object(overpayment_allowance.utils, "get_parameter")
 @patch.object(overpayment_allowance, "set_overpayment_allowance_for_period")
 class InitialiseOverpaymentAllowanceFromPrincipalAmountTest(FeatureTest):
-    def test_sets_allowance_with_denomination(self, mock_set_overpayment_allowance_for_period: MagicMock, mock_get_parameter: MagicMock):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE: Decimal("0.01")})
+    def test_sets_allowance_with_denomination(
+        self, mock_set_overpayment_allowance_for_period: MagicMock, mock_get_parameter: MagicMock
+    ):
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={
+                overpayment_allowance.PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE: Decimal("0.01")
+            }
+        )
         mock_set_overpayment_allowance_for_period.return_value = [sentinel.custom_instruction]
         mock_vault = self.create_mock()
 
         self.assertEqual(
-            overpayment_allowance.initialise_overpayment_allowance_from_principal_amount(vault=mock_vault, denomination=sentinel.denomination, principal=Decimal("100")),
+            overpayment_allowance.initialise_overpayment_allowance_from_principal_amount(
+                vault=mock_vault, denomination=sentinel.denomination, principal=Decimal("100")
+            ),
             [sentinel.custom_instruction],
         )
 
@@ -916,7 +999,9 @@ class InitialiseOverpaymentAllowanceFromPrincipalAmountTest(FeatureTest):
             account_id=mock_vault.account_id,
         )
 
-    def test_sets_allowance_without_denomination(self, mock_set_overpayment_allowance_for_period: MagicMock, mock_get_parameter: MagicMock):
+    def test_sets_allowance_without_denomination(
+        self, mock_set_overpayment_allowance_for_period: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "denomination": sentinel.denomination,
@@ -927,7 +1012,9 @@ class InitialiseOverpaymentAllowanceFromPrincipalAmountTest(FeatureTest):
         mock_vault = self.create_mock()
 
         self.assertEqual(
-            overpayment_allowance.initialise_overpayment_allowance_from_principal_amount(vault=mock_vault, principal=Decimal("100")),
+            overpayment_allowance.initialise_overpayment_allowance_from_principal_amount(
+                vault=mock_vault, principal=Decimal("100")
+            ),
             [sentinel.custom_instruction],
         )
 
@@ -954,7 +1041,9 @@ class InitialiseOverpaymentAllowanceFromPrincipalAmountTest(FeatureTest):
 @patch.object(overpayment_allowance.utils, "balance_at_coordinates")
 @patch.object(overpayment_allowance.utils, "create_postings")
 class GetResidualCleanupPostingsTest(FeatureTest):
-    def test_negative_overpayment_allowance_amount_returns_correct_postings(self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
+    def test_negative_overpayment_allowance_amount_returns_correct_postings(
+        self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
         # overpayment allowance amount
         mock_balance_at_coordinates.return_value = Decimal("-10")
         mock_create_postings.return_value = [sentinel.postings]
@@ -981,7 +1070,9 @@ class GetResidualCleanupPostingsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
 
-    def test_positive_overpayment_allowance_amount_returns_correct_postings(self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock):
+    def test_positive_overpayment_allowance_amount_returns_correct_postings(
+        self, mock_create_postings: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
         # overpayment allowance amount
         mock_balance_at_coordinates.return_value = Decimal("10")
         mock_create_postings.return_value = [sentinel.postings]

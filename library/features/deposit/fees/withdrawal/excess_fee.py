@@ -54,7 +54,8 @@ parameters = [
     Parameter(
         name=PARAM_PERMITTED_WITHDRAWALS,
         level=ParameterLevel.TEMPLATE,
-        description="Number of monthly permitted withdrawals. Please note that only transactions " "with the specified transaction type are counted towards this excess fee.",
+        description="Number of monthly permitted withdrawals. Please note that only transactions "
+        "with the specified transaction type are counted towards this excess fee.",
         display_name="Permitted Withdrawals",
         shape=OptionalShape(shape=NumberShape(min_value=0, step=1)),
         default_value=OptionalValue(0),
@@ -139,7 +140,8 @@ def validate(
 
     if current_withdrawals + proposed_withdrawals > permitted_withdrawals:
         return Rejection(
-            message=f"Transactions would cause the maximum monthly withdrawal limit of " f"{permitted_withdrawals} to be exceeded.",
+            message=f"Transactions would cause the maximum monthly withdrawal limit of "
+            f"{permitted_withdrawals} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
@@ -170,7 +172,9 @@ def apply(
     :param account_type: the account type
     :return: excess fee posting instructions
     """
-    excess_fee_amount = Decimal(utils.get_parameter(vault, PARAM_EXCESS_FEE, is_optional=True, default_value=0))
+    excess_fee_amount = Decimal(
+        utils.get_parameter(vault, PARAM_EXCESS_FEE, is_optional=True, default_value=0)
+    )
 
     if excess_fee_amount <= Decimal("0"):
         return []
@@ -189,7 +193,9 @@ def apply(
     if permitted_withdrawals < 0:
         return []
 
-    proposed_exceeding_withdrawals = proposed_withdrawals + current_withdrawals - permitted_withdrawals
+    proposed_exceeding_withdrawals = (
+        proposed_withdrawals + current_withdrawals - permitted_withdrawals
+    )
 
     if proposed_exceeding_withdrawals <= 0:
         return []
@@ -205,7 +211,8 @@ def apply(
         amount=excess_fee_amount * proposed_exceeding_withdrawals,
         internal_account=excess_fee_income_account,
         instruction_details=utils.standard_instruction_details(
-            description="Proposed withdrawals exceeded permitted " f"limit by {proposed_exceeding_withdrawals}",
+            description="Proposed withdrawals exceeded permitted "
+            f"limit by {proposed_exceeding_withdrawals}",
             event_type="APPLY_EXCESS_FEES",
             gl_impacted=True,
             account_type=account_type,
@@ -235,35 +242,46 @@ def _fetch_withdrawals(
     :param denomination: denomination used to filter posting instructions
     :return: numbers of current_withdrawals, proposed_withdrawals, permitted_withdrawals in a tuple
     """
-    transaction_type: str = utils.get_parameter(vault, PARAM_EXCESS_FEE_MONITORED_TRANSACTION_TYPE, is_optional=True, default_value="")
+    transaction_type: str = utils.get_parameter(
+        vault, PARAM_EXCESS_FEE_MONITORED_TRANSACTION_TYPE, is_optional=True, default_value=""
+    )
     if not transaction_type:
         return None
 
-    filtered_proposed_posting_instructions = client_transaction_utils.extract_debits_by_instruction_details_key(
-        denomination=denomination,
-        client_transactions=proposed_client_transactions,
-        client_transaction_ids_to_ignore=[],
-        cutoff_datetime=effective_datetime,
-        key=INSTRUCTION_DETAIL_KEY,
-        value=transaction_type,
+    filtered_proposed_posting_instructions = (
+        client_transaction_utils.extract_debits_by_instruction_details_key(
+            denomination=denomination,
+            client_transactions=proposed_client_transactions,
+            client_transaction_ids_to_ignore=[],
+            cutoff_datetime=effective_datetime,
+            key=INSTRUCTION_DETAIL_KEY,
+            value=transaction_type,
+        )
     )
     if not filtered_proposed_posting_instructions:
         return None
 
     if not monthly_client_transactions:
-        monthly_client_transactions = vault.get_client_transactions(fetcher_id=fetchers.MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID)
+        monthly_client_transactions = vault.get_client_transactions(
+            fetcher_id=fetchers.MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID
+        )
 
-    filtered_monthly_posting_instructions = client_transaction_utils.extract_debits_by_instruction_details_key(
-        denomination=denomination,
-        client_transactions=monthly_client_transactions,
-        client_transaction_ids_to_ignore=list(proposed_client_transactions.keys()),
-        cutoff_datetime=effective_datetime + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
-        key=INSTRUCTION_DETAIL_KEY,
-        value=transaction_type,
+    filtered_monthly_posting_instructions = (
+        client_transaction_utils.extract_debits_by_instruction_details_key(
+            denomination=denomination,
+            client_transactions=monthly_client_transactions,
+            client_transaction_ids_to_ignore=list(proposed_client_transactions.keys()),
+            cutoff_datetime=effective_datetime
+            + relativedelta(day=1, hour=0, minute=0, second=0, microsecond=0),
+            key=INSTRUCTION_DETAIL_KEY,
+            value=transaction_type,
+        )
     )
 
     current_withdrawals = len(filtered_monthly_posting_instructions)
     proposed_withdrawals = len(filtered_proposed_posting_instructions)
-    permitted_withdrawals = int(utils.get_parameter(vault, PARAM_PERMITTED_WITHDRAWALS, is_optional=True, default_value=-1))
+    permitted_withdrawals = int(
+        utils.get_parameter(vault, PARAM_PERMITTED_WITHDRAWALS, is_optional=True, default_value=-1)
+    )
 
     return current_withdrawals, proposed_withdrawals, permitted_withdrawals

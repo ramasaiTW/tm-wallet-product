@@ -116,14 +116,18 @@ class PublicCommonV360TypesTestCase(PublicCommonV350TypesTestCase):
         expected_aggregated_balance_default_dict[balance_key_out] = balance_1 + balance_2
         expected_aggregated_balance_default_dict[balance_key_in] = balance_2
 
-        self.assertDictEqual(expected_aggregated_balance_default_dict, aggregated_balance_default_dict)
+        self.assertDictEqual(
+            expected_aggregated_balance_default_dict, aggregated_balance_default_dict
+        )
 
     def test_balance_aggregation_radd(self):
         balance_1 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
         balance_2 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
         balance_3 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
         aggregated_balance = sum([balance_1, balance_2, balance_3], Balance())
-        self.assertEqual(Balance(credit=Decimal(60), debit=Decimal(60), net=Decimal(0)), aggregated_balance)
+        self.assertEqual(
+            Balance(credit=Decimal(60), debit=Decimal(60), net=Decimal(0)), aggregated_balance
+        )
 
     def test_balance_dict_aggregation_radd(self):
         balance_1 = Balance(credit=Decimal(20), debit=Decimal(20), net=Decimal(0))
@@ -153,7 +157,9 @@ class PublicCommonV360TypesTestCase(PublicCommonV350TypesTestCase):
         expected_aggregated_balance_default_dict[balance_key_out] = balance_1 + balance_2
         expected_aggregated_balance_default_dict[balance_key_in] = balance_2
 
-        self.assertDictEqual(expected_aggregated_balance_default_dict, aggregated_balance_default_dict)
+        self.assertDictEqual(
+            expected_aggregated_balance_default_dict, aggregated_balance_default_dict
+        )
 
     def test_posting_instruction_batch_rejects_invalid_insertion_timestamp(self):
         with self.assertRaises(StrongTypingError):
@@ -202,7 +208,9 @@ class PublicCommonV360TypesTestCase(PublicCommonV350TypesTestCase):
             BalanceDefaultDict(mapping={key: "not_a_balance"})
 
     def test_balance_default_dict_default_factory_from_proto(self):
-        balance_default_dict = BalanceDefaultDict(mapping={"wrong type": "not_a_balance"}, _from_proto=True)
+        balance_default_dict = BalanceDefaultDict(
+            mapping={"wrong type": "not_a_balance"}, _from_proto=True
+        )
         self.assertEqual(balance_default_dict["wrong type"], "not_a_balance")
         with self.assertRaises(StrongTypingError):
             balance_default_dict["another wrong type"]
@@ -376,11 +384,21 @@ class PublicCommonV360TypesTestCase(PublicCommonV350TypesTestCase):
                 )
             ],
         )
-        self.assertEqual(self.request_id_360, hook_directives.add_account_note_directives[0].idempotency_key)
-        self.assertEqual(self.request_id_360, hook_directives.amend_schedule_directives[0].request_id)
-        self.assertEqual(self.request_id_360, hook_directives.remove_schedules_directives[0].request_id)
-        self.assertEqual(self.request_id_360, hook_directives.posting_instruction_batch_directives[0].request_id)
-        self.assertEqual(self.request_id_360, hook_directives.workflow_start_directives[0].idempotency_key)
+        self.assertEqual(
+            self.request_id_360, hook_directives.add_account_note_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.request_id_360, hook_directives.amend_schedule_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_360, hook_directives.remove_schedules_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_360, hook_directives.posting_instruction_batch_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_360, hook_directives.workflow_start_directives[0].idempotency_key
+        )
 
     def test_posting_instruction_advice_not_set(self):
         common_kwargs = {
@@ -399,11 +417,15 @@ class PublicCommonV360TypesTestCase(PublicCommonV350TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
+        )
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs
+        )
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.HARD_SETTLEMENT, **common_kwargs)
@@ -413,7 +435,9 @@ class PublicCommonV360TypesTestCase(PublicCommonV350TypesTestCase):
         pi = PostingInstruction(type=PostingInstructionType.RELEASE, **common_kwargs)
         self.assertFalse(hasattr(pi, "advice"))
 
-        pi = PostingInstruction(type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs
+        )
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.TRANSFER, **common_kwargs)
@@ -437,12 +461,18 @@ class PublicCommonV360TypesTestCase(PublicCommonV350TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
+        )
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
         with self.assertRaises(InvalidSmartContractError):
-            PostingInstruction(type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs)
+            PostingInstruction(
+                type=PostingInstructionType.CUSTOM_INSTRUCTION,
+                phase=Phase.COMMITTED,
+                **common_kwargs
+            )
 
         pi = PostingInstruction(type=PostingInstructionType.HARD_SETTLEMENT, **common_kwargs)
         self.assertTrue(hasattr(pi, "advice"))

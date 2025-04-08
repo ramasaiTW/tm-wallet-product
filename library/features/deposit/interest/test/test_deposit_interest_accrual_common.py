@@ -14,8 +14,14 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_sentinels import 
     SentinelCustomInstruction,
 )
 
-EOD_SENTINEL_FETCHER = {deposit_interest_accrual_common.fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod")}
-EFFECTIVE_SENTINEL_FETCHER = {deposit_interest_accrual_common.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))}
+EOD_SENTINEL_FETCHER = {
+    deposit_interest_accrual_common.fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod")
+}
+EFFECTIVE_SENTINEL_FETCHER = {
+    deposit_interest_accrual_common.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+        SentinelBalancesObservation("effective")
+    )
+}
 
 interest_accrual_common = deposit_interest_accrual_common.interest_accrual_common
 
@@ -23,12 +29,16 @@ interest_accrual_common = deposit_interest_accrual_common.interest_accrual_commo
 class TestInterestAccrualCapital(FeatureTest):
     def setUp(self) -> None:
         # mock vault
-        self.mock_vault = self.create_mock(balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER)
+        self.mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=EOD_SENTINEL_FETCHER
+        )
 
         # get_parameter
         patch_get_parameter = patch.object(deposit_interest_accrual_common.utils, "get_parameter")
         self.mock_get_parameter = patch_get_parameter.start()
-        self.mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
+        self.mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"denomination": sentinel.denomination}
+        )
 
         # sum_balances
         patch_sum_balances = patch.object(deposit_interest_accrual_common.utils, "sum_balances")
@@ -38,7 +48,9 @@ class TestInterestAccrualCapital(FeatureTest):
 
     def test_get_accrual_capital(self):
         self.assertEqual(
-            deposit_interest_accrual_common.get_accrual_capital(vault=self.mock_vault, capital_addresses=sentinel.capital_addresses),
+            deposit_interest_accrual_common.get_accrual_capital(
+                vault=self.mock_vault, capital_addresses=sentinel.capital_addresses
+            ),
             Decimal(100),
         )
 
@@ -63,7 +75,9 @@ class TestInterestAccrualCapital(FeatureTest):
     def test_get_accrual_capital_negative_balance(self):
         self.mock_sum_balances.side_effect = [Decimal(-100)]
         self.assertEqual(
-            deposit_interest_accrual_common.get_accrual_capital(vault=self.mock_vault, capital_addresses=sentinel.capital_addresses),
+            deposit_interest_accrual_common.get_accrual_capital(
+                vault=self.mock_vault, capital_addresses=sentinel.capital_addresses
+            ),
             Decimal(0),
         )
 
@@ -94,7 +108,9 @@ class TestInterestAccrualCapital(FeatureTest):
 class TestReverseInterestAccrual(FeatureTest):
     def setUp(self) -> None:
         # mock vault
-        self.mock_vault = self.create_mock(balances_observation_fetchers_mapping=EFFECTIVE_SENTINEL_FETCHER)
+        self.mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=EFFECTIVE_SENTINEL_FETCHER
+        )
 
         # get_parameter
         patch_get_parameter = patch.object(deposit_interest_accrual_common.utils, "get_parameter")
@@ -112,7 +128,9 @@ class TestReverseInterestAccrual(FeatureTest):
         self.mock_sum_balances = patch_sum_balances.start()
 
         # accrual_custom_instruction
-        patch_accrual_custom_instruction = patch.object(deposit_interest_accrual_common.accruals, "accrual_custom_instruction")
+        patch_accrual_custom_instruction = patch.object(
+            deposit_interest_accrual_common.accruals, "accrual_custom_instruction"
+        )
         self.mock_accrual_custom_instruction = patch_accrual_custom_instruction.start()
 
         return super().setUp()
@@ -122,9 +140,13 @@ class TestReverseInterestAccrual(FeatureTest):
             Decimal("0"),  # receivable
             Decimal("1.5"),  # payable
         ]
-        self.mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("internal_payable")]
+        self.mock_accrual_custom_instruction.return_value = [
+            SentinelCustomInstruction("internal_payable")
+        ]
 
-        reversal_postings = deposit_interest_accrual_common.get_interest_reversal_postings(vault=self.mock_vault, event_name="CLOSE_ACCOUNT")
+        reversal_postings = deposit_interest_accrual_common.get_interest_reversal_postings(
+            vault=self.mock_vault, event_name="CLOSE_ACCOUNT"
+        )
 
         self.mock_accrual_custom_instruction.assert_called_with(
             customer_account=self.mock_vault.account_id,
@@ -152,9 +174,13 @@ class TestReverseInterestAccrual(FeatureTest):
             Decimal("1.5"),  # receivable
             Decimal("0"),  # payable
         ]
-        self.mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("internal receivable")]
+        self.mock_accrual_custom_instruction.return_value = [
+            SentinelCustomInstruction("internal receivable")
+        ]
 
-        reversal_postings = deposit_interest_accrual_common.get_interest_reversal_postings(vault=self.mock_vault, event_name="CLOSE_ACCOUNT")
+        reversal_postings = deposit_interest_accrual_common.get_interest_reversal_postings(
+            vault=self.mock_vault, event_name="CLOSE_ACCOUNT"
+        )
 
         self.mock_accrual_custom_instruction.assert_called_with(
             customer_account=self.mock_vault.account_id,
@@ -181,7 +207,9 @@ class TestReverseInterestAccrual(FeatureTest):
             Decimal("0"),  # payable
         ]
 
-        reversal_postings = deposit_interest_accrual_common.get_interest_reversal_postings(vault=self.mock_vault, event_name="CLOSE_ACCOUNT")
+        reversal_postings = deposit_interest_accrual_common.get_interest_reversal_postings(
+            vault=self.mock_vault, event_name="CLOSE_ACCOUNT"
+        )
 
         self.assertListEqual(reversal_postings, [])
         self.mock_accrual_custom_instruction.assert_not_called()
@@ -192,7 +220,9 @@ class TestReverseInterestAccrual(FeatureTest):
             Decimal("1.5"),  # receivable
             Decimal("0"),  # payable
         ]
-        self.mock_accrual_custom_instruction.return_value = [SentinelCustomInstruction("internal_receivable")]
+        self.mock_accrual_custom_instruction.return_value = [
+            SentinelCustomInstruction("internal_receivable")
+        ]
 
         # run function with balances provided
         reversal_postings = deposit_interest_accrual_common.get_interest_reversal_postings(
@@ -237,7 +267,9 @@ class TestReverseInterestAccrual(FeatureTest):
 
 @patch.object(deposit_interest_accrual_common.utils, "get_parameter")
 class TestGetTargetCustomerAddressAndInternalAccount(FeatureTest):
-    def test_positive_accrual_amount_returns_payable_address_and_account(self, mock_get_parameter: MagicMock):
+    def test_positive_accrual_amount_returns_payable_address_and_account(
+        self, mock_get_parameter: MagicMock
+    ):
         mock_vault = self.create_mock()
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -246,7 +278,9 @@ class TestGetTargetCustomerAddressAndInternalAccount(FeatureTest):
             }
         )
 
-        result = deposit_interest_accrual_common.get_target_customer_address_and_internal_account(vault=mock_vault, accrual_amount=Decimal("10"))
+        result = deposit_interest_accrual_common.get_target_customer_address_and_internal_account(
+            vault=mock_vault, accrual_amount=Decimal("10")
+        )
         self.assertTupleEqual(
             result,
             (
@@ -255,7 +289,9 @@ class TestGetTargetCustomerAddressAndInternalAccount(FeatureTest):
             ),
         )
 
-    def test_negative_accrual_amount_returns_receivable_address_and_account(self, mock_get_parameter: MagicMock):
+    def test_negative_accrual_amount_returns_receivable_address_and_account(
+        self, mock_get_parameter: MagicMock
+    ):
         mock_vault = self.create_mock()
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -264,7 +300,9 @@ class TestGetTargetCustomerAddressAndInternalAccount(FeatureTest):
             }
         )
 
-        result = deposit_interest_accrual_common.get_target_customer_address_and_internal_account(vault=mock_vault, accrual_amount=Decimal("-10"))
+        result = deposit_interest_accrual_common.get_target_customer_address_and_internal_account(
+            vault=mock_vault, accrual_amount=Decimal("-10")
+        )
         self.assertTupleEqual(
             result,
             (
@@ -273,7 +311,9 @@ class TestGetTargetCustomerAddressAndInternalAccount(FeatureTest):
             ),
         )
 
-    def test_positive_accrual_amount_returns_payable_address_and_provided_account(self, mock_get_parameter: MagicMock):
+    def test_positive_accrual_amount_returns_payable_address_and_provided_account(
+        self, mock_get_parameter: MagicMock
+    ):
         mock_vault = self.create_mock()
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -296,7 +336,9 @@ class TestGetTargetCustomerAddressAndInternalAccount(FeatureTest):
             ),
         )
 
-    def test_negative_accrual_amount_returns_receivable_address_and_provided_account(self, mock_get_parameter: MagicMock):
+    def test_negative_accrual_amount_returns_receivable_address_and_provided_account(
+        self, mock_get_parameter: MagicMock
+    ):
         mock_vault = self.create_mock()
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={

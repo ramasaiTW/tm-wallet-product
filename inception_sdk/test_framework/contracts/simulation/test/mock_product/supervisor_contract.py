@@ -77,14 +77,28 @@ def _apply_maintenance_fee(vault, effective_date):
     other_accounts = [v for (k, v) in vault.supervisees.items() if k != checking.account_id]
 
     # Check we have the correct day:
-    maintenance_fee_check_day = int(checking.get_parameter_timeseries(name="maintenance_fee_check_day").at(timestamp=effective_date))
+    maintenance_fee_check_day = int(
+        checking.get_parameter_timeseries(name="maintenance_fee_check_day").at(
+            timestamp=effective_date
+        )
+    )
     if maintenance_fee_check_day != effective_date.day:
         return
 
-    denomination = checking.get_parameter_timeseries(name="denomination").at(timestamp=effective_date)
-    maintenance_fee = Decimal(checking.get_parameter_timeseries(name="maintenance_fee").at(timestamp=effective_date))
-    minimum_combined_balance = Decimal(checking.get_parameter_timeseries(name="minimum_combined_balance").at(timestamp=effective_date))
-    internal_maintenance_fee_account = checking.get_parameter_timeseries(name="internal_maintenance_fee_account").at(timestamp=effective_date)
+    denomination = checking.get_parameter_timeseries(name="denomination").at(
+        timestamp=effective_date
+    )
+    maintenance_fee = Decimal(
+        checking.get_parameter_timeseries(name="maintenance_fee").at(timestamp=effective_date)
+    )
+    minimum_combined_balance = Decimal(
+        checking.get_parameter_timeseries(name="minimum_combined_balance").at(
+            timestamp=effective_date
+        )
+    )
+    internal_maintenance_fee_account = checking.get_parameter_timeseries(
+        name="internal_maintenance_fee_account"
+    ).at(timestamp=effective_date)
 
     # Maintenance fee waivers:
     # 1. Checking EOD balance consistently greater than X e.g. $1500 in month (done in checking acc)
@@ -120,7 +134,9 @@ def _apply_maintenance_fee(vault, effective_date):
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
                 pics=[],
-                client_transaction_id=f"MONTHLY_MAINTENANCE_FEE_" f"{vault.get_hook_execution_id()}" f"_{denomination}",
+                client_transaction_id=f"MONTHLY_MAINTENANCE_FEE_"
+                f"{vault.get_hook_execution_id()}"
+                f"_{denomination}",
                 instruction_details={
                     "description": "Maintenance fee applied by supervisor",
                     "event": "MAINTENANCE_FEE",
@@ -149,7 +165,9 @@ def _apply_maintenance_fee(vault, effective_date):
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
                     pics=[],
-                    client_transaction_id=f"MONTHLY_MAINTENANCE_FEE_" f"{vault.get_hook_execution_id()}" f"_{denomination}",
+                    client_transaction_id=f"MONTHLY_MAINTENANCE_FEE_"
+                    f"{vault.get_hook_execution_id()}"
+                    f"_{denomination}",
                     instruction_details={
                         "description": "Maintenance fee applied by supervisor",
                         "event": "MAINTENANCE_FEE",
@@ -172,7 +190,9 @@ def _publish_combined_extract(vault, effective_date):
     # Generate data for all plan accounts
     combined_extract_data = {}
     for account in all_accounts:
-        denomination = account.get_parameter_timeseries(name="denomination").at(timestamp=effective_date)
+        denomination = account.get_parameter_timeseries(name="denomination").at(
+            timestamp=effective_date
+        )
 
         extract_period = timedelta(days=1)  # Don't currently have access to supervisor schedules
         plan_start = vault.get_plan_creation_date()
@@ -197,8 +217,12 @@ def _publish_combined_extract(vault, effective_date):
         closing_timestamp = effective_date
         closing_available_bal = _get_available_balance(account, closing_timestamp, denomination)
         closing_committed_bal = _get_phase_balance(account, closing_timestamp, denomination)
-        closing_pending_in_bal = _get_phase_balance(account, closing_timestamp, denomination, Phase.PENDING_IN)
-        closing_pending_out_bal = _get_phase_balance(account, closing_timestamp, denomination, Phase.PENDING_OUT)
+        closing_pending_in_bal = _get_phase_balance(
+            account, closing_timestamp, denomination, Phase.PENDING_IN
+        )
+        closing_pending_out_bal = _get_phase_balance(
+            account, closing_timestamp, denomination, Phase.PENDING_OUT
+        )
 
         account_context = {
             "available_balance": "%0.2f" % closing_available_bal,
@@ -219,7 +243,9 @@ def _publish_combined_extract(vault, effective_date):
         workflow="PUBLISH_COMBINED_EXTRACT_DATA",
         context={
             "extract_date": str(effective_date),
-            "combined_extract_data": str(combined_extract_data).replace('"', '\\"').replace("'", '"'),
+            "combined_extract_data": str(combined_extract_data)
+            .replace('"', '\\"')
+            .replace("'", '"'),
         },
     )
 
@@ -230,10 +256,16 @@ def _get_available_balance(vault, effective_date, denomination):
     if vault.get_alias() == "youth":
         # Ensure we take into account all balance addresses for the youth account
         for address in {k[0] for (k, v) in balances.items()}:
-            committed_balance_net += balances[(address, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+            committed_balance_net += balances[
+                (address, DEFAULT_ASSET, denomination, Phase.COMMITTED)
+            ].net
     else:
-        committed_balance_net = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
-    pending_out_balance_net = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)].net
+        committed_balance_net = balances[
+            (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
+        ].net
+    pending_out_balance_net = balances[
+        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)
+    ].net
     return committed_balance_net + pending_out_balance_net
 
 
@@ -253,7 +285,9 @@ def _get_phase_balance(vault, effective_date, denomination, phase=Phase.COMMITTE
     phase_balance_net = 0
     if vault.get_alias() == "youth":
         for address in {k[0] for (k, v) in balances.items()}:
-            phase_balance_net += balances[(address, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+            phase_balance_net += balances[
+                (address, DEFAULT_ASSET, denomination, Phase.COMMITTED)
+            ].net
     else:
         phase_balance_net = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, phase)].net
 
@@ -261,7 +295,11 @@ def _get_phase_balance(vault, effective_date, denomination, phase=Phase.COMMITTE
 
 
 def _get_altered_balance(balances, denomination):
-    return sum(balance.net for ((address, asset, denom, phase), balance) in balances.items() if asset == DEFAULT_ASSET and denom == denomination)
+    return sum(
+        balance.net
+        for ((address, asset, denom, phase), balance) in balances.items()
+        if asset == DEFAULT_ASSET and denom == denomination
+    )
 
 
 def _get_supervisees_for_alias(vault, alias):

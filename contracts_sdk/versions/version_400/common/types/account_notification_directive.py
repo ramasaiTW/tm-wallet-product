@@ -8,7 +8,13 @@ from .....utils import symbols, types_utils
 
 
 class AccountNotificationDirective:
-    def __init__(self, *, notification_type: str, notification_details: Dict[str, str], _from_proto: bool = False):
+    def __init__(
+        self,
+        *,
+        notification_type: str,
+        notification_details: Dict[str, str],
+        _from_proto: bool = False
+    ):
         self.notification_type = notification_type
         self.notification_details = notification_details
         if not _from_proto:
@@ -17,7 +23,9 @@ class AccountNotificationDirective:
     def _validate_attributes(self):
         types_utils.validate_type(self.notification_details, dict)
         if not self.notification_details:
-            raise InvalidSmartContractError("AccountNotificationDirective 'notification_details' must be populated")
+            raise InvalidSmartContractError(
+                "AccountNotificationDirective 'notification_details' must be populated"
+            )
 
     @classmethod
     @lru_cache()

@@ -16,7 +16,14 @@ from ....utils.feature_flags import (
 
 
 class SmartContractDescriptor(types3110.SmartContractDescriptor):
-    def __init__(self, *, alias, smart_contract_version_id, supervise_post_posting_hook=False, supervised_hooks=None):
+    def __init__(
+        self,
+        *,
+        alias,
+        smart_contract_version_id,
+        supervise_post_posting_hook=False,
+        supervised_hooks=None
+    ):
         self._spec().assert_constructor_args(self._registry, {"supervised_hooks": supervised_hooks})
         super().__init__(
             alias=alias,

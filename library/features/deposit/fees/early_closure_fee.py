@@ -49,7 +49,8 @@ parameters = [
     Parameter(
         name=PARAM_EARLY_CLOSURE_DAYS,
         level=ParameterLevel.TEMPLATE,
-        description="The number of days that must be completed in order to avoid an early closure" "  fee, should the account be closed.",
+        description="The number of days that must be completed in order to avoid an early closure"
+        "  fee, should the account be closed.",
         display_name="Early Closure Days",
         shape=NumberShape(min_value=0, max_value=90, step=1),
         update_permission=ParameterUpdatePermission.OPS_EDITABLE,
@@ -93,7 +94,9 @@ def apply_fees(
     creation_datetime: datetime = vault.get_account_creation_datetime()
     early_closure_fee = Decimal(utils.get_parameter(vault, PARAM_EARLY_CLOSURE_FEE))
     early_closure_days = int(utils.get_parameter(vault, PARAM_EARLY_CLOSURE_DAYS))
-    early_closure_fee_income_account: str = utils.get_parameter(vault, PARAM_EARLY_CLOSURE_FEE_INCOME_ACCOUNT)
+    early_closure_fee_income_account: str = utils.get_parameter(
+        vault, PARAM_EARLY_CLOSURE_FEE_INCOME_ACCOUNT
+    )
 
     instructions: list[CustomInstruction] = []
 
@@ -103,9 +106,13 @@ def apply_fees(
     early_closure_cut_off_datetime = creation_datetime + relativedelta(days=early_closure_days)
 
     if denomination is None:
-        denomination = str(utils.get_parameter(vault, name="denomination", at_datetime=effective_datetime))
+        denomination = str(
+            utils.get_parameter(vault, name="denomination", at_datetime=effective_datetime)
+        )
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
     # Check if early closure fee was not charged before.
     # Since this fee's tracker postings zero out the tracker address (i.e. net zero) so the

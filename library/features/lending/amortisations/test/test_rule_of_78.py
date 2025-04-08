@@ -52,7 +52,11 @@ class RuleOf78InterestApplicationTest(RuleOf78):
     ):
         mock_vault = self.create_mock(
             account_id=sentinel.account_id,
-            balances_observation_fetchers_mapping={rule_of_78.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("latest")},
+            balances_observation_fetchers_mapping={
+                rule_of_78.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                    "latest"
+                )
+            },
         )
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.parameters)
         mock_get_interest_to_apply.return_value = rule_of_78.lending_interfaces.InterestAmounts(
@@ -104,7 +108,13 @@ class RuleOf78InterestApplicationTest(RuleOf78):
         total_term = 12
         mock_get_parameter.side_effect = mock_utils_get_parameter(self.parameters)
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={rule_of_78.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective_datetime_accrual")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                rule_of_78.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                    "effective_datetime_accrual"
+                )
+            }
+        )
         mock_calculate_elapsed_term.return_value = 5
         mock_calculate_non_accruing_loan_total_interest.return_value = sentinel.total_interest
         mock_get_sum_1_to_N.return_value = sentinel.denominator
@@ -381,7 +391,9 @@ class CalculateEmi(FeatureTest):
             }
         )
 
-        result = rule_of_78.calculate_emi(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        result = rule_of_78.calculate_emi(
+            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
+        )
 
         mock_calculate_non_accruing_loan_total_interest.assert_called_once_with(
             original_principal=Decimal("1000"),
@@ -475,7 +487,9 @@ class TermDetailsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
             address=rule_of_78.lending_addresses.PRINCIPAL,
@@ -499,15 +513,23 @@ class TermDetailsTest(FeatureTest):
         mock_calculate_elapsed_term.return_value = 4
         mock_balance_at_coordinates.return_value = Decimal("10")
 
-        balances_observation_fetchers_mapping = {rule_of_78.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))}
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        balances_observation_fetchers_mapping = {
+            rule_of_78.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+                SentinelBalancesObservation("effective")
+            )
+        }
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
         result = rule_of_78.term_details(
             vault=mock_vault,
             effective_datetime=sentinel.effective_datetime,
             use_expected_term=False,
         )
 
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances_effective, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances_effective, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances_effective,
             address=rule_of_78.lending_addresses.PRINCIPAL,
@@ -555,7 +577,9 @@ class TermDetailsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
             address=rule_of_78.lending_addresses.PRINCIPAL,
@@ -580,7 +604,9 @@ class TermDetailsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
             address=rule_of_78.lending_addresses.PRINCIPAL,

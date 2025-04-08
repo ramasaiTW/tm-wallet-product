@@ -266,7 +266,9 @@ contract_module_imports = [
 
 @requires(parameters=True)
 def execution_schedules():
-    interest_application_day = vault.get_parameter_timeseries(name="interest_application_day").latest()
+    interest_application_day = vault.get_parameter_timeseries(
+        name="interest_application_day"
+    ).latest()
     # start_date = vault.get_account_creation_date()
     # enddate = start_date + timedelta(hours=1)
 
@@ -311,7 +313,9 @@ def scheduled_code(event_type, effective_date):
         end_of_day = effective_date - timedelta(microseconds=1)
         _accrue_interest(vault, end_of_day)
     elif event_type == "APPLY_ACCRUED_INTEREST":
-        start_of_day = datetime(year=effective_date.year, month=effective_date.month, day=effective_date.day)
+        start_of_day = datetime(
+            year=effective_date.year, month=effective_date.month, day=effective_date.day
+        )
         _apply_accrued_interest(vault, start_of_day)
     elif event_type == "CHECK_MAINTENANCE_FEE":
         # Handled in supervisor
@@ -352,27 +356,49 @@ def pre_posting_code(postings, effective_date):
     minimum_deposit = vault.get_parameter_timeseries(name="minimum_deposit").latest()
     maximum_daily_deposit = vault.get_parameter_timeseries(name="maximum_daily_deposit").latest()
     minimum_withdrawal = vault.get_parameter_timeseries(name="minimum_withdrawal").latest()
-    maximum_daily_withdrawal = vault.get_parameter_timeseries(name="maximum_daily_withdrawal").latest()
-    monthly_transaction_hard_limit = vault.get_parameter_timeseries(name="monthly_transaction_hard_limit").latest()
+    maximum_daily_withdrawal = vault.get_parameter_timeseries(
+        name="maximum_daily_withdrawal"
+    ).latest()
+    monthly_transaction_hard_limit = vault.get_parameter_timeseries(
+        name="monthly_transaction_hard_limit"
+    ).latest()
     latest_outgoing_available_balance = sum(
-        balance.net for ((address, asset, denom, phase), balance) in balances.items() if address == DEFAULT_ADDRESS and asset == DEFAULT_ASSET and phase != Phase.PENDING_IN and denom == denomination
+        balance.net
+        for ((address, asset, denom, phase), balance) in balances.items()
+        if address == DEFAULT_ADDRESS
+        and asset == DEFAULT_ASSET
+        and phase != Phase.PENDING_IN
+        and denom == denomination
     )
 
     latest_incoming_available_balance = sum(
-        balance.net for ((address, asset, denom, phase), balance) in balances.items() if address == DEFAULT_ADDRESS and asset == DEFAULT_ASSET and phase != Phase.PENDING_OUT and denom == denomination
+        balance.net
+        for ((address, asset, denom, phase), balance) in balances.items()
+        if address == DEFAULT_ADDRESS
+        and asset == DEFAULT_ASSET
+        and phase != Phase.PENDING_OUT
+        and denom == denomination
     )
-    proposed_amount = sum((1 if post.credit else -1) * post.amount for post in postings if post.account_address == DEFAULT_ADDRESS)
+    proposed_amount = sum(
+        (1 if post.credit else -1) * post.amount
+        for post in postings
+        if post.account_address == DEFAULT_ADDRESS
+    )
 
     # Validate denomination
     if postings[0].denomination != denomination:
         raise Rejected(
-            "Cannot make transactions in given denomination; " "transactions must be in {}".format(denomination),
+            "Cannot make transactions in given denomination; "
+            "transactions must be in {}".format(denomination),
             reason_code=RejectedReason.WRONG_DENOMINATION,
         )
 
     # Check proposed balance is positive or at least more than the current balance
     proposed_outgoing_balance = latest_outgoing_available_balance + proposed_amount
-    if proposed_outgoing_balance < 0 and proposed_outgoing_balance < latest_outgoing_available_balance:
+    if (
+        proposed_outgoing_balance < 0
+        and proposed_outgoing_balance < latest_outgoing_available_balance
+    ):
         raise Rejected(
             "Insufficient funds for transaction.",
             reason_code=RejectedReason.INSUFFICIENT_FUNDS,
@@ -380,7 +406,10 @@ def pre_posting_code(postings, effective_date):
 
     # Check proposed balance is less than max allowed balance or at least less than current balance
     proposed_incoming_balance = latest_incoming_available_balance + proposed_amount
-    if proposed_incoming_balance > max_balance and proposed_incoming_balance > latest_incoming_available_balance:
+    if (
+        proposed_incoming_balance > max_balance
+        and proposed_incoming_balance > latest_incoming_available_balance
+    ):
         raise Rejected(
             "Posting would cause the maximum balance to be exceeded.",
             reason_code=RejectedReason.AGAINST_TNC,
@@ -388,17 +417,31 @@ def pre_posting_code(postings, effective_date):
 
     # track and limit transactions in month, ignoring interest and fee accrual applications
     client_transactions = vault.get_client_transactions()
-    if _count_client_transactions(client_transactions, denomination) > monthly_transaction_hard_limit:
+    if (
+        _count_client_transactions(client_transactions, denomination)
+        > monthly_transaction_hard_limit
+    ):
         raise Rejected(
             "Hard limit of allowed client transactions in 1 month for the account reached",
             reason_code=RejectedReason.AGAINST_TNC,
         )
 
     for posting in postings:
-        client_transaction = client_transactions.get((posting.client_id, posting.client_transaction_id))
+        client_transaction = client_transactions.get(
+            (posting.client_id, posting.client_transaction_id)
+        )
         amount_authed = max(
-            abs(client_transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].authorised - client_transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].released),
-            abs(client_transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled),
+            abs(
+                client_transaction.effects()[
+                    (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)
+                ].authorised
+                - client_transaction.effects()[
+                    (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)
+                ].released
+            ),
+            abs(
+                client_transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled
+            ),
         )
         # amount_deposit is +ve. amount_withdrawal is -ve.
         amount_deposit, amount_withdrawal = _sum_without_current_client_trans(
@@ -411,25 +454,29 @@ def pre_posting_code(postings, effective_date):
         if not posting.credit:  # It's an outgoing posting
             if posting.amount < minimum_withdrawal:
                 raise Rejected(
-                    "Transaction amount is less than the minimum withdrawal amount %s %s." % (minimum_withdrawal, denomination),
+                    "Transaction amount is less than the minimum withdrawal amount %s %s."
+                    % (minimum_withdrawal, denomination),
                     reason_code=RejectedReason.AGAINST_TNC,
                 )
             # Check daily withdrawal limit
             if amount_authed - amount_withdrawal > maximum_daily_withdrawal:
                 raise Rejected(
-                    f"Transaction would cause the maximum daily withdrawal limit of " f"{maximum_daily_withdrawal} {denomination} to be exceeded.",
+                    f"Transaction would cause the maximum daily withdrawal limit of "
+                    f"{maximum_daily_withdrawal} {denomination} to be exceeded.",
                     reason_code=RejectedReason.AGAINST_TNC,
                 )
         if posting.credit:
             if posting.amount < minimum_deposit:
                 raise Rejected(
-                    f"Transaction amount is less than the minimum deposit amount " f"{minimum_deposit} {denomination}.",
+                    f"Transaction amount is less than the minimum deposit amount "
+                    f"{minimum_deposit} {denomination}.",
                     reason_code=RejectedReason.AGAINST_TNC,
                 )
             # Check daily deposit limit
             if abs(amount_deposit + amount_authed) > maximum_daily_deposit:
                 raise Rejected(
-                    f"Transaction would cause the maximum daily deposit limit of " f"{maximum_daily_deposit} {denomination} to be exceeded.",
+                    f"Transaction would cause the maximum daily deposit limit of "
+                    f"{maximum_daily_deposit} {denomination} to be exceeded.",
                     reason_code=RejectedReason.AGAINST_TNC,
                 )
 
@@ -437,16 +484,28 @@ def pre_posting_code(postings, effective_date):
 @requires(parameters=True, balances="latest", postings="1 month", flags=True)
 def post_posting_code(postings, effective_date):
     denomination = vault.get_parameter_timeseries(name="denomination").latest()
-    monthly_transaction_hard_limit = vault.get_parameter_timeseries(name="monthly_transaction_hard_limit").latest()
-    monthly_transaction_soft_limit = vault.get_parameter_timeseries(name="monthly_transaction_soft_limit").latest()
-    monthly_transaction_notification_limit = vault.get_parameter_timeseries(name="monthly_transaction_notification_limit").latest()
-    monthly_transaction_charge = vault.get_parameter_timeseries(name="monthly_transaction_charge").latest()
+    monthly_transaction_hard_limit = vault.get_parameter_timeseries(
+        name="monthly_transaction_hard_limit"
+    ).latest()
+    monthly_transaction_soft_limit = vault.get_parameter_timeseries(
+        name="monthly_transaction_soft_limit"
+    ).latest()
+    monthly_transaction_notification_limit = vault.get_parameter_timeseries(
+        name="monthly_transaction_notification_limit"
+    ).latest()
+    monthly_transaction_charge = vault.get_parameter_timeseries(
+        name="monthly_transaction_charge"
+    ).latest()
 
     # charge withdrawal transaction fee if charge limit exceeded and send appropriate notifications
     client_transactions = vault.get_client_transactions()
     client_transactions_count = _count_client_transactions(client_transactions, denomination)
-    last_client_transaction = client_transactions.get((postings[0].client_id, postings[0].client_transaction_id))
-    last_client_txn_amount = last_client_transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled
+    last_client_transaction = client_transactions.get(
+        (postings[0].client_id, postings[0].client_transaction_id)
+    )
+    last_client_txn_amount = last_client_transaction.effects()[
+        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)
+    ].settled
     if client_transactions_count > monthly_transaction_soft_limit and last_client_txn_amount < 0:
         posting_ins = vault.make_internal_transfer_instructions(
             amount=monthly_transaction_charge,
@@ -458,13 +517,17 @@ def post_posting_code(postings, effective_date):
             asset=DEFAULT_ASSET,
             override_all_restrictions=True,
             pics=[],
-            client_transaction_id="APPLY_TRANSACTION_FEE_{}_{}_INTERNAL".format(vault.get_hook_execution_id(), denomination),
+            client_transaction_id="APPLY_TRANSACTION_FEE_{}_{}_INTERNAL".format(
+                vault.get_hook_execution_id(), denomination
+            ),
             instruction_details={
                 "description": "Transaction fee applied",
                 "event": "ACCRUE_FEES",
             },
         )
-        vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=effective_date)
+        vault.instruct_posting_batch(
+            posting_instructions=posting_ins, effective_date=effective_date
+        )
         # generate workflow notification - customer has been charged
         vault.start_workflow(
             workflow="NOTIFY_TRANSACTION_LIMIT_REACHED",
@@ -473,10 +536,14 @@ def post_posting_code(postings, effective_date):
                 "limit_type": SOFT_TRANSACTION_LIMIT_TYPE,
                 "limit": str(monthly_transaction_soft_limit),
                 "value": str(client_transactions_count),
-                "message": "Alert: Monthly withdrawal transaction limit reached - charges have been" " applied",
+                "message": "Alert: Monthly withdrawal transaction limit reached - charges have been"
+                " applied",
             },
         )
-    elif client_transactions_count > monthly_transaction_notification_limit and last_client_txn_amount < 0:
+    elif (
+        client_transactions_count > monthly_transaction_notification_limit
+        and last_client_txn_amount < 0
+    ):
         # generate workflow notification - customer near to exceeding limit
         vault.start_workflow(
             workflow="NOTIFY_TRANSACTION_LIMIT_REACHED",
@@ -485,13 +552,18 @@ def post_posting_code(postings, effective_date):
                 "limit_type": NOTIFICATION_TRANSACTION_LIMIT_TYPE,
                 "limit": str(monthly_transaction_notification_limit),
                 "value": str(client_transactions_count),
-                "message": "Warning: Close to exceeding monthly withdrawal transaction limit, " "charges will be applied for the next transaction",
+                "message": "Warning: Close to exceeding monthly withdrawal transaction limit, "
+                "charges will be applied for the next transaction",
             },
         )
 
     # Make mirror posting of posting instruction batch from savings.reverse_mirror to current.savings_register
-    linked_current_account_param = vault.get_parameter_timeseries(name="linked_current_account").at(timestamp=effective_date)
-    pib_net_amount = postings.balances()[DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED].net
+    linked_current_account_param = vault.get_parameter_timeseries(name="linked_current_account").at(
+        timestamp=effective_date
+    )
+    pib_net_amount = postings.balances()[
+        DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED
+    ].net
     if _valid_linked_account(linked_current_account_param) and abs(pib_net_amount) > 0:
         if pib_net_amount > 0:
             vault.instruct_posting_batch(
@@ -505,7 +577,8 @@ def post_posting_code(postings, effective_date):
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
                     pics=[],
-                    client_transaction_id=f"SAVINGS_BALANCE_REGISTER_" f"{vault.get_hook_execution_id()}",
+                    client_transaction_id=f"SAVINGS_BALANCE_REGISTER_"
+                    f"{vault.get_hook_execution_id()}",
                     instruction_details={
                         "description": f"Updating savings account mirror for PIB {postings.client_batch_id}",
                         "event": "SAVINGS_REGISTER",
@@ -525,7 +598,8 @@ def post_posting_code(postings, effective_date):
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
                     pics=[],
-                    client_transaction_id=f"SAVINGS_BALANCE_REGISTER_" f"{vault.get_hook_execution_id()}",
+                    client_transaction_id=f"SAVINGS_BALANCE_REGISTER_"
+                    f"{vault.get_hook_execution_id()}",
                     instruction_details={
                         "description": f"Updating savings account mirror for PIB {postings.client_batch_id}",
                         "event": "SAVINGS_REGISTER",
@@ -543,7 +617,10 @@ def close_code(effective_date):
 def _accrue_interest(vault, effective_date):
     denomination = vault.get_parameter_timeseries(name="denomination").latest()
     balances = vault.get_balance_timeseries().at(timestamp=effective_date)
-    effective_balance = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net + balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)].net
+    effective_balance = (
+        balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+        + balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)].net
+    )
 
     if effective_balance <= 0:
         return
@@ -551,10 +628,18 @@ def _accrue_interest(vault, effective_date):
     promotion_start_date = _get_param_value(vault, "promotion_start_date")
     promotion_end_date = _get_param_value(vault, "promotion_end_date")
     if _check_if_in_promotion_window(effective_date, promotion_start_date, promotion_end_date):
-        gross_interest_rate = vault.get_parameter_timeseries(name="promotion_rate").at(timestamp=effective_date)
+        gross_interest_rate = vault.get_parameter_timeseries(name="promotion_rate").at(
+            timestamp=effective_date
+        )
     else:
-        gross_interest_rate_tiers = json_loads(vault.get_parameter_timeseries(name="gross_interest_rate_tiers").at(timestamp=effective_date))
-        gross_interest_rate = _get_customer_interest_rate(vault, gross_interest_rate_tiers, effective_date)
+        gross_interest_rate_tiers = json_loads(
+            vault.get_parameter_timeseries(name="gross_interest_rate_tiers").at(
+                timestamp=effective_date
+            )
+        )
+        gross_interest_rate = _get_customer_interest_rate(
+            vault, gross_interest_rate_tiers, effective_date
+        )
 
     daily_rate = _yearly_to_daily_rate(gross_interest_rate)
     daily_rate_percent = daily_rate * 100
@@ -575,11 +660,14 @@ def _accrue_interest(vault, effective_date):
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
                 instruction_details={
-                    "description": "Daily interest accrued at %0.5f%% on balance of %0.2f" % (daily_rate_percent, effective_balance),
+                    "description": "Daily interest accrued at %0.5f%% on balance of %0.2f"
+                    % (daily_rate_percent, effective_balance),
                     "event": "ACCRUE_INTEREST",
                 },
             )
-            vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=effective_date)
+            vault.instruct_posting_batch(
+                posting_instructions=posting_ins, effective_date=effective_date
+            )
     else:
         # Negative interest
         amount_to_accrue = _precision_accrual(interest)
@@ -596,22 +684,33 @@ def _accrue_interest(vault, effective_date):
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
                 instruction_details={
-                    "description": "Daily negative interest accrued at %0.5f%% on balance of %0.2f" % (daily_rate_percent, effective_balance),
+                    "description": "Daily negative interest accrued at %0.5f%% on balance of %0.2f"
+                    % (daily_rate_percent, effective_balance),
                     "event": "ACCRUE_NEGATIVE_INTEREST",
                 },
             )
-            vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=effective_date)
+            vault.instruct_posting_batch(
+                posting_instructions=posting_ins, effective_date=effective_date
+            )
 
 
 def _apply_accrued_interest(vault, effective_date):
     denomination = vault.get_parameter_timeseries(name="denomination").latest()
-    linked_current_account_param = vault.get_parameter_timeseries(name="linked_current_account").at(timestamp=effective_date)
+    linked_current_account_param = vault.get_parameter_timeseries(name="linked_current_account").at(
+        timestamp=effective_date
+    )
     balances = vault.get_balance_timeseries().at(timestamp=effective_date)
 
-    accrued_incoming_balance = balances[("ACCRUED_INCOMING", DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+    accrued_incoming_balance = balances[
+        ("ACCRUED_INCOMING", DEFAULT_ASSET, denomination, Phase.COMMITTED)
+    ].net
     # to support negative interest
-    accrued_outgoing_balance = balances[("ACCRUED_OUTGOING", DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
-    transaction_fee_balance = balances[("TRANSACTION_FEE", DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+    accrued_outgoing_balance = balances[
+        ("ACCRUED_OUTGOING", DEFAULT_ASSET, denomination, Phase.COMMITTED)
+    ].net
+    transaction_fee_balance = balances[
+        ("TRANSACTION_FEE", DEFAULT_ASSET, denomination, Phase.COMMITTED)
+    ].net
 
     accrued_incoming_fulfillment = _precision_fulfillment(accrued_incoming_balance)
     accrued_outgoing_fulfillment = _precision_fulfillment(accrued_outgoing_balance)
@@ -629,7 +728,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address=DEFAULT_ADDRESS,
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_CUSTOMER".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_CUSTOMER".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Interest Applied",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -647,7 +748,9 @@ def _apply_accrued_interest(vault, effective_date):
                     to_account_address="SAVINGS_REGISTER",
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
-                    client_transaction_id="REGISTER_APPLY_ACCRUED_INTEREST_{}_{}_CUSTOMER".format(vault.get_hook_execution_id(), denomination),
+                    client_transaction_id="REGISTER_APPLY_ACCRUED_INTEREST_{}_{}_CUSTOMER".format(
+                        vault.get_hook_execution_id(), denomination
+                    ),
                     instruction_details={
                         "description": "Mirroring Interest Applied",
                         "event": "SAVINGS_REGISTER",
@@ -664,7 +767,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address="ACCRUED_OUTGOING",
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_INTERNAL".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="APPLY_ACCRUED_INTEREST_{}_{}_INTERNAL".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Interest Applied",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -684,7 +789,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address="ACCRUED_OUTGOING",
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="APPLY_ACCRUED_NEGATIVE_INTEREST_{}_{}_CUSTOMER".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="APPLY_ACCRUED_NEGATIVE_INTEREST_{}_{}_CUSTOMER".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Negative Interest Applied",
                     "event": "APPLY_NEGATIVE_ACCRUED_INTEREST",
@@ -702,7 +809,9 @@ def _apply_accrued_interest(vault, effective_date):
                     to_account_address="SAVINGS_REGISTER",
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
-                    client_transaction_id="REGISTER_APPLY_ACCRUED_NEGATIVE_INTEREST_{}_{}_CUSTOMER".format(vault.get_hook_execution_id(), denomination),
+                    client_transaction_id="REGISTER_APPLY_ACCRUED_NEGATIVE_INTEREST_{}_{}_CUSTOMER".format(
+                        vault.get_hook_execution_id(), denomination
+                    ),
                     instruction_details={
                         "description": "Mirroring Interest Applied",
                         "event": "SAVINGS_REGISTER",
@@ -719,7 +828,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address=DEFAULT_ADDRESS,
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="APPLY_ACCRUED_NEGATIVE_INTEREST_{}_{}_INTERNAL".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="APPLY_ACCRUED_NEGATIVE_INTEREST_{}_{}_INTERNAL".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Negative Interest Applied",
                     "event": "APPLY_NEGATIVE_ACCRUED_INTEREST",
@@ -739,7 +850,9 @@ def _apply_accrued_interest(vault, effective_date):
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
                 pics=[],
-                client_transaction_id="APPLY_ACCRUED_TRANSACTION_FEE_{}_{}_CUSTOMER".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="APPLY_ACCRUED_TRANSACTION_FEE_{}_{}_CUSTOMER".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Transaction fees applied",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -757,7 +870,9 @@ def _apply_accrued_interest(vault, effective_date):
                     to_account_address="SAVINGS_REGISTER",
                     asset=DEFAULT_ASSET,
                     override_all_restrictions=True,
-                    client_transaction_id="REGISTER_ACCRUED_TRANSACTION_FEE_{}_{}_CUSTOMER".format(vault.get_hook_execution_id(), denomination),
+                    client_transaction_id="REGISTER_ACCRUED_TRANSACTION_FEE_{}_{}_CUSTOMER".format(
+                        vault.get_hook_execution_id(), denomination
+                    ),
                     instruction_details={
                         "description": "Mirroring Transaction fees applied",
                         "event": "SAVINGS_REGISTER",
@@ -778,7 +893,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address="ACCRUED_OUTGOING",
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="REVERSE_ACCRUE_INTEREST_{}_{}".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="REVERSE_ACCRUE_INTEREST_{}_{}".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Reversing accrued interest after application",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -796,7 +913,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address="ACCRUED_INCOMING",
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="REVERSE_ACCRUE_INTEREST_{}_{}".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="REVERSE_ACCRUE_INTEREST_{}_{}".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Reversing accrued interest after application",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -817,7 +936,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address="ACCRUED_INCOMING",
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="REVERSE_ACCRUE_NEGATIVE_INTEREST_{}_{}".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="REVERSE_ACCRUE_NEGATIVE_INTEREST_{}_{}".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Reversing accrued negative interest after application",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -835,7 +956,9 @@ def _apply_accrued_interest(vault, effective_date):
                 to_account_address="ACCRUED_OUTGOING",
                 asset=DEFAULT_ASSET,
                 override_all_restrictions=True,
-                client_transaction_id="REVERSE_ACCRUE_NEGATIVE_INTEREST_{}_{}".format(vault.get_hook_execution_id(), denomination),
+                client_transaction_id="REVERSE_ACCRUE_NEGATIVE_INTEREST_{}_{}".format(
+                    vault.get_hook_execution_id(), denomination
+                ),
                 instruction_details={
                     "description": "Reversing accrued negative interest after application",
                     "event": "APPLY_ACCRUED_INTEREST",
@@ -847,14 +970,17 @@ def _apply_accrued_interest(vault, effective_date):
         vault.instruct_posting_batch(
             posting_instructions=posting_ins,
             effective_date=effective_date,
-            client_batch_id="APPLY_ACCRUED_INTEREST_AND_FEES_{}_{}".format(vault.get_hook_execution_id(), denomination),
+            client_batch_id="APPLY_ACCRUED_INTEREST_AND_FEES_{}_{}".format(
+                vault.get_hook_execution_id(), denomination
+            ),
         )
 
     if mirror_posting_ins:
         vault.instruct_posting_batch(
             posting_instructions=mirror_posting_ins,
             effective_date=effective_date,
-            client_batch_id=f"REGISTER_APPLY_ACCRUED_INTEREST_AND_FEES" f"_{vault.get_hook_execution_id()}",
+            client_batch_id=f"REGISTER_APPLY_ACCRUED_INTEREST_AND_FEES"
+            f"_{vault.get_hook_execution_id()}",
         )
 
 
@@ -873,7 +999,10 @@ def _publish_extract(vault, effective_date):
         str(pib.value_timestamp): [
             pib.batch_id,
             "%0.2f" % _get_altered_balance(pib.balances(), denomination),
-            "%0.2f" % _get_phase_balance(balance_timeseries.at(timestamp=pib.value_timestamp), denomination),
+            "%0.2f"
+            % _get_phase_balance(
+                balance_timeseries.at(timestamp=pib.value_timestamp), denomination
+            ),
         ]
         for pib in batches
         if end_of_last_extract <= pib.value_timestamp < effective_date
@@ -902,7 +1031,9 @@ def _publish_extract(vault, effective_date):
     )
 
 
-def _sum_without_current_client_trans(client_transactions, client_transaction_id, cutoff_timestamp, denomination):
+def _sum_without_current_client_trans(
+    client_transactions, client_transaction_id, cutoff_timestamp, denomination
+):
     amount_withdrawal = 0
     amount_deposit = 0
     for (client_id, transaction_id), transaction in client_transactions.items():
@@ -910,10 +1041,17 @@ def _sum_without_current_client_trans(client_transactions, client_transaction_id
             continue
         if transaction.cancelled:
             continue
-        amount_now = transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled + transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].unsettled
+        amount_now = (
+            transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled
+            + transaction.effects()[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].unsettled
+        )
         amount_before_cutoff = (
-            transaction.effects(timestamp=cutoff_timestamp)[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].settled
-            + transaction.effects(timestamp=cutoff_timestamp)[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)].unsettled
+            transaction.effects(timestamp=cutoff_timestamp)[
+                (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)
+            ].settled
+            + transaction.effects(timestamp=cutoff_timestamp)[
+                (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination)
+            ].unsettled
         )
 
         amount = amount_now - amount_before_cutoff
@@ -925,9 +1063,13 @@ def _sum_without_current_client_trans(client_transactions, client_transaction_id
 
 
 def _get_available_balance(balances, denomination):
-    committed_balance_net = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+    committed_balance_net = balances[
+        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.COMMITTED)
+    ].net
     # Pending out is -ve
-    pending_out_balance_net = balances[(DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)].net
+    pending_out_balance_net = balances[
+        (DEFAULT_ADDRESS, DEFAULT_ASSET, denomination, Phase.PENDING_OUT)
+    ].net
     return committed_balance_net + pending_out_balance_net
 
 
@@ -936,7 +1078,11 @@ def _get_phase_balance(balances, denomination, phase=Phase.COMMITTED):
 
 
 def _get_altered_balance(balances, denomination):
-    return sum(balance.net for ((address, asset, denom, phase), balance) in balances.items() if asset == DEFAULT_ASSET and denom == denomination)
+    return sum(
+        balance.net
+        for ((address, asset, denom, phase), balance) in balances.items()
+        if asset == DEFAULT_ASSET and denom == denomination
+    )
 
 
 def _yearly_to_daily_rate(yearly_rate):
@@ -1002,7 +1148,10 @@ def _get_customer_interest_rate(vault, gross_interest_rate_tiers, effective_date
 
 
 def _valid_linked_account(linked_account_id_param):
-    if linked_account_id_param.is_set() and linked_account_id_param.value != "00000000-0000-0000-0000-000000000000":
+    if (
+        linked_account_id_param.is_set()
+        and linked_account_id_param.value != "00000000-0000-0000-0000-000000000000"
+    ):
         return True
     else:
         return False

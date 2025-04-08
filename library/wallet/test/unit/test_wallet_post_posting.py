@@ -51,7 +51,9 @@ class PostPostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -116,7 +118,9 @@ class PostPostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -176,7 +180,9 @@ class PostPostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -238,7 +244,9 @@ class PostPostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -305,7 +313,9 @@ class PostPostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -342,7 +352,9 @@ class PostPostingHookTest(WalletTestBase):
 
         expected_pi = CustomInstruction(
             postings=expected_postings,
-            instruction_details={"description": "Auto top up transferred from nominated account:80"},
+            instruction_details={
+                "description": "Auto top up transferred from nominated account:80"
+            },
             override_all_restrictions=None,
         )
 
@@ -371,7 +383,9 @@ class PostPostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,
@@ -428,7 +442,9 @@ class PostPostingHookTest(WalletTestBase):
             balances=BalanceDefaultDict(mapping=balance_dict),
             value_datetime=DEFAULT_DATETIME,
         )
-        balances_observation_fetchers_mapping = {fetchers.LIVE_BALANCES_BOF_ID: balances_observation}
+        balances_observation_fetchers_mapping = {
+            fetchers.LIVE_BALANCES_BOF_ID: balances_observation
+        }
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=balances_observation_fetchers_mapping,

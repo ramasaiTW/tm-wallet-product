@@ -71,7 +71,9 @@ class ContractLinter(object):
                 yield line, col, msg, type(self)
 
             # Checks for CTR002
-            list_metadata_visitor = ListMetadataVisitor(self.tree, contract_version=self._contract_version)
+            list_metadata_visitor = ListMetadataVisitor(
+                self.tree, contract_version=self._contract_version
+            )
             list_metadata_visitor.visit(self.tree)
             for line, col, msg in list_metadata_visitor.violations:
                 yield line, col, msg, type(self)

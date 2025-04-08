@@ -54,7 +54,9 @@ class TestSourceFinder(TestCase):
         )
 
     def test_get_source_from_filepath(self):
-        gsf_output = GitSourceFinder(save_cache=False).get_source(file_hash=INPUT_CHECKSUM, filepath="README.md")
+        gsf_output = GitSourceFinder(save_cache=False).get_source(
+            file_hash=INPUT_CHECKSUM, filepath="README.md"
+        )
         self.assertEqual(gsf_output, EXPECTED_OUTPUT)
 
     def test_get_source_from_filepath_filepath_doesnt_exist(self):

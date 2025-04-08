@@ -29,7 +29,9 @@ class TestSimulationLoggers(SimulationTestCase):
 
     @patch.object(vault_caller, "request_logger")
     @patch.object(vault_caller, "response_logger")
-    def test_simulate_smart_contract_calls_request_and_response_loggers(self, mock_response_logger: MagicMock, mock_request_logger: MagicMock):
+    def test_simulate_smart_contract_calls_request_and_response_loggers(
+        self, mock_response_logger: MagicMock, mock_request_logger: MagicMock
+    ):
         start = datetime(year=2019, month=1, day=1, tzinfo=timezone.utc)
         end = datetime(year=2019, month=1, day=2, tzinfo=timezone.utc)
         events: List = []

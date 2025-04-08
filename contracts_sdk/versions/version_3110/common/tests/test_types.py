@@ -81,7 +81,8 @@ class PublicCommonV3110TypesTestCase(PublicCommonV3100TypesTestCase):
                 schedule=EventTypeSchedule(day="1"),
             )
         self.assertEqual(
-            "UpdateAccountEventTypeDirective cannot contain both" " schedule and schedule_method fields",
+            "UpdateAccountEventTypeDirective cannot contain both"
+            " schedule and schedule_method fields",
             str(ex.exception),
         )
 
@@ -164,12 +165,24 @@ class PublicCommonV3110TypesTestCase(PublicCommonV3100TypesTestCase):
                 )
             ],
         )
-        self.assertEqual(self.request_id_3110, hook_directives.add_account_note_directives[0].idempotency_key)
-        self.assertEqual(self.request_id_3110, hook_directives.amend_schedule_directives[0].request_id)
-        self.assertEqual(self.request_id_3110, hook_directives.remove_schedules_directives[0].request_id)
-        self.assertEqual(self.request_id_3110, hook_directives.posting_instruction_batch_directives[0].request_id)
-        self.assertEqual(self.request_id_3110, hook_directives.workflow_start_directives[0].idempotency_key)
-        self.assertEqual(self.account_id_3110, hook_directives.update_account_event_type_directives[0].account_id)
+        self.assertEqual(
+            self.request_id_3110, hook_directives.add_account_note_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.request_id_3110, hook_directives.amend_schedule_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3110, hook_directives.remove_schedules_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3110, hook_directives.posting_instruction_batch_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3110, hook_directives.workflow_start_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.account_id_3110, hook_directives.update_account_event_type_directives[0].account_id
+        )
 
     def test_update_account_event_type_directive_skip_indefinitely(self):
         update_account_event_type_directive = UpdateAccountEventTypeDirective(
@@ -185,7 +198,9 @@ class PublicCommonV3110TypesTestCase(PublicCommonV3100TypesTestCase):
             event_type="event_type_1",
             skip=ScheduleSkip(end=datetime(year=2021, month=6, day=28)),
         )
-        self.assertEqual(datetime(year=2021, month=6, day=28), update_account_event_type_directive.skip.end)
+        self.assertEqual(
+            datetime(year=2021, month=6, day=28), update_account_event_type_directive.skip.end
+        )
 
     def test_update_account_event_type_directive_unskip(self):
         update_account_event_type_directive = UpdateAccountEventTypeDirective(
@@ -212,7 +227,9 @@ class PublicCommonV3110TypesTestCase(PublicCommonV3100TypesTestCase):
     def test_schedule_skip_raises_with_end_datetime_not_provided(self):
         with self.assertRaises(TypeError) as ex:
             ScheduleSkip()
-        self.assertEqual("__init__() missing 1 required keyword-only argument: 'end'", str(ex.exception))
+        self.assertEqual(
+            "__init__() missing 1 required keyword-only argument: 'end'", str(ex.exception)
+        )
 
     def test_hook_directives_attributes_are_verified(self):
         with self.assertRaises(StrongTypingError) as ex:
@@ -226,6 +243,9 @@ class PublicCommonV3110TypesTestCase(PublicCommonV3100TypesTestCase):
             )
 
         self.assertIn(
-            ("'update_account_event_type_directives' expected " "List[UpdateAccountEventTypeDirective] but got value 'bad'"),
+            (
+                "'update_account_event_type_directives' expected "
+                "List[UpdateAccountEventTypeDirective] but got value 'bad'"
+            ),
             str(ex.exception),
         )

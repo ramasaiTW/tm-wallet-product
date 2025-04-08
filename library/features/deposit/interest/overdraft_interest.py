@@ -66,7 +66,11 @@ parameters = [
         level=ParameterLevel.TEMPLATE,
         description="The yearly rate at which overdraft interest is accrued.",
         display_name="Overdraft Interest Rate",
-        shape=OptionalShape(shape=NumberShape(min_value=Decimal("0"), max_value=Decimal("1"), step=Decimal("0.0001"))),
+        shape=OptionalShape(
+            shape=NumberShape(
+                min_value=Decimal("0"), max_value=Decimal("1"), step=Decimal("0.0001")
+            )
+        ),
         default_value=OptionalValue(Decimal("0.05")),
     ),
     Parameter(
@@ -159,7 +163,9 @@ def accrue_interest(
                 default_value=0,
             )
         )
-        denomination = common_parameters.get_denomination_parameter(vault=vault, effective_datetime=effective_datetime)
+        denomination = common_parameters.get_denomination_parameter(
+            vault=vault, effective_datetime=effective_datetime
+        )
         accrual_balance = _calculate_accrual_balance(
             interest_free_amount=interest_free_amount,
             interest_free_days=interest_free_days,
@@ -175,7 +181,9 @@ def accrue_interest(
                 yearly_rate=yearly_interest_rate,
                 days_in_year=days_in_year,
             )
-            accrual_amount_rounded = utils.round_decimal(abs(accrual_balance) * day_rate, decimal_places=rounding_precision)
+            accrual_amount_rounded = utils.round_decimal(
+                abs(accrual_balance) * day_rate, decimal_places=rounding_precision
+            )
 
             return accruals.accrual_custom_instruction(
                 customer_account=vault.account_id,
@@ -185,7 +193,8 @@ def accrue_interest(
                 internal_account=overdraft_interest_receivable_account,
                 payable=False,
                 instruction_details=utils.standard_instruction_details(
-                    description=f"Accrual on overdraft balance of {accrual_balance:.2f} " f"{denomination} at {yearly_interest_rate*100:.2f}%",
+                    description=f"Accrual on overdraft balance of {accrual_balance:.2f} "
+                    f"{denomination} at {yearly_interest_rate*100:.2f}%",
                     event_type=OVERDRAFT_ACCRUAL_EVENT,
                     gl_impacted=True,
                     account_type=account_type,
@@ -203,7 +212,10 @@ def _retrieve_eod_observations(*, vault: SmartContractVault) -> list[BalancesObs
     :param vault: the vault object used to for retrieving the balance data
     :return: list of observation balances ordered in reverse chronological order
     """
-    return [vault.get_balances_observation(fetcher_id=fetcher.fetcher_id) for fetcher in overdraft_accrual_data_fetchers]
+    return [
+        vault.get_balances_observation(fetcher_id=fetcher.fetcher_id)
+        for fetcher in overdraft_accrual_data_fetchers
+    ]
 
 
 def _calculate_accrual_balance(
@@ -243,7 +255,10 @@ def _calculate_accrual_balance(
         else:
             return buffered_end_of_day_balance
 
-    highest_amount = max(utils.balance_at_coordinates(balances=observation.balances, denomination=denomination) for observation in observations[1 : interest_free_days + 1])
+    highest_amount = max(
+        utils.balance_at_coordinates(balances=observation.balances, denomination=denomination)
+        for observation in observations[1 : interest_free_days + 1]
+    )
     # If there is a positive day in the interest free period the free buffer amount is still
     # applied (if the interest free amount is set to zero the full overdraft amount will covered)
     # otherwise it means the free period limit has been reached and the buffer amount no longer
@@ -275,7 +290,9 @@ def apply_interest(
     """
 
     denomination = common_parameters.get_denomination_parameter(vault=vault)
-    balance_observation = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID)
+    balance_observation = vault.get_balances_observation(
+        fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+    )
     accrued_overdraft_interest = utils.balance_at_coordinates(
         balances=balance_observation.balances,
         address=OVERDRAFT_ACCRUED_INTEREST,
@@ -365,7 +382,9 @@ def get_interest_reversal_postings(
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
     accrued_overdraft_interest = utils.balance_at_coordinates(
         balances=balances,
@@ -384,7 +403,8 @@ def get_interest_reversal_postings(
         internal_account=overdraft_interest_receivable_account,
         payable=False,
         instruction_details=utils.standard_instruction_details(
-            description=f"Reversing {accrued_overdraft_interest} {denomination} " "of accrued overdraft interest.",
+            description=f"Reversing {accrued_overdraft_interest} {denomination} "
+            "of accrued overdraft interest.",
             event_type=event_name,
             gl_impacted=True,
             account_type=account_type,

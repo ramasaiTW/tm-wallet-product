@@ -124,11 +124,15 @@ class SimulationTestCase(TestCase):
     def load_test_config(cls):
         # we allow unknown because there may be unittest flags in argv
         flag_utils.parse_flags(allow_unknown=True)
-        environment, _ = extract_framework_environments_from_config(environment_purpose=EnvironmentPurpose.SIM)
+        environment, _ = extract_framework_environments_from_config(
+            environment_purpose=EnvironmentPurpose.SIM
+        )
         core_api_url = environment.core_api_url
         auth_token = environment.service_account.token
         if not core_api_url or not auth_token:
-            raise ValueError("core_api_url and/or service_account.token not found in specified config")
+            raise ValueError(
+                "core_api_url and/or service_account.token not found in specified config"
+            )
         cls.client = vault_caller.Client(core_api_url=core_api_url, auth_token=auth_token)
 
     @classmethod
@@ -282,7 +286,11 @@ class SimulationTestCase(TestCase):
                 self.assertBalancesEqual(
                     expected_balances=balance_tuples,
                     actual_balances=account_balances.at(value_timestamp),
-                    msg=(description or f"expected and actual balances differ " f"for {account_id} at {value_timestamp}"),
+                    msg=(
+                        description
+                        or f"expected and actual balances differ "
+                        f"for {account_id} at {value_timestamp}"
+                    ),
                 )
 
     def check_derived_parameters(
@@ -300,10 +308,14 @@ class SimulationTestCase(TestCase):
                 expected_value = expected_derived_param.value
                 actual_derived_params = actual_derived_parameters[account_id].at(value_timestamp)
                 if parameter not in actual_derived_params:
-                    mismatched_derived_params[parameter] = "ERROR: parameter is missing from actual values"
+                    mismatched_derived_params[
+                        parameter
+                    ] = "ERROR: parameter is missing from actual values"
                 elif expected_value != actual_derived_params[parameter]:
                     mismatched_derived_params[
-                        f'param: "{parameter}" ' f'account: "{account_id}" ' f'@: "{str(value_timestamp)}"'
+                        f'param: "{parameter}" '
+                        f'account: "{account_id}" '
+                        f'@: "{str(value_timestamp)}"'
                     ] = f'Expected: "{expected_value}" Got: "{actual_derived_params[parameter]}"'
             return mismatched_derived_params
 
@@ -325,7 +337,9 @@ class SimulationTestCase(TestCase):
                 expected_rejection
                 for expected_rejection in expected_rejections
                 if not any(
-                    f'account "{expected_rejection.account_id}" rejected with ' f'rejection type "{expected_rejection.rejection_type}" and ' f'reason "{expected_rejection.rejection_reason}' in log
+                    f'account "{expected_rejection.account_id}" rejected with '
+                    f'rejection type "{expected_rejection.rejection_type}" and '
+                    f'reason "{expected_rejection.rejection_reason}' in log
                     for log in logs_with_timestamp.get(expected_rejection.timestamp, [])
                 )
             ]
@@ -357,7 +371,11 @@ class SimulationTestCase(TestCase):
             return [
                 expected_rejection
                 for expected_rejection in expected_rejections
-                if not any(f"account parameters update rejected: {expected_rejection.rejection_reason}" in log for log in logs_with_timestamp.get(expected_rejection.timestamp, []))
+                if not any(
+                    f"account parameters update rejected: {expected_rejection.rejection_reason}"
+                    in log
+                    for log in logs_with_timestamp.get(expected_rejection.timestamp, [])
+                )
             ]
 
         self.assertExpectations(
@@ -412,7 +430,11 @@ class SimulationTestCase(TestCase):
         act_err_type = actual_error.__class__.__name__
 
         if exp_err_type != act_err_type:
-            raise AssertionError(f"Expection type mismatch: Expected simulation error:" f"{exp_err_type}, Got: {act_err_type}" f"Error: {_repr_err(actual_error)}")
+            raise AssertionError(
+                f"Expection type mismatch: Expected simulation error:"
+                f"{exp_err_type}, Got: {act_err_type}"
+                f"Error: {_repr_err(actual_error)}"
+            )
 
         def compare_errors(expected, actual):
             try:
@@ -462,7 +484,14 @@ class SimulationTestCase(TestCase):
                     self.assertEqual(expected_schedule.count, len(processed_schedules), description)
 
                 missing_schedule_runs.extend(
-                    (expected_schedule_run for expected_schedule_run in expected_schedule.run_times if (expected_schedule_run.strftime("%Y-%m-%dT%H:%M:%SZ") not in processed_schedules))
+                    (
+                        expected_schedule_run
+                        for expected_schedule_run in expected_schedule.run_times
+                        if (
+                            expected_schedule_run.strftime("%Y-%m-%dT%H:%M:%SZ")
+                            not in processed_schedules
+                        )
+                    )
                 )
             return missing_schedule_runs
 
@@ -480,7 +509,9 @@ class SimulationTestCase(TestCase):
         ):
             mismatched_notifications = []
             for expected_notification in expected_notifications:
-                potential_match_notifications = actual_notifications[expected_notification.resource_id][expected_notification.notification_type]
+                potential_match_notifications = actual_notifications[
+                    expected_notification.resource_id
+                ][expected_notification.notification_type]
 
                 potential_match = {}
                 for notification in potential_match_notifications:
@@ -488,7 +519,10 @@ class SimulationTestCase(TestCase):
                     if notification[0] == expected_notification.timestamp:
                         potential_match = notification[1]
                         # Comparing notification details
-                        if potential_match["notification_details"] == expected_notification.notification_details:
+                        if (
+                            potential_match["notification_details"]
+                            == expected_notification.notification_details
+                        ):
                             break
                         else:
                             mismatched_notifications.append(
@@ -498,7 +532,10 @@ class SimulationTestCase(TestCase):
                             )
                 # No match found for the expected_notification in actual_notifications
                 if not potential_match:
-                    mismatched_notifications.append(f"No notification found for this type and resource id at " f"{expected_notification.timestamp}")
+                    mismatched_notifications.append(
+                        f"No notification found for this type and resource id at "
+                        f"{expected_notification.timestamp}"
+                    )
 
             return mismatched_notifications
 
@@ -530,15 +567,22 @@ class SimulationTestCase(TestCase):
         supervisor_contract_config = None
 
         if test_scenario.contract_config and test_scenario.supervisor_config:
-            log.warning("Both supervisor and contract config detected, " "setup events will be based on supervisor config")
+            log.warning(
+                "Both supervisor and contract config detected, "
+                "setup events will be based on supervisor config"
+            )
 
         elif test_scenario.supervisor_config:
             setup_events.extend(get_supervisor_setup_events(test_scenario))
             if test_scenario.supervisor_config.supervisor_file_path:
-                supervisor_contract_code = load_file_contents(test_scenario.supervisor_config.supervisor_file_path)
+                supervisor_contract_code = load_file_contents(
+                    test_scenario.supervisor_config.supervisor_file_path
+                )
             else:
                 supervisor_contract_code = test_scenario.supervisor_config.supervisor_contract
-            supervisor_contract_version_id = test_scenario.supervisor_config.supervisor_contract_version_id
+            supervisor_contract_version_id = (
+                test_scenario.supervisor_config.supervisor_contract_version_id
+            )
             supervisee_version_id_mapping = {
                 supervisee_contract.clu_resource_id: supervisee_contract.smart_contract_version_id
                 for supervisee_contract in test_scenario.supervisor_config.supervisee_contracts
@@ -556,7 +600,9 @@ class SimulationTestCase(TestCase):
             raise ValueError("Test scenario must have supervisor or contract config!")
 
         if expected_simulation_error and self.assertions_exist_in_subtests(test_scenario.sub_tests):
-            raise ValueError("Test scenario should not contain expectations when a simulation error is expected.")
+            raise ValueError(
+                "Test scenario should not contain expectations when a simulation error is expected."
+            )
         internal_accounts = test_scenario.internal_accounts or self.internal_accounts
 
         events, derived_param_outputs = compile_chrono_events(test_scenario, setup_events)
@@ -572,7 +618,9 @@ class SimulationTestCase(TestCase):
                 supervisor_contract_version_id=supervisor_contract_version_id,
                 supervisee_version_id_mapping=supervisee_version_id_mapping,
                 contract_codes=contract_codes,
-                smart_contract_version_ids=[contract.smart_contract_version_id for contract in smart_contracts],
+                smart_contract_version_ids=[
+                    contract.smart_contract_version_id for contract in smart_contracts
+                ],
                 templates_parameters=[contract.template_params for contract in smart_contracts],
                 internal_account_ids=internal_accounts,
                 contract_config=test_scenario.contract_config,
@@ -603,7 +651,9 @@ class SimulationTestCase(TestCase):
                     sub_test.description,
                 )
             if sub_test.expected_schedules:
-                self.check_schedule_processed(sub_test.expected_schedules, res, sub_test.description)
+                self.check_schedule_processed(
+                    sub_test.expected_schedules, res, sub_test.description
+                )
             if sub_test.expected_posting_rejections:
                 self.check_posting_rejections(
                     sub_test.expected_posting_rejections,
@@ -643,10 +693,17 @@ class SimulationTestCase(TestCase):
 
 
 def get_contract_contents(contract_configs: list[ContractConfig]) -> list[str]:
-    return [contract_config.contract_content if contract_config.contract_content else load_file_contents(contract_config.contract_file_path) for contract_config in contract_configs]
+    return [
+        contract_config.contract_content
+        if contract_config.contract_content
+        else load_file_contents(contract_config.contract_file_path)
+        for contract_config in contract_configs
+    ]
 
 
-def compile_chrono_events(test_scenario: SimulationTestScenario, setup_events: list[SimulationEvent]) -> tuple[list[SimulationEvent], list[tuple[str, datetime]]]:
+def compile_chrono_events(
+    test_scenario: SimulationTestScenario, setup_events: list[SimulationEvent]
+) -> tuple[list[SimulationEvent], list[tuple[str, datetime]]]:
     """
     Combines setup events with custom events from test scenario subtests.
     Sorts events chronologically.
@@ -670,7 +727,10 @@ def compile_chrono_events(test_scenario: SimulationTestScenario, setup_events: l
             current_subtest_first_event_ts = sub_test.events[0].time
 
             if current_subtest_first_event_ts < previous_subtest_last_event_ts:
-                log.warning(f'Subtest "{sub_test.description}" contains ' "event timestamp before the previous one.")
+                log.warning(
+                    f'Subtest "{sub_test.description}" contains '
+                    "event timestamp before the previous one."
+                )
 
             previous_subtest_last_event_ts = sub_test.events[-1].time
             events.extend(sub_test.events)
@@ -679,11 +739,21 @@ def compile_chrono_events(test_scenario: SimulationTestScenario, setup_events: l
             assertion_ts.extend(sub_test.expected_balances_at_ts.keys())
 
         if sub_test.expected_posting_rejections:
-            assertion_ts.extend(expected_rejection.timestamp for expected_rejection in sub_test.expected_posting_rejections)
+            assertion_ts.extend(
+                expected_rejection.timestamp
+                for expected_rejection in sub_test.expected_posting_rejections
+            )
         if sub_test.expected_parameter_change_rejections:
-            assertion_ts.extend(expected_rejection.timestamp for expected_rejection in sub_test.expected_parameter_change_rejections)
+            assertion_ts.extend(
+                expected_rejection.timestamp
+                for expected_rejection in sub_test.expected_parameter_change_rejections
+            )
         if sub_test.expected_schedules:
-            assertion_ts.extend(runtime for expected_schedule in sub_test.expected_schedules for runtime in expected_schedule.run_times)
+            assertion_ts.extend(
+                runtime
+                for expected_schedule in sub_test.expected_schedules
+                for runtime in expected_schedule.run_times
+            )
 
         if sub_test.expected_derived_parameters:
             for expected_derived_param in sub_test.expected_derived_parameters:
@@ -700,12 +770,18 @@ def compile_chrono_events(test_scenario: SimulationTestScenario, setup_events: l
             current_subtest_first_assertion_ts = sorted_assertion_ts[0]
 
             if current_subtest_first_assertion_ts < previous_subtest_last_assertion_ts:
-                log.warning(f'Subtest "{sub_test.description}" contains ' "assertion timestamp before the previous one.")
+                log.warning(
+                    f'Subtest "{sub_test.description}" contains '
+                    "assertion timestamp before the previous one."
+                )
 
             previous_subtest_last_assertion_ts = sorted_assertion_ts[-1]
             assertion_ts.clear()
 
-    if previous_subtest_last_event_ts > test_scenario.end or previous_subtest_last_assertion_ts > test_scenario.end:
+    if (
+        previous_subtest_last_event_ts > test_scenario.end
+        or previous_subtest_last_assertion_ts > test_scenario.end
+    ):
         log.warning("last assertion or event happens outside of simulation window")
 
     all_events = sorted(setup_events + events, key=lambda event: event.time)
@@ -757,7 +833,9 @@ def get_balances(res: list[dict[str, Any]]) -> DefaultDict[str, TimeSeries]:
     # This stores account id -> value_timestamp -> BalanceDimensions -> (event_timestamp, balance)
     account_balance_updates = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: [])))
     # This stores account id -> TimeSeries -> BalanceDimensions -> Balance
-    account_balance_timeseries = defaultdict(lambda: TimeSeries([], return_on_empty=defaultdict(lambda: Balance())))
+    account_balance_timeseries = defaultdict(
+        lambda: TimeSeries([], return_on_empty=defaultdict(lambda: Balance()))
+    )
 
     # result data structure for balances is 'balances' -> account_id -> 'balances' -> list[balance]
     for result in res:
@@ -770,7 +848,9 @@ def get_balances(res: list[dict[str, Any]]) -> DefaultDict[str, TimeSeries]:
                 event_timestamp = parser.parse(result_inner["timestamp"])
                 value_timestamp = parser.parse(sim_balance["value_time"])
                 dimensions, balance = convert_sim_balance(sim_balance)
-                account_balance_updates[sim_balance["account_id"]][value_timestamp][dimensions].append((event_timestamp, balance))
+                account_balance_updates[sim_balance["account_id"]][value_timestamp][
+                    dimensions
+                ].append((event_timestamp, balance))
 
     for account_id, balance_map in account_balance_updates.items():
         # By not resetting the entries for each value_timestamp, we ensure we get the most recent
@@ -784,7 +864,9 @@ def get_balances(res: list[dict[str, Any]]) -> DefaultDict[str, TimeSeries]:
 
             value_timestamp_entries.append((value_timestamp, deepcopy(dimension_entries)))
 
-        account_balance_timeseries[account_id] = TimeSeries(value_timestamp_entries, return_on_empty=defaultdict(lambda: Balance()))
+        account_balance_timeseries[account_id] = TimeSeries(
+            value_timestamp_entries, return_on_empty=defaultdict(lambda: Balance())
+        )
 
     return account_balance_timeseries
 
@@ -817,14 +899,20 @@ def get_contract_notifications(
     """
 
     # resource id -> notification type -> [(datetime, notification contents)]
-    outputs: dict[str, dict[str, list[tuple[datetime, dict[str, str]]]]] = defaultdict(lambda: defaultdict(lambda: ([])))
+    outputs: dict[str, dict[str, list[tuple[datetime, dict[str, str]]]]] = defaultdict(
+        lambda: defaultdict(lambda: ([]))
+    )
 
     for result in res:
         if "contract_notification_events" in result["result"]:
             timestamp = parser.parse(result["result"]["timestamp"])
-            for resource_id, notifications in result["result"]["contract_notification_events"].items():
+            for resource_id, notifications in result["result"][
+                "contract_notification_events"
+            ].items():
                 for notification in notifications["contract_notification_events"]:
-                    outputs[resource_id][notification["notification_type"]].append((timestamp, notification))
+                    outputs[resource_id][notification["notification_type"]].append(
+                        (timestamp, notification)
+                    )
     return outputs
 
 
@@ -840,7 +928,9 @@ def get_flag_definition_created(res: list[dict[str, Any]], flag_definition_id: s
     return any(_get_logs_with_substring(res, flag_definition_created_substr))
 
 
-def get_flag_created(res: list[dict[str, Any]], flag_definition_id: str, account_id: str = MAIN_ACCOUNT) -> bool:
+def get_flag_created(
+    res: list[dict[str, Any]], flag_definition_id: str, account_id: str = MAIN_ACCOUNT
+) -> bool:
     """
     Returns True if log found for create_flag_event
     :param res: output from simulation endpoint
@@ -867,7 +957,12 @@ def get_postings(
     :return: committed postings
     """
     balance_dimensions = balance_dimensions or BalanceDimensions()
-    pibs = (pibs for response in res for pibs in response["result"]["posting_instruction_batches"] if response["result"]["posting_instruction_batches"])
+    pibs = (
+        pibs
+        for response in res
+        for pibs in response["result"]["posting_instruction_batches"]
+        if response["result"]["posting_instruction_batches"]
+    )
 
     posting_instructions = (pi for pib in pibs for pi in pib["posting_instructions"])
 
@@ -875,11 +970,14 @@ def get_postings(
         committed_posting
         for pi in posting_instructions
         for committed_posting in pi["committed_postings"]
-        if committed_posting["account_address"] == balance_dimensions.address and committed_posting["account_id"] == account_id
+        if committed_posting["account_address"] == balance_dimensions.address
+        and committed_posting["account_id"] == account_id
     ]
 
 
-def get_posting_instruction_batch(res: list[dict[str, Any]], event_type: str) -> dict[str, TimeSeries]:
+def get_posting_instruction_batch(
+    res: list[dict[str, Any]], event_type: str
+) -> dict[str, TimeSeries]:
     """
     Returns a posting instruction timeseries by timestamp for each target_account_id.
     :param res: output from simulation endpoint
@@ -897,7 +995,9 @@ def get_posting_instruction_batch(res: list[dict[str, Any]], event_type: str) ->
                 if event_type not in pis:
                     continue
 
-                posting_instructions[pis[event_type]["target_account_id"]][event_timestamp].append(pis[event_type])
+                posting_instructions[pis[event_type]["target_account_id"]][event_timestamp].append(
+                    pis[event_type]
+                )
 
     # this stores target_account_id -> (timestamp, posting instruction records)
     posting_instructions_timeseries = defaultdict(lambda: TimeSeries([]))
@@ -933,7 +1033,9 @@ def get_logs(res: list[dict[str, Any]]) -> str:
     :return: logs from simulation endpoint
     """
 
-    return "; ".join((log for list_of_log_lists in res for log in list_of_log_lists["result"]["logs"]))
+    return "; ".join(
+        (log for list_of_log_lists in res for log in list_of_log_lists["result"]["logs"])
+    )
 
 
 def get_account_logs(res: list[dict[str, Any]], account_id: str = MAIN_ACCOUNT) -> str:
@@ -999,7 +1101,9 @@ def get_plan_logs(res: list[dict[str, Any]], plan_id: str) -> str:
     return "; ".join(_get_logs_with_substring(res, plan_substr))
 
 
-def get_plan_created(res: list[dict[str, Any]], plan_id: str, supervisor_version_id: str = "") -> bool:
+def get_plan_created(
+    res: list[dict[str, Any]], plan_id: str, supervisor_version_id: str = ""
+) -> bool:
     """
     Returns True if plan has been created and False if plan creation information cannot be found
     in logs
@@ -1030,7 +1134,9 @@ def get_plan_assoc_created(res: list[dict[str, Any]], plan_id: str, account_id: 
     return any(_get_logs_with_substring(res, plan_assoc_created))
 
 
-def get_module_link_created(res: list[dict[str, Any]], aliases: list[str], smart_contract_version_id: str) -> bool:
+def get_module_link_created(
+    res: list[dict[str, Any]], aliases: list[str], smart_contract_version_id: str
+) -> bool:
     """
     Returns True if contract module links have been created and False if contract module links
     information cannot be found in logs
@@ -1041,7 +1147,9 @@ def get_module_link_created(res: list[dict[str, Any]], aliases: list[str], smart
     """
     contract_module_link_created = "created smart contract module versions link with id "
     aliases_as_str = "_".join(aliases)
-    contract_module_link_created += f'"sim_link_modules_{aliases_as_str}_with_contract_{smart_contract_version_id}"'
+    contract_module_link_created += (
+        f'"sim_link_modules_{aliases_as_str}_with_contract_{smart_contract_version_id}"'
+    )
     return any(_get_logs_with_substring(res, contract_module_link_created))
 
 
@@ -1052,7 +1160,9 @@ def get_logs_with_timestamp(res: list[dict[str, Any]]) -> dict[datetime, list[st
     :return: logs grouped by timestamp
     """
 
-    list_of_logs = ({log["result"]["timestamp"]: log["result"]["logs"]} for log in res if log["result"]["logs"])
+    list_of_logs = (
+        {log["result"]["timestamp"]: log["result"]["logs"]} for log in res if log["result"]["logs"]
+    )
 
     logs_with_timestamp = defaultdict(list)
 
@@ -1063,7 +1173,9 @@ def get_logs_with_timestamp(res: list[dict[str, Any]]) -> dict[datetime, list[st
     return logs_with_timestamp
 
 
-def has_matching_processed_scheduled_event(logs: list[str], event_id: str, account_id: str = "", plan_id: str = "") -> bool:
+def has_matching_processed_scheduled_event(
+    logs: list[str], event_id: str, account_id: str = "", plan_id: str = ""
+) -> bool:
     for_str = ""
     if account_id:
         for_str = f'for account "{account_id}"'
@@ -1089,11 +1201,20 @@ def get_processed_scheduled_events(
     :param plan_id: account plan association id
     :return: list of timestamps
     """
-    return [result["result"]["timestamp"] for result in res if has_matching_processed_scheduled_event(result["result"]["logs"], event_id, account_id, plan_id)]
+    return [
+        result["result"]["timestamp"]
+        for result in res
+        if has_matching_processed_scheduled_event(
+            result["result"]["logs"], event_id, account_id, plan_id
+        )
+    ]
 
 
 def print_json(print_identifier: str, json_obj: Any) -> None:
-    print(f"{print_identifier}: " f"{json.dumps(json_obj, indent=4, sort_keys=True, cls=DecimalEncoder)}")
+    print(
+        f"{print_identifier}: "
+        f"{json.dumps(json_obj, indent=4, sort_keys=True, cls=DecimalEncoder)}"
+    )
 
 
 def print_postings(
@@ -1111,7 +1232,12 @@ def print_log(res: list[dict[str, Any]]) -> None:
 
 
 def _get_logs_with_substring(res: list[dict[str, Any]], substring: str) -> Generator:
-    return (log for list_of_log_lists in res for log in list_of_log_lists["result"]["logs"] if substring in "".join(list_of_log_lists["result"]["logs"]))
+    return (
+        log
+        for list_of_log_lists in res
+        for log in list_of_log_lists["result"]["logs"]
+        if substring in "".join(list_of_log_lists["result"]["logs"])
+    )
 
 
 class DecimalEncoder(json.JSONEncoder):

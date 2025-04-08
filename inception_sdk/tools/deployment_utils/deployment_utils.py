@@ -133,42 +133,52 @@ def auth_cookie_must_be_set_to_update_workflow_inst_config(input_dict: dict[str,
     if input_dict is None:
         return True
 
-    return not (input_dict.get("update_workflows_inst_config") and input_dict.get("auth_cookie") == "")
+    return not (
+        input_dict.get("update_workflows_inst_config") and input_dict.get("auth_cookie") == ""
+    )
 
 
 def import_manifest_must_be_set_to_provide_extra_flags(input_dict: dict[str, Any]) -> bool:
     if input_dict is None:
         return True
 
-    return input_dict.get("import_manifest") or all(input_dict.get(flag) in {None, False, ""} for flag in ["auth_cookie", "activate_workflows", "update_workflows_inst_config"])
+    return input_dict.get("import_manifest") or all(
+        input_dict.get(flag) in {None, False, ""}
+        for flag in ["auth_cookie", "activate_workflows", "update_workflows_inst_config"]
+    )
 
 
 # Flags
 flags.DEFINE_bool(
     name="import_manifest",
     default=False,
-    help="Set to import the specified manifest using CLU. Mutually exclusive with " "`validate_manifest`",
+    help="Set to import the specified manifest using CLU. Mutually exclusive with "
+    "`validate_manifest`",
 )
 flags.DEFINE_bool(
     name="validate_manifest",
     default=False,
-    help="Set to validate the specified manifest using CLU. Mutually exclusive with " "`import_manifest`",
+    help="Set to validate the specified manifest using CLU. Mutually exclusive with "
+    "`import_manifest`",
 )
 flags.DEFINE_string(
     name="manifest",
     default="library/library_manifest.yaml",
-    help="Path to the CLU manifest file to import or validate. This must be a relative path " "from the Inception repo/release folder you are running this tool from",
+    help="Path to the CLU manifest file to import or validate. This must be a relative path "
+    "from the Inception repo/release folder you are running this tool from",
 )
 flags.DEFINE_string(name="clu", default="tools/clu-linux-amd64", help="Path to the CLU binary")
 flags.DEFINE_bool(
     name="activate_workflows",
     default=False,
-    help="Set this flag if deployed workflow versions need to be activated. Can only be passed " "if `import_manifest` is also set",
+    help="Set this flag if deployed workflow versions need to be activated. Can only be passed "
+    "if `import_manifest` is also set",
 )
 flags.DEFINE_bool(
     name="update_workflows_inst_config",
     default=False,
-    help="Pass this flag if the instantiation config for deployed workflows needs to be updated. " "Can only be passed if `import_manifest` is also set",
+    help="Pass this flag if the instantiation config for deployed workflows needs to be updated. "
+    "Can only be passed if `import_manifest` is also set",
 )
 flags.DEFINE_string(
     name="auth_cookie",
@@ -181,7 +191,9 @@ flags.DEFINE_string(
 )
 
 # Validation
-flags.mark_bool_flags_as_mutual_exclusive(flag_names=["import_manifest", "validate_manifest"], required=True)
+flags.mark_bool_flags_as_mutual_exclusive(
+    flag_names=["import_manifest", "validate_manifest"], required=True
+)
 flags.register_multi_flags_validator(
     flag_names=[
         "import_manifest",
@@ -190,7 +202,8 @@ flags.register_multi_flags_validator(
         "activate_workflows",
     ],
     multi_flags_checker=import_manifest_must_be_set_to_provide_extra_flags,
-    message="`import_manifest` must be set if providing one or more of `auth_cookie`, " "`update_workflows_inst_config` and `activate_workflows`",
+    message="`import_manifest` must be set if providing one or more of `auth_cookie`, "
+    "`update_workflows_inst_config` and `activate_workflows`",
 )
 flags.register_multi_flags_validator(
     flag_names=["auth_cookie", "update_workflows_inst_config"],
@@ -216,7 +229,11 @@ def check_cwd_is_inception_root() -> None:
     markers = ["library/", "inception_sdk/"]
     for testpath in markers:
         if not os.path.exists(os.path.join(os.getcwd(), testpath)):
-            raise Exception("The current working directory does not look like an Inception repo/release folder" ". This is determined by the presence of library/ and " "inception_sdk/ directories")
+            raise Exception(
+                "The current working directory does not look like an Inception repo/release folder"
+                ". This is determined by the presence of library/ and "
+                "inception_sdk/ directories"
+            )
 
 
 def get_manifest_path(argument_path: str) -> tuple[str, str]:
@@ -225,10 +242,15 @@ def get_manifest_path(argument_path: str) -> tuple[str, str]:
     Breaks down the path into path to the directory and actual file name
     """
     if os.path.isabs(argument_path):
-        raise Exception(f"The manifest path {argument_path} provided in the arguments is not relative.")
+        raise Exception(
+            f"The manifest path {argument_path} provided in the arguments is not relative."
+        )
 
     elif not (os.path.exists(argument_path)):
-        raise Exception(f"The relative path {argument_path} does not exist in the repo/release folder root" f" {os.getcwd()}")
+        raise Exception(
+            f"The relative path {argument_path} does not exist in the repo/release folder root"
+            f" {os.getcwd()}"
+        )
 
     return os.path.dirname(argument_path), os.path.basename(argument_path)
 
@@ -405,7 +427,9 @@ def post_processing(
         handle_workflow_activation(environment, clu_output)
     if update_workflows_inst_config:
         xsrf_token = extract_xsrf_token_from_cookie(auth_cookie)
-        handle_workflows_inst_config(xsrf_token, auth_cookie, environment.ops_dash_url, resource_root)
+        handle_workflows_inst_config(
+            xsrf_token, auth_cookie, environment.ops_dash_url, resource_root
+        )
     logger.info("Completed post processing")
 
 
@@ -440,7 +464,10 @@ def handle_workflow_activation(environment: Environment, clu_output: list[str]):
         line_stripped = line.strip()
         if deployment_status_successful(line_stripped):
             extracted_workflow_version_id = extract_workflow_version_id(line_stripped)
-            logger.info(f'Setting version {extracted_workflow_version_id.get("version")} ' f'of workflow {extracted_workflow_version_id.get("id")} as default.')
+            logger.info(
+                f'Setting version {extracted_workflow_version_id.get("version")} '
+                f'of workflow {extracted_workflow_version_id.get("id")} as default.'
+            )
 
             update_workflow_definition_version(
                 wf_activation_session,
@@ -450,7 +477,9 @@ def handle_workflow_activation(environment: Environment, clu_output: list[str]):
             )
 
 
-def handle_workflows_inst_config(xsrf_token: str, auth_cookie: str, ops_dash_url: str, resource_root="library"):
+def handle_workflows_inst_config(
+    xsrf_token: str, auth_cookie: str, ops_dash_url: str, resource_root="library"
+):
     """
     Updates the workflows instantiation configurations after a CLU deployment, based on the setup
     file for each product, found in [product]/workflows/tmp_[product]_inst_config.resources.yaml
@@ -471,7 +500,9 @@ def handle_workflows_inst_config(xsrf_token: str, auth_cookie: str, ops_dash_url
         return None
 
     # recursively find subdirs that contain /workflows/*tmp_resources.yaml
-    file_glob = Path(os.path.join(os.getcwd(), resource_root)).rglob("workflows/*tmp_resources.yaml")
+    file_glob = Path(os.path.join(os.getcwd(), resource_root)).rglob(
+        "workflows/*tmp_resources.yaml"
+    )
     graphQL_url = f"{ops_dash_url}/graphql"
     instantiation_errors = 0
     for file_path in file_glob:
@@ -483,7 +514,9 @@ def handle_workflows_inst_config(xsrf_token: str, auth_cookie: str, ops_dash_url
                 logger.info(f"Updating inst config for workflow {wf_def_id}")
                 wf_inst_resources = resource["instantiation_resources"]
                 if not wf_inst_resources:
-                    logger.warning("Workflow instantiation resources are not defined. Skipping workflow")
+                    logger.warning(
+                        "Workflow instantiation resources are not defined. Skipping workflow"
+                    )
                     continue
                 try:
                     update_workflow_instantiation_config(
@@ -494,11 +527,17 @@ def handle_workflows_inst_config(xsrf_token: str, auth_cookie: str, ops_dash_url
                         auth_cookie,
                     )
                 except Exception as e:
-                    logger.exception(f"Failed to update workflow instantiation config for definition {wf_def_id}" f": {e}")
+                    logger.exception(
+                        f"Failed to update workflow instantiation config for definition {wf_def_id}"
+                        f": {e}"
+                    )
                     instantiation_errors += 1
     # these errors can get easily lost if there are many workflows, so provide a summary at the end
     if instantiation_errors:
-        logger.error(f"{instantiation_errors} error(s) occured while setting workflowinstantiation config. " f"Check logs for further details")
+        logger.error(
+            f"{instantiation_errors} error(s) occured while setting workflowinstantiation config. "
+            f"Check logs for further details"
+        )
 
 
 def extract_workflow_version_id(clu_output_line: str) -> dict[str, str]:
@@ -512,7 +551,9 @@ def extract_workflow_version_id(clu_output_line: str) -> dict[str, str]:
     return {"version": workflow_version, "id": workflow_id}
 
 
-def deployment_status_successful(clu_output_line: str, resource_type: str = "WORKFLOW_DEFINITION_VERSION") -> bool:
+def deployment_status_successful(
+    clu_output_line: str, resource_type: str = "WORKFLOW_DEFINITION_VERSION"
+) -> bool:
     """
     Checks if CLU line contains a workflow deployment and it's been successful.
     """
@@ -520,7 +561,9 @@ def deployment_status_successful(clu_output_line: str, resource_type: str = "WOR
     if resource_type in clu_output_line and "VALID" not in clu_output_line:
         if "successfully" in clu_output_line and "NOT IMPORTED" not in clu_output_line:
             return True
-        logger.info("The following has failed to deploy. Activation skipped.\n" f"{clu_output_line}")
+        logger.info(
+            "The following has failed to deploy. Activation skipped.\n" f"{clu_output_line}"
+        )
     return False
 
 
@@ -539,7 +582,9 @@ def update_workflow_definition_version(
     """
     body = {
         "request_id": uuid.uuid4().hex,
-        "workflow_definition": {"default_workflow_definition_version_id": f"{workflow_ver},{workflow_id}"},
+        "workflow_definition": {
+            "default_workflow_definition_version_id": f"{workflow_ver},{workflow_id}"
+        },
         "update_mask": {"paths": ["default_workflow_definition_version_id"]},
     }
     return workflow_activation_session.request(
@@ -574,7 +619,10 @@ def update_workflow_instantiation_config(
             request_variables = WF_INST_CONFIG_MAPPING[inst_resource]
             current_inst_list.append(request_variables)
         else:
-            raise Exception(f"Instantiation resource {inst_resource} for workflow {wf_def_id} does not exist " "in the configuration mapping")
+            raise Exception(
+                f"Instantiation resource {inst_resource} for workflow {wf_def_id} does not exist "
+                "in the configuration mapping"
+            )
     if not current_inst_list:
         return None
     variables = {
@@ -611,7 +659,9 @@ def extract_xsrf_token_from_cookie(auth_cookie: str) -> str:
     """
 
     if "_xsrf" not in auth_cookie:
-        raise ValueError("_xsrf= not found in supplied auth cookie, please check --auth_cookie argument")
+        raise ValueError(
+            "_xsrf= not found in supplied auth cookie, please check --auth_cookie argument"
+        )
 
     xsrf_token = auth_cookie.split("_xsrf=")
 

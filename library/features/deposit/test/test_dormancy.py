@@ -23,7 +23,9 @@ class DormancyTest(FeatureTest):
         # construct mocks
         mock_vault = self.create_mock(
             parameter_ts=construct_parameter_timeseries(
-                parameter_name_to_value_map={dormancy.PARAM_DORMANCY_FLAGS: dumps(["ACCOUNT_DORMANT"])},
+                parameter_name_to_value_map={
+                    dormancy.PARAM_DORMANCY_FLAGS: dumps(["ACCOUNT_DORMANT"])
+                },
                 default_datetime=DEFAULT_DATETIME,
             ),
             flags_ts=construct_flag_timeseries(
@@ -43,7 +45,9 @@ class DormancyTest(FeatureTest):
         # construct mocks
         mock_vault = self.create_mock(
             parameter_ts=construct_parameter_timeseries(
-                parameter_name_to_value_map={dormancy.PARAM_DORMANCY_FLAGS: dumps(["ACCOUNT_DORMANT"])},
+                parameter_name_to_value_map={
+                    dormancy.PARAM_DORMANCY_FLAGS: dumps(["ACCOUNT_DORMANT"])
+                },
                 default_datetime=DEFAULT_DATETIME,
             ),
             flags_ts=construct_flag_timeseries(

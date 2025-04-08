@@ -20,9 +20,13 @@ class FixedToVariableTest(FeatureTest):
 @patch.object(fixed_to_variable.utils, "get_parameter")
 @patch.object(term_helpers, "calculate_elapsed_term")
 class IsWithinFixedRateTermTest(FixedToVariableTest):
-    mock_params = mock_utils_get_parameter(parameters={fixed_to_variable.PARAM_FIXED_INTEREST_TERM: 4})
+    mock_params = mock_utils_get_parameter(
+        parameters={fixed_to_variable.PARAM_FIXED_INTEREST_TERM: 4}
+    )
 
-    def test_within_fixed_rate_term_if_elapsed_lt_fixed_term(self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock):
+    def test_within_fixed_rate_term_if_elapsed_lt_fixed_term(
+        self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_elapsed_term.return_value = 3
         mock_get_parameter.side_effect = IsWithinFixedRateTermTest.mock_params
 
@@ -35,9 +39,13 @@ class IsWithinFixedRateTermTest(FixedToVariableTest):
             )
         )
 
-        mock_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
-    def test_is_not_within_fixed_rate_term_if_elapsed_gt_fixed_term(self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock):
+    def test_is_not_within_fixed_rate_term_if_elapsed_gt_fixed_term(
+        self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_elapsed_term.return_value = 6
         mock_get_parameter.side_effect = IsWithinFixedRateTermTest.mock_params
 
@@ -50,9 +58,13 @@ class IsWithinFixedRateTermTest(FixedToVariableTest):
             )
         )
 
-        mock_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
-    def test_not_within_fixed_rate_term_if_elapsed_eq_fixed_term(self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock):
+    def test_not_within_fixed_rate_term_if_elapsed_eq_fixed_term(
+        self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_elapsed_term.return_value = 4
         mock_get_parameter.side_effect = IsWithinFixedRateTermTest.mock_params
 
@@ -65,10 +77,16 @@ class IsWithinFixedRateTermTest(FixedToVariableTest):
             )
         )
 
-        mock_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
-    def test_not_within_fixed_rate_term_if_0_fixed_term(self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={fixed_to_variable.PARAM_FIXED_INTEREST_TERM: 0})
+    def test_not_within_fixed_rate_term_if_0_fixed_term(
+        self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock
+    ):
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={fixed_to_variable.PARAM_FIXED_INTEREST_TERM: 0}
+        )
 
         self.assertFalse(
             fixed_to_variable.is_within_fixed_rate_term(
@@ -80,7 +98,9 @@ class IsWithinFixedRateTermTest(FixedToVariableTest):
         )
         mock_elapsed_term.assert_not_called()
 
-    def test_within_fixed_rate_term_without_optional_args(self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock):
+    def test_within_fixed_rate_term_without_optional_args(
+        self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_elapsed_term.return_value = 6
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -88,7 +108,11 @@ class IsWithinFixedRateTermTest(FixedToVariableTest):
                 "denomination": sentinel.denomination,
             }
         )
-        balance_observation_mapping = {fixed_to_variable.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("fetched"))}
+        balance_observation_mapping = {
+            fixed_to_variable.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+                SentinelBalancesObservation("fetched")
+            )
+        }
         mock_vault = self.create_mock(balances_observation_fetchers_mapping=balance_observation_mapping)  # type: ignore
 
         self.assertFalse(
@@ -98,9 +122,13 @@ class IsWithinFixedRateTermTest(FixedToVariableTest):
             )
         )
 
-        mock_elapsed_term.assert_called_once_with(balances=sentinel.balances_fetched, denomination=sentinel.denomination)
+        mock_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances_fetched, denomination=sentinel.denomination
+        )
 
-    def test_within_fixed_rate_at_activation_if_non_0_fixed_term(self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock):
+    def test_within_fixed_rate_at_activation_if_non_0_fixed_term(
+        self, mock_elapsed_term: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_get_parameter.side_effect = IsWithinFixedRateTermTest.mock_params
         mock_vault = self.create_mock()
 
@@ -174,7 +202,9 @@ class AnnualInterestRateTest(FixedToVariableTest):
             balances=sentinel.balances,
             denomination=sentinel.denomination,
         )
-        mock_variable_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        mock_variable_rate.assert_called_once_with(
+            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
+        )
         mock_fixed_rate.assert_not_called()
 
     def test_get_annual_interest_rate_without_optional_args(
@@ -219,7 +249,9 @@ class MonthlyInterestRateTest(FixedToVariableTest):
             sentinel.fixed_rate,
         )
 
-        mock_fixed_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        mock_fixed_rate.assert_called_once_with(
+            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
+        )
         mock_variable_rate.assert_not_called()
 
     def test_get_monthly_interest_rate_during_variable_term(
@@ -247,7 +279,9 @@ class MonthlyInterestRateTest(FixedToVariableTest):
             balances=sentinel.balances,
             denomination=sentinel.denomination,
         )
-        mock_variable_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        mock_variable_rate.assert_called_once_with(
+            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
+        )
         mock_fixed_rate.assert_not_called()
 
     def test_get_monthly_interest_rate_without_optional_args(
@@ -298,7 +332,9 @@ class DailyInterestRateTest(FixedToVariableTest):
             balances=sentinel.balances,
             denomination=sentinel.denomination,
         )
-        mock_fixed_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        mock_fixed_rate.assert_called_once_with(
+            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
+        )
         mock_variable_rate.assert_not_called()
 
     def test_get_daily_interest_rate_during_variable_term(
@@ -326,7 +362,9 @@ class DailyInterestRateTest(FixedToVariableTest):
             balances=sentinel.balances,
             denomination=sentinel.denomination,
         )
-        mock_variable_rate.assert_called_once_with(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        mock_variable_rate.assert_called_once_with(
+            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
+        )
         mock_fixed_rate.assert_not_called()
 
     def test_get_daily_interest_rate_without_optional_args(

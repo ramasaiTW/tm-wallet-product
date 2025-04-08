@@ -27,15 +27,20 @@ class PostingInstructionsDirective:
             self._validate_attributes()
 
     def _validate_attributes(self):
-        iterator = types_utils.get_iterator(self.posting_instructions, "CustomInstruction", "posting_instructions", check_empty=True)
+        iterator = types_utils.get_iterator(
+            self.posting_instructions, "CustomInstruction", "posting_instructions", check_empty=True
+        )
         if len(self.posting_instructions) > 64:
             raise exceptions.InvalidSmartContractError(
-                "Too many posting instructions submitted in the Posting Instructions Directive. " f"Number submitted: {len(self.posting_instructions)}. Limit: 64.",
+                "Too many posting instructions submitted in the Posting Instructions Directive. "
+                f"Number submitted: {len(self.posting_instructions)}. Limit: 64.",
             )
         for pi in iterator:
             types_utils.validate_type(pi, CustomInstruction, hint="List[CustomInstruction]")
             if pi.type != PostingInstructionType.CUSTOM_INSTRUCTION:
-                raise exceptions.InvalidSmartContractError(f"Posting instruction of type {pi.type} cannot be instructed from a Contract.")
+                raise exceptions.InvalidSmartContractError(
+                    f"Posting instruction of type {pi.type} cannot be instructed from a Contract."
+                )
             pi._validate_postings_and_zero_net_sum()  # noqa: SLF001
         if self.value_datetime is not None:
             types_utils.validate_type(self.value_datetime, datetime)

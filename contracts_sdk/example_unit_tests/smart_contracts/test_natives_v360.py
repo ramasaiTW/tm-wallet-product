@@ -12,7 +12,9 @@ from ...utils.tools import SmartContracts360TestCase
 class NativesTestCase(SmartContracts360TestCase):
     effective_date = datetime(year=2020, month=2, day=15)
 
-    filepath = os.environ.get("DATA_NATIVES_V360", "contracts_sdk/example_unit_tests/smart_contracts/natives_v360.py")
+    filepath = os.environ.get(
+        "DATA_NATIVES_V360", "contracts_sdk/example_unit_tests/smart_contracts/natives_v360.py"
+    )
     contract_code = SmartContracts360TestCase.load_contract_code(filepath)
 
     def test_type_hints_are_supported(self):
@@ -31,7 +33,9 @@ class NativesTestCase(SmartContracts360TestCase):
             return timeseries
 
         self.vault.get_parameter_timeseries.side_effect = get_parameter_timeseries
-        output_parameters = self.run_contract_function(self.contract_code, "derived_parameters", self.effective_date)
+        output_parameters = self.run_contract_function(
+            self.contract_code, "derived_parameters", self.effective_date
+        )
 
         self.assertEqual(Decimal("12912.5"), output_parameters["interest_due_round_half_up"])
         self.assertEqual(Decimal("12912.48"), output_parameters["interest_due_round_half_down"])

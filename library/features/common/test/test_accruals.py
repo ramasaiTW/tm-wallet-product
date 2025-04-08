@@ -268,7 +268,9 @@ class AccrualApplicationPostingsTest(AccrualsTestCommon):
         )
 
     @patch.object(accruals, "accrual_postings")
-    def test_accrual_application_postings_for_payable_application(self, mock_accrual_postings: MagicMock):
+    def test_accrual_application_postings_for_payable_application(
+        self, mock_accrual_postings: MagicMock
+    ):
         mock_accrual_postings.return_value = [sentinel.accrual_postings]
         postings = accruals.accrual_application_postings(
             application_amount=Decimal("1"),
@@ -312,7 +314,9 @@ class AccrualApplicationPostingsTest(AccrualsTestCommon):
         )
 
     @patch.object(accruals, "accrual_postings")
-    def test_accrual_application_postings_for_receivable_application(self, mock_accrual_postings: MagicMock):
+    def test_accrual_application_postings_for_receivable_application(
+        self, mock_accrual_postings: MagicMock
+    ):
         mock_accrual_postings.return_value = [sentinel.accrual_postings]
         postings = accruals.accrual_application_postings(
             application_amount=Decimal("1"),
@@ -406,7 +410,9 @@ class AccrualApplicationCustomInstructionTest(AccrualsTestCommon):
         )
 
     @patch.object(accruals, "accrual_application_postings")
-    def test_accrual_application_custom_instruction_no_postings(self, mock_application_postings: MagicMock):
+    def test_accrual_application_custom_instruction_no_postings(
+        self, mock_application_postings: MagicMock
+    ):
         mock_application_postings.return_value = []
         self.assertListEqual(
             accruals.accrual_application_custom_instruction(

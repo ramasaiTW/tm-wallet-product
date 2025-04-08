@@ -25,25 +25,35 @@ class MinimumLoanAmountTest(FeatureTest):
 
     def test_posting_greater_than_min_amount_returns_none(self, mock_get_parameter):
         mock_vault = sentinel.vault
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_param_return_values)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.common_param_return_values
+        )
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("100"))
 
-        actual = minimum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
+        actual = minimum_loan_principal.validate(
+            mock_vault, posting_instruction=posting_instruction
+        )
         self.assertIsNone(actual)
 
     def test_posting_equal_to_min_amount_returns_none(self, mock_get_parameter):
         mock_vault = sentinel.vault
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_param_return_values)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.common_param_return_values
+        )
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("50"))
 
-        actual = minimum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
+        actual = minimum_loan_principal.validate(
+            mock_vault, posting_instruction=posting_instruction
+        )
         self.assertIsNone(actual)
 
     def test_posting_less_than_min_amount_returns_rejection(self, mock_get_parameter):
         mock_vault = sentinel.vault
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_param_return_values)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.common_param_return_values
+        )
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("10"))
 
@@ -52,7 +62,9 @@ class MinimumLoanAmountTest(FeatureTest):
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
-        actual = minimum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
+        actual = minimum_loan_principal.validate(
+            mock_vault, posting_instruction=posting_instruction
+        )
         self.assertEqual(actual, expected)
 
     def test_not_setting_min_amount_returns_none(self, mock_get_parameter):
@@ -66,5 +78,7 @@ class MinimumLoanAmountTest(FeatureTest):
 
         posting_instruction = self.outbound_hard_settlement(amount=Decimal("10"))
 
-        actual = minimum_loan_principal.validate(mock_vault, posting_instruction=posting_instruction)
+        actual = minimum_loan_principal.validate(
+            mock_vault, posting_instruction=posting_instruction
+        )
         self.assertIsNone(actual)

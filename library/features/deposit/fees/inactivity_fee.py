@@ -46,7 +46,9 @@ inactivity_flags_parameter = Parameter(
     name=PARAM_INACTIVITY_FLAGS,
     shape=StringShape(),
     level=ParameterLevel.TEMPLATE,
-    description="The list of flag definitions that indicate an account is inactive. " "Inactive accounts may incur an inactivity fee. " "Expects a string representation of a JSON list.",
+    description="The list of flag definitions that indicate an account is inactive. "
+    "Inactive accounts may incur an inactivity fee. "
+    "Expects a string representation of a JSON list.",
     display_name="Inactivity Flags",
     default_value=dumps(["ACCOUNT_INACTIVE"]),
 )
@@ -87,7 +89,8 @@ schedule_parameters = [
         name=PARAM_INACTIVITY_FEE_APPLICATION_DAY,
         shape=NumberShape(min_value=1, max_value=31, step=1),
         level=ParameterLevel.INSTANCE,
-        description="The day of the month on which inactivity fee is applied. If day does not exist" " in application month, applies on last day of month.",
+        description="The day of the month on which inactivity fee is applied. If day does not exist"
+        " in application month, applies on last day of month.",
         display_name="Inactivity Fee Application Day",
         update_permission=ParameterUpdatePermission.USER_EDITABLE,
         default_value=1,
@@ -121,11 +124,17 @@ schedule_parameters = [
 parameters = [*fee_parameters, *schedule_parameters, inactivity_flags_parameter]
 
 
-def get_inactivity_fee_amount(vault: SmartContractVault, effective_datetime: datetime | None = None) -> Decimal:
-    return Decimal(utils.get_parameter(vault=vault, name=PARAM_INACTIVITY_FEE, at_datetime=effective_datetime))
+def get_inactivity_fee_amount(
+    vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> Decimal:
+    return Decimal(
+        utils.get_parameter(vault=vault, name=PARAM_INACTIVITY_FEE, at_datetime=effective_datetime)
+    )
 
 
-def _get_inactivity_internal_income_account(vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
+def _get_inactivity_internal_income_account(
+    vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> str:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_INACTIVITY_FEE_INCOME_ACCOUNT,
@@ -133,7 +142,9 @@ def _get_inactivity_internal_income_account(vault: SmartContractVault, effective
     )
 
 
-def _are_inactivity_partial_payments_enabled(vault: SmartContractVault, effective_datetime: datetime | None = None) -> bool:
+def _are_inactivity_partial_payments_enabled(
+    vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> bool:
     return utils.get_parameter(
         vault=vault,
         name=PARAM_INACTIVITY_FEE_PARTIAL_FEE_ENABLED,
@@ -153,7 +164,9 @@ def event_types(product_name: str) -> list[SmartContractEventType]:
     ]
 
 
-def scheduled_events(*, vault: SmartContractVault, start_datetime: datetime) -> dict[str, ScheduledEvent]:
+def scheduled_events(
+    *, vault: SmartContractVault, start_datetime: datetime
+) -> dict[str, ScheduledEvent]:
     """
     Creates monthly scheduled event for inactivity fee application
     :param vault: Vault object to retrieve application frequency and schedule params
@@ -188,7 +201,9 @@ def apply(
     using a custom definition
     :return: Custom Instruction to apply the inactivity fee
     """
-    inactivity_fee_amount = get_inactivity_fee_amount(vault=vault, effective_datetime=effective_datetime)
+    inactivity_fee_amount = get_inactivity_fee_amount(
+        vault=vault, effective_datetime=effective_datetime
+    )
     custom_instructions: list[CustomInstruction] = []
 
     if Decimal(inactivity_fee_amount) > 0:
@@ -207,9 +222,16 @@ def apply(
             },
         )
 
-        if _are_inactivity_partial_payments_enabled(vault=vault, effective_datetime=effective_datetime) and fee_instructions:
+        if (
+            _are_inactivity_partial_payments_enabled(
+                vault=vault, effective_datetime=effective_datetime
+            )
+            and fee_instructions
+        ):
             if balances is None:
-                balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+                balances = vault.get_balances_observation(
+                    fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+                ).balances
             custom_instructions.extend(
                 partial_fee.charge_partial_fee(
                     vault=vault,

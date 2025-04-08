@@ -59,14 +59,16 @@ Features = types_utils.transform_const_enum(
 NoteType = types_utils.transform_const_enum(
     name="NoteType",
     const_enum=NoteType,
-    docstring="Indicates the intention when calling " "[vault.add_account_note()](/reference/contracts/contracts_api_3xx/smart_contracts_api_reference3xx/vault/#methods-add_account_note).",
+    docstring="Indicates the intention when calling "
+    "[vault.add_account_note()](/reference/contracts/contracts_api_3xx/smart_contracts_api_reference3xx/vault/#methods-add_account_note).",
 )
 
 
 RejectedReason = types_utils.transform_const_enum(
     name="RejectedReason",
     const_enum=VaultRejectionReasonCode,
-    docstring="May optionally be used as the `reason_code` parameter on the " "[Rejected](#exceptions-Rejected) exception.",
+    docstring="May optionally be used as the `reason_code` parameter on the "
+    "[Rejected](#exceptions-Rejected) exception.",
 )
 
 

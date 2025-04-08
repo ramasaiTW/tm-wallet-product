@@ -11,7 +11,9 @@ from .....utils.timezone_utils import validate_timezone_is_utc
 
 
 class AddressDetails:
-    def __init__(self, *, account_address: str, description: str, tags: List[str], _from_proto: bool = False):
+    def __init__(
+        self, *, account_address: str, description: str, tags: List[str], _from_proto: bool = False
+    ):
         self.account_address = account_address
         self.description = description
         self.tags = tags
@@ -30,7 +32,11 @@ class AddressDetails:
     def __eq__(self, other):
         types_utils.validate_type(other, AddressDetails, hint="AddressDetails", prefix="other")
 
-        return self.account_address == other.account_address and self.description == other.description and self.tags == other.tags
+        return (
+            self.account_address == other.account_address
+            and self.description == other.description
+            and self.tags == other.tags
+        )
 
     @classmethod
     @lru_cache()
@@ -120,7 +126,12 @@ class Balance:
         self.net = (self.credit - self.debit) * symbols.TSIDE_NET_BALANCE_MAP[tside.value]
 
     def __eq__(self, other):
-        return self.__class__ == other.__class__ and self.credit == other.credit and self.debit == other.debit and self.net == other.net
+        return (
+            self.__class__ == other.__class__
+            and self.credit == other.credit
+            and self.debit == other.debit
+            and self.net == other.net
+        )
 
     def __str__(self):
         return "Balance(credit=%s, debit=%s, net=%s)" % (self.credit, self.debit, self.net)
@@ -133,7 +144,9 @@ class Balance:
 
         return types_utils.ClassSpec(
             name="Balance",
-            docstring=("The credit, debit, and net balances (credit - debit) for a given balance phase."),
+            docstring=(
+                "The credit, debit, and net balances (credit - debit) for a given balance phase."
+            ),
             public_attributes=cls._public_attributes(language_code),  # noqa: SLF001
             constructor=types_utils.ConstructorSpec(
                 docstring="Constructs a new Balance object.",
@@ -149,8 +162,12 @@ class Balance:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(name="credit", type="Decimal", docstring="The total credit balance"),
-            types_utils.ValueSpec(name="debit", type="Decimal", docstring="The total debit balance"),
+            types_utils.ValueSpec(
+                name="credit", type="Decimal", docstring="The total credit balance"
+            ),
+            types_utils.ValueSpec(
+                name="debit", type="Decimal", docstring="The total debit balance"
+            ),
             types_utils.ValueSpec(
                 name="net",
                 type="Decimal",
@@ -186,7 +203,10 @@ class BalanceCoordinate(NamedTuple):
     phase: Phase
 
     def __str__(self):
-        return f"BalanceCoordinate(account_address={self.account_address}, asset={self.asset}, " f"denomination={self.denomination}, phase={self.phase})"
+        return (
+            f"BalanceCoordinate(account_address={self.account_address}, asset={self.asset}, "
+            f"denomination={self.denomination}, phase={self.phase})"
+        )
 
     @classmethod
     @lru_cache()
@@ -257,7 +277,9 @@ class BalanceDefaultDict(defaultdict):
         aggregated_balance_dict = deepcopy(self)
         for balance_key, balance in other.items():
             if balance_key in aggregated_balance_dict:
-                aggregated_balance_dict[balance_key] = aggregated_balance_dict[balance_key] + balance
+                aggregated_balance_dict[balance_key] = (
+                    aggregated_balance_dict[balance_key] + balance
+                )
             else:
                 aggregated_balance_dict[balance_key] = balance
 
@@ -315,7 +337,9 @@ class BalancesObservation:
                 "value_datetime",
                 "BalancesObservation",
             )
-        types_utils.validate_type(self.balances, BalanceDefaultDict, prefix="BalancesObservation.balances")
+        types_utils.validate_type(
+            self.balances, BalanceDefaultDict, prefix="BalancesObservation.balances"
+        )
 
     @classmethod
     @lru_cache()

@@ -34,7 +34,9 @@ class EmptyHookVisitor(ast.NodeVisitor):
 
     def _raise_hook_errors(self, node: ast.FunctionDef) -> None:
         error = ERRORS_CTR005
-        if len(node.body) == 1 and (isinstance(node.body[0], ast.Pass) or self._is_empty_return(node.body[0])):
+        if len(node.body) == 1 and (
+            isinstance(node.body[0], ast.Pass) or self._is_empty_return(node.body[0])
+        ):
             self.violations.append((node.lineno, 0, error))
 
     def _is_empty_return(self, node: ast.stmt):

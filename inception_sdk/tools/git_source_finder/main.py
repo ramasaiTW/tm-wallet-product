@@ -27,7 +27,8 @@ flags.DEFINE_string(
     short_name="g",
     default=None,
     required=False,
-    help="specific Git commit hash to check against, providing a commit hash will greatly speed " "up file retrieval if cache is not populated",
+    help="specific Git commit hash to check against, providing a commit hash will greatly speed "
+    "up file retrieval if cache is not populated",
 )
 
 flags.DEFINE_string(
@@ -35,7 +36,8 @@ flags.DEFINE_string(
     short_name="alg",
     default="md5",
     required=False,
-    help="hashing algorithm used to calculate and compare the checksum of Git source files with the" "checksum provided",
+    help="hashing algorithm used to calculate and compare the checksum of Git source files with the"
+    "checksum provided",
 )
 
 flags.DEFINE_string(
@@ -53,7 +55,9 @@ flags.DEFINE_string(
     help="path to save the cache to/read existing cache from. Mandatory if `save_cache` is True",
 )
 
-flags.DEFINE_boolean(name="save_cache", default=True, required=False, help="write the cache to disk")
+flags.DEFINE_boolean(
+    name="save_cache", default=True, required=False, help="write the cache to disk"
+)
 
 flags.DEFINE_boolean(
     name="print_hashes",

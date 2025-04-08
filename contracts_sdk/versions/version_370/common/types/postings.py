@@ -36,7 +36,9 @@ class TransactionCode:
                 **Only available in version 3.7.0+**.
             """,  # noqa E501
             public_attributes=cls._public_attributes(language_code),
-            constructor=types_utils.ConstructorSpec(docstring="", args=cls._public_attributes(language_code)),
+            constructor=types_utils.ConstructorSpec(
+                docstring="", args=cls._public_attributes(language_code)
+            ),
         )
 
     @classmethod

@@ -52,7 +52,8 @@ due_amount_calculation_day_parameter = Parameter(
     name=PARAM_DUE_AMOUNT_CALCULATION_DAY,
     shape=NumberShape(min_value=1, max_value=31, step=1),
     level=ParameterLevel.INSTANCE,
-    description="The day of the month that the monthly due amount calculations takes place on." " If the day isn't available in a given month, the previous available day is used instead",
+    description="The day of the month that the monthly due amount calculations takes place on."
+    " If the day isn't available in a given month, the previous available day is used instead",
     display_name="Due Amount Calculation Day",
     default_value=Decimal(28),
     update_permission=ParameterUpdatePermission.USER_EDITABLE,
@@ -119,7 +120,9 @@ def supervisor_event_types(product_name: str) -> list[SupervisorContractEventTyp
 
 # TODO use configurable_repayment_frequency.get_due_amount_calculation_schedule() instead of below
 # TODO that will affect other products.
-def scheduled_events(vault: SmartContractVault, account_opening_datetime: datetime) -> dict[str, ScheduledEvent]:
+def scheduled_events(
+    vault: SmartContractVault, account_opening_datetime: datetime
+) -> dict[str, ScheduledEvent]:
     """
     Create monthly scheduled event for due amount calculation, starting one month from account
     opening
@@ -130,7 +133,9 @@ def scheduled_events(vault: SmartContractVault, account_opening_datetime: dateti
     return {
         DUE_AMOUNT_CALCULATION_EVENT: utils.monthly_scheduled_event(
             vault=vault,
-            start_datetime=account_opening_datetime + relativedelta(hour=0, minute=0, second=0) + relativedelta(months=1),
+            start_datetime=account_opening_datetime
+            + relativedelta(hour=0, minute=0, second=0)
+            + relativedelta(months=1),
             parameter_prefix=DUE_AMOUNT_CALCULATION_PREFIX,
         )
     }
@@ -142,7 +147,9 @@ def schedule_logic(
     account_type: str,
     amortisation_feature: lending_interfaces.Amortisation,
     interest_application_feature: lending_interfaces.InterestApplication | None = None,
-    reamortisation_condition_features: (list[lending_interfaces.ReamortisationCondition] | None) = None,
+    reamortisation_condition_features: (
+        list[lending_interfaces.ReamortisationCondition] | None
+    ) = None,
     interest_rate_feature: lending_interfaces.InterestRate | None = None,
     principal_adjustment_features: list[lending_interfaces.PrincipalAdjustment] | None = None,
     balances: BalanceDefaultDict | None = None,
@@ -176,7 +183,9 @@ def schedule_logic(
     effective_datetime = hook_arguments.effective_datetime
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name="denomination")
 
@@ -191,7 +200,11 @@ def schedule_logic(
         balances=balances,
     )
 
-    last_execution_effective_datetime = vault.get_account_creation_datetime() if elapsed_term == 0 else vault.get_last_execution_datetime(event_type=DUE_AMOUNT_CALCULATION_EVENT)
+    last_execution_effective_datetime = (
+        vault.get_account_creation_datetime()
+        if elapsed_term == 0
+        else vault.get_last_execution_datetime(event_type=DUE_AMOUNT_CALCULATION_EVENT)
+    )
 
     if interest_application_feature is not None:
         interest_amounts = interest_application_feature.get_interest_to_apply(
@@ -203,7 +216,9 @@ def schedule_logic(
         # This could arguably just be emi rounded, but for consistency with previous
         # behaviour we're sticking to total rounded - non emi rounded. This can cause subtle
         # differences due to round(a+b) != round(a)+round(b)
-        emi_interest_to_apply = interest_amounts.total_rounded - interest_amounts.non_emi_rounded_accrued
+        emi_interest_to_apply = (
+            interest_amounts.total_rounded - interest_amounts.non_emi_rounded_accrued
+        )
         postings += interest_application_feature.apply_interest(
             vault=vault,
             effective_datetime=effective_datetime,
@@ -264,9 +279,11 @@ def supervisor_schedule_logic(
     account_type: str,
     amortisation_feature: lending_interfaces.SupervisorAmortisation,
     interest_application_feature: lending_interfaces.InterestApplication | None = None,
-    reamortisation_condition_features: list[lending_interfaces.SupervisorReamortisationCondition] | None = None,
+    reamortisation_condition_features: list[lending_interfaces.SupervisorReamortisationCondition]
+    | None = None,
     interest_rate_feature: lending_interfaces.InterestRate | None = None,
-    principal_adjustment_features: list[lending_interfaces.SupervisorPrincipalAdjustment] | None = None,
+    principal_adjustment_features: list[lending_interfaces.SupervisorPrincipalAdjustment]
+    | None = None,
     balances: BalanceDefaultDict | None = None,
     denomination: str | None = None,
 ) -> list[CustomInstruction]:
@@ -337,7 +354,9 @@ def supervisor_schedule_logic(
         # This could arguably just be emi rounded, but for consistency with previous
         # behaviour we're sticking to total rounded - non emi rounded. This can cause subtle
         # differences due to round(a+b) != round(a)+round(b)
-        emi_interest_to_apply = interest_amounts.total_rounded - interest_amounts.non_emi_rounded_accrued
+        emi_interest_to_apply = (
+            interest_amounts.total_rounded - interest_amounts.non_emi_rounded_accrued
+        )
         postings += interest_application_feature.apply_interest(
             vault=loan_vault,
             effective_datetime=effective_datetime,
@@ -429,8 +448,12 @@ def _calculate_due_amounts(
         is_final_due_event=(remaining_term == 1 and not override_final_event),
     )
 
-    postings += transfer_principal_due(customer_account=customer_account, principal_due=principal_due, denomination=denomination)
-    postings += update_due_amount_calculation_counter(account_id=customer_account, denomination=denomination)
+    postings += transfer_principal_due(
+        customer_account=customer_account, principal_due=principal_due, denomination=denomination
+    )
+    postings += update_due_amount_calculation_counter(
+        account_id=customer_account, denomination=denomination
+    )
     if postings:
         return [
             CustomInstruction(
@@ -448,7 +471,9 @@ def _calculate_due_amounts(
         return []
 
 
-def transfer_principal_due(customer_account: str, principal_due: Decimal, denomination: str) -> list[Posting]:
+def transfer_principal_due(
+    customer_account: str, principal_due: Decimal, denomination: str
+) -> list[Posting]:
     """
     Create postings to transfer amount from principal to principal due address
     :param customer_account: the account where principal is due
@@ -520,19 +545,28 @@ def update_due_amount_calculation_counter(account_id: str, denomination: str) ->
 
 
 def get_principal(balances: BalanceDefaultDict, denomination: str) -> Decimal:
-    return balances[BalanceCoordinate(lending_addresses.PRINCIPAL, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+    return balances[
+        BalanceCoordinate(lending_addresses.PRINCIPAL, DEFAULT_ASSET, denomination, Phase.COMMITTED)
+    ].net
 
 
 def get_emi(balances: BalanceDefaultDict, denomination: str) -> Decimal:
-    return balances[BalanceCoordinate(lending_addresses.EMI, DEFAULT_ASSET, denomination, Phase.COMMITTED)].net
+    return balances[
+        BalanceCoordinate(lending_addresses.EMI, DEFAULT_ASSET, denomination, Phase.COMMITTED)
+    ].net
 
 
 def validate_due_amount_calculation_day_change(vault: SmartContractVault) -> Rejection | None:
-    last_execution_datetime = vault.get_last_execution_datetime(event_type=DUE_AMOUNT_CALCULATION_EVENT)
+    last_execution_datetime = vault.get_last_execution_datetime(
+        event_type=DUE_AMOUNT_CALCULATION_EVENT
+    )
 
     if last_execution_datetime is None:
         return Rejection(
-            message=("It is not possible to change the monthly repayment " "day if the first repayment date has not passed."),
+            message=(
+                "It is not possible to change the monthly repayment "
+                "day if the first repayment date has not passed."
+            ),
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
@@ -540,8 +574,12 @@ def validate_due_amount_calculation_day_change(vault: SmartContractVault) -> Rej
 
 
 def get_first_due_amount_calculation_datetime(vault: SmartContractVault) -> datetime:
-    due_amount_calculation_day = int(utils.get_parameter(vault=vault, name=PARAM_DUE_AMOUNT_CALCULATION_DAY))
-    schedule_hour, schedule_minute, schedule_second = utils.get_schedule_time_from_parameters(vault=vault, parameter_prefix=DUE_AMOUNT_CALCULATION_PREFIX)
+    due_amount_calculation_day = int(
+        utils.get_parameter(vault=vault, name=PARAM_DUE_AMOUNT_CALCULATION_DAY)
+    )
+    schedule_hour, schedule_minute, schedule_second = utils.get_schedule_time_from_parameters(
+        vault=vault, parameter_prefix=DUE_AMOUNT_CALCULATION_PREFIX
+    )
     account_creation_datetime = vault.get_account_creation_datetime()
     return _get_next_due_amount_calculation_datetime(
         start_datetime=account_creation_datetime,
@@ -554,7 +592,9 @@ def get_first_due_amount_calculation_datetime(vault: SmartContractVault) -> date
     )
 
 
-def get_residual_cleanup_postings(balances: BalanceDefaultDict, account_id: str, denomination: str) -> list[Posting]:
+def get_residual_cleanup_postings(
+    balances: BalanceDefaultDict, account_id: str, denomination: str
+) -> list[Posting]:
     return utils.reset_tracker_balances(
         balances=balances,  # type: ignore
         account_id=account_id,
@@ -600,16 +640,25 @@ def get_actual_next_repayment_date(
         elapsed_term=elapsed_term,
         remaining_term=remaining_term,
     )
-    last_execution_datetime = vault.get_last_execution_datetime(event_type=DUE_AMOUNT_CALCULATION_EVENT)
+    last_execution_datetime = vault.get_last_execution_datetime(
+        event_type=DUE_AMOUNT_CALCULATION_EVENT
+    )
     # we need to loop backwards through all the updates that have been made since the last event ran
     # until we find the value that yields a valid next due amount calculation date
     count = 0
     param_timeseries = vault.get_parameter_timeseries(name=PARAM_DUE_AMOUNT_CALCULATION_DAY).all()
-    while last_execution_datetime is not None and next_due_calc_datetime < effective_datetime and next_due_calc_datetime == last_execution_datetime + relativedelta(months=1):
+    while (
+        last_execution_datetime is not None
+        and next_due_calc_datetime < effective_datetime
+        and next_due_calc_datetime == last_execution_datetime + relativedelta(months=1)
+    ):
         count += 1
         # on first loop, we use -2 (previous to the most recent value) going further back each loop
         param_update_position = -(1 + count)
-        if len(param_timeseries) > count and param_timeseries[param_update_position].at_datetime > last_execution_datetime:
+        if (
+            len(param_timeseries) > count
+            and param_timeseries[param_update_position].at_datetime > last_execution_datetime
+        ):
             prev_due_amount_calculation_day = param_timeseries[param_update_position].value
             next_due_calc_datetime = get_next_due_amount_calculation_datetime(
                 vault=vault,
@@ -672,7 +721,9 @@ def get_next_due_amount_calculation_datetime(
 
     # when elapsed_term > 0 we must have had an DUE_AMOUNT_CALCULATION_EVENT therefore this will
     # never be None
-    last_execution_datetime = vault.get_last_execution_datetime(event_type=DUE_AMOUNT_CALCULATION_EVENT)
+    last_execution_datetime = vault.get_last_execution_datetime(
+        event_type=DUE_AMOUNT_CALCULATION_EVENT
+    )
 
     # The next due_amount_calculation datetime is being requested after the final event
     # so the datetime of the final event should be returned
@@ -680,8 +731,12 @@ def get_next_due_amount_calculation_datetime(
         return last_execution_datetime  # type: ignore
 
     if due_amount_calculation_day is None:
-        due_amount_calculation_day = int(utils.get_parameter(vault=vault, name=PARAM_DUE_AMOUNT_CALCULATION_DAY))
-    schedule_hour, schedule_minute, schedule_second = utils.get_schedule_time_from_parameters(vault=vault, parameter_prefix=DUE_AMOUNT_CALCULATION_PREFIX)
+        due_amount_calculation_day = int(
+            utils.get_parameter(vault=vault, name=PARAM_DUE_AMOUNT_CALCULATION_DAY)
+        )
+    schedule_hour, schedule_minute, schedule_second = utils.get_schedule_time_from_parameters(
+        vault=vault, parameter_prefix=DUE_AMOUNT_CALCULATION_PREFIX
+    )
 
     # The next due_amount_calculation datetime is being requested at an
     # effective_datetime < last_execution_datetime (i.e. in the past)
@@ -724,19 +779,31 @@ def _get_next_due_amount_calculation_datetime(
     """
 
     if last_execution_datetime is None:
-        earliest_datetime = start_datetime.replace(hour=0, minute=0, second=0, microsecond=0) + relativedelta(months=1)
-        next_due_amount_calculation_datetime = start_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+        earliest_datetime = start_datetime.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ) + relativedelta(months=1)
+        next_due_amount_calculation_datetime = start_datetime.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
         # the day value must be updated within the relativedelta and not the replace since
         # relativedelta gracefully handles day not in month errors, which replace does not.
         # e.g. datetime(2021, 2, 2) + relativedelta(day=31) will return datetime(2021, 2, 28)
-        next_due_amount_calculation_datetime += relativedelta(day=due_amount_calculation_day, months=1)
+        next_due_amount_calculation_datetime += relativedelta(
+            day=due_amount_calculation_day, months=1
+        )
         # we can do the following because the case where the next_due_amount_calculation_datetime
         # is requested after the loan has finished is handled in the parent function
-        while earliest_datetime > next_due_amount_calculation_datetime or next_due_amount_calculation_datetime < effective_datetime:
+        while (
+            earliest_datetime > next_due_amount_calculation_datetime
+            or next_due_amount_calculation_datetime < effective_datetime
+        ):
             next_due_amount_calculation_datetime += relativedelta(months=1)
 
-    elif _due_amount_calculation_day_changed(last_execution_datetime, due_amount_calculation_day) and (
-        last_execution_datetime.month == effective_datetime.month or due_amount_calculation_day > effective_datetime.day
+    elif _due_amount_calculation_day_changed(
+        last_execution_datetime, due_amount_calculation_day
+    ) and (
+        last_execution_datetime.month == effective_datetime.month
+        or due_amount_calculation_day > effective_datetime.day
     ):
         # these two conditions have the same outcome because last execution datetime will
         # be in the previous month if there hasn't been a due amount calculation this month
@@ -759,7 +826,9 @@ def _get_next_due_amount_calculation_datetime(
     )
 
 
-def _due_amount_calculation_day_changed(last_execution_datetime: datetime | None, due_amount_calculation_day: int) -> bool:
+def _due_amount_calculation_day_changed(
+    last_execution_datetime: datetime | None, due_amount_calculation_day: int
+) -> bool:
     # can't change due amount calculation day before the first due calculation
     if last_execution_datetime is None:
         return False
@@ -774,7 +843,11 @@ def get_supervisee_last_execution_effective_datetime(
     elapsed_term: int,
 ) -> datetime:
     # If the event has not run yet, set the last execution datetime to the account creation date
-    last_execution_datetime = loan_vault.get_account_creation_datetime() if elapsed_term == 0 else main_vault.get_last_execution_datetime(event_type=event_type)
+    last_execution_datetime = (
+        loan_vault.get_account_creation_datetime()
+        if elapsed_term == 0
+        else main_vault.get_last_execution_datetime(event_type=event_type)
+    )
 
     if last_execution_datetime is None:
         last_execution_datetime = loan_vault.get_account_creation_datetime()

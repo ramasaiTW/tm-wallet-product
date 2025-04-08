@@ -153,7 +153,9 @@ def get_due_amount_calculation_schedule(
     )
     # the start_datetime is exclusive when using the EndOfMonthSchedule, so it must be set to before
     # the earliest first due amount calc which is 1s before 00:00:00 due to scheduler granularity
-    start_datetime = first_due_amount_calculation_datetime.replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(seconds=1)
+    start_datetime = first_due_amount_calculation_datetime.replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) - relativedelta(seconds=1)
 
     if repayment_frequency == "monthly":
         due_amount_calculation_schedule = ScheduledEvent(
@@ -180,7 +182,9 @@ def get_due_amount_calculation_schedule(
             # that will need amending after each run
             schedule_expression.day = first_due_amount_calculation_datetime.day
 
-        due_amount_calculation_schedule = ScheduledEvent(start_datetime=start_datetime, expression=schedule_expression)
+        due_amount_calculation_schedule = ScheduledEvent(
+            start_datetime=start_datetime, expression=schedule_expression
+        )
 
     return {due_amount_calculation.DUE_AMOUNT_CALCULATION_EVENT: due_amount_calculation_schedule}
 
@@ -211,7 +215,9 @@ def get_next_due_amount_calculation_date(
     :param repayment_frequency: the account's due amount calculation schedule frequency
     :return: datetime representing the next repayment date
     """
-    account_creation_date = vault.get_account_creation_datetime().replace(hour=0, minute=0, second=0, microsecond=0)
+    account_creation_date = vault.get_account_creation_datetime().replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
     next_repayment_date = account_creation_date
 
     while next_repayment_date < effective_date and total_repayment_count > 0:

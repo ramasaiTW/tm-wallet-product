@@ -37,7 +37,10 @@ logging.basicConfig(
 WORKFLOW_ENDPOINTS = ["workflow", "policies", "task", "ticket"]
 DATA_LOADER_ENDPOINTS = ["dependency-groups", "resource-batches", "resources"]
 PROMETHEUS_ENDPOINTS = ["query", "query_range"]
-COMMON_ACCOUNT_SCHEDULE_TAG_PATH = "inception_sdk/test_framework/endtoend/resources/account_schedule_tags/" "paused_account_schedule_tag.resource.yaml"
+COMMON_ACCOUNT_SCHEDULE_TAG_PATH = (
+    "inception_sdk/test_framework/endtoend/resources/account_schedule_tags/"
+    "paused_account_schedule_tag.resource.yaml"
+)
 
 
 class SetupError(Exception):
@@ -241,7 +244,9 @@ class TestInstance:
 
 
 def setup_environments(environment_purpose: EnvironmentPurpose, environment_name: str = ""):
-    environment, available_environments = extract_framework_environments_from_config(environment_purpose=environment_purpose, environment_name=environment_name)
+    environment, available_environments = extract_framework_environments_from_config(
+        environment_purpose=environment_purpose, environment_name=environment_name
+    )
     endtoend.testhandle.environment = environment
     endtoend.testhandle.available_environments = available_environments
     set_session_headers(environment=endtoend.testhandle.environment)
@@ -273,7 +278,9 @@ def send_request(
     method: str,
     path: str,
     data: bytes | str | dict[str, str] | dict[str, list[str]] | list[tuple[str, str]] | None = None,
-    params: (bytes | str | dict[str, str] | dict[str, list[str]] | list[tuple[str, str]] | None) = None,
+    params: (
+        bytes | str | dict[str, str] | dict[str, list[str]] | list[tuple[str, str]] | None
+    ) = None,
 ):
     url = get_url(path)
 
@@ -420,16 +427,25 @@ def _retry_inner(
             if expected_result is not None and expected_result != wrapped_result:
                 if result_wrapper:
                     raise ValueError(
-                        f"{datetime.utcnow()} - " f"Wrapped result {wrapped_result} does not match" f" {expected_result}. wrapper: {result_wrapper}. Original" f" result: {original_result}"
+                        f"{datetime.utcnow()} - "
+                        f"Wrapped result {wrapped_result} does not match"
+                        f" {expected_result}. wrapper: {result_wrapper}. Original"
+                        f" result: {original_result}"
                     )
                 else:
-                    raise ValueError(f"{datetime.utcnow()} - " f"Result {wrapped_result} does not match {expected_result}")
+                    raise ValueError(
+                        f"{datetime.utcnow()} - "
+                        f"Result {wrapped_result} does not match {expected_result}"
+                    )
             return wrapped_result if return_wrapped_result else original_result
         except exceptions as e:
             # here what we want to do is retry if not http error
             # if it is a http error we need to retry for all error codes if on_http_error_codes is
             # empty, else only for the error codes in on_http_error_codes
-            if not isinstance(e, HTTPError) or (isinstance(e, HTTPError) and (not on_http_error_codes or e.response.status_code in on_http_error_codes)):
+            if not isinstance(e, HTTPError) or (
+                isinstance(e, HTTPError)
+                and (not on_http_error_codes or e.response.status_code in on_http_error_codes)
+            ):
                 log.debug(e)
 
                 if num_tries >= max_retries:

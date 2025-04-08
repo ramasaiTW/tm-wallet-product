@@ -18,7 +18,8 @@ parameters = [
     Parameter(
         name=PARAM_MIN_DEPOSIT,
         level=ParameterLevel.TEMPLATE,
-        description="The minimum amount that can be deposited into the account" " in a single transaction.",
+        description="The minimum amount that can be deposited into the account"
+        " in a single transaction.",
         display_name="Minimum Deposit Amount",
         shape=NumberShape(min_value=Decimal("0"), step=Decimal("0.01")),
         default_value=Decimal("0.01"),
@@ -42,7 +43,9 @@ def validate(
     minimum_deposit: Decimal = utils.get_parameter(vault, PARAM_MIN_DEPOSIT)
     for posting in postings:
         posting_balances = posting.balances()
-        deposit_value = utils.get_current_net_balance(balances=posting_balances, denomination=denomination)
+        deposit_value = utils.get_current_net_balance(
+            balances=posting_balances, denomination=denomination
+        )
         if minimum_deposit is not None and 0 < deposit_value < minimum_deposit:
             deposit_value = utils.round_decimal(deposit_value, 5)
             minimum_deposit = utils.round_decimal(minimum_deposit, 5)

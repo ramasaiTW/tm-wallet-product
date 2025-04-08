@@ -73,7 +73,8 @@ maximum_withdrawal_percentage_limit_parameter = Parameter(
     name=PARAM_MAXIMUM_WITHDRAWAL_PERCENTAGE_LIMIT,
     shape=NumberShape(min_value=Decimal("0"), max_value=Decimal("1")),
     level=ParameterLevel.TEMPLATE,
-    description="The percentage of the total funds deposited by the customer " "that can be withdrawn.",
+    description="The percentage of the total funds deposited by the customer "
+    "that can be withdrawn.",
     display_name="Maximum Withdrawal Percentage Limit",
     default_value=Decimal("0"),
 )
@@ -81,7 +82,8 @@ fee_free_withdrawal_percentage_limit_parameter = Parameter(
     name=PARAM_FEE_FREE_WITHDRAWAL_PERCENTAGE_LIMIT,
     shape=NumberShape(min_value=Decimal("0"), max_value=Decimal("1"), step=Decimal("0.0001")),
     level=ParameterLevel.INSTANCE,
-    description="The percentage of the total funds deposited by the customer " "which can be withdrawn without incurring fees.",
+    description="The percentage of the total funds deposited by the customer "
+    "which can be withdrawn without incurring fees.",
     display_name="Fee Free Withdrawal Percentage Limit",
     update_permission=ParameterUpdatePermission.OPS_EDITABLE,
     default_value=Decimal("0"),
@@ -178,7 +180,8 @@ def validate(
     current_balance = utils.get_current_net_balance(balances=balances, denomination=denomination)
     if withdrawal_amount > current_balance:
         return Rejection(
-            message=f"The withdrawal amount of {withdrawal_amount} {denomination} exceeds the" f" available balance of {current_balance} {denomination}.",
+            message=f"The withdrawal amount of {withdrawal_amount} {denomination} exceeds the"
+            f" available balance of {current_balance} {denomination}.",
             reason_code=RejectionReason.INSUFFICIENT_FUNDS,
         )
 
@@ -191,17 +194,27 @@ def validate(
         balances=balances,
         balance_adjustments=balance_adjustments,
     )
-    available_withdrawal_limit = maximum_withdrawal_limit - utils.balance_at_coordinates(balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination)
+    available_withdrawal_limit = maximum_withdrawal_limit - utils.balance_at_coordinates(
+        balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination
+    )
     if is_partial_withdrawal and withdrawal_amount > available_withdrawal_limit:
         return Rejection(
-            message=f"The withdrawal amount of {withdrawal_amount} {denomination} would exceed " f"the available withdrawal limit of {available_withdrawal_limit} {denomination}.",
+            message=f"The withdrawal amount of {withdrawal_amount} {denomination} would exceed "
+            f"the available withdrawal limit of {available_withdrawal_limit} {denomination}.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
     # Check if withdrawal is being made on calendar event, and if so, is override provided
     calendar_events = vault.get_calendar_events(calendar_ids=["&{PUBLIC_HOLIDAYS}"])
-    is_calendar_override = utils.is_key_in_instruction_details(key="calendar_override", posting_instructions=posting_instructions)
-    if utils.falls_on_calendar_events(effective_datetime=effective_datetime, calendar_events=calendar_events) and not is_calendar_override:
+    is_calendar_override = utils.is_key_in_instruction_details(
+        key="calendar_override", posting_instructions=posting_instructions
+    )
+    if (
+        utils.falls_on_calendar_events(
+            effective_datetime=effective_datetime, calendar_events=calendar_events
+        )
+        and not is_calendar_override
+    ):
         return Rejection(
             message="Cannot withdraw on public holidays.",
             reason_code=RejectionReason.AGAINST_TNC,
@@ -219,7 +232,8 @@ def validate(
     total_fee_amount = flat_fee_amount + percentage_fee_amount
     if withdrawal_amount < total_fee_amount:
         return Rejection(
-            message=f"The withdrawal fees of {total_fee_amount} {denomination} are not covered " f"by the withdrawal amount of {withdrawal_amount} {denomination}.",
+            message=f"The withdrawal fees of {total_fee_amount} {denomination} are not covered "
+            f"by the withdrawal amount of {withdrawal_amount} {denomination}.",
             reason_code=RejectionReason.INSUFFICIENT_FUNDS,
         )
 
@@ -312,7 +326,9 @@ def handle_withdrawals(
     return withdrawal_tracker_instructions, withdrawal_fee_notifications
 
 
-def get_current_withdrawal_amount_default_balance_adjustment(*, withdrawal_amount: Decimal) -> deposit_interfaces.DefaultBalanceAdjustment:
+def get_current_withdrawal_amount_default_balance_adjustment(
+    *, withdrawal_amount: Decimal
+) -> deposit_interfaces.DefaultBalanceAdjustment:
     """
 
     The customer deposited amount is the sum of the DEFAULT balance, EARLY_WITHDRAWALS_TRACKER
@@ -329,7 +345,9 @@ def get_current_withdrawal_amount_default_balance_adjustment(*, withdrawal_amoun
     :param withdrawal_amount: the absolute amount withdrawn from the account in this transaction
     :return: the default balance adjustment which accounts for the current withdrawal amount
     """
-    return deposit_interfaces.DefaultBalanceAdjustment(calculate_balance_adjustment=lambda **_: withdrawal_amount)
+    return deposit_interfaces.DefaultBalanceAdjustment(
+        calculate_balance_adjustment=lambda **_: withdrawal_amount
+    )
 
 
 # Derived parameter helpers
@@ -361,7 +379,9 @@ def get_maximum_withdrawal_limit_derived_parameter(
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
     return _calculate_maximum_withdrawal_limit(
         vault=vault,
@@ -400,7 +420,9 @@ def get_fee_free_withdrawal_limit_derived_parameter(
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+        ).balances
 
     return _calculate_fee_free_withdrawal_limit(
         vault=vault,
@@ -433,9 +455,13 @@ def reset_withdrawals_tracker(
         denomination = common_parameters.get_denomination_parameter(vault=vault)
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=EARLY_WITHDRAWALS_TRACKER_LIVE_BOF_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=EARLY_WITHDRAWALS_TRACKER_LIVE_BOF_ID
+        ).balances
 
-    tracker_balance = utils.balance_at_coordinates(balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination)
+    tracker_balance = utils.balance_at_coordinates(
+        balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination
+    )
 
     if tracker_balance > Decimal("0"):
         return [
@@ -456,7 +482,9 @@ def reset_withdrawals_tracker(
     return []
 
 
-def _update_tracked_withdrawals(*, account_id: str, withdrawal_amount: Decimal, denomination: str) -> list[CustomInstruction]:
+def _update_tracked_withdrawals(
+    *, account_id: str, withdrawal_amount: Decimal, denomination: str
+) -> list[CustomInstruction]:
     """
     Create posting instructions to update the withdrawals tracker balance.
 
@@ -559,7 +587,12 @@ def calculate_withdrawal_fee_amounts(
 
     flat_fee = _get_early_withdrawal_flat_fee(vault=vault, effective_datetime=effective_datetime)
     percentage_fee = utils.round_decimal(
-        amount=(amount_subject_to_fee * _get_early_withdrawal_percentage_fee(vault=vault, effective_datetime=effective_datetime)),
+        amount=(
+            amount_subject_to_fee
+            * _get_early_withdrawal_percentage_fee(
+                vault=vault, effective_datetime=effective_datetime
+            )
+        ),
         decimal_places=2,
     )
 
@@ -589,7 +622,9 @@ def get_customer_deposit_amount(
     :return: the amount the customer has deposited in the account
     """
     default_balance = utils.balance_at_coordinates(balances=balances, denomination=denomination)
-    withdrawals_tracker_balance = utils.balance_at_coordinates(balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination)
+    withdrawals_tracker_balance = utils.balance_at_coordinates(
+        balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination
+    )
 
     default_balance_adjustment = (
         sum(
@@ -630,7 +665,9 @@ def _calculate_withdrawal_amount_subject_to_fees(
     of the DEFAULT balance, EARLY_WITHDRAWALS_TRACKER and the returned amount of each adjustment.
     :return: the amount of the withdrawal which is subject to fees
     """
-    withdrawals_tracker_balance = utils.balance_at_coordinates(balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination)
+    withdrawals_tracker_balance = utils.balance_at_coordinates(
+        balances=balances, address=EARLY_WITHDRAWALS_TRACKER, denomination=denomination
+    )
     fee_free_withdrawal_limit = _calculate_fee_free_withdrawal_limit(
         vault=vault,
         effective_datetime=effective_datetime,
@@ -641,7 +678,9 @@ def _calculate_withdrawal_amount_subject_to_fees(
 
     # Previous withdrawals reduce the remaining fee free limit
     # If we have exceeded the fee free limit, there is 0 fee free limit remaining
-    fee_free_withdrawal_limit_remaining = max(fee_free_withdrawal_limit - withdrawals_tracker_balance, Decimal("0"))
+    fee_free_withdrawal_limit_remaining = max(
+        fee_free_withdrawal_limit - withdrawals_tracker_balance, Decimal("0")
+    )
 
     # If withdrawal amount is less than the remaining fee free limit, then this withdrawal
     # is not subject to fees
@@ -675,7 +714,12 @@ def _calculate_maximum_withdrawal_limit(
         balance_adjustments=balance_adjustments,
     )
     return utils.round_decimal(
-        amount=(customer_deposit_amount * _get_maximum_withdrawal_percentage_limit(vault=vault, effective_datetime=effective_datetime)),
+        amount=(
+            customer_deposit_amount
+            * _get_maximum_withdrawal_percentage_limit(
+                vault=vault, effective_datetime=effective_datetime
+            )
+        ),
         decimal_places=2,
     )
 
@@ -707,21 +751,40 @@ def _calculate_fee_free_withdrawal_limit(
         balance_adjustments=balance_adjustments,
     )
     return utils.round_decimal(
-        amount=(customer_deposit_amount * _get_fee_free_withdrawal_percentage_limit(vault=vault, effective_datetime=effective_datetime)),
+        amount=(
+            customer_deposit_amount
+            * _get_fee_free_withdrawal_percentage_limit(
+                vault=vault, effective_datetime=effective_datetime
+            )
+        ),
         decimal_places=2,
     )
 
 
 # Parameter getters
-def _get_early_withdrawal_flat_fee(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> Decimal:
-    return Decimal(utils.get_parameter(vault=vault, name=PARAM_EARLY_WITHDRAWAL_FLAT_FEE, at_datetime=effective_datetime))
+def _get_early_withdrawal_flat_fee(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> Decimal:
+    return Decimal(
+        utils.get_parameter(
+            vault=vault, name=PARAM_EARLY_WITHDRAWAL_FLAT_FEE, at_datetime=effective_datetime
+        )
+    )
 
 
-def _get_early_withdrawal_percentage_fee(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> Decimal:
-    return Decimal(utils.get_parameter(vault=vault, name=PARAM_EARLY_WITHDRAWAL_PERCENTAGE_FEE, at_datetime=effective_datetime))
+def _get_early_withdrawal_percentage_fee(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> Decimal:
+    return Decimal(
+        utils.get_parameter(
+            vault=vault, name=PARAM_EARLY_WITHDRAWAL_PERCENTAGE_FEE, at_datetime=effective_datetime
+        )
+    )
 
 
-def _get_maximum_withdrawal_percentage_limit(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> Decimal:
+def _get_maximum_withdrawal_percentage_limit(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> Decimal:
     return Decimal(
         utils.get_parameter(
             vault=vault,
@@ -731,7 +794,9 @@ def _get_maximum_withdrawal_percentage_limit(*, vault: SmartContractVault, effec
     )
 
 
-def _get_fee_free_withdrawal_percentage_limit(*, vault: SmartContractVault, effective_datetime: datetime | None = None) -> Decimal:
+def _get_fee_free_withdrawal_percentage_limit(
+    *, vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> Decimal:
     return Decimal(
         utils.get_parameter(
             vault=vault,

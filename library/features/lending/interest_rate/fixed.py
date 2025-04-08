@@ -39,7 +39,9 @@ def get_annual_interest_rate(
     balances: BalanceDefaultDict | None = None,
     denomination: str | None = None,
 ) -> Decimal:
-    return Decimal(utils.get_parameter(vault, "fixed_interest_rate", at_datetime=effective_datetime))
+    return Decimal(
+        utils.get_parameter(vault, "fixed_interest_rate", at_datetime=effective_datetime)
+    )
 
 
 def get_daily_interest_rate(
@@ -71,4 +73,6 @@ interest_rate_interface = lending_interfaces.InterestRate(
     get_annual_interest_rate=get_annual_interest_rate,
 )
 
-FixedReamortisationCondition = lending_interfaces.ReamortisationCondition(should_trigger_reamortisation=lambda vault, period_start_datetime, period_end_datetime, elapsed_term: False)  # noqa: E501
+FixedReamortisationCondition = lending_interfaces.ReamortisationCondition(
+    should_trigger_reamortisation=lambda vault, period_start_datetime, period_end_datetime, elapsed_term: False
+)  # noqa: E501

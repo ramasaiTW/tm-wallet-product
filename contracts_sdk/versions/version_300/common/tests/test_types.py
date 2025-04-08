@@ -76,7 +76,9 @@ class PublicCommonV300TypesTestCase:
             BalanceDefaultDict(mapping={key: "not_a_balance"})
 
     def test_balance_default_dict_default_factory_from_proto(self):
-        balance_default_dict = BalanceDefaultDict(mapping={"wrong type": "not_a_balance"}, _from_proto=True)
+        balance_default_dict = BalanceDefaultDict(
+            mapping={"wrong type": "not_a_balance"}, _from_proto=True
+        )
         self.assertEqual(balance_default_dict["wrong type"], "not_a_balance")
         with self.assertRaises(StrongTypingError):
             balance_default_dict["another wrong type"]

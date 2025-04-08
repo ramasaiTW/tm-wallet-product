@@ -48,7 +48,9 @@ def sum_client_transactions(
             # before the cutoff timestamp instead (max granularity is 1 us)
             cutoff_datetime -= relativedelta(microseconds=1)
 
-            amount_before_cutoff = _get_total_transaction_impact(transaction=transaction, effective_datetime=cutoff_datetime)
+            amount_before_cutoff = _get_total_transaction_impact(
+                transaction=transaction, effective_datetime=cutoff_datetime
+            )
 
             amount = transaction_amount - amount_before_cutoff
 
@@ -180,9 +182,13 @@ def filter_client_transactions(
     return {
         client_transaction_id: client_transaction
         for client_transaction_id, client_transaction in client_transactions.items()
-        if client_transaction_id not in client_transaction_ids_to_ignore and client_transaction.denomination == denomination and not client_transaction.released()
+        if client_transaction_id not in client_transaction_ids_to_ignore
+        and client_transaction.denomination == denomination
+        and not client_transaction.released()
         # custom instructions aren't chainable so we only need to check the first posting
-        and client_transaction.posting_instructions[0].type != PostingInstructionType.CUSTOM_INSTRUCTION and client_transaction.posting_instructions[0].instruction_details.get(key) == value
+        and client_transaction.posting_instructions[0].type
+        != PostingInstructionType.CUSTOM_INSTRUCTION
+        and client_transaction.posting_instructions[0].instruction_details.get(key) == value
     }
 
 
@@ -215,13 +221,16 @@ def filter_client_transactions_by_type(
     in_scope_transactions: dict[str, dict[str, ClientTransaction]] = {value: {} for value in values}
 
     for client_transaction_id, client_transaction in client_transactions.items():
-        transaction_type = client_transaction.posting_instructions[0].instruction_details.get(key, "")
+        transaction_type = client_transaction.posting_instructions[0].instruction_details.get(
+            key, ""
+        )
         if (
             client_transaction_id not in client_transaction_ids_to_ignore
             and client_transaction.denomination == denomination
             and not client_transaction.released()
             # custom instructions aren't chainable so we only need to check the first posting
-            and client_transaction.posting_instructions[0].type != PostingInstructionType.CUSTOM_INSTRUCTION
+            and client_transaction.posting_instructions[0].type
+            != PostingInstructionType.CUSTOM_INSTRUCTION
             and transaction_type in values
         ):
             in_scope_transactions[transaction_type][client_transaction_id] = client_transaction
@@ -286,7 +295,9 @@ def extract_debits_by_instruction_details_key(
 
             # We only consider a posting to be a net debit if the transaction impact after the
             # posting decreases (e.g. -10 to -12 or 10 to 8)
-            amount_after_posting = _get_total_transaction_impact(transaction=transaction, effective_datetime=posting_instruction.value_datetime)
+            amount_after_posting = _get_total_transaction_impact(
+                transaction=transaction, effective_datetime=posting_instruction.value_datetime
+            )
             if amount_after_posting < amount_before_posting:
                 debit_instructions.append(posting_instruction)
             # this helps us avoid having to calculate a before/after for each posting
@@ -355,7 +366,9 @@ def extract_debits_by_type(
 
                 # We only consider a posting to be a net debit if the transaction impact after the
                 # posting decreases (e.g. -10 to -12 or 10 to 8)
-                amount_after_posting = _get_total_transaction_impact(transaction=transaction, effective_datetime=posting_instruction.value_datetime)
+                amount_after_posting = _get_total_transaction_impact(
+                    transaction=transaction, effective_datetime=posting_instruction.value_datetime
+                )
                 if amount_after_posting < amount_before_posting:
                     debit_instructions[transaction_type].append(posting_instruction)
                 # this helps us avoid having to calculate a before/after for each posting
@@ -420,7 +433,11 @@ def _get_total_transaction_impact(
     """
     # This is required to circumvent TM-80295 whereby the contracts_api wrongly raises an exception
     # instead of returning 0 if effects are queried before the start_datetime
-    if effective_datetime is not None and transaction.start_datetime is not None and effective_datetime < transaction.start_datetime:
+    if (
+        effective_datetime is not None
+        and transaction.start_datetime is not None
+        and effective_datetime < transaction.start_datetime
+    ):
         return Decimal(0)
 
     transaction_effects = transaction.effects(effective_datetime=effective_datetime)

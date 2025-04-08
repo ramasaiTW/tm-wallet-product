@@ -90,7 +90,9 @@ class WorkflowHelperTest(TestCase):
             {"BACS": "E2E_BACS_ID"},
         )
         yaml_definition = yaml.safe_load(new_definition)
-        create_calendar = yaml_definition["states"]["calendar_state"]["entry_actions"]["vault_callback"]["arguments"]
+        create_calendar = yaml_definition["states"]["calendar_state"]["entry_actions"][
+            "vault_callback"
+        ]["arguments"]
         self.assertEqual(create_calendar["calendar_ids"], ["E2E_BACS_ID"])
 
     def test_replace_child_workflow_definition_ids(
@@ -100,7 +102,9 @@ class WorkflowHelperTest(TestCase):
             self.definition,
             workflow_definition_id_mapping={"APPLY_FOR_EASY_ACCESS_SAVER": "E2E_WF_ID"},
         )
-        workflow_instantiation = new_definition["states"]["child_workflow_state"]["entry_actions"]["instantiate_workflow"]
+        workflow_instantiation = new_definition["states"]["child_workflow_state"]["entry_actions"][
+            "instantiate_workflow"
+        ]
         self.assertEqual(workflow_instantiation["definition_id"], "E2E_WF_ID")
         self.assertEqual(workflow_instantiation["definition_version"], "1.0.0")
 
@@ -111,9 +115,13 @@ class WorkflowHelperTest(TestCase):
             self.definition,
             internal_account_id_to_uploaded_id={"1": "E2E_1"},
         )
-        posting_instruction_batch = new_definition["states"]["internal_account_state"]["entry_actions"]["vault_callback"]["arguments"]["posting_instruction_batch"]
+        posting_instruction_batch = new_definition["states"]["internal_account_state"][
+            "entry_actions"
+        ]["vault_callback"]["arguments"]["posting_instruction_batch"]
         self.assertEqual(
-            posting_instruction_batch["posting_instructions"][0]["outbound_hard_settlement"]["internal_account_id"],
+            posting_instruction_batch["posting_instructions"][0]["outbound_hard_settlement"][
+                "internal_account_id"
+            ],
             "E2E_1",
         )
 
@@ -124,7 +132,9 @@ class WorkflowHelperTest(TestCase):
             self.definition,
             contract_pid_to_uploaded_pid={"us_checking_account": "E2E_us_checking_account"},
         )
-        product_id = new_definition["states"]["product_state"]["entry_actions"]["vault_callback"]["arguments"]["account"]["product_id"]
+        product_id = new_definition["states"]["product_state"]["entry_actions"]["vault_callback"][
+            "arguments"
+        ]["account"]["product_id"]
         self.assertEqual(
             product_id,
             "E2E_us_checking_account",
@@ -139,7 +149,9 @@ class WorkflowHelperTest(TestCase):
             "_supervisor_contract_version",
         )
         yaml_definition = yaml.safe_load(new_definition)
-        product_id = yaml_definition["states"]["plan_state"]["entry_actions"]["vault_callback"]["arguments"]["plan"]["supervisor_contract_version_id"]
+        product_id = yaml_definition["states"]["plan_state"]["entry_actions"]["vault_callback"][
+            "arguments"
+        ]["plan"]["supervisor_contract_version_id"]
         self.assertEqual(
             product_id,
             "BwrqXkvhfS",
@@ -161,7 +173,9 @@ class WorkflowHelperTest(TestCase):
         parent_instance_id = "parent_instance_id"
 
         # Pass in only the existing child workflows value=
-        mock_get_workflow_instances.return_value = [{"id": wf_id, "workflow_definition_id": wf_def_id}]
+        mock_get_workflow_instances.return_value = [
+            {"id": wf_id, "workflow_definition_id": wf_def_id}
+        ]
         mock_batch_get_workflow_instances.return_value = {
             parent_instance_id: {
                 "workflow_definition_id": wf_def_id,
@@ -210,7 +224,9 @@ class WorkflowHelperTest(TestCase):
         self.assertEquals(wf_id_2, real_wf_id)
 
         # Now try with no existing child workflows, we are expecting the method to still succeed
-        mock_get_workflow_instances.return_value = [{"id": wf_id_2, "workflow_definition_id": wf_def_id}]
+        mock_get_workflow_instances.return_value = [
+            {"id": wf_id_2, "workflow_definition_id": wf_def_id}
+        ]
         real_wf_id = workflows_helper.get_child_workflow_id(
             parent_instance_id="parent_instance_id",
             parent_state_name="sample_state",
@@ -287,13 +303,17 @@ class UpdateWorkflowHelperTest(TestCase):
         cls.updated_definition = yaml.safe_load(upload_workflow_mock.call_args_list[0].args[1])
 
     def test_replace_calendar_ids(self):
-        create_calendar = self.updated_definition["states"]["calendar_state"]["entry_actions"]["vault_callback"]["arguments"]
+        create_calendar = self.updated_definition["states"]["calendar_state"]["entry_actions"][
+            "vault_callback"
+        ]["arguments"]
         self.assertEqual(create_calendar["calendar_ids"], ["E2E_BACS_ID"])
 
     def test_replace_supervisor_contract_version_ids(
         self,
     ):
-        product_id = self.updated_definition["states"]["plan_state"]["entry_actions"]["vault_callback"]["arguments"]["plan"]["supervisor_contract_version_id"]
+        product_id = self.updated_definition["states"]["plan_state"]["entry_actions"][
+            "vault_callback"
+        ]["arguments"]["plan"]["supervisor_contract_version_id"]
         self.assertEqual(
             product_id,
             "e2e_supervisor_contract_version",

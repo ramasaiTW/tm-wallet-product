@@ -5,7 +5,17 @@ from .....utils import types_utils
 
 
 class AddAccountNoteDirective:
-    def __init__(self, *, idempotency_key, account_id, body, note_type, date, is_visible_to_customer, _from_proto=False):
+    def __init__(
+        self,
+        *,
+        idempotency_key,
+        account_id,
+        body,
+        note_type,
+        date,
+        is_visible_to_customer,
+        _from_proto=False
+    ):
         if not _from_proto:
             self._spec().assert_constructor_args(
                 self._registry,
@@ -80,7 +90,9 @@ class AddAccountNoteDirective:
                 type="NoteType",
                 docstring="The type of the Account Note. Used to interpret the Account Note body.",
             ),
-            types_utils.ValueSpec(name="date", type="datetime", docstring="The effective date of the Account Note."),
+            types_utils.ValueSpec(
+                name="date", type="datetime", docstring="The effective date of the Account Note."
+            ),
             types_utils.ValueSpec(
                 name="is_visible_to_customer",
                 type="bool",

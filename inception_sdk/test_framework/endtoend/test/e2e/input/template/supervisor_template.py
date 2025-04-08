@@ -33,23 +33,37 @@ event_types = [
 ]
 
 
-def activation_hook(vault: SupervisorContractVault, hook_arguments: SupervisorActivationHookArguments) -> Optional[SupervisorActivationHookResult]:
+def activation_hook(
+    vault: SupervisorContractVault, hook_arguments: SupervisorActivationHookArguments
+) -> Optional[SupervisorActivationHookResult]:
     return SupervisorActivationHookResult(
         scheduled_events_return_value={
-            "ACCRUE_OFFSET_INTEREST": feature.schedules(start_datetime=hook_arguments.effective_datetime),
+            "ACCRUE_OFFSET_INTEREST": feature.schedules(
+                start_datetime=hook_arguments.effective_datetime
+            ),
             "ACCRUE_FEES": feature.schedules(start_datetime=hook_arguments.effective_datetime),
         }
     )
 
 
 # @fetch_account_data(event)
-def scheduled_event_hook(vault: SupervisorContractVault, hook_arguments: SupervisorScheduledEventHookArguments) -> Optional[SupervisorScheduledEventHookResult]:
+def scheduled_event_hook(
+    vault: SupervisorContractVault, hook_arguments: SupervisorScheduledEventHookArguments
+) -> Optional[SupervisorScheduledEventHookResult]:
     posting_directives = {
-        account_id: [PostingInstructionsDirective(posting_instructions=feature.posting_logic(supervisee_vault.account_id, amount=Decimal("2")))]
+        account_id: [
+            PostingInstructionsDirective(
+                posting_instructions=feature.posting_logic(
+                    supervisee_vault.account_id, amount=Decimal("2")
+                )
+            )
+        ]
         for account_id, supervisee_vault in vault.supervisees.items()
     }
 
-    return SupervisorScheduledEventHookResult(supervisee_posting_instructions_directives=posting_directives)
+    return SupervisorScheduledEventHookResult(
+        supervisee_posting_instructions_directives=posting_directives
+    )
 
 
 # flake8: noqa

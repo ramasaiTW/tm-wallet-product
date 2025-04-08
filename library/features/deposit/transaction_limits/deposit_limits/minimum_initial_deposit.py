@@ -56,7 +56,9 @@ def validate(
         balances = vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
 
     min_initial_deposit: Decimal = utils.get_parameter(vault, PARAM_MIN_INITIAL_DEPOSIT)
-    available_credit_balance = utils.get_current_credit_balance(balances=balances, denomination=denomination)
+    available_credit_balance = utils.get_current_credit_balance(
+        balances=balances, denomination=denomination
+    )
 
     # current posting is not the initial posting due to existing credit
     if available_credit_balance > Decimal("0"):
@@ -67,12 +69,15 @@ def validate(
     for posting in postings:
         posting_balances += posting.balances()
 
-    deposit_value = utils.get_current_net_balance(balances=posting_balances, denomination=denomination)
+    deposit_value = utils.get_current_net_balance(
+        balances=posting_balances, denomination=denomination
+    )
 
     # ignore debits and reject if the net effect is below the min threhsold
     if Decimal(0) < deposit_value < min_initial_deposit:
         return Rejection(
-            message=f"Transaction amount {deposit_value:0.2f} {denomination} is less than the " f"minimum initial deposit amount {min_initial_deposit:0.2f} {denomination}.",
+            message=f"Transaction amount {deposit_value:0.2f} {denomination} is less than the "
+            f"minimum initial deposit amount {min_initial_deposit:0.2f} {denomination}.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 

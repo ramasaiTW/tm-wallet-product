@@ -23,14 +23,21 @@ class VaultVersionApiTest(SimulationTestCase):
         self.assertIsInstance(vaultVersion, Version)
         self.assertGreater(vaultVersion, Version(major=0, minor=0, patch=0))
 
-    @skipForVaultVersion(lambda v: v < Version("1000.0.0"), "Test that skipping works for Vault versions < 1000.0.0.")
+    @skipForVaultVersion(
+        lambda v: v < Version("1000.0.0"), "Test that skipping works for Vault versions < 1000.0.0."
+    )
     def test_skip_by_vault_version_below(self):
         self.assertFalse(True, VaultVersionApiTest.skip_assertion_msg)
 
-    @skipForVaultVersion(lambda v: v > Version("0.0.0"), "Test that skipping works for Vault versions > 0.0.0.")
+    @skipForVaultVersion(
+        lambda v: v > Version("0.0.0"), "Test that skipping works for Vault versions > 0.0.0."
+    )
     def test_skip_by_vault_version_above(self):
         self.assertFalse(True, VaultVersionApiTest.skip_assertion_msg)
 
-    @skipForVaultVersion(reason="Test that all versions of Vault can be skipped if the skip condition " "is omitted from the decorator.")
+    @skipForVaultVersion(
+        reason="Test that all versions of Vault can be skipped if the skip condition "
+        "is omitted from the decorator."
+    )
     def test_skip_for_all_vault_versions(self):
         self.assertFalse(True, VaultVersionApiTest.skip_assertion_msg)

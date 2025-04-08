@@ -21,7 +21,11 @@ class ParameterDisplayNameVisitor(ast.NodeVisitor):
         if isinstance(node.func, ast.Name) and node.func.id == "Parameter":
             for kw in node.keywords:
                 # if name= is a assigned to a ast/Constant then it is a string
-                if kw.arg == "display_name" and isinstance(kw.value, ast.Constant) and not self.check_title_caps(kw.value.value):
+                if (
+                    kw.arg == "display_name"
+                    and isinstance(kw.value, ast.Constant)
+                    and not self.check_title_caps(kw.value.value)
+                ):
                     self.violations.append((kw.lineno, kw.col_offset, ERRORS_CTR008))
         self.generic_visit(node)
 

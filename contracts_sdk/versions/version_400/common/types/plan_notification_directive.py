@@ -21,7 +21,9 @@ class PlanNotificationDirective:
     def _validate_attributes(self):
         types_utils.validate_type(self.notification_details, dict)
         if not self.notification_details:
-            raise InvalidSmartContractError("PlanNotificationDirective 'notification_details' must be populated")
+            raise InvalidSmartContractError(
+                "PlanNotificationDirective 'notification_details' must be populated"
+            )
 
     @classmethod
     @lru_cache()

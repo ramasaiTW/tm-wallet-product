@@ -26,9 +26,13 @@ def validate_account_directives(
     update_events: Optional[List[UpdateAccountEventTypeDirective]] = None,
 ):
     if account_directives is not None:
-        _validate_account_directives(account_directives, AccountNotificationDirective, "account_directives")
+        _validate_account_directives(
+            account_directives, AccountNotificationDirective, "account_directives"
+        )
     if posting_directives is not None:
-        _validate_account_directives(posting_directives, PostingInstructionsDirective, "posting_directives")
+        _validate_account_directives(
+            posting_directives, PostingInstructionsDirective, "posting_directives"
+        )
     if update_events is None:
         return
     _validate_account_event_types(update_events)
@@ -46,9 +50,13 @@ def validate_plan_directives(
 ):
     type_hint = "PlanNotificationDirective"
     if plan_notification_directives is not None:
-        iterator = types_utils.get_iterator(plan_notification_directives, type_hint, "plan_notification_directives")
+        iterator = types_utils.get_iterator(
+            plan_notification_directives, type_hint, "plan_notification_directives"
+        )
         for directive in iterator:
-            types_utils.validate_type(directive, PlanNotificationDirective, hint=f"List[{type_hint}]")
+            types_utils.validate_type(
+                directive, PlanNotificationDirective, hint=f"List[{type_hint}]"
+            )
     if update_events is None:
         return
     _validate_plan_event_types(update_events)
@@ -124,7 +132,9 @@ def _validate_unique_event_type_directives(
         types_utils.validate_type(update_event_type_directive, event_class)
         event_type = update_event_type_directive.event_type
         if event_type in seen_updated_event_types:
-            raise InvalidSmartContractError(f"Event type '{event_type}' cannot be updated more than once in a hook")
+            raise InvalidSmartContractError(
+                f"Event type '{event_type}' cannot be updated more than once in a hook"
+            )
         seen_updated_event_types.add(event_type)
 
 
@@ -145,13 +155,17 @@ class DerivedParameterHookResult:
     def __init__(
         self,
         *,
-        parameters_return_value: Dict[str, Union[Decimal, str, datetime, OptionalValue, UnionItemValue, int]],
+        parameters_return_value: Dict[
+            str, Union[Decimal, str, datetime, OptionalValue, UnionItemValue, int]
+        ],
     ):
         self.parameters_return_value = parameters_return_value
         self._validate_attributes()
 
     def _validate_attributes(self):
-        types_utils.validate_type(self.parameters_return_value, dict, prefix="parameters_return_value")
+        types_utils.validate_type(
+            self.parameters_return_value, dict, prefix="parameters_return_value"
+        )
 
     @classmethod
     @lru_cache()
@@ -199,7 +213,9 @@ class DeactivationHookResult:
         *,
         account_notification_directives: Optional[List[AccountNotificationDirective]] = None,
         posting_instructions_directives: Optional[List[PostingInstructionsDirective]] = None,
-        update_account_event_type_directives: Optional[List[UpdateAccountEventTypeDirective]] = None,
+        update_account_event_type_directives: Optional[
+            List[UpdateAccountEventTypeDirective]
+        ] = None,
         rejection: Optional[Rejection] = None,
     ):
         self.account_notification_directives = account_notification_directives or []
@@ -212,8 +228,15 @@ class DeactivationHookResult:
         if self.rejection is not None:
             types_utils.validate_type(self.rejection, Rejection, prefix="rejection")
             # Either Directives or rejection can be populated, not both.
-            if self.account_notification_directives or self.posting_instructions_directives or self.update_account_event_type_directives:
-                raise InvalidSmartContractError("DeactivationHookResult allows the population of directives or rejection, " "but not both")
+            if (
+                self.account_notification_directives
+                or self.posting_instructions_directives
+                or self.update_account_event_type_directives
+            ):
+                raise InvalidSmartContractError(
+                    "DeactivationHookResult allows the population of directives or rejection, "
+                    "but not both"
+                )
         validate_account_directives(
             self.account_notification_directives,
             self.posting_instructions_directives,
@@ -300,14 +323,23 @@ class ActivationHookResult:
         self._validate_attributes()
 
     def _validate_attributes(self):
-        validate_account_directives(self.account_notification_directives, self.posting_instructions_directives)
+        validate_account_directives(
+            self.account_notification_directives, self.posting_instructions_directives
+        )
         validate_scheduled_events(self.scheduled_events_return_value)
         if not is_fflag_enabled(REJECTION_FROM_ACTIVATION_CONVERSION_HOOKS):
             return
         if self.rejection is None:
             return
-        if self.account_notification_directives or self.posting_instructions_directives or self.scheduled_events_return_value:
-            raise InvalidSmartContractError("ActivationHookResult allows the population of directives/events or rejection, " "but not both")
+        if (
+            self.account_notification_directives
+            or self.posting_instructions_directives
+            or self.scheduled_events_return_value
+        ):
+            raise InvalidSmartContractError(
+                "ActivationHookResult allows the population of directives/events or rejection, "
+                "but not both"
+            )
         types_utils.validate_type(self.rejection, Rejection, prefix="rejection")
 
     @classmethod
@@ -381,7 +413,9 @@ class PostParameterChangeHookResult:
         *,
         account_notification_directives: Optional[List[AccountNotificationDirective]] = None,
         posting_instructions_directives: Optional[List[PostingInstructionsDirective]] = None,
-        update_account_event_type_directives: Optional[List[UpdateAccountEventTypeDirective]] = None,
+        update_account_event_type_directives: Optional[
+            List[UpdateAccountEventTypeDirective]
+        ] = None,
     ):
         self.account_notification_directives = account_notification_directives or []
         self.posting_instructions_directives = posting_instructions_directives or []
@@ -452,7 +486,9 @@ class PostPostingHookResult:
         *,
         account_notification_directives: Optional[List[AccountNotificationDirective]] = None,
         posting_instructions_directives: Optional[List[PostingInstructionsDirective]] = None,
-        update_account_event_type_directives: Optional[List[UpdateAccountEventTypeDirective]] = None,
+        update_account_event_type_directives: Optional[
+            List[UpdateAccountEventTypeDirective]
+        ] = None,
         _from_proto: Optional[bool] = False,
     ):
         self.account_notification_directives = account_notification_directives or []
@@ -619,7 +655,9 @@ class ScheduledEventHookResult:
         *,
         account_notification_directives: Optional[List[AccountNotificationDirective]] = None,
         posting_instructions_directives: Optional[List[PostingInstructionsDirective]] = None,
-        update_account_event_type_directives: Optional[List[UpdateAccountEventTypeDirective]] = None,
+        update_account_event_type_directives: Optional[
+            List[UpdateAccountEventTypeDirective]
+        ] = None,
         _from_proto: Optional[bool] = False,
     ):
         self.account_notification_directives = account_notification_directives or []
@@ -694,19 +732,33 @@ class SupervisorPostPostingHookResult:
         plan_notification_directives: Optional[List[PlanNotificationDirective]] = None,
         update_plan_event_type_directives: Optional[List[UpdatePlanEventTypeDirective]] = None,
         # Supervisee Directives
-        supervisee_account_notification_directives: Optional[Dict[str, List[AccountNotificationDirective]]] = None,
-        supervisee_posting_instructions_directives: Optional[Dict[str, List[PostingInstructionsDirective]]] = None,
-        supervisee_update_account_event_type_directives: Optional[Dict[str, List[UpdateAccountEventTypeDirective]]] = None,
+        supervisee_account_notification_directives: Optional[
+            Dict[str, List[AccountNotificationDirective]]
+        ] = None,
+        supervisee_posting_instructions_directives: Optional[
+            Dict[str, List[PostingInstructionsDirective]]
+        ] = None,
+        supervisee_update_account_event_type_directives: Optional[
+            Dict[str, List[UpdateAccountEventTypeDirective]]
+        ] = None,
     ):
         self.plan_notification_directives = plan_notification_directives or []
         self.update_plan_event_type_directives = update_plan_event_type_directives or []
-        self.supervisee_account_notification_directives = supervisee_account_notification_directives or defaultdict(list)
-        self.supervisee_posting_instructions_directives = supervisee_posting_instructions_directives or defaultdict(list)
-        self.supervisee_update_account_event_type_directives = supervisee_update_account_event_type_directives or defaultdict(list)
+        self.supervisee_account_notification_directives = (
+            supervisee_account_notification_directives or defaultdict(list)
+        )
+        self.supervisee_posting_instructions_directives = (
+            supervisee_posting_instructions_directives or defaultdict(list)
+        )
+        self.supervisee_update_account_event_type_directives = (
+            supervisee_update_account_event_type_directives or defaultdict(list)
+        )
         self._validate_attributes()
 
     def _validate_attributes(self):
-        validate_plan_directives(self.plan_notification_directives, self.update_plan_event_type_directives)
+        validate_plan_directives(
+            self.plan_notification_directives, self.update_plan_event_type_directives
+        )
         validate_supervisee_directives(
             self.supervisee_account_notification_directives,
             self.supervisee_posting_instructions_directives,
@@ -936,19 +988,33 @@ class SupervisorScheduledEventHookResult:
         plan_notification_directives: Optional[List[PlanNotificationDirective]] = None,
         update_plan_event_type_directives: Optional[List[UpdatePlanEventTypeDirective]] = None,
         # Supervisee Directives
-        supervisee_account_notification_directives: Optional[Dict[str, List[AccountNotificationDirective]]] = None,
-        supervisee_posting_instructions_directives: Optional[Dict[str, List[PostingInstructionsDirective]]] = None,
-        supervisee_update_account_event_type_directives: Optional[Dict[str, List[UpdateAccountEventTypeDirective]]] = None,
+        supervisee_account_notification_directives: Optional[
+            Dict[str, List[AccountNotificationDirective]]
+        ] = None,
+        supervisee_posting_instructions_directives: Optional[
+            Dict[str, List[PostingInstructionsDirective]]
+        ] = None,
+        supervisee_update_account_event_type_directives: Optional[
+            Dict[str, List[UpdateAccountEventTypeDirective]]
+        ] = None,
     ):
         self.plan_notification_directives = plan_notification_directives or []
         self.update_plan_event_type_directives = update_plan_event_type_directives or []
-        self.supervisee_account_notification_directives = supervisee_account_notification_directives or defaultdict(list)
-        self.supervisee_posting_instructions_directives = supervisee_posting_instructions_directives or defaultdict(list)
-        self.supervisee_update_account_event_type_directives = supervisee_update_account_event_type_directives or defaultdict(list)
+        self.supervisee_account_notification_directives = (
+            supervisee_account_notification_directives or defaultdict(list)
+        )
+        self.supervisee_posting_instructions_directives = (
+            supervisee_posting_instructions_directives or defaultdict(list)
+        )
+        self.supervisee_update_account_event_type_directives = (
+            supervisee_update_account_event_type_directives or defaultdict(list)
+        )
         self._validate_attributes()
 
     def _validate_attributes(self):
-        validate_plan_directives(self.plan_notification_directives, self.update_plan_event_type_directives)
+        validate_plan_directives(
+            self.plan_notification_directives, self.update_plan_event_type_directives
+        )
         validate_supervisee_directives(
             self.supervisee_account_notification_directives,
             self.supervisee_posting_instructions_directives,
@@ -1039,7 +1105,9 @@ class ConversionHookResult:
         self._validate_attributes()
 
     def _validate_attributes(self):
-        validate_account_directives(self.account_notification_directives, self.posting_instructions_directives)
+        validate_account_directives(
+            self.account_notification_directives, self.posting_instructions_directives
+        )
         validate_scheduled_events(self.scheduled_events_return_value)
 
     @classmethod

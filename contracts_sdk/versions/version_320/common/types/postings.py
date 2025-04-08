@@ -21,7 +21,11 @@ class PostingInstructionBatch(postings310.PostingInstructionBatch):
         spec.public_methods["balances"].args["exclude_advice"] = types_utils.ValueSpec(
             name="exclude_advice",
             type="bool",
-            docstring=("If set to `True`, the method will return only the aggregated balances for " "instructions in which the advice flag is **not** set to `True`. Available on " "versions 3.2.0+."),
+            docstring=(
+                "If set to `True`, the method will return only the aggregated balances for "
+                "instructions in which the advice flag is **not** set to `True`. Available on "
+                "versions 3.2.0+."
+            ),
         )
 
         return spec
@@ -30,7 +34,9 @@ class PostingInstructionBatch(postings310.PostingInstructionBatch):
 class PostingInstruction(postings310.PostingInstruction):
     def __init__(self, **kwargs):
         if not kwargs.get("_from_proto", False):
-            self._spec().assert_constructor_args(self._registry, {"advice": kwargs.get("advice", False)})
+            self._spec().assert_constructor_args(
+                self._registry, {"advice": kwargs.get("advice", False)}
+            )
 
             # Raise an error if advice attribute is set on a PostingInstruction with
             # PostingInstructionType that does not support it.

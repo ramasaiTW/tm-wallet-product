@@ -162,7 +162,9 @@ def schedule_logic(
     :param denomination: the denomination of the balance addresses
     :return: list[AccountNotificationDirective]
     """
-    balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+    balances = vault.get_balances_observation(
+        fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+    ).balances
     total_balance = utils.sum_balances(
         balances=balances,
         addresses=addresses,

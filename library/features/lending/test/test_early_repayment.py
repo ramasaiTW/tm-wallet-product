@@ -65,7 +65,9 @@ class IsPostingAnEarlyRepaymentTest(EarlyRepaymentTest):
             balances=sentinel.balances,
             precision=2,
         )
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
     def test_is_posting_an_early_repayment_true_no_optional_args_supplied(
         self,
@@ -94,7 +96,9 @@ class IsPostingAnEarlyRepaymentTest(EarlyRepaymentTest):
             balances=sentinel.balances,
             precision=2,
         )
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
     def test_is_posting_an_early_repayment_false_with_optional_args_supplied(
         self,
@@ -117,7 +121,9 @@ class IsPostingAnEarlyRepaymentTest(EarlyRepaymentTest):
             precision=1,
         )
         self.assertFalse(result)
-        mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=sentinel.denomination)
+        mock_get_denomination.assert_called_once_with(
+            vault=sentinel.vault, denomination=sentinel.denomination
+        )
         mock_get_balances.assert_called_once_with(vault=sentinel.vault, balances=sentinel.balances)
         mock_get_total_early_repayment_amount.assert_called_once_with(
             vault=sentinel.vault,
@@ -126,7 +132,9 @@ class IsPostingAnEarlyRepaymentTest(EarlyRepaymentTest):
             balances=sentinel.balances,
             precision=1,
         )
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
     def test_is_posting_an_early_repayment_true_with_optional_args_supplied(
         self,
@@ -149,7 +157,9 @@ class IsPostingAnEarlyRepaymentTest(EarlyRepaymentTest):
             precision=1,
         )
         self.assertTrue(result)
-        mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=sentinel.denomination)
+        mock_get_denomination.assert_called_once_with(
+            vault=sentinel.vault, denomination=sentinel.denomination
+        )
         mock_get_balances.assert_called_once_with(vault=sentinel.vault, balances=sentinel.balances)
         mock_get_total_early_repayment_amount.assert_called_once_with(
             vault=sentinel.vault,
@@ -158,7 +168,9 @@ class IsPostingAnEarlyRepaymentTest(EarlyRepaymentTest):
             balances=sentinel.balances,
             precision=1,
         )
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
     def test_is_posting_an_early_repayment_zero_repayment_amount(
         self,
@@ -207,10 +219,14 @@ class IsPostingAnEarlyRepaymentTest(EarlyRepaymentTest):
             precision=1,
         )
         self.assertFalse(result)
-        mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=sentinel.denomination)
+        mock_get_denomination.assert_called_once_with(
+            vault=sentinel.vault, denomination=sentinel.denomination
+        )
         mock_get_balances.assert_called_once_with(vault=sentinel.vault, balances=sentinel.balances)
         mock_get_total_early_repayment_amount.assert_not_called()
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
 
 @patch.object(early_repayment, "_get_balances")
@@ -237,7 +253,9 @@ class GetTotalEarlyRepaymentAmountTest(EarlyRepaymentTest):
         self.assertEqual(sentinel.amount, result)
         mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=None)
         mock_get_balances.assert_called_once_with(vault=sentinel.vault, balances=None)
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_get_sum_of_early_repayment_fees_and_outstanding_debt.assert_called_once_with(
             vault=sentinel.vault,
             early_repayment_fees=[],
@@ -307,9 +325,13 @@ class GetTotalEarlyRepaymentAmountTest(EarlyRepaymentTest):
         )
         # 110 = early_repayment_fee_amount 5 * number of fees 2 + total_outstanding_debt 100
         self.assertEqual(sentinel.amount, result)
-        mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=sentinel.denomination)
+        mock_get_denomination.assert_called_once_with(
+            vault=sentinel.vault, denomination=sentinel.denomination
+        )
         mock_get_balances.assert_called_once_with(vault=sentinel.vault, balances=sentinel.balances)
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_get_sum_of_early_repayment_fees_and_outstanding_debt.assert_called_once_with(
             vault=sentinel.vault,
             early_repayment_fees=early_repayment_fees,
@@ -345,7 +367,9 @@ class GetTotalEarlyRepaymentAmountTest(EarlyRepaymentTest):
             check_for_outstanding_accrued_interest_on_zero_principal=False,
         )
         self.assertEqual(Decimal("0.00"), result)
-        mock_is_zero_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_is_zero_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_get_sum_of_early_repayment_fees_and_outstanding_debt.assert_not_called()
 
     def test_get_total_early_repayment_amount_with_zero_principal_and_check_for_accrued_interest(
@@ -401,7 +425,9 @@ class FlatFeeTest(EarlyRepaymentTest):
         result = early_repayment.get_early_repayment_flat_fee(
             vault=sentinel.vault,
         )
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="early_repayment_flat_fee")
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="early_repayment_flat_fee"
+        )
         mock_round_decimal.assert_called_once_with(sentinel.parameter_value, 2)
         self.assertEqual(sentinel.flat_fee, result)
 
@@ -418,7 +444,9 @@ class FlatFeeTest(EarlyRepaymentTest):
             denomination=sentinel.denomination,
             precision=sentinel.precision,
         )
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="early_repayment_flat_fee")
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="early_repayment_flat_fee"
+        )
         mock_round_decimal.assert_called_once_with(sentinel.parameter_value, sentinel.precision)
         self.assertEqual(sentinel.flat_fee, result)
 
@@ -447,10 +475,14 @@ class PercentageFeeTest(EarlyRepaymentTest):
         )
         mock_get_balances.assert_called_once_with(vault=sentinel.vault, balances=None)
         mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=None)
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="early_repayment_fee_rate")
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="early_repayment_fee_rate"
+        )
         # 10 = remaining_principal 100 * fee rate 0.1
         mock_round_decimal.assert_called_once_with(Decimal("10"), 2)
-        mock_get_total_remaining_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_get_total_remaining_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         self.assertEqual(sentinel.repayment_fee, result)
 
     def test_calculate_early_repayment_percentage_fee_with_optional_args_supplied(
@@ -473,11 +505,17 @@ class PercentageFeeTest(EarlyRepaymentTest):
             precision=sentinel.precision,
         )
         mock_get_balances.assert_called_once_with(vault=sentinel.vault, balances=sentinel.balances)
-        mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=sentinel.denomination)
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="early_repayment_fee_rate")
+        mock_get_denomination.assert_called_once_with(
+            vault=sentinel.vault, denomination=sentinel.denomination
+        )
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="early_repayment_fee_rate"
+        )
         # 10 = remaining_principal 100 * fee rate 0.1
         mock_round_decimal.assert_called_once_with(Decimal("10"), sentinel.precision)
-        mock_get_total_remaining_principal.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_get_total_remaining_principal.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         self.assertEqual(sentinel.repayment_fee, result)
 
 
@@ -501,7 +539,9 @@ class ChargeFeeTest(EarlyRepaymentTest):
             fee_name=sentinel.fee_name,
         )
         mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=None)
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="early_repayment_fee_income_account")
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="early_repayment_fee_income_account"
+        )
         mock_fee_custom_instruction.assert_called_once_with(
             customer_account_id=sentinel.account_id,
             denomination=sentinel.denomination,
@@ -527,8 +567,12 @@ class ChargeFeeTest(EarlyRepaymentTest):
             fee_name=sentinel.fee_name,
             denomination=sentinel.denomination,
         )
-        mock_get_denomination.assert_called_once_with(vault=sentinel.vault, denomination=sentinel.denomination)
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="early_repayment_fee_income_account")
+        mock_get_denomination.assert_called_once_with(
+            vault=sentinel.vault, denomination=sentinel.denomination
+        )
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="early_repayment_fee_income_account"
+        )
         mock_fee_custom_instruction.assert_called_once_with(
             customer_account_id=sentinel.account_id,
             denomination=sentinel.denomination,
@@ -551,7 +595,9 @@ class IsZeroPrincipalTest(EarlyRepaymentTest):
             balances=sentinel.balances,
         )
         self.assertFalse(result)
-        mock_sum_balances.assert_called_once_with(balances=sentinel.balances, addresses=["PRINCIPAL"], denomination=sentinel.denomination)
+        mock_sum_balances.assert_called_once_with(
+            balances=sentinel.balances, addresses=["PRINCIPAL"], denomination=sentinel.denomination
+        )
 
     def test_is_zero_principal_true(
         self,
@@ -563,7 +609,9 @@ class IsZeroPrincipalTest(EarlyRepaymentTest):
             balances=sentinel.balances,
         )
         self.assertTrue(result)
-        mock_sum_balances.assert_called_once_with(balances=sentinel.balances, addresses=["PRINCIPAL"], denomination=sentinel.denomination)
+        mock_sum_balances.assert_called_once_with(
+            balances=sentinel.balances, addresses=["PRINCIPAL"], denomination=sentinel.denomination
+        )
 
     def test_is_zero_principal_true_with_balances_lt_zero(
         self,
@@ -575,7 +623,9 @@ class IsZeroPrincipalTest(EarlyRepaymentTest):
             balances=sentinel.balances,
         )
         self.assertTrue(result)
-        mock_sum_balances.assert_called_once_with(balances=sentinel.balances, addresses=["PRINCIPAL"], denomination=sentinel.denomination)
+        mock_sum_balances.assert_called_once_with(
+            balances=sentinel.balances, addresses=["PRINCIPAL"], denomination=sentinel.denomination
+        )
 
 
 @patch.object(early_repayment.utils, "get_parameter")
@@ -608,7 +658,9 @@ class GetBalancesTest(EarlyRepaymentTest):
         self,
     ):
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
         result = early_repayment._get_balances(
             vault=mock_vault,
         )

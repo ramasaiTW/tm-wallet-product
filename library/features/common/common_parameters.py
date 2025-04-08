@@ -40,6 +40,10 @@ denomination_parameter = Parameter(
 )
 
 
-def get_denomination_parameter(vault: SmartContractVault, effective_datetime: datetime | None = None) -> str:
-    denomination: str = utils.get_parameter(vault=vault, name=PARAM_DENOMINATION, at_datetime=effective_datetime)
+def get_denomination_parameter(
+    vault: SmartContractVault, effective_datetime: datetime | None = None
+) -> str:
+    denomination: str = utils.get_parameter(
+        vault=vault, name=PARAM_DENOMINATION, at_datetime=effective_datetime
+    )
     return denomination

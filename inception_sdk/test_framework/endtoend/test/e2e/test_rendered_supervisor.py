@@ -16,17 +16,25 @@ logging.basicConfig(
 
 endtoend.testhandle.CONTRACTS = {
     "test_contract": {
-        "path": "inception_sdk/test_framework/endtoend/test/e2e/input/template/" "contract_template.py",
+        "path": "inception_sdk/test_framework/endtoend/test/e2e/input/template/"
+        "contract_template.py",
         "template_params": {},
     },
 }
 
-endtoend.testhandle.SUPERVISORCONTRACTS = {"test_supervisor": {"path": "inception_sdk/test_framework/endtoend/test/e2e/input/template/" "supervisor_template.py"}}
+endtoend.testhandle.SUPERVISORCONTRACTS = {
+    "test_supervisor": {
+        "path": "inception_sdk/test_framework/endtoend/test/e2e/input/template/"
+        "supervisor_template.py"
+    }
+}
 
 
 class TestRenderedSupervisor(endtoend.AcceleratedEnd2EndTest):
     # "ACCRUE_FEES" will have a default paused tag
-    @endtoend.AcceleratedEnd2EndTest.Decorators.control_schedules({"test_supervisor": ["ACCRUE_OFFSET_INTEREST"]})
+    @endtoend.AcceleratedEnd2EndTest.Decorators.control_schedules(
+        {"test_supervisor": ["ACCRUE_OFFSET_INTEREST"]}
+    )
     def test_rendered_supervisor_schedules_are_controlled(self):
         endtoend.standard_setup()
         cust_id = endtoend.core_api_helper.create_customer()
@@ -36,7 +44,9 @@ class TestRenderedSupervisor(endtoend.AcceleratedEnd2EndTest):
             status="ACCOUNT_STATUS_OPEN",
         )
 
-        plan_id = endtoend.supervisors_helper.link_accounts_to_supervisor("test_supervisor", [account["id"]])
+        plan_id = endtoend.supervisors_helper.link_accounts_to_supervisor(
+            "test_supervisor", [account["id"]]
+        )
 
         plan_schedules = endtoend.schedule_helper.get_plan_schedules(plan_id=plan_id)
 
@@ -50,7 +60,11 @@ class TestRenderedSupervisor(endtoend.AcceleratedEnd2EndTest):
         # implicitly controlled and uses the default paused tag id
         self.assertListEqual(
             accrue_offset_tags,
-            [endtoend.testhandle.controlled_schedule_tags["test_supervisor"]["ACCRUE_OFFSET_INTEREST"]],
+            [
+                endtoend.testhandle.controlled_schedule_tags["test_supervisor"][
+                    "ACCRUE_OFFSET_INTEREST"
+                ]
+            ],
         )
         self.assertListEqual(accrue_fees_tags, [endtoend.testhandle.default_paused_tag_id])
 

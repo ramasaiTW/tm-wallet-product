@@ -17,6 +17,8 @@ supervised_smart_contracts = [
 EVENT_WITH_SINGLE_TAG = "EVENT_WITH_SINGLE_TAG"
 event_types = [
     SupervisorContractEventType(name=EVENT_WITH_SINGLE_TAG, scheduler_tag_ids=["E2E_AST_1"]),
-    SupervisorContractEventType(name="EVENT_WITH_MULTIPLE_TAGS", scheduler_tag_ids=["E2E_PAUSED_TAG"]),
+    SupervisorContractEventType(
+        name="EVENT_WITH_MULTIPLE_TAGS", scheduler_tag_ids=["E2E_PAUSED_TAG"]
+    ),
     SupervisorContractEventType(name="EVENT_WITHOUT_TAGS", scheduler_tag_ids=["E2E_PAUSED_TAG"]),
 ]

@@ -117,12 +117,24 @@ class PublicCommonV380TypesTestCase(PublicCommonV370TypesTestCase):
                 )
             ],
         )
-        self.assertEqual(self.request_id_380, hook_directives.add_account_note_directives[0].idempotency_key)
-        self.assertEqual(self.request_id_380, hook_directives.amend_schedule_directives[0].request_id)
-        self.assertEqual(self.request_id_380, hook_directives.remove_schedules_directives[0].request_id)
-        self.assertEqual(self.request_id_380, hook_directives.posting_instruction_batch_directives[0].request_id)
-        self.assertEqual(self.request_id_380, hook_directives.workflow_start_directives[0].idempotency_key)
-        self.assertEqual(self.account_id_380, hook_directives.update_account_event_type_directives[0].account_id)
+        self.assertEqual(
+            self.request_id_380, hook_directives.add_account_note_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.request_id_380, hook_directives.amend_schedule_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_380, hook_directives.remove_schedules_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_380, hook_directives.posting_instruction_batch_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_380, hook_directives.workflow_start_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.account_id_380, hook_directives.update_account_event_type_directives[0].account_id
+        )
 
     def test_hook_directives_errors_with_previous_version_constructor_args(self):
         with self.assertRaises(TypeError) as ex:
@@ -195,7 +207,10 @@ class PublicCommonV380TypesTestCase(PublicCommonV370TypesTestCase):
             )
 
         self.assertIn(
-            ("__init__() missing 1 required keyword-only argument: " "'update_account_event_type_directives'"),
+            (
+                "__init__() missing 1 required keyword-only argument: "
+                "'update_account_event_type_directives'"
+            ),
             str(ex.exception),
         )
 
@@ -211,7 +226,10 @@ class PublicCommonV380TypesTestCase(PublicCommonV370TypesTestCase):
             )
 
         self.assertIn(
-            ("'update_account_event_type_directives' expected " "List[UpdateAccountEventTypeDirective] but got value 'bad'"),
+            (
+                "'update_account_event_type_directives' expected "
+                "List[UpdateAccountEventTypeDirective] but got value 'bad'"
+            ),
             str(ex.exception),
         )
 
@@ -233,7 +251,10 @@ class PublicCommonV380TypesTestCase(PublicCommonV370TypesTestCase):
             )
 
         self.assertIn(
-            ("UpdateAccountEventTypeDirective object has to have either an end_datetime or a " "schedule defined"),
+            (
+                "UpdateAccountEventTypeDirective object has to have either an end_datetime or a "
+                "schedule defined"
+            ),
             str(ex.exception),
         )
 

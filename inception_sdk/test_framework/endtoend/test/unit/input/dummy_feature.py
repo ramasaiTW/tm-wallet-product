@@ -20,7 +20,9 @@ def get_event_types(product_name: str):
         SmartContractEventType(name=EVENT_TYPE_2),
         SupervisorContractEventType(name=EVENT_TYPE_3),
         SupervisorContractEventType(name=EVENT_TYPE_4, scheduler_tag_ids=apply_tag),
-        SupervisorContractEventType(name=EVENT_TYPE_5, overrides_event_types=[("a", EVENT_TYPE_5), ("b", EVENT_TYPE_5)]),
+        SupervisorContractEventType(
+            name=EVENT_TYPE_5, overrides_event_types=[("a", EVENT_TYPE_5), ("b", EVENT_TYPE_5)]
+        ),
     ]
 
 

@@ -3,5 +3,7 @@ from ....version_390.common.types import (
 )
 
 
-class PostingInstructionBatchDirective(posting_instruction_batch_directive390.PostingInstructionBatchDirective):
+class PostingInstructionBatchDirective(
+    posting_instruction_batch_directive390.PostingInstructionBatchDirective
+):
     pass

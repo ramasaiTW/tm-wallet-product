@@ -43,7 +43,9 @@ def execution_schedules():
 
 @requires(event_type="ACCRUE_INTEREST", parameters=True, balances="latest")
 def scheduled_code(event_type, effective_date):
-    yearly_interest_rate = vault.get_parameter_timeseries(name="central_bank_yearly_interest_rate").latest()
+    yearly_interest_rate = vault.get_parameter_timeseries(
+        name="central_bank_yearly_interest_rate"
+    ).latest()
 
     monthly_interest_rate = Decimal(yearly_interest_rate) / 12
     # Monthly overdraft rate and fee are constants set at contract creation.
@@ -53,12 +55,21 @@ def scheduled_code(event_type, effective_date):
     # Pay any interest due on the balance of the account.
     accrue_balance = sum(
         balance.net
-        for (address, asset, denom, phase), balance in vault.get_balance_timeseries().latest().items()
-        if phase in (Phase.PENDING_OUT, Phase.COMMITTED) and address in (DEFAULT_ADDRESS, "ACCRUED_INCOMING", "ACCRUED_OUTGOING") and denom == contract_denomination and asset == DEFAULT_ASSET
+        for (address, asset, denom, phase), balance in vault.get_balance_timeseries()
+        .latest()
+        .items()
+        if phase in (Phase.PENDING_OUT, Phase.COMMITTED)
+        and address in (DEFAULT_ADDRESS, "ACCRUED_INCOMING", "ACCRUED_OUTGOING")
+        and denom == contract_denomination
+        and asset == DEFAULT_ASSET
     )
     posting_ins = None
     if accrue_balance > 0:
-        interest_due = (Decimal(monthly_interest_rate) * accrue_balance).copy_abs().quantize(Decimal(".01"), rounding=ROUND_HALF_DOWN)
+        interest_due = (
+            (Decimal(monthly_interest_rate) * accrue_balance)
+            .copy_abs()
+            .quantize(Decimal(".01"), rounding=ROUND_HALF_DOWN)
+        )
         if interest_due > 0:
             posting_ins = vault.make_internal_transfer_instructions(
                 amount=interest_due,
@@ -73,7 +84,11 @@ def scheduled_code(event_type, effective_date):
 
     # Charge any fees for going into the overdraft.
     elif accrue_balance < 0:
-        fees_due = (Decimal(monthly_overdraft_rate) * accrue_balance).copy_abs().quantize(Decimal(".01"), rounding=ROUND_HALF_DOWN)
+        fees_due = (
+            (Decimal(monthly_overdraft_rate) * accrue_balance)
+            .copy_abs()
+            .quantize(Decimal(".01"), rounding=ROUND_HALF_DOWN)
+        )
         if fees_due < 0:
             posting_ins = vault.make_internal_transfer_instructions(
                 amount=fees_due,
@@ -88,7 +103,9 @@ def scheduled_code(event_type, effective_date):
 
     # Submit a posting batch.
     if posting_ins:
-        vault.instruct_posting_batch(posting_instructions=posting_ins, effective_date=effective_date)
+        vault.instruct_posting_batch(
+            posting_instructions=posting_ins, effective_date=effective_date
+        )
 
 
 def post_parameter_change_code(old_parameter_values, updated_parameter_values, effective_date):
@@ -124,12 +141,22 @@ def pre_posting_code(postings, effective_date):
             or posting.client_id != "1"
             or posting.batch_id != "2"
         ):
-            raise Rejected(message="Not all PI attributes are set", reason_code=RejectedReason.AGAINST_TNC)
+            raise Rejected(
+                message="Not all PI attributes are set", reason_code=RejectedReason.AGAINST_TNC
+            )
         if posting.balances()[(DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)].net == 0:
-            raise Rejected(message="Unexpected default PI balances", reason_code=RejectedReason.AGAINST_TNC)
+            raise Rejected(
+                message="Unexpected default PI balances", reason_code=RejectedReason.AGAINST_TNC
+            )
         # Check that PIB balances method can be mocked.
-        default_address = vault.get_balance_timeseries().latest()[(DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)].net
-        new_postings_balance = postings.balances()[(DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)].net
+        default_address = (
+            vault.get_balance_timeseries()
+            .latest()[(DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)]
+            .net
+        )
+        new_postings_balance = postings.balances()[
+            (DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)
+        ].net
         if default_address + new_postings_balance < 0:
             raise Rejected(
                 message="Account Default address cannot go into overdraft",
@@ -154,7 +181,9 @@ def pre_posting_code(postings, effective_date):
                 reason_code=RejectedReason.AGAINST_TNC,
             )
 
-        if ct.balances()[(DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)].net != Decimal(10):
+        if ct.balances()[(DEFAULT_ADDRESS, DEFAULT_ASSET, "GBP", Phase.COMMITTED)].net != Decimal(
+            10
+        ):
             raise Rejected(
                 message="Unexpected Client Transaction balances",
                 reason_code=RejectedReason.AGAINST_TNC,
@@ -163,14 +192,24 @@ def pre_posting_code(postings, effective_date):
 
     calendar_events = vault.get_calendar_events(calendar_ids=["date_A", "date_B"])
     if len(calendar_events) != 2:
-        raise Rejected("Wrong number of calendar events found", reason_code=RejectedReason.AGAINST_TNC)
+        raise Rejected(
+            "Wrong number of calendar events found", reason_code=RejectedReason.AGAINST_TNC
+        )
     for event in calendar_events:
-        if event.start_timestamp.year != 2020 or event.start_timestamp.month != 1 or event.start_timestamp.day != 1:
-            raise Rejected("Calendar event start_timestamp incorrect", reason_code=RejectedReason.AGAINST_TNC)
+        if (
+            event.start_timestamp.year != 2020
+            or event.start_timestamp.month != 1
+            or event.start_timestamp.day != 1
+        ):
+            raise Rejected(
+                "Calendar event start_timestamp incorrect", reason_code=RejectedReason.AGAINST_TNC
+            )
 
 
 def post_posting_code(postings, effective_date):
-    posting_count = sum(1 for p in vault.get_postings() if not p.credit and p.account_address == DEFAULT_ADDRESS)
+    posting_count = sum(
+        1 for p in vault.get_postings() if not p.credit and p.account_address == DEFAULT_ADDRESS
+    )
 
     if posting_count >= 1:
         vault.add_account_note(

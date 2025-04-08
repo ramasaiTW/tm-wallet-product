@@ -153,7 +153,9 @@ def generate_account_ids(number_of_accounts: int, id_base: str = "", start: int 
     return ["_".join([str(i), id_base]) for i in range(start, start + number_of_accounts)]
 
 
-def process_flags(flag_parent: dict[str, Any], flag_parent_id: str, flag_identifier_type: str) -> dict[str, dict[str, Any]]:
+def process_flags(
+    flag_parent: dict[str, Any], flag_parent_id: str, flag_identifier_type: str
+) -> dict[str, dict[str, Any]]:
     """
     Creates flags for a given parent (account or customer) and definition
     :param flag_parent: the parent definition, which has a 'flags' key
@@ -188,7 +190,9 @@ def create_resource_batch(resources: list[dict[str, Any]], batch_id: str = "") -
     return endtoend.helper.send_request("post", "/v1/resource-batches", data=data)
 
 
-def create_dataloader_resource_batch_requests(dependency_groups: list[dict], product_version_id: str, batch_size: int = 150) -> Generator[tuple[dict, BatchResourceIds], None, None]:
+def create_dataloader_resource_batch_requests(
+    dependency_groups: list[dict], product_version_id: str, batch_size: int = 150
+) -> Generator[tuple[dict, BatchResourceIds], None, None]:
     """
     Creates dataloader resource batches with the required resources and produces
     the corresponding requests to Kafka. Following resource types supported:
@@ -228,7 +232,8 @@ def create_dataloader_resource_batch_requests(dependency_groups: list[dict], pro
             batch_resources.append(
                 get_customer_resource(
                     customer_id,
-                    dependencies=list(customer_flags.keys()) + account_ids[i * num_accounts : (i + 1) * num_accounts],  # noqa: E203
+                    dependencies=list(customer_flags.keys())
+                    + account_ids[i * num_accounts : (i + 1) * num_accounts],  # noqa: E203
                 )
             )
 
@@ -276,7 +281,9 @@ def create_and_produce_data_loader_requests(
     """
 
     batch_id_mapping = {}
-    for request, batch_resource_ids in create_dataloader_resource_batch_requests(dependency_groups, product_version_id, batch_size):
+    for request, batch_resource_ids in create_dataloader_resource_batch_requests(
+        dependency_groups, product_version_id, batch_size
+    ):
         # The data-loader does not include resources in the subsequent events, so we keep track
         # of the ones we're interested in to avoid fetching the batch later
         batch_id = request["resource_batch"]["id"]
@@ -333,10 +340,14 @@ def wait_for_batch_events(batch_ids: set[str], batch_handler: Callable | None = 
 
 
 def batch_get_resource_batches(ids: list[str]) -> dict[str, dict]:
-    return endtoend.helper.send_request("get", "/v1/resource-batches:batchGet", params={"ids": ids})["resource_batches"]
+    return endtoend.helper.send_request(
+        "get", "/v1/resource-batches:batchGet", params={"ids": ids}
+    )["resource_batches"]
 
 
-def wait_for_resource_batch(batch_id: str, expected_status: str = "RESOURCE_BATCH_STATUS_COMPLETE") -> dict[str, Any]:
+def wait_for_resource_batch(
+    batch_id: str, expected_status: str = "RESOURCE_BATCH_STATUS_COMPLETE"
+) -> dict[str, Any]:
     """
     Waits for a resource batch to reach the expected status
     """

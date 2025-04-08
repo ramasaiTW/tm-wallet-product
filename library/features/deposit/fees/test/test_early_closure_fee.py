@@ -67,7 +67,9 @@ class EarlyClosureFeeTest(FeatureTest):
 
     @patch.object(early_closure_fee.fees, "fee_postings")
     @patch.object(early_closure_fee.utils, "get_parameter")
-    def test_early_closure_fee_not_applied_if_closed_after_closure_days(self, mock_get_parameter: MagicMock, mock_fee_postings: MagicMock):
+    def test_early_closure_fee_not_applied_if_closed_after_closure_days(
+        self, mock_get_parameter: MagicMock, mock_fee_postings: MagicMock
+    ):
         effective_time = datetime(2019, 1, 9, tzinfo=UTC_ZONE)
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
@@ -81,7 +83,9 @@ class EarlyClosureFeeTest(FeatureTest):
                 dt=effective_time,
             )
         }
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
 
         results = early_closure_fee.apply_fees(
             vault=mock_vault,
@@ -120,7 +124,9 @@ class EarlyClosureFeeTest(FeatureTest):
                 dt=effective_time,
             )
         }
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
 
         mock_fee_postings.return_value = [
             SentinelPosting("fee_posting_1"),
@@ -219,7 +225,9 @@ class EarlyClosureFeeTest(FeatureTest):
 
     @patch.object(early_closure_fee.fees, "fee_postings")
     @patch.object(early_closure_fee.utils, "get_parameter")
-    def test_early_closure_fee_not_applied_if_already_applied(self, mock_get_parameter: MagicMock, mock_fee_postings: MagicMock):
+    def test_early_closure_fee_not_applied_if_already_applied(
+        self, mock_get_parameter: MagicMock, mock_fee_postings: MagicMock
+    ):
         effective_time = datetime(2019, 1, 8, tzinfo=UTC_ZONE)
         early_closure_fee_amount = Decimal("10")
         mock_get_parameter.side_effect = mock_utils_get_parameter(
@@ -255,7 +263,9 @@ class EarlyClosureFeeTest(FeatureTest):
 
     @patch.object(early_closure_fee.fees, "fee_postings")
     @patch.object(early_closure_fee.utils, "get_parameter")
-    def test_early_closure_fee_not_applied_if_zero_fee(self, mock_get_parameter: MagicMock, mock_fee_postings: MagicMock):
+    def test_early_closure_fee_not_applied_if_zero_fee(
+        self, mock_get_parameter: MagicMock, mock_fee_postings: MagicMock
+    ):
         effective_time = datetime(2019, 1, 8, tzinfo=UTC_ZONE)
         early_closure_fee_amount = Decimal("0")
         mock_get_parameter.side_effect = mock_utils_get_parameter(

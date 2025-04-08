@@ -47,12 +47,16 @@ from inception_sdk.test_framework.contracts.unit.supervisor.common import (
 
 DECIMAL_ZERO = Decimal("0")
 DEFAULT_DENOMINATION = "GBP"
-DEFAULT_COORDINATE = BalanceCoordinate(DEFAULT_ADDRESS, DEFAULT_ASSET, DEFAULT_DENOMINATION, Phase.COMMITTED)
+DEFAULT_COORDINATE = BalanceCoordinate(
+    DEFAULT_ADDRESS, DEFAULT_ASSET, DEFAULT_DENOMINATION, Phase.COMMITTED
+)
 
 
 class GetSuperviseesForAliasTest(SupervisorFeatureTest):
     @patch.object(supervisor_utils, "sort_supervisees")
-    def test_get_supervisees_for_alias_sorts_only_given_alias_vault_objects(self, mock_sort_supervisees: MagicMock):
+    def test_get_supervisees_for_alias_sorts_only_given_alias_vault_objects(
+        self, mock_sort_supervisees: MagicMock
+    ):
         # construct mocks
         mock_vault_loan_1 = self.create_supervisee_mock(supervisee_alias="loan", account_id="001")
         mock_vault_loan_2 = self.create_supervisee_mock(supervisee_alias="loan", account_id="002")
@@ -77,7 +81,9 @@ class GetSuperviseesForAliasTest(SupervisorFeatureTest):
         mock_sort_supervisees.assert_called_once_with(expected_loan_vault_objects)
 
     @patch.object(supervisor_utils, "sort_supervisees")
-    def test_get_supervisees_for_alias_sorts_empty_list_when_no_matching_alias(self, mock_sort_supervisees: MagicMock):
+    def test_get_supervisees_for_alias_sorts_empty_list_when_no_matching_alias(
+        self, mock_sort_supervisees: MagicMock
+    ):
         # construct mocks
         mock_vault_loan_1 = self.create_supervisee_mock(supervisee_alias="loan", account_id="001")
         mock_vault_loan_2 = self.create_supervisee_mock(supervisee_alias="loan", account_id="002")
@@ -97,7 +103,9 @@ class GetSuperviseesForAliasTest(SupervisorFeatureTest):
         mock_sort_supervisees.assert_called_once_with([])
 
     @patch.object(supervisor_utils, "sort_supervisees")
-    def test_get_supervisees_for_alias_sorts_empty_list_with_no_supervisees(self, mock_sort_supervisees: MagicMock):
+    def test_get_supervisees_for_alias_sorts_empty_list_with_no_supervisees(
+        self, mock_sort_supervisees: MagicMock
+    ):
         # construct mocks
         mock_supervisor_vault = self.create_supervisor_mock(supervisees={})
         mock_sort_supervisees.return_value = []
@@ -122,12 +130,20 @@ class GetSuperviseesForAliasTest(SupervisorFeatureTest):
 
     def test_sort_supervisees_with_different_dates(self):
         # construct mocks
-        mock_s1 = self.create_supervisee_mock(account_id="s1", creation_date=datetime(2012, 1, 9, 0, 0))
-        mock_s2 = self.create_supervisee_mock(account_id="s2", creation_date=datetime(2013, 1, 9, 0, 0))
-        mock_s3 = self.create_supervisee_mock(account_id="s3", creation_date=datetime(2014, 1, 9, 0, 0))
+        mock_s1 = self.create_supervisee_mock(
+            account_id="s1", creation_date=datetime(2012, 1, 9, 0, 0)
+        )
+        mock_s2 = self.create_supervisee_mock(
+            account_id="s2", creation_date=datetime(2013, 1, 9, 0, 0)
+        )
+        mock_s3 = self.create_supervisee_mock(
+            account_id="s3", creation_date=datetime(2014, 1, 9, 0, 0)
+        )
         # s0 has the same datetime as s3 but should be sorted
         # alphanumerically before s3
-        mock_s0 = self.create_supervisee_mock(account_id="s0", creation_date=datetime(2014, 1, 9, 0, 0))
+        mock_s0 = self.create_supervisee_mock(
+            account_id="s0", creation_date=datetime(2014, 1, 9, 0, 0)
+        )
 
         # construct expected result
         expected_list = [mock_s1, mock_s2, mock_s0, mock_s3]
@@ -158,9 +174,15 @@ class GetBalanceDefaultDictsForSuperviseesTest(SupervisorFeatureTest):
             sentinel.fetcher_id: SentinelBalancesObservation("balances3"),
         }
 
-        mock_s1 = self.create_supervisee_mock(account_id="s1", balances_observation_fetchers_mapping=bof_mapping_1)
-        mock_s2 = self.create_supervisee_mock(account_id="s2", balances_observation_fetchers_mapping=bof_mapping_2)
-        mock_s3 = self.create_supervisee_mock(account_id="s3", balances_observation_fetchers_mapping=bof_mapping_3)
+        mock_s1 = self.create_supervisee_mock(
+            account_id="s1", balances_observation_fetchers_mapping=bof_mapping_1
+        )
+        mock_s2 = self.create_supervisee_mock(
+            account_id="s2", balances_observation_fetchers_mapping=bof_mapping_2
+        )
+        mock_s3 = self.create_supervisee_mock(
+            account_id="s3", balances_observation_fetchers_mapping=bof_mapping_3
+        )
         supervisee_list = [mock_s1, mock_s2, mock_s3]
 
         expected = [
@@ -179,7 +201,9 @@ class GetBalanceDefaultDictsForSuperviseesTest(SupervisorFeatureTest):
 
 @patch.object(supervisor_utils.utils, "get_balance_default_dict_from_mapping")
 class GetBalanceDefaultDictFromTimeseriesTest(SupervisorFeatureTest):
-    def test_correct_balance_default_dict_list_is_returned(self, mock_get_balance_default_dict_from_mapping: MagicMock):
+    def test_correct_balance_default_dict_list_is_returned(
+        self, mock_get_balance_default_dict_from_mapping: MagicMock
+    ):
         mock_get_balance_default_dict_from_mapping.side_effect = [
             sentinel.s1_balance_default_dict,
             sentinel.s2_balance_default_dict,
@@ -188,15 +212,27 @@ class GetBalanceDefaultDictFromTimeseriesTest(SupervisorFeatureTest):
 
         mock_s1 = self.create_supervisee_mock(
             account_id="s1",
-            requires_fetched_balances={DEFAULT_COORDINATE: BalanceTimeseries([(DEFAULT_DATETIME, sentinel.s1_balance_default_dict)])},
+            requires_fetched_balances={
+                DEFAULT_COORDINATE: BalanceTimeseries(
+                    [(DEFAULT_DATETIME, sentinel.s1_balance_default_dict)]
+                )
+            },
         )
         mock_s2 = self.create_supervisee_mock(
             account_id="s2",
-            requires_fetched_balances={DEFAULT_COORDINATE: BalanceTimeseries([(DEFAULT_DATETIME, sentinel.s2_balance_default_dict)])},
+            requires_fetched_balances={
+                DEFAULT_COORDINATE: BalanceTimeseries(
+                    [(DEFAULT_DATETIME, sentinel.s2_balance_default_dict)]
+                )
+            },
         )
         mock_s3 = self.create_supervisee_mock(
             account_id="s3",
-            requires_fetched_balances={DEFAULT_COORDINATE: BalanceTimeseries([(DEFAULT_DATETIME, sentinel.s3_balance_default_dict)])},
+            requires_fetched_balances={
+                DEFAULT_COORDINATE: BalanceTimeseries(
+                    [(DEFAULT_DATETIME, sentinel.s3_balance_default_dict)]
+                )
+            },
         )
         supervisee_list = [mock_s1, mock_s2, mock_s3]
 
@@ -206,7 +242,9 @@ class GetBalanceDefaultDictFromTimeseriesTest(SupervisorFeatureTest):
             mock_s3.account_id: sentinel.s3_balance_default_dict,
         }
 
-        result = supervisor_utils.get_balances_default_dicts_from_timeseries(supervisees=supervisee_list, effective_datetime=DEFAULT_DATETIME)
+        result = supervisor_utils.get_balances_default_dicts_from_timeseries(
+            supervisees=supervisee_list, effective_datetime=DEFAULT_DATETIME
+        )
 
         self.assertEqual(result, expected_result)
 
@@ -279,7 +317,9 @@ class GetSuperviseeMappingTest(SupervisorFeatureTest):
     def test_only_posting_dict_returned_when_only_posting_directives_present(self):
         # construct mocks
         supervisee_vault = self.create_supervisee_mock(
-            supervisee_hook_result=ScheduledEventHookResult(posting_instructions_directives=[SentinelPostingInstructionsDirective("pid")]),
+            supervisee_hook_result=ScheduledEventHookResult(
+                posting_instructions_directives=[SentinelPostingInstructionsDirective("pid")]
+            ),
             account_id="supervisee",
         )
 
@@ -294,7 +334,9 @@ class GetSuperviseeMappingTest(SupervisorFeatureTest):
     def test_only_notification_dict_returned_when_only_notification_directives_present(self):
         # construct mocks
         supervisee_vault = self.create_supervisee_mock(
-            supervisee_hook_result=ScheduledEventHookResult(account_notification_directives=[SentinelAccountNotificationDirective("anid")]),
+            supervisee_hook_result=ScheduledEventHookResult(
+                account_notification_directives=[SentinelAccountNotificationDirective("anid")]
+            ),
             account_id="supervisee",
         )
 
@@ -311,7 +353,11 @@ class GetSuperviseeMappingTest(SupervisorFeatureTest):
     ):
         # construct mocks
         supervisee_vault = self.create_supervisee_mock(
-            supervisee_hook_result=ScheduledEventHookResult(update_account_event_type_directives=[SentinelUpdateAccountEventTypeDirective("uaetid")]),
+            supervisee_hook_result=ScheduledEventHookResult(
+                update_account_event_type_directives=[
+                    SentinelUpdateAccountEventTypeDirective("uaetid")
+                ]
+            ),
             account_id="supervisee",
         )
 
@@ -333,7 +379,9 @@ class GetSuperviseeMappingTest(SupervisorFeatureTest):
             supervisee_hook_result=ScheduledEventHookResult(
                 account_notification_directives=[SentinelAccountNotificationDirective("anid")],
                 posting_instructions_directives=[SentinelPostingInstructionsDirective("pid")],
-                update_account_event_type_directives=[SentinelUpdateAccountEventTypeDirective("uaetid")],
+                update_account_event_type_directives=[
+                    SentinelUpdateAccountEventTypeDirective("uaetid")
+                ],
             ),
             account_id="supervisee",
         )
@@ -778,7 +826,9 @@ class CreateAggregatePostingInstructionsTest(SupervisorFeatureTest):
 
 @patch.object(supervisor_utils.utils, "round_decimal")
 class FilterAggregateBalancesTest(SupervisorFeatureTest):
-    def test_aggregate_balances_are_filtered_when_rounded_amounts_are_equivalent(self, mock_round_decimal: MagicMock):
+    def test_aggregate_balances_are_filtered_when_rounded_amounts_are_equivalent(
+        self, mock_round_decimal: MagicMock
+    ):
         # new rounded amount, then the latest rounded amount
         mock_round_decimal.side_effect = [
             Decimal("7"),
@@ -837,7 +887,9 @@ class FilterAggregateBalancesTest(SupervisorFeatureTest):
             ]
         )
 
-    def test_aggregate_balances_are_not_filtered_when_rounded_amounts_are_different(self, mock_round_decimal: MagicMock):
+    def test_aggregate_balances_are_not_filtered_when_rounded_amounts_are_different(
+        self, mock_round_decimal: MagicMock
+    ):
         # new rounded amount, then the latest rounded amount
         mock_round_decimal.side_effect = [
             Decimal("12"),
@@ -896,7 +948,9 @@ class FilterAggregateBalancesTest(SupervisorFeatureTest):
             ]
         )
 
-    def test_filter_only_aggregate_balances_for_given_addresses(self, mock_round_decimal: MagicMock):
+    def test_filter_only_aggregate_balances_for_given_addresses(
+        self, mock_round_decimal: MagicMock
+    ):
         # new rounded amount, then the latest rounded amount
         # for each coordinate with address passed in
         mock_round_decimal.side_effect = [
@@ -1029,9 +1083,13 @@ class FilterAggregateBalancesTest(SupervisorFeatureTest):
 
 @patch.object(supervisor_utils.utils, "one_off_schedule_expression")
 class SuperviseeScheduleSyncScheduledEventTest(SupervisorFeatureTest):
-    def test_supervisee_schedule_sync_scheduled_event_no_optional_args(self, mock_one_off_schedule_expression: MagicMock):
+    def test_supervisee_schedule_sync_scheduled_event_no_optional_args(
+        self, mock_one_off_schedule_expression: MagicMock
+    ):
         mock_vault = self.create_supervisor_mock()
-        mock_one_off_schedule_expression.return_value = SentinelScheduleExpression("supervisee schedule sync schedule")
+        mock_one_off_schedule_expression.return_value = SentinelScheduleExpression(
+            "supervisee schedule sync schedule"
+        )
 
         expected = {
             supervisor_utils.SUPERVISEE_SCHEDULE_SYNC_EVENT: ScheduledEvent(
@@ -1042,11 +1100,17 @@ class SuperviseeScheduleSyncScheduledEventTest(SupervisorFeatureTest):
 
         result = supervisor_utils.supervisee_schedule_sync_scheduled_event(vault=mock_vault)
         self.assertDictEqual(result, expected)
-        mock_one_off_schedule_expression.assert_called_once_with(datetime(2019, 1, 1, 0, 0, 30, tzinfo=ZoneInfo(key="UTC")))
+        mock_one_off_schedule_expression.assert_called_once_with(
+            datetime(2019, 1, 1, 0, 0, 30, tzinfo=ZoneInfo(key="UTC"))
+        )
 
-    def test_supervisee_schedule_sync_scheduled_event_with_optional_args(self, mock_one_off_schedule_expression: MagicMock):
+    def test_supervisee_schedule_sync_scheduled_event_with_optional_args(
+        self, mock_one_off_schedule_expression: MagicMock
+    ):
         mock_vault = self.create_supervisor_mock()
-        mock_one_off_schedule_expression.return_value = SentinelScheduleExpression("supervisee schedule sync schedule")
+        mock_one_off_schedule_expression.return_value = SentinelScheduleExpression(
+            "supervisee schedule sync schedule"
+        )
 
         expected = {
             supervisor_utils.SUPERVISEE_SCHEDULE_SYNC_EVENT: ScheduledEvent(
@@ -1055,9 +1119,13 @@ class SuperviseeScheduleSyncScheduledEventTest(SupervisorFeatureTest):
             )
         }
 
-        result = supervisor_utils.supervisee_schedule_sync_scheduled_event(vault=mock_vault, delay_seconds=6)
+        result = supervisor_utils.supervisee_schedule_sync_scheduled_event(
+            vault=mock_vault, delay_seconds=6
+        )
         self.assertDictEqual(result, expected)
-        mock_one_off_schedule_expression.assert_called_once_with(datetime(2019, 1, 1, 0, 0, 6, tzinfo=ZoneInfo(key="UTC")))
+        mock_one_off_schedule_expression.assert_called_once_with(
+            datetime(2019, 1, 1, 0, 0, 6, tzinfo=ZoneInfo(key="UTC"))
+        )
 
 
 class SuperviseeScheduleSyncEventTypesTest(SupervisorFeatureTest):
@@ -1068,7 +1136,9 @@ class SuperviseeScheduleSyncEventTypesTest(SupervisorFeatureTest):
             [
                 SupervisorContractEventType(
                     name=supervisor_utils.SUPERVISEE_SCHEDULE_SYNC_EVENT,
-                    scheduler_tag_ids=[f"PRODUCT_A_{supervisor_utils.SUPERVISEE_SCHEDULE_SYNC_EVENT}_AST"],
+                    scheduler_tag_ids=[
+                        f"PRODUCT_A_{supervisor_utils.SUPERVISEE_SCHEDULE_SYNC_EVENT}_AST"
+                    ],
                 ),
             ],
         )
@@ -1090,7 +1160,9 @@ class GetSuperviseeScheduleSyncUpdatesTest(SupervisorFeatureTest):
         ):
             return [SentinelUpdateAccountEventTypeDirective("synchronised schedule update")]
 
-        expected_schedule_updates = [SentinelUpdateAccountEventTypeDirective("synchronised schedule update")]
+        expected_schedule_updates = [
+            SentinelUpdateAccountEventTypeDirective("synchronised schedule update")
+        ]
         schedule_updates = supervisor_utils.get_supervisee_schedule_sync_updates(
             vault=sentinel.vault,
             supervisee_alias=sentinel.supervisee_alias,
@@ -1098,7 +1170,9 @@ class GetSuperviseeScheduleSyncUpdatesTest(SupervisorFeatureTest):
             schedule_updates_when_supervisees=dummy_schedule_updates_when_supervisees,  # type: ignore # noqa: E501
         )
         self.assertEqual(expected_schedule_updates, schedule_updates)
-        mock_get_supervisees_for_alias.assert_called_once_with(vault=sentinel.vault, alias=sentinel.supervisee_alias)
+        mock_get_supervisees_for_alias.assert_called_once_with(
+            vault=sentinel.vault, alias=sentinel.supervisee_alias
+        )
         mock_one_off_schedule_expression.assert_not_called()
 
     def test_get_supervisee_schedule_sync_updates_when_no_supervisees(
@@ -1127,5 +1201,9 @@ class GetSuperviseeScheduleSyncUpdatesTest(SupervisorFeatureTest):
             delay_seconds=10,
         )
         self.assertEqual(expected_schedule_updates, schedule_updates)
-        mock_get_supervisees_for_alias.assert_called_once_with(vault=sentinel.vault, alias=sentinel.supervisee_alias)
-        mock_one_off_schedule_expression.assert_called_once_with(schedule_datetime=DEFAULT_DATETIME + relativedelta(seconds=10))
+        mock_get_supervisees_for_alias.assert_called_once_with(
+            vault=sentinel.vault, alias=sentinel.supervisee_alias
+        )
+        mock_one_off_schedule_expression.assert_called_once_with(
+            schedule_datetime=DEFAULT_DATETIME + relativedelta(seconds=10)
+        )

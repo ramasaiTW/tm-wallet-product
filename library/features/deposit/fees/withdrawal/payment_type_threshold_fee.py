@@ -24,7 +24,8 @@ parameters = [
     Parameter(
         name=PARAM_PAYMENT_TYPE_THRESHOLD_FEE,
         level=ParameterLevel.TEMPLATE,
-        description="Fees required when the payment amount exceeds the threshold" " for the payment type",
+        description="Fees required when the payment amount exceeds the threshold"
+        " for the payment type",
         display_name="Payment Type Threshold Fee",
         shape=StringShape(),
         default_value=dumps(
@@ -36,13 +37,17 @@ parameters = [
 ]
 
 
-def apply_fees(vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str) -> list[CustomInstruction]:
+def apply_fees(
+    vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str
+) -> list[CustomInstruction]:
     """
     Check posting instruction details for PAYMENT_TYPE key and return any fees associated with that
     payment type if the posting value breaches the associated limit. The fee is credited to the
     account defined by the payment_type_fee_income_account parameter.
     """
-    payment_type_threshold_fee_param = utils.get_parameter(vault, PARAM_PAYMENT_TYPE_THRESHOLD_FEE, is_json=True)
+    payment_type_threshold_fee_param = utils.get_parameter(
+        vault, PARAM_PAYMENT_TYPE_THRESHOLD_FEE, is_json=True
+    )
     payment_type_fee_income_account = utils.get_parameter(vault, "payment_type_fee_income_account")
 
     custom_instructions: list[CustomInstruction] = []
@@ -56,11 +61,16 @@ def apply_fees(vault: SmartContractVault, postings: utils.PostingInstructionList
         payment_type_threshold = Decimal(current_payment_type_dict["threshold"])
 
         posting_balances = posting.balances()
-        available_balance_delta = utils.get_available_balance(balances=posting_balances, denomination=denomination)
+        available_balance_delta = utils.get_available_balance(
+            balances=posting_balances, denomination=denomination
+        )
 
         if -payment_type_threshold > available_balance_delta:
             instruction_details = utils.standard_instruction_details(
-                description=(f"payment fee on withdrawal more than {payment_type_threshold} for payment " f"with type {current_payment_type}"),
+                description=(
+                    f"payment fee on withdrawal more than {payment_type_threshold} for payment "
+                    f"with type {current_payment_type}"
+                ),
                 event_type="APPLY_PAYMENT_TYPE_THRESHOLD_FEE",
                 gl_impacted=True,
             )

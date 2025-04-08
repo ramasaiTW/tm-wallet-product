@@ -43,7 +43,10 @@ class UpdateAccountEventTypeDirective:
             )
         if self.skip is None:
             if not self.end_datetime and not self.expression and not self.schedule_method:
-                raise InvalidSmartContractError("UpdateAccountEventTypeDirective object must have either an " "end_datetime, an expression, schedule_method, or skip defined")
+                raise InvalidSmartContractError(
+                    "UpdateAccountEventTypeDirective object must have either an "
+                    "end_datetime, an expression, schedule_method, or skip defined"
+                )
         else:
             try:
                 types_utils.validate_type(self.skip, bool)
@@ -55,7 +58,10 @@ class UpdateAccountEventTypeDirective:
                     hint="Optional[Union[bool, ScheduleSkip]]",
                 )
         if self.expression is not None and self.schedule_method is not None:
-            raise InvalidSmartContractError("UpdateAccountEventTypeDirective cannot contain both" " expression and schedule_method fields")
+            raise InvalidSmartContractError(
+                "UpdateAccountEventTypeDirective cannot contain both"
+                " expression and schedule_method fields"
+            )
 
     @classmethod
     @lru_cache()
@@ -78,7 +84,9 @@ class UpdateAccountEventTypeDirective:
         if language_code != symbols.Languages.ENGLISH:
             raise ValueError("Language not supported")
         return [
-            types_utils.ValueSpec(name="event_type", type="str", docstring="The `event_type` that is to be modified."),
+            types_utils.ValueSpec(
+                name="event_type", type="str", docstring="The `event_type` that is to be modified."
+            ),
             types_utils.ValueSpec(
                 name="expression",
                 type="Optional[ScheduleExpression]",

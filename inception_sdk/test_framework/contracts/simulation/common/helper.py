@@ -349,7 +349,9 @@ def create_release_event(
                                             is executed when the release is processed
     :return SimulationEvent with a Release Posting Instruction Batch
     """
-    release_instruction = Release(require_pre_posting_hook_execution=require_pre_posting_hook_execution)
+    release_instruction = Release(
+        require_pre_posting_hook_execution=require_pre_posting_hook_execution
+    )
     return create_posting_instruction_batch_event(
         instructions=[release_instruction],
         value_datetime=value_datetime,

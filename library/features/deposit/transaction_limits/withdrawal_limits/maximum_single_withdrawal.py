@@ -16,7 +16,8 @@ parameters = [
     Parameter(
         name=PARAM_MAX_WITHDRAWAL,
         level=ParameterLevel.TEMPLATE,
-        description="The maximum amount that can be withdrawn from the account" " in a single transaction.",
+        description="The maximum amount that can be withdrawn from the account"
+        " in a single transaction.",
         display_name="Maximum Withdrawal Amount",
         shape=NumberShape(min_value=Decimal("0"), step=Decimal("0.01")),
         default_value=Decimal("10000"),
@@ -24,7 +25,9 @@ parameters = [
 ]
 
 
-def validate(*, vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str) -> Rejection | None:
+def validate(
+    *, vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str
+) -> Rejection | None:
     """
     Reject if any posting amount is greater than the maximum allowed withdrawal limit.
     :param vault: Vault object for the account whose limits are being validated
@@ -35,13 +38,16 @@ def validate(*, vault: SmartContractVault, postings: utils.PostingInstructionLis
     """
     max_withdrawal: Decimal = utils.get_parameter(vault, PARAM_MAX_WITHDRAWAL)
     for posting in postings:
-        posting_value = utils.get_available_balance(balances=posting.balances(), denomination=denomination)
+        posting_value = utils.get_available_balance(
+            balances=posting.balances(), denomination=denomination
+        )
         # The posting value will be negative for debits on liability accounts
         if posting_value > 0:
             continue
         elif abs(posting_value) > max_withdrawal:
             return Rejection(
-                message=f"Transaction amount {abs(posting_value)} {denomination} is greater than " f"the maximum withdrawal amount {max_withdrawal} {denomination}.",
+                message=f"Transaction amount {abs(posting_value)} {denomination} is greater than "
+                f"the maximum withdrawal amount {max_withdrawal} {denomination}.",
                 reason_code=RejectionReason.AGAINST_TNC,
             )
 

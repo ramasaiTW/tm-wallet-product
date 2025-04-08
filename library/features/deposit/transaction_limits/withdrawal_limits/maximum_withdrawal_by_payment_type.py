@@ -31,7 +31,9 @@ parameters = [
 ]
 
 
-def validate(*, vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str) -> Rejection | None:
+def validate(
+    *, vault: SmartContractVault, postings: utils.PostingInstructionListAlias, denomination: str
+) -> Rejection | None:
     """
     Reject the posting if the withdrawal value exceeds the PAYMENT_TYPE limit.
     :param vault: Vault object for the account whose limits are being validated
@@ -40,7 +42,9 @@ def validate(*, vault: SmartContractVault, postings: utils.PostingInstructionLis
     :param denomination: the denomination of the account
     :return: rejection if the limit conditions are not met
     """
-    max_withdrawal_by_payment_type: dict[str, str] = utils.get_parameter(vault, PARAM_MAX_WITHDRAWAL_BY_TYPE, is_json=True)
+    max_withdrawal_by_payment_type: dict[str, str] = utils.get_parameter(
+        vault, PARAM_MAX_WITHDRAWAL_BY_TYPE, is_json=True
+    )
     for posting in postings:
         payment_type = posting.instruction_details.get(PAYMENT_TYPE)
 
@@ -48,7 +52,9 @@ def validate(*, vault: SmartContractVault, postings: utils.PostingInstructionLis
             # Payment type has a max withdrawal limit defined
             if payment_type in max_withdrawal_by_payment_type:
                 withdrawal_limit = Decimal(max_withdrawal_by_payment_type[payment_type])
-                posting_value = utils.get_available_balance(balances=posting.balances(), denomination=denomination)
+                posting_value = utils.get_available_balance(
+                    balances=posting.balances(), denomination=denomination
+                )
                 # The posting value will be negative for debits on liability accounts
                 if posting_value > 0:
                     continue

@@ -8,7 +8,15 @@ from typing import List, Optional
 
 
 class CalendarEvent:
-    def __init__(self, *, id: str, calendar_id: str, start_datetime: datetime, end_datetime: datetime, _from_proto: bool = False):
+    def __init__(
+        self,
+        *,
+        id: str,
+        calendar_id: str,
+        start_datetime: datetime,
+        end_datetime: datetime,
+        _from_proto: bool = False
+    ):
         self.id = id
         self.calendar_id = calendar_id
         self.start_datetime = start_datetime

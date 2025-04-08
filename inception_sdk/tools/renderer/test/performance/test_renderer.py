@@ -113,7 +113,10 @@ class RendererPerformanceTest(TestCase):
                 s = f"\nattr{i} = 1\n"
                 if i > 0:
                     for j in range(i):
-                        s += f"\nimport common{j} as common{j}\ncommon_attr_{j} = " f"common{j}.attr{j}\n"
+                        s += (
+                            f"\nimport common{j} as common{j}\ncommon_attr_{j} = "
+                            f"common{j}.attr{j}\n"
+                        )
                 file.write(s)
             imported_modules.update({f"common{i}": path_import(str(common_path), f"common{i}")})
 
@@ -123,10 +126,16 @@ class RendererPerformanceTest(TestCase):
             with open(p, "w+") as file:
                 s = f"\n{module_name}_attr = 1\n"
                 for i in range(max(import_depth - 1, 0)):
-                    s += f"\nimport common{i} as common{i}\n{module_name}_attr{i} = " f"common{i}.attr{i}"
+                    s += (
+                        f"\nimport common{i} as common{i}\n{module_name}_attr{i} = "
+                        f"common{i}.attr{i}"
+                    )
                 file.write(s)
             imported_modules.update({module_name: path_import(str(p), module_name)})
-            template += f"\nimport {module_name} as {module_name}\n" f"{module_name}_a = {module_name}.{module_name}_attr\n"
+            template += (
+                f"\nimport {module_name} as {module_name}\n"
+                f"{module_name}_a = {module_name}.{module_name}_attr\n"
+            )
 
         template_path = self.temp_test_data_path / "template.py"
         with open(template_path, "w+") as file:

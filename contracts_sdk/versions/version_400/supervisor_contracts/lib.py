@@ -44,7 +44,9 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 implemented in Vault at the same time.
             """,
         )
-        spec.public_attributes["plan_id"] = types_utils.ValueSpec(name="plan_id", type="str", docstring="The ID of the Plan currently being executed.")
+        spec.public_attributes["plan_id"] = types_utils.ValueSpec(
+            name="plan_id", type="str", docstring="The ID of the Plan currently being executed."
+        )
         spec.public_attributes["supervisees"] = types_utils.ValueSpec(
             name="supervisees",
             type="Dict[str, Vault]",
@@ -88,7 +90,9 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                 see [calendar](/reference/contracts/contracts_api_4xx/supervisor_contracts_api_reference4xx/hook_requirements/#calendar)
             """,  # noqa: E501
             args=[
-                types_utils.ValueSpec(name="calendar_ids", type="List[str]", docstring="List of Calendar Ids"),
+                types_utils.ValueSpec(
+                    name="calendar_ids", type="List[str]", docstring="List of Calendar Ids"
+                ),
             ],
             return_value=types_utils.ReturnValueSpec(
                 docstring="""

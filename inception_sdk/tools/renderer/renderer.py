@@ -122,7 +122,9 @@ VAULT_TYPES = [
 
 @dataclass
 class RendererConfig:
-    autogen_warning: str = f"# Code auto-generated using Inception Smart Contract Renderer Version {__version__}\n"
+    autogen_warning: str = (
+        f"# Code auto-generated using Inception Smart Contract Renderer Version {__version__}\n"
+    )
     hashing_algorithm: str = "md5"
     include_autogen_warning: bool = True
     module_header_prefix: str = "Objects below have been imported from"
@@ -167,7 +169,10 @@ class SmartContractRenderer:
         self.root_tree: ast.Module = ast.parse(inspect.getsource(self.root_module))
 
         if not is_module_in_contracts_language_v4(self.root_tree):
-            raise ValueError("The renderer only supports CLv4 contracts from Product Library Release 21 / " "SDK 1.4.0 onwards. Please use a version from an earlier release for CLv3 contracts")
+            raise ValueError(
+                "The renderer only supports CLv4 contracts from Product Library Release 21 / "
+                "SDK 1.4.0 onwards. Please use a version from an earlier release for CLv3 contracts"
+            )
 
         self.config = renderer_config
         if renderer_config.use_git:
@@ -226,20 +231,28 @@ class SmartContractRenderer:
         self._remove_unused_objects()
         self._add_imported_stmts_to_root_tree()
         if self.config.render_metadata_at_top_of_file:
-            self.root_tree.body, order_changed = reorder_nodes(self.root_tree.body, self.config.sc_order)
+            self.root_tree.body, order_changed = reorder_nodes(
+                self.root_tree.body, self.config.sc_order
+            )
 
             if order_changed:
                 # Add root module header for template objects at the top of the tree
                 self._add_root_module_header_to_tree()
-                self.root_tree.body = remove_remaining_headers(self.root_tree.body, self.config.module_header_prefix)
+                self.root_tree.body = remove_remaining_headers(
+                    self.root_tree.body, self.config.module_header_prefix
+                )
 
         self._replace_decorator_constants()
         # We use multiple NodeTransformers that introduce new nodes and invalidate location info
         ast.fix_missing_locations(self.root_tree)
         self.rendered_contract = ast.unparse(self.root_tree)
-        self.rendered_contract = remove_quotes_from_module_headers(self.rendered_contract, self.header_identifier)
+        self.rendered_contract = remove_quotes_from_module_headers(
+            self.rendered_contract, self.header_identifier
+        )
         if self.config.include_autogen_warning:
-            self.rendered_contract = "\n".join([self.config.autogen_warning, self.rendered_contract])
+            self.rendered_contract = "\n".join(
+                [self.config.autogen_warning, self.rendered_contract]
+            )
 
         if self.config.apply_formatting:
             self.rendered_contract = format_str(self.rendered_contract, mode=Mode(line_length=100))
@@ -297,7 +310,9 @@ class SmartContractRenderer:
         objects. Refer to `get_unreferenced_objects` function for an example reference map.
         """
         imported_obj_references = defaultdict(set, {o: set() for o in self.objects_to_import})
-        imported_obj_by_module = {(o.namespaced_name, o.module_from): o for o in self.objects_to_import}
+        imported_obj_by_module = {
+            (o.namespaced_name, o.module_from): o for o in self.objects_to_import
+        }
 
         # Get all references made by imported objects to other imported objects
         for current_obj in self.objects_to_import:
@@ -347,7 +362,9 @@ class SmartContractRenderer:
     def _get_module_filename_headers(self, module: ModuleType) -> list[str]:
         if self.config.use_full_filepath_in_headers:
             if self.config.use_git:
-                module_filename = get_relative_filepath_from_repo(str(module.__file__), self.git_repo)
+                module_filename = get_relative_filepath_from_repo(
+                    str(module.__file__), self.git_repo
+                )
             else:
                 module_filename = get_relative_filepath_from_cwd(str(module.__file__))
         else:
@@ -418,7 +435,9 @@ class SmartContractRenderer:
         if self.vault_type_hint_replaced:
             if typing_import := self.allowed_natives_imported.get("typing"):
                 # Support for importing Any as <xyz>  is deemed unnecessary
-                is_any_imported = any(alias.name == "Any" for alias in typing_import.import_stmt.names)
+                is_any_imported = any(
+                    alias.name == "Any" for alias in typing_import.import_stmt.names
+                )
                 if not is_any_imported:
                     typing_import.import_stmt.names.append(ast.alias(name="Any"))
             else:
@@ -428,7 +447,9 @@ class SmartContractRenderer:
                     # 0 means an absolute import
                     level=0,
                 )
-                self.allowed_natives_imported["typing"] = NativeModule(name="typing", import_stmt=typing_importfrom, namespaced_name="typing")
+                self.allowed_natives_imported["typing"] = NativeModule(
+                    name="typing", import_stmt=typing_importfrom, namespaced_name="typing"
+                )
 
     def _replace_decorator_constants(self) -> None:
         """
@@ -485,7 +506,9 @@ class ImportedObjectsVisitor(ast.NodeVisitor):
             self.objects_referenced.add(imported_object_ref)
         elif from_module := getattr(node, "from_module", None):
             if (node.name, from_module) in self.imported_objects_by_module:
-                self.objects_referenced.add(self.imported_objects_by_module[(node.name, from_module)])
+                self.objects_referenced.add(
+                    self.imported_objects_by_module[(node.name, from_module)]
+                )
 
         return self.generic_visit(node)
 
@@ -496,7 +519,9 @@ class RenameDefinitionTransformer(ast.NodeTransformer):
     and variable assignments)
     """
 
-    def __init__(self, imported_objects: list[ImportedObject], is_root_module: bool = False) -> None:
+    def __init__(
+        self, imported_objects: list[ImportedObject], is_root_module: bool = False
+    ) -> None:
         self.imported_objs_by_name = {obj.name: obj for obj in imported_objects}
         self.is_root_module = is_root_module
         super().__init__()
@@ -552,12 +577,19 @@ class RenameReferenceTransformer(ast.NodeTransformer):
         elif isinstance(child_node.value, ast.Name):
             import_match = [i for i in self.imported_modules if i.get_name() == child_node.value.id]
             if len(import_match) > 1:
-                raise RenderException("Found ambiguous reference to an imported module. Multiple " f"matches of {child_node.value.id} found in {self.imported_modules}")
+                raise RenderException(
+                    "Found ambiguous reference to an imported module. Multiple "
+                    f"matches of {child_node.value.id} found in {self.imported_modules}"
+                )
             if import_match:
-                namespaced_id = combine_module_and_object_name(import_match[0].module.__name__, child_node.attr)
+                namespaced_id = combine_module_and_object_name(
+                    import_match[0].module.__name__, child_node.attr
+                )
                 # we're arbitrarily adding a new attribute
                 # this may need revisiting (e.g. just store in a separate data structure)
-                return ast.Name(ctx=ast.Load(), id=namespaced_id, from_module=import_match[0].module)
+                return ast.Name(
+                    ctx=ast.Load(), id=namespaced_id, from_module=import_match[0].module
+                )
         return child_node
 
     def visit_Attribute(self, node: ast.Attribute):
@@ -669,9 +701,16 @@ class ReplaceDecoratorConstantsTransformer(ast.NodeTransformer):
         """
         if func_def.decorator_list:
             for i, decorator in enumerate(func_def.decorator_list):
-                if isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Name) and decorator.func.id in ["requires", "fetch_account_data"] and decorator.keywords:
+                if (
+                    isinstance(decorator, ast.Call)
+                    and isinstance(decorator.func, ast.Name)
+                    and decorator.func.id in ["requires", "fetch_account_data"]
+                    and decorator.keywords
+                ):
                     # update the keywords with the constants
-                    decorator.keywords = [self._visit_decorator_keyword(k) for k in decorator.keywords]
+                    decorator.keywords = [
+                        self._visit_decorator_keyword(k) for k in decorator.keywords
+                    ]
                 # update the item in decorator list with updated value
                 func_def.decorator_list[i] = decorator
         return self.generic_visit(func_def)
@@ -705,7 +744,9 @@ class ReplaceDecoratorConstantsTransformer(ast.NodeTransformer):
         def _update_starred_elements(strd: ast.Starred) -> list:
             # update Name elements, return original element otherwise
             els = self._list_assigns[strd.value.id].elts
-            return [_update_name_to_constant(elt) if isinstance(elt, ast.Name) else elt for elt in els]
+            return [
+                _update_name_to_constant(elt) if isinstance(elt, ast.Name) else elt for elt in els
+            ]
 
         if isinstance(keyword.value, ast.Name):
             keyword.value = _update_name_to_constant(keyword.value)
@@ -715,7 +756,10 @@ class ReplaceDecoratorConstantsTransformer(ast.NodeTransformer):
 
         elif isinstance(keyword.value, ast.Dict):
             # transform keys
-            keyword.value.keys = [_update_name_to_constant(key) if isinstance(key, ast.Name) else key for key in keyword.value.keys]
+            keyword.value.keys = [
+                _update_name_to_constant(key) if isinstance(key, ast.Name) else key
+                for key in keyword.value.keys
+            ]
 
             # transform values
             for i, value in enumerate(keyword.value.values):
@@ -752,20 +796,36 @@ class ObjectDiscovery(ast.NodeTransformer):
             module_alias = alias.asname
             if module_name == CONTRACTS_API:
                 statement = ast.unparse(node)
-                raise RenderException(f"contracts_api cannot be imported directly: \n" f'   File "{self.current_module.__file__}" line {node.lineno}:\n' f"\t{statement}")
+                raise RenderException(
+                    f"contracts_api cannot be imported directly: \n"
+                    f'   File "{self.current_module.__file__}" line {node.lineno}:\n'
+                    f"\t{statement}"
+                )
             else:
                 if module_name in self.renderer.config.whitelisted_modules:
-                    if ALL_REQUIRED in self.renderer.config.whitelisted_modules[module_name] and module_alias:
+                    if (
+                        ALL_REQUIRED in self.renderer.config.whitelisted_modules[module_name]
+                        and module_alias
+                    ):
                         statement = ast.unparse(node)
-                        raise RenderException(f"{module_name=} must be imported directly and must not be aliased:" f'\n   File "{self.current_module.__file__}" line {node.lineno}:\n' f"\t{statement}")
+                        raise RenderException(
+                            f"{module_name=} must be imported directly and must not be aliased:"
+                            f'\n   File "{self.current_module.__file__}" line {node.lineno}:\n'
+                            f"\t{statement}"
+                        )
                     if module_name not in self.renderer.allowed_natives_imported:
-                        self.renderer.allowed_natives_imported[module_name] = NativeModule(name=module_name, import_stmt=node, namespaced_name=module_name)
+                        self.renderer.allowed_natives_imported[module_name] = NativeModule(
+                            name=module_name, import_stmt=node, namespaced_name=module_name
+                        )
 
                     continue
                 elif not alias.asname:
                     statement = ast.unparse(node)
                     raise RenderException(
-                        "Import statements must include an 'as' alias " f'(e.g. "import library.utils as utils"): \n' f"File {self.current_module.__file__} line {node.lineno}:\n" f"\t{statement}"
+                        "Import statements must include an 'as' alias "
+                        f'(e.g. "import library.utils as utils"): \n'
+                        f"File {self.current_module.__file__} line {node.lineno}:\n"
+                        f"\t{statement}"
                     )
                 else:
                     # import is either a feature or is another 3rd party/built-in being imported
@@ -773,31 +833,54 @@ class ObjectDiscovery(ast.NodeTransformer):
                     # would exist in self.renderer.config.whitelisted_modules
                     module_alias = alias.asname
                     module: ModuleType = getattr(self.current_module, module_alias)
-                    if any(s in get_module_dirname(module) for s in ["site-packages", "third_party"]):
-                        raise RenderException(f"{self.current_module.__file__} is attempting to import a " f"third-party module: {module.__file__}")
+                    if any(
+                        s in get_module_dirname(module) for s in ["site-packages", "third_party"]
+                    ):
+                        raise RenderException(
+                            f"{self.current_module.__file__} is attempting to import a "
+                            f"third-party module: {module.__file__}"
+                        )
                     imported_module = ImportedModule(
                         name=alias.name,
                         alias=alias.asname,
                         module=module,
                     )
                     if self.renderer.module_import_mapping.get(self.current_module):
-                        if imported_module not in self.renderer.module_import_mapping[self.current_module]:
-                            self.renderer.module_import_mapping[self.current_module].append(imported_module)
+                        if (
+                            imported_module
+                            not in self.renderer.module_import_mapping[self.current_module]
+                        ):
+                            self.renderer.module_import_mapping[self.current_module].append(
+                                imported_module
+                            )
                     else:
-                        self.renderer.module_import_mapping.update({self.current_module: [imported_module]})
+                        self.renderer.module_import_mapping.update(
+                            {self.current_module: [imported_module]}
+                        )
                     if module not in self.renderer.modules_visited:
                         self.renderer.modules_visited.add(module)
                         try:
                             module_ast = ast.parse(inspect.getsource(module))
                         except TypeError as te:
-                            import_names = " ".join([alias.name for alias in self.current_root_import.names])
+                            import_names = " ".join(
+                                [alias.name for alias in self.current_root_import.names]
+                            )
                             if "is a built-in module" in te.args[0]:
                                 raise RenderException(
-                                    f"import '{import_names}' (Line: " f"{self.current_root_import.lineno} " f"Col: {self.current_root_import.col_offset}) : " f"{module} is not a whitelisted module."
+                                    f"import '{import_names}' (Line: "
+                                    f"{self.current_root_import.lineno} "
+                                    f"Col: {self.current_root_import.col_offset}) : "
+                                    f"{module} is not a whitelisted module."
                                 )
-                            raise ImportError(f"Error unable to import '{import_names}' (Line: " f"{self.current_root_import.lineno} Col: " f"{self.current_root_import.col_offset}) : {te}")
+                            raise ImportError(
+                                f"Error unable to import '{import_names}' (Line: "
+                                f"{self.current_root_import.lineno} Col: "
+                                f"{self.current_root_import.col_offset}) : {te}"
+                            )
 
-                        obj_discovery = ObjectDiscovery(self.renderer, module, self.current_root_import)
+                        obj_discovery = ObjectDiscovery(
+                            self.renderer, module, self.current_root_import
+                        )
                         obj_discovery.visit(module_ast)
         self.current_root_import = None
         return None
@@ -813,17 +896,27 @@ class ObjectDiscovery(ast.NodeTransformer):
                 # verify objects from module are allowed to be imported
                 for alias in aliases:
                     if alias.name not in self.renderer.config.whitelisted_modules[module_name]:
-                        raise RenderException(f"Importing {alias.name} from {module_name=} is not allowed.\n" f"Module: '{self.current_module.__name__}' Line: {node.lineno}")
+                        raise RenderException(
+                            f"Importing {alias.name} from {module_name=} is not allowed.\n"
+                            f"Module: '{self.current_module.__name__}' Line: {node.lineno}"
+                        )
             else:
                 # module is contracts_api so we need to check whether import * is being called
                 if any(alias.name == "*" for alias in aliases):
-                    raise RenderException(f"Importing '*' from {module_name=} is against best practices.\n" f"Module: '{self.current_module.__name__}' Line: {node.lineno}")
+                    raise RenderException(
+                        f"Importing '*' from {module_name=} is against best practices.\n"
+                        f"Module: '{self.current_module.__name__}' Line: {node.lineno}"
+                    )
 
             # all objects being imported from module are allowed
             if module_name not in self.renderer.allowed_natives_imported:
-                self.renderer.allowed_natives_imported[module_name] = NativeModule(name=module_name, import_stmt=node, namespaced_name=module_name)
+                self.renderer.allowed_natives_imported[module_name] = NativeModule(
+                    name=module_name, import_stmt=node, namespaced_name=module_name
+                )
             else:
-                alias_names_already_imported = self.renderer.allowed_natives_imported[module_name].import_stmt.names
+                alias_names_already_imported = self.renderer.allowed_natives_imported[
+                    module_name
+                ].import_stmt.names
 
                 for alias in aliases:
                     add_alias = True
@@ -832,7 +925,9 @@ class ObjectDiscovery(ast.NodeTransformer):
                             add_alias = False
                             break
                     if add_alias:
-                        self.renderer.allowed_natives_imported[module_name].import_stmt.names.append(alias)
+                        self.renderer.allowed_natives_imported[
+                            module_name
+                        ].import_stmt.names.append(alias)
         else:
             raise RenderException(
                 f"`from <x> import <y>` syntax is only available for native python modules "
@@ -843,12 +938,19 @@ class ObjectDiscovery(ast.NodeTransformer):
 
     def _update_module_object_definitions(self, object_definition: ImportedObject):
         if self.renderer.module_object_definitions.get(self.current_module):
-            if object_definition not in self.renderer.module_object_definitions[self.current_module]:
-                self.renderer.module_object_definitions[self.current_module].append(object_definition)
+            if (
+                object_definition
+                not in self.renderer.module_object_definitions[self.current_module]
+            ):
+                self.renderer.module_object_definitions[self.current_module].append(
+                    object_definition
+                )
             else:
                 log.warning(f"Duplicate in {self.current_module} {object_definition=}")
         else:
-            self.renderer.module_object_definitions.update({self.current_module: [object_definition]})
+            self.renderer.module_object_definitions.update(
+                {self.current_module: [object_definition]}
+            )
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         node = self._strip_vault_typehint(node)
@@ -857,7 +959,9 @@ class ObjectDiscovery(ast.NodeTransformer):
         else:
             object_definition = ImportedObject(
                 name=node.name,
-                namespaced_name=combine_module_and_object_name(self.current_module.__name__, node.name),
+                namespaced_name=combine_module_and_object_name(
+                    self.current_module.__name__, node.name
+                ),
                 stmt=node,
                 module_from=self.current_module,
             )
@@ -873,13 +977,19 @@ class ObjectDiscovery(ast.NodeTransformer):
                 if isinstance(name, ast.Name):
                     object_definition = ImportedObject(
                         name=name.id,
-                        namespaced_name=combine_module_and_object_name(self.current_module.__name__, name.id),
+                        namespaced_name=combine_module_and_object_name(
+                            self.current_module.__name__, name.id
+                        ),
                         stmt=node,
                         module_from=self.current_module,
                     )
                     self._update_module_object_definitions(object_definition)
                 else:
-                    raise RenderException(f"Unable to assign to target of type {type(name)} in " f"{self.current_module.__name__} (Line: {node.lineno} Col: " f"{node.col_offset})")
+                    raise RenderException(
+                        f"Unable to assign to target of type {type(name)} in "
+                        f"{self.current_module.__name__} (Line: {node.lineno} Col: "
+                        f"{node.col_offset})"
+                    )
             return None
 
     def _strip_expr_vault_typehint(self, node: ast.expr) -> ast.expr:
@@ -924,7 +1034,9 @@ class ObjectDiscovery(ast.NodeTransformer):
         :param function_def: the FunctionDef to remove the type hints from
         :return: function_def, stripped of any Vault/SupervisorVault type hints
         """
-        all_args = function_def.args.args + function_def.args.kwonlyargs + function_def.args.posonlyargs
+        all_args = (
+            function_def.args.args + function_def.args.kwonlyargs + function_def.args.posonlyargs
+        )
         for arg in all_args:
             if arg.annotation:
                 arg.annotation = self._strip_expr_vault_typehint(arg.annotation)
@@ -937,6 +1049,11 @@ class ObjectDiscovery(ast.NodeTransformer):
 def render_smart_contract(path_to_template: str, renderer_config: RendererConfig):
     module_to_render = path_import(path_to_template, Path(path_to_template).stem)
     if module_to_render:
-        SmartContractRenderer(module_to_render=module_to_render, renderer_config=renderer_config).render()
+        SmartContractRenderer(
+            module_to_render=module_to_render, renderer_config=renderer_config
+        ).render()
     else:
-        log.warning(f"Template at `{path_to_template}` returned None when imported and will not " f"be rendered")
+        log.warning(
+            f"Template at `{path_to_template}` returned None when imported and will not "
+            f"be rendered"
+        )

@@ -83,7 +83,9 @@ def auto_repayment(
     distributed across due addresses
     :return: The custom instructions that automatically repay any due balances
     """
-    redraw_balance = utils.balance_at_coordinates(balances=balances, address=REDRAW_ADDRESS, denomination=denomination)
+    redraw_balance = utils.balance_at_coordinates(
+        balances=balances, address=REDRAW_ADDRESS, denomination=denomination
+    )
 
     if redraw_balance >= Decimal("0") or not due_amount_posting_instructions:
         return []
@@ -103,7 +105,9 @@ def auto_repayment(
         if remaining_redraw_balance == Decimal("0"):
             break
 
-        repayment_amount = min(remaining_redraw_balance, due_amount_mapping.get(address, Decimal("0")))
+        repayment_amount = min(
+            remaining_redraw_balance, due_amount_mapping.get(address, Decimal("0"))
+        )
         if repayment_amount > Decimal("0"):
             auto_repayment_postings += payments.redistribute_postings(
                 debit_account=account_id,
@@ -138,10 +142,16 @@ def get_available_redraw_funds(balances: BalanceDefaultDict, denomination: str) 
     :param denomination: The denomination of the account
     :return: The remaining amount in the redraw balance (always positive)
     """
-    return abs(utils.balance_at_coordinates(balances=balances, address=REDRAW_ADDRESS, denomination=denomination, decimal_places=2))
+    return abs(
+        utils.balance_at_coordinates(
+            balances=balances, address=REDRAW_ADDRESS, denomination=denomination, decimal_places=2
+        )
+    )
 
 
-def reject_closure_when_outstanding_redraw_funds(balances: BalanceDefaultDict, denomination: str) -> Rejection | None:
+def reject_closure_when_outstanding_redraw_funds(
+    balances: BalanceDefaultDict, denomination: str
+) -> Rejection | None:
     """
     Returns a rejection if the redraw balance still contains funds
 
@@ -150,7 +160,9 @@ def reject_closure_when_outstanding_redraw_funds(balances: BalanceDefaultDict, d
     :param denomination: The denomination of the account
     :return: A rejection if the redraw balance contains a non-zero amount
     """
-    if utils.balance_at_coordinates(balances=balances, address=REDRAW_ADDRESS, denomination=denomination) != Decimal("0"):
+    if utils.balance_at_coordinates(
+        balances=balances, address=REDRAW_ADDRESS, denomination=denomination
+    ) != Decimal("0"):
         return Rejection(
             message="The loan cannot be closed until all remaining redraw funds are cleared.",
             reason_code=RejectionReason.AGAINST_TNC,
@@ -170,11 +182,14 @@ def validate_redraw_funds(
     :param posting_amount: The amount to validate against the current redraw amount
     :param denomination: The denomination of the posting
     """
-    redraw_balance = utils.balance_at_coordinates(balances=balances, address=REDRAW_ADDRESS, denomination=denomination)
+    redraw_balance = utils.balance_at_coordinates(
+        balances=balances, address=REDRAW_ADDRESS, denomination=denomination
+    )
 
     if posting_amount > 0 and posting_amount > abs(redraw_balance):
         return Rejection(
-            message=f"Transaction amount {posting_amount} {denomination} is greater than " f"the available redraw funds of {abs(redraw_balance)} {denomination}.",
+            message=f"Transaction amount {posting_amount} {denomination} is greater than "
+            f"the available redraw funds of {abs(redraw_balance)} {denomination}.",
             reason_code=RejectionReason.INSUFFICIENT_FUNDS,
         )
 

@@ -2,7 +2,9 @@ api = "3.8.0"
 version = "1.0.0"
 
 supervised_smart_contracts = [
-    SmartContractDescriptor(alias="SUPERVISEE", smart_contract_version_id="1", supervise_post_posting_hook=True),
+    SmartContractDescriptor(
+        alias="SUPERVISEE", smart_contract_version_id="1", supervise_post_posting_hook=True
+    ),
 ]
 
 event_types = [

@@ -37,10 +37,14 @@ class Override:
             "second": self.second,
         }
         if not any(arg is not None for arg in args_types.values()):
-            raise exceptions.InvalidSmartContractError(f"{self} object needs to be populated with at least one attribute.")
+            raise exceptions.InvalidSmartContractError(
+                f"{self} object needs to be populated with at least one attribute."
+            )
 
         for name, value in args_types.items():
-            types_utils.validate_type(value, int, hint="int", is_optional=True, prefix=f"Override.{name}")
+            types_utils.validate_type(
+                value, int, hint="int", is_optional=True, prefix=f"Override.{name}"
+            )
 
         if (
             (self.year is not None and self.year < 0)
@@ -64,11 +68,21 @@ class Override:
                 type="Optional[int]",
                 docstring="Override the year value (4-digit year).",
             ),
-            types_utils.ValueSpec(name="month", type="Optional[int]", docstring="Override the month value (1-12)."),
-            types_utils.ValueSpec(name="day", type="Optional[int]", docstring="Override the day value (1-31)."),
-            types_utils.ValueSpec(name="hour", type="Optional[int]", docstring="Override the hour value (0-23)."),
-            types_utils.ValueSpec(name="minute", type="Optional[int]", docstring="Override the minute value (0-59)."),
-            types_utils.ValueSpec(name="second", type="Optional[int]", docstring="Override the second value (0-59)."),
+            types_utils.ValueSpec(
+                name="month", type="Optional[int]", docstring="Override the month value (1-12)."
+            ),
+            types_utils.ValueSpec(
+                name="day", type="Optional[int]", docstring="Override the day value (1-31)."
+            ),
+            types_utils.ValueSpec(
+                name="hour", type="Optional[int]", docstring="Override the hour value (0-23)."
+            ),
+            types_utils.ValueSpec(
+                name="minute", type="Optional[int]", docstring="Override the minute value (0-59)."
+            ),
+            types_utils.ValueSpec(
+                name="second", type="Optional[int]", docstring="Override the second value (0-59)."
+            ),
         ]
 
     @classmethod
@@ -129,10 +143,14 @@ class Shift:
             "seconds": self.seconds,
         }
         if not any(arg is not None for arg in args_types.values()):
-            raise exceptions.InvalidSmartContractError(f"{self} object needs to be populated with at least one attribute.")
+            raise exceptions.InvalidSmartContractError(
+                f"{self} object needs to be populated with at least one attribute."
+            )
 
         for name, value in args_types.items():
-            types_utils.validate_type(value, int, hint="int", is_optional=True, prefix=f"Shift.{name}")
+            types_utils.validate_type(
+                value, int, hint="int", is_optional=True, prefix=f"Shift.{name}"
+            )
 
     @classmethod
     @lru_cache()
@@ -141,14 +159,20 @@ class Shift:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(name="years", type="Optional[int]", docstring="Shift by specified number of years."),
+            types_utils.ValueSpec(
+                name="years", type="Optional[int]", docstring="Shift by specified number of years."
+            ),
             types_utils.ValueSpec(
                 name="months",
                 type="Optional[int]",
                 docstring="Shift by specified number of months.",
             ),
-            types_utils.ValueSpec(name="days", type="Optional[int]", docstring="Shift by specified number of days."),
-            types_utils.ValueSpec(name="hours", type="Optional[int]", docstring="Shift by specified number of hours."),
+            types_utils.ValueSpec(
+                name="days", type="Optional[int]", docstring="Shift by specified number of days."
+            ),
+            types_utils.ValueSpec(
+                name="hours", type="Optional[int]", docstring="Shift by specified number of hours."
+            ),
             types_utils.ValueSpec(
                 name="minutes",
                 type="Optional[int]",
@@ -220,7 +244,9 @@ class Next:
         types_utils.validate_type(self.day, int, hint="int", prefix="Next.day")
 
         for name, value in args_types.items():
-            types_utils.validate_type(value, int, hint="int", is_optional=True, prefix=f"Next.{name}")
+            types_utils.validate_type(
+                value, int, hint="int", is_optional=True, prefix=f"Next.{name}"
+            )
 
         if (
             (self.month is not None and (self.month <= 0 or self.month > 12))
@@ -243,7 +269,9 @@ class Next:
                 type="Optional[int]",
                 docstring="Shift datetime to the next given month (1-12).",
             ),
-            types_utils.ValueSpec(name="day", type="int", docstring="Shift datetime to the next given day (1-31)."),
+            types_utils.ValueSpec(
+                name="day", type="int", docstring="Shift datetime to the next given day (1-31)."
+            ),
             types_utils.ValueSpec(
                 name="hour",
                 type="Optional[int]",
@@ -312,7 +340,9 @@ class Previous:
         types_utils.validate_type(self.day, int, hint="int", prefix="Previous.day")
 
         for name, value in args_types.items():
-            types_utils.validate_type(value, int, hint="int", is_optional=True, prefix=f"Previous.{name}")
+            types_utils.validate_type(
+                value, int, hint="int", is_optional=True, prefix=f"Previous.{name}"
+            )
 
         if (
             (self.month is not None and (self.month <= 0 or self.month > 12))
@@ -321,7 +351,9 @@ class Previous:
             or (self.minute is not None and (self.minute < 0 or self.minute > 59))
             or (self.second is not None and (self.second < 0 or self.second > 59))
         ):
-            raise exceptions.InvalidSmartContractError("Values of Previous object are out of range.")
+            raise exceptions.InvalidSmartContractError(
+                "Values of Previous object are out of range."
+            )
 
     @classmethod
     @lru_cache()
@@ -335,7 +367,9 @@ class Previous:
                 type="Optional[int]",
                 docstring="Shift datetime to the previous given month (1-12).",
             ),
-            types_utils.ValueSpec(name="day", type="int", docstring="Shift datetime to the previous given day (1-31)."),
+            types_utils.ValueSpec(
+                name="day", type="int", docstring="Shift datetime to the previous given day (1-31)."
+            ),
             types_utils.ValueSpec(
                 name="hour",
                 type="Optional[int]",
@@ -390,7 +424,9 @@ class RelativeDateTime:
         return "RelativeDateTime"
 
     def _validate_attributes(self):
-        types_utils.validate_type(self.shift, Shift, hint="Shift", is_optional=True, prefix="RelativeDateTime.shift")
+        types_utils.validate_type(
+            self.shift, Shift, hint="Shift", is_optional=True, prefix="RelativeDateTime.shift"
+        )
 
         types_utils.validate_type(
             self.find,
@@ -401,10 +437,14 @@ class RelativeDateTime:
         )
 
         if self.shift is None and self.find is None:
-            raise exceptions.InvalidSmartContractError(f"{self} Object requires either shift or find attributes to be populated")
+            raise exceptions.InvalidSmartContractError(
+                f"{self} Object requires either shift or find attributes to be populated"
+            )
 
         if self.origin == DefinedDateTime.LIVE:
-            raise exceptions.InvalidSmartContractError(f'{self} origin attribute does not support "DefinedDateTime.LIVE"')
+            raise exceptions.InvalidSmartContractError(
+                f'{self} origin attribute does not support "DefinedDateTime.LIVE"'
+            )
 
     @classmethod
     @lru_cache()

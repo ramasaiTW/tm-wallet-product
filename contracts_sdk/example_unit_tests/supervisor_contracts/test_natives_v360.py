@@ -11,7 +11,9 @@ from ...versions.version_360.supervisor_contracts import types
 class NativesTestCase(SupervisorContracts360TestCase):
     effective_date = datetime(year=2020, month=2, day=15)
 
-    filepath = os.environ.get("DATA_NATIVES_V360", "contracts_sdk/example_unit_tests/supervisor_contracts/natives_v360.py")
+    filepath = os.environ.get(
+        "DATA_NATIVES_V360", "contracts_sdk/example_unit_tests/supervisor_contracts/natives_v360.py"
+    )
     contract_code = SupervisorContracts360TestCase.load_contract_code(filepath)
 
     def test_type_hints_are_supported(self):

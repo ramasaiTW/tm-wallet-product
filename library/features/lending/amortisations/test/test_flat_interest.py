@@ -53,7 +53,9 @@ class TermDetailsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
         self.assertEqual(result, (1, 9))
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
             address=flat_interest.lending_addresses.PRINCIPAL,
@@ -70,13 +72,21 @@ class TermDetailsTest(FeatureTest):
         mock_calculate_elapsed_term.return_value = 1
         mock_balance_at_coordinates.return_value = Decimal("10")
 
-        balances_observation_fetchers_mapping = {flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective"))}
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        balances_observation_fetchers_mapping = {
+            flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+                SentinelBalancesObservation("effective")
+            )
+        }
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
         result = flat_interest.term_details(
             vault=mock_vault,
             effective_datetime=sentinel.effective_datetime,
         )
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances_effective, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances_effective, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances_effective,
             address=flat_interest.lending_addresses.PRINCIPAL,
@@ -120,7 +130,9 @@ class TermDetailsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
             address=flat_interest.lending_addresses.PRINCIPAL,
@@ -145,7 +157,9 @@ class TermDetailsTest(FeatureTest):
             denomination=sentinel.denomination,
         )
         self.assertEqual(result, (1, 0))
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
             address=flat_interest.lending_addresses.PRINCIPAL,
@@ -161,10 +175,14 @@ class CalculateEmi(FeatureTest):
         mock_get_parameter: MagicMock,
         mock_calculate_non_accruing_loan_total_interest: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"principal": Decimal("5000"), "total_repayment_count": 12})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"principal": Decimal("5000"), "total_repayment_count": 12}
+        )
         mock_calculate_non_accruing_loan_total_interest.return_value = Decimal("1000")
 
-        result = flat_interest.calculate_emi(vault=sentinel.vault, effective_datetime=sentinel.effective_datetime)
+        result = flat_interest.calculate_emi(
+            vault=sentinel.vault, effective_datetime=sentinel.effective_datetime
+        )
         self.assertEqual(result, Decimal("500"))
 
         mock_calculate_non_accruing_loan_total_interest.assert_called_once_with(
@@ -178,7 +196,9 @@ class CalculateEmi(FeatureTest):
         mock_get_parameter: MagicMock,
         mock_calculate_non_accruing_loan_total_interest: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": sentinel.denomination, "total_repayment_count": 12})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": sentinel.denomination, "total_repayment_count": 12}
+        )
         mock_calculate_non_accruing_loan_total_interest.return_value = Decimal("1000")
 
         mock_interest_feature = MagicMock()
@@ -212,7 +232,9 @@ class CalculateEmi(FeatureTest):
 @patch.object(flat_interest.utils, "yearly_to_monthly_rate")
 @patch.object(flat_interest.utils, "round_decimal")
 class TotalInterestTest(FeatureTest):
-    def test_calculate_non_accruing_loan_total_interest_default_precision(self, mock_round_decimal: MagicMock, mock_yearly_to_monthly_rate: MagicMock):
+    def test_calculate_non_accruing_loan_total_interest_default_precision(
+        self, mock_round_decimal: MagicMock, mock_yearly_to_monthly_rate: MagicMock
+    ):
         mock_round_decimal.return_value = sentinel.total_interest
         mock_yearly_to_monthly_rate.return_value = Decimal("0.1")
         result = flat_interest.calculate_non_accruing_loan_total_interest(
@@ -223,7 +245,9 @@ class TotalInterestTest(FeatureTest):
         self.assertEqual(result, sentinel.total_interest)
         mock_round_decimal.assert_called_once_with(amount=Decimal("6"), decimal_places=2)
 
-    def test_calculate_non_accruing_loan_total_interest_custom_precision(self, mock_round_decimal: MagicMock, mock_yearly_to_monthly_rate: MagicMock):
+    def test_calculate_non_accruing_loan_total_interest_custom_precision(
+        self, mock_round_decimal: MagicMock, mock_yearly_to_monthly_rate: MagicMock
+    ):
         mock_round_decimal.return_value = sentinel.total_interest
         mock_yearly_to_monthly_rate.return_value = Decimal("0.1")
         result = flat_interest.calculate_non_accruing_loan_total_interest(
@@ -233,7 +257,9 @@ class TotalInterestTest(FeatureTest):
             precision=sentinel.precision,
         )
         self.assertEqual(result, sentinel.total_interest)
-        mock_round_decimal.assert_called_once_with(amount=Decimal("6"), decimal_places=sentinel.precision)
+        mock_round_decimal.assert_called_once_with(
+            amount=Decimal("6"), decimal_places=sentinel.precision
+        )
 
 
 @patch.object(flat_interest.utils, "get_parameter")
@@ -264,7 +290,13 @@ class ApplyInterestTest(FeatureTest):
         )
         mock_fee_postings.return_value = sentinel.postings
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")})  # noqa: E501
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                    "effective"
+                )
+            }
+        )  # noqa: E501
 
         self.assertEqual(
             flat_interest.apply_interest(
@@ -319,13 +351,21 @@ class GetInterestToApplyTest(FeatureTest):
         mock_calculate_elapsed_term: MagicMock,
         mock_calculate_interest_due: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={**self.common_params, "denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={**self.common_params, "denomination": sentinel.denomination}
+        )
         mock_get_application_precision.return_value = sentinel.precision
         mock_calculate_non_accruing_loan_total_interest.return_value = sentinel.total_interest
         mock_calculate_elapsed_term.return_value = self.elapsed_term
         mock_calculate_interest_due.return_value = sentinel.interest_due
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")})  # noqa: E501
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                    "effective"
+                )
+            }
+        )  # noqa: E501
 
         self.assertEqual(
             flat_interest.get_interest_to_apply(
@@ -341,7 +381,9 @@ class GetInterestToApplyTest(FeatureTest):
             total_term=12,
             precision=sentinel.precision,
         )
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances_effective, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances_effective, denomination=sentinel.denomination
+        )
         mock_calculate_interest_due.assert_called_once_with(
             total_interest=sentinel.total_interest,
             total_term=12,
@@ -380,7 +422,9 @@ class GetInterestToApplyTest(FeatureTest):
             total_term=12,
             precision=sentinel.precision,
         )
-        mock_calculate_elapsed_term.assert_called_once_with(balances=sentinel.balances, denomination=sentinel.denomination)
+        mock_calculate_elapsed_term.assert_called_once_with(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_calculate_interest_due.assert_called_once_with(
             total_interest=sentinel.total_interest,
             total_term=12,
@@ -402,7 +446,9 @@ class CalculateInterestDueTest(FeatureTest):
             precision=sentinel.precision,
         )
         self.assertEqual(result, Decimal("120.12"))
-        mock_round_decimal.assert_called_once_with(amount=Decimal("100"), decimal_places=sentinel.precision)
+        mock_round_decimal.assert_called_once_with(
+            amount=Decimal("100"), decimal_places=sentinel.precision
+        )
 
     def test_calculate_interest_due_final_term(self, mock_round_decimal: MagicMock):
         # 1000 / 12
@@ -419,4 +465,6 @@ class CalculateInterestDueTest(FeatureTest):
         # elapsed = 11 so total interest paid so far is 83.33 * 11 = 916.63
         # so we expected 1000 - 916.63 = 83.37 to be due
         self.assertEqual(result, Decimal("83.37"))
-        mock_round_decimal.assert_called_once_with(amount=(Decimal("1000") / 12), decimal_places=sentinel.precision)
+        mock_round_decimal.assert_called_once_with(
+            amount=(Decimal("1000") / 12), decimal_places=sentinel.precision
+        )

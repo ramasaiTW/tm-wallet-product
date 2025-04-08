@@ -55,11 +55,15 @@ class ValidateOverpaymentTest(OverpaymentTest):
         mock_get_max_overpayment_fee: MagicMock,
         mock_get_total_outstanding_debt: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={overpayment.PARAM_OVERPAYMENT_FEE_RATE: Decimal("0.1")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={overpayment.PARAM_OVERPAYMENT_FEE_RATE: Decimal("0.1")}
+        )
         mock_get_max_overpayment_fee.return_value = Decimal("1")
         mock_get_total_outstanding_debt.return_value = Decimal("1")
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
 
         result = overpayment.validate_overpayment(
             vault=mock_vault,
@@ -69,9 +73,13 @@ class ValidateOverpaymentTest(OverpaymentTest):
 
         self.assertEqual(
             result,
-            Rejection(message="Cannot pay more than is owed.", reason_code=RejectionReason.AGAINST_TNC),
+            Rejection(
+                message="Cannot pay more than is owed.", reason_code=RejectionReason.AGAINST_TNC
+            ),
         )
-        mock_get_total_outstanding_debt.assert_called_once_with(balances=live_balance_obs.balances, denomination=sentinel.denomination)
+        mock_get_total_outstanding_debt.assert_called_once_with(
+            balances=live_balance_obs.balances, denomination=sentinel.denomination
+        )
         mock_get_max_overpayment_fee.assert_called_once_with(
             fee_rate=Decimal("0.1"),
             balances=live_balance_obs.balances,
@@ -84,11 +92,15 @@ class ValidateOverpaymentTest(OverpaymentTest):
         mock_get_max_overpayment_fee: MagicMock,
         mock_get_total_outstanding_debt: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={overpayment.PARAM_OVERPAYMENT_FEE_RATE: "0.1"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={overpayment.PARAM_OVERPAYMENT_FEE_RATE: "0.1"}
+        )
         mock_get_max_overpayment_fee.return_value = Decimal("1")
         mock_get_total_outstanding_debt.return_value = Decimal("1")
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
 
         result = overpayment.validate_overpayment(
             vault=mock_vault,
@@ -104,11 +116,15 @@ class ValidateOverpaymentTest(OverpaymentTest):
         mock_get_max_overpayment_fee: MagicMock,
         mock_get_total_outstanding_debt: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={overpayment.PARAM_OVERPAYMENT_FEE_RATE: "0.1"})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={overpayment.PARAM_OVERPAYMENT_FEE_RATE: "0.1"}
+        )
         mock_get_max_overpayment_fee.return_value = Decimal("1")
         mock_get_total_outstanding_debt.return_value = Decimal("1")
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
 
         result = overpayment.validate_overpayment(
             vault=mock_vault,
@@ -206,7 +222,9 @@ class ValidateOverpaymentAcrossSuperviseesTest(OverpaymentTest):
         )
 
         expected_result = Rejection(
-            message="The repayment amount 200 sentinel.denomination " "exceeds the total maximum repayment amount of " "160.00 sentinel.denomination.",
+            message="The repayment amount 200 sentinel.denomination "
+            "exceeds the total maximum repayment amount of "
+            "160.00 sentinel.denomination.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
@@ -298,7 +316,9 @@ class ValidateOverpaymentAcrossSuperviseesTest(OverpaymentTest):
             addresses=overpayment.lending_addresses.ALL_OUTSTANDING_SUPERVISOR,
             decimal_places=sentinel.rounding_precision,
         )
-        mock_round_decimal.assert_called_once_with(amount=Decimal("200"), decimal_places=sentinel.rounding_precision)
+        mock_round_decimal.assert_called_once_with(
+            amount=Decimal("200"), decimal_places=sentinel.rounding_precision
+        )
 
 
 @patch.object(overpayment, "get_total_due_amount")
@@ -310,7 +330,9 @@ class IsPostingAnOverpaymentTest(OverpaymentTest):
         mock_get_total_due_amount.return_value = Decimal("1")
 
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
 
         result = overpayment.is_posting_an_overpayment(
             vault=mock_vault,
@@ -327,7 +349,9 @@ class IsPostingAnOverpaymentTest(OverpaymentTest):
         mock_get_total_due_amount.return_value = Decimal("1")
 
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
 
         result = overpayment.is_posting_an_overpayment(
             vault=mock_vault,
@@ -344,7 +368,9 @@ class IsPostingAnOverpaymentTest(OverpaymentTest):
         mock_get_total_due_amount.return_value = Decimal("5")
 
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
 
         result = overpayment.is_posting_an_overpayment(
             vault=mock_vault,
@@ -361,7 +387,9 @@ class IsPostingAnOverpaymentTest(OverpaymentTest):
         mock_get_total_due_amount.return_value = Decimal("1")
 
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
 
         result = overpayment.is_posting_an_overpayment(
             vault=mock_vault,
@@ -374,22 +402,30 @@ class IsPostingAnOverpaymentTest(OverpaymentTest):
 
 class GetOverpaymentFeeTest(OverpaymentTest):
     def test_overpayment_fee_amount(self):
-        result = overpayment.get_overpayment_fee(principal_repaid=Decimal("5"), overpayment_fee_rate=Decimal("0.01"), precision=2)
+        result = overpayment.get_overpayment_fee(
+            principal_repaid=Decimal("5"), overpayment_fee_rate=Decimal("0.01"), precision=2
+        )
         self.assertEqual(result, Decimal("0.05"))
 
     def test_overpayment_fee_amount_100_percent_rate(self):
-        result = overpayment.get_overpayment_fee(principal_repaid=Decimal("5"), overpayment_fee_rate=Decimal("1"), precision=2)
+        result = overpayment.get_overpayment_fee(
+            principal_repaid=Decimal("5"), overpayment_fee_rate=Decimal("1"), precision=2
+        )
         self.assertEqual(result, Decimal("0"))
 
     def test_overpayment_fee_amount_over_100_percent_rate(self):
-        result = overpayment.get_overpayment_fee(principal_repaid=Decimal("5"), overpayment_fee_rate=Decimal("1.5"), precision=2)
+        result = overpayment.get_overpayment_fee(
+            principal_repaid=Decimal("5"), overpayment_fee_rate=Decimal("1.5"), precision=2
+        )
         self.assertEqual(result, Decimal("0"))
 
 
 class GetMaxOverpaymentFeeTest(OverpaymentTest):
     def setUp(self) -> None:
         self.mock_get_overpayment_fee = patch.object(overpayment, "get_overpayment_fee").start()
-        self.mock_balance_at_coordinates = patch.object(overpayment.utils, "balance_at_coordinates").start()
+        self.mock_balance_at_coordinates = patch.object(
+            overpayment.utils, "balance_at_coordinates"
+        ).start()
         self.mock_round_decimal = patch.object(overpayment.utils, "round_decimal").start()
         self.mock_balance_at_coordinates.return_value = Decimal("100")
         self.mock_get_overpayment_fee.return_value = sentinel.max_overpayment_fee
@@ -463,7 +499,9 @@ class GetTotalOutstandingDebtTest(OverpaymentTest):
     @patch.object(overpayment.utils, "sum_balances")
     def test_get_total_outstanding_debt(self, mock_sum_balances: MagicMock):
         mock_sum_balances.return_value = sentinel.total_outstanding_debt
-        result = overpayment.get_total_outstanding_debt(balances=sentinel.balances, denomination=sentinel.denomination)
+        result = overpayment.get_total_outstanding_debt(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         self.assertEqual(result, sentinel.total_outstanding_debt)
         mock_sum_balances.assert_called_once_with(
             balances=sentinel.balances,
@@ -477,7 +515,9 @@ class GetTotalDueAmountTest(OverpaymentTest):
     @patch.object(overpayment.utils, "sum_balances")
     def test_get_total_due_amount(self, mock_sum_balances: MagicMock):
         mock_sum_balances.return_value = sentinel.total_due_amount
-        result = overpayment.get_total_due_amount(balances=sentinel.balances, denomination=sentinel.denomination)
+        result = overpayment.get_total_due_amount(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         self.assertEqual(result, sentinel.total_due_amount)
         mock_sum_balances.assert_called_once_with(
             balances=sentinel.balances,
@@ -491,7 +531,9 @@ class GetOutstandingPrincipalTest(OverpaymentTest):
     @patch.object(overpayment.utils, "balance_at_coordinates")
     def test_get_outstanding_principal(self, mock_balance_at_coordinates: MagicMock):
         mock_balance_at_coordinates.return_value = sentinel.outstanding_principal
-        result = overpayment.get_outstanding_principal(balances=sentinel.balances, denomination=sentinel.denomination)
+        result = overpayment.get_outstanding_principal(
+            balances=sentinel.balances, denomination=sentinel.denomination
+        )
         self.assertEqual(result, sentinel.outstanding_principal)
         mock_balance_at_coordinates.assert_called_once_with(
             balances=sentinel.balances,
@@ -688,7 +730,9 @@ class HandleOverpaymentTest(OverpaymentTest):
 
 @patch.object(overpayment.utils, "reset_tracker_balances")
 class GetResidualCleanupPostingsTest(OverpaymentTest):
-    def test_get_residual_cleanup_postings_with_postings(self, mock_reset_tracker_balances: MagicMock):
+    def test_get_residual_cleanup_postings_with_postings(
+        self, mock_reset_tracker_balances: MagicMock
+    ):
         mock_reset_tracker_balances.return_value = [sentinel.postings]
 
         result = overpayment.get_residual_cleanup_postings(
@@ -713,7 +757,9 @@ class GetResidualCleanupPostingsTest(OverpaymentTest):
             tside=Tside.ASSET,
         )
 
-    def test_get_residual_cleanup_postings_no_postings(self, mock_reset_tracker_balances: MagicMock):
+    def test_get_residual_cleanup_postings_no_postings(
+        self, mock_reset_tracker_balances: MagicMock
+    ):
         mock_reset_tracker_balances.return_value = []
 
         result = overpayment.get_residual_cleanup_postings(
@@ -849,7 +895,8 @@ class ChargeOverpaymentFeeAsPenalty(OverpaymentTest):
             internal_account=sentinel.overpayment_fee_income_account,
         )
         mock_standard_instruction_details.assert_called_once_with(
-            description="Charge overpayment_fee=sentinel.overpayment_fee on " "overpayment_amount=sentinel.overpayment_amount",
+            description="Charge overpayment_fee=sentinel.overpayment_fee on "
+            "overpayment_amount=sentinel.overpayment_amount",
             event_type="CHARGE_OVERPAYMENT_FEE",
             gl_impacted=True,
         )
@@ -865,7 +912,9 @@ class TrackExpectedInterestTest(OverpaymentTest):
         overpayment.interest_accrual_common.PARAM_DAYS_IN_YEAR: "365",
         "denomination": sentinel.denomination,
     }
-    common_hook_args = ScheduledEventHookArguments(effective_datetime=DEFAULT_DATE, event_type=sentinel.event_type)
+    common_hook_args = ScheduledEventHookArguments(
+        effective_datetime=DEFAULT_DATE, event_type=sentinel.event_type
+    )
 
     def test_track_expected_interest(
         self,
@@ -874,12 +923,24 @@ class TrackExpectedInterestTest(OverpaymentTest):
         mock_get_parameter: MagicMock,
         mock_sum_balances: MagicMock,
     ):
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation("eod")})
-        mock_calculate_daily_accrual.return_value = overpayment.interest_accrual_common.accruals.AccrualDetail(amount=Decimal("1"), description="")
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "eod"
+                )
+            }
+        )
+        mock_calculate_daily_accrual.return_value = (
+            overpayment.interest_accrual_common.accruals.AccrualDetail(
+                amount=Decimal("1"), description=""
+            )
+        )
         mock_create_postings.return_value = DEFAULT_POSTINGS
         mock_sum_balances.return_value = sentinel.expected_principal
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
-        mock_interest_rate_feature = MagicMock(get_annual_interest_rate=MagicMock(return_value=sentinel.annual_rate))
+        mock_interest_rate_feature = MagicMock(
+            get_annual_interest_rate=MagicMock(return_value=sentinel.annual_rate)
+        )
 
         result = overpayment.track_interest_on_expected_principal(
             vault=mock_vault,
@@ -892,7 +953,10 @@ class TrackExpectedInterestTest(OverpaymentTest):
             [
                 CustomInstruction(
                     postings=DEFAULT_POSTINGS,
-                    instruction_details={"description": "Tracking expected interest at yearly rate " "sentinel.annual_rate on expected principal sentinel.expected_principal"},
+                    instruction_details={
+                        "description": "Tracking expected interest at yearly rate "
+                        "sentinel.annual_rate on expected principal sentinel.expected_principal"
+                    },
                     override_all_restrictions=True,
                 )
             ],
@@ -928,11 +992,19 @@ class TrackExpectedInterestTest(OverpaymentTest):
         mock_get_parameter: MagicMock,
         mock_sum_balances: MagicMock,
     ):
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation("eod")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "eod"
+                )
+            }
+        )
         mock_calculate_daily_accrual.return_value = None
         mock_sum_balances.return_value = sentinel.expected_principal
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
-        mock_interest_rate_feature = MagicMock(get_annual_interest_rate=MagicMock(return_value=sentinel.annual_rate))
+        mock_interest_rate_feature = MagicMock(
+            get_annual_interest_rate=MagicMock(return_value=sentinel.annual_rate)
+        )
 
         result = overpayment.track_interest_on_expected_principal(
             vault=mock_vault,
@@ -986,7 +1058,11 @@ class TrackEmiPrincipalExcessTest(OverpaymentTest):
             CustomInstruction(
                 postings=DEFAULT_POSTINGS,
                 override_all_restrictions=True,
-                instruction_details={"description": "Increase principal excess due to " "expected_interest_to_apply=Decimal('5') being larger than " "actual_interest_to_apply=Decimal('2.55')"},
+                instruction_details={
+                    "description": "Increase principal excess due to "
+                    "expected_interest_to_apply=Decimal('5') being larger than "
+                    "actual_interest_to_apply=Decimal('2.55')"
+                },
             )
         ]
 
@@ -1061,19 +1137,31 @@ class TrackEmiPrincipalExcessTest(OverpaymentTest):
         mock_create_postings: MagicMock,
         mock_balance_at_coordinates: MagicMock,
     ):
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"denomination": sentinel.denomination}
+        )
         mock_interest_application_feature = MagicMock(
             get_interest_to_apply=MagicMock(side_effect=[self.interest_amounts]),
             get_application_precision=MagicMock(side_effect=[sentinel.application_precision]),
         )
         mock_create_postings.return_value = DEFAULT_POSTINGS
         mock_balance_at_coordinates.return_value = Decimal("5")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation("accrued_expected_effective_datetime")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation(
+                    "accrued_expected_effective_datetime"
+                )
+            }
+        )
         expected = [
             CustomInstruction(
                 postings=DEFAULT_POSTINGS,
                 override_all_restrictions=True,
-                instruction_details={"description": "Increase principal excess due to " "expected_interest_to_apply=Decimal('5') being larger than " "actual_interest_to_apply=Decimal('2.55')"},
+                instruction_details={
+                    "description": "Increase principal excess due to "
+                    "expected_interest_to_apply=Decimal('5') being larger than "
+                    "actual_interest_to_apply=Decimal('2.55')"
+                },
             )
         ]
 
@@ -1126,9 +1214,17 @@ class ResetDueAmountCalcOverpaymentTrackerTest(OverpaymentTest):
             )
         ]
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": sentinel.denomination})
-        balances_observation_fetchers_mapping = {overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation("effective_date")}
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": sentinel.denomination}
+        )
+        balances_observation_fetchers_mapping = {
+            overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation(
+                "effective_date"
+            )
+        }
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
 
         result = overpayment.reset_due_amount_calc_overpayment_trackers(vault=mock_vault)
         self.assertListEqual(result, expected_result)
@@ -1155,9 +1251,17 @@ class ResetDueAmountCalcOverpaymentTrackerTest(OverpaymentTest):
         mock_reset_tracker_balances.return_value = []
         expected_result: list[CustomInstruction] = []
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"denomination": sentinel.denomination})
-        balances_observation_fetchers_mapping = {overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation("effective_date")}
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balances_observation_fetchers_mapping)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"denomination": sentinel.denomination}
+        )
+        balances_observation_fetchers_mapping = {
+            overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation(
+                "effective_date"
+            )
+        }
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping=balances_observation_fetchers_mapping
+        )
 
         result = overpayment.reset_due_amount_calc_overpayment_trackers(vault=mock_vault)
         self.assertListEqual(result, expected_result)
@@ -1177,7 +1281,9 @@ class ResetDueAmountCalcOverpaymentTrackerTest(OverpaymentTest):
 @patch.object(overpayment.utils, "get_parameter")
 @patch.object(overpayment.utils, "balance_at_coordinates")
 class OverpaymentReamortisationCondition(OverpaymentTest):
-    def test_reamortisation_required_if_overpayment_and_preference_is_reduce_emi(self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock):
+    def test_reamortisation_required_if_overpayment_and_preference_is_reduce_emi(
+        self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "denomination": sentinel.denomination,
@@ -1186,7 +1292,13 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
         )
         mock_balance_at_coordinates.return_value = Decimal("1")
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation("tracker_obs")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation(
+                    "tracker_obs"
+                )
+            }
+        )
         self.assertTrue(
             overpayment.should_trigger_reamortisation(
                 vault=mock_vault,
@@ -1201,7 +1313,9 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
             denomination=sentinel.denomination,
         )
 
-    def test_reamortisation_not_required_if_overpayment_and_preference_is_reduce_term(self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock):
+    def test_reamortisation_not_required_if_overpayment_and_preference_is_reduce_term(
+        self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "denomination": sentinel.denomination,
@@ -1210,7 +1324,13 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
         )
         mock_balance_at_coordinates.return_value = Decimal("1")
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation("tracker_obs")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation(
+                    "tracker_obs"
+                )
+            }
+        )
         self.assertFalse(
             overpayment.should_trigger_reamortisation(
                 vault=mock_vault,
@@ -1221,7 +1341,9 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
         )
         mock_balance_at_coordinates.assert_not_called()
 
-    def test_reamortisation_not_required_if_no_overpayment_and_preference_is_reduce_emi(self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock):
+    def test_reamortisation_not_required_if_no_overpayment_and_preference_is_reduce_emi(
+        self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "denomination": sentinel.denomination,
@@ -1230,7 +1352,13 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
         )
         mock_balance_at_coordinates.return_value = Decimal("0")
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation("tracker_obs")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation(
+                    "tracker_obs"
+                )
+            }
+        )
         self.assertFalse(
             overpayment.should_trigger_reamortisation(
                 vault=mock_vault,
@@ -1245,7 +1373,9 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
             denomination=sentinel.denomination,
         )
 
-    def test_reamortisation_not_required_if_no_overpayment_and_preference_is_reduce_term(self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock):
+    def test_reamortisation_not_required_if_no_overpayment_and_preference_is_reduce_term(
+        self, mock_balance_at_coordinates: MagicMock, mock_get_parameter: MagicMock
+    ):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {
                 "denomination": sentinel.denomination,
@@ -1254,7 +1384,13 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
         )
         mock_balance_at_coordinates.return_value = Decimal("0")
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation("tracker_obs")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.OVERPAYMENT_TRACKER_EFF_FETCHER_ID: SentinelBalancesObservation(
+                    "tracker_obs"
+                )
+            }
+        )
         self.assertFalse(
             overpayment.should_trigger_reamortisation(
                 vault=mock_vault,
@@ -1268,10 +1404,14 @@ class OverpaymentReamortisationCondition(OverpaymentTest):
 
 class SupervisorOverpaymentReamortisationCondition(SupervisorFeatureTest):
     def setUp(self) -> None:
-        self.mock_loan_vault = self.create_supervisee_mock(requires_fetched_balances=sentinel.fetched_balances)
+        self.mock_loan_vault = self.create_supervisee_mock(
+            requires_fetched_balances=sentinel.fetched_balances
+        )
         self.mock_main_vault = sentinel.main_vault
 
-        self.mock_get_balance_default_dict_from_mapping = patch.object(overpayment.utils, "get_balance_default_dict_from_mapping").start()
+        self.mock_get_balance_default_dict_from_mapping = patch.object(
+            overpayment.utils, "get_balance_default_dict_from_mapping"
+        ).start()
         self.mock_get_balance_default_dict_from_mapping.return_value = sentinel.balance_default_dict
 
         self.mock_get_parameter = patch.object(overpayment.utils, "get_parameter").start()
@@ -1282,7 +1422,9 @@ class SupervisorOverpaymentReamortisationCondition(SupervisorFeatureTest):
             }
         )
 
-        self.mock_balance_at_coordinates = patch.object(overpayment.utils, "balance_at_coordinates").start()
+        self.mock_balance_at_coordinates = patch.object(
+            overpayment.utils, "balance_at_coordinates"
+        ).start()
         self.mock_balance_at_coordinates.return_value = Decimal("1")
         self.addCleanup(patch.stopall)
 
@@ -1321,7 +1463,9 @@ class SupervisorOverpaymentReamortisationCondition(SupervisorFeatureTest):
             address=overpayment.OVERPAYMENT_SINCE_PREV_DUE_AMOUNT_CALC_TRACKER,
             denomination=sentinel.denomination,
         )
-        self.mock_get_balance_default_dict_from_mapping.assert_called_once_with(mapping=sentinel.fetched_balances)
+        self.mock_get_balance_default_dict_from_mapping.assert_called_once_with(
+            mapping=sentinel.fetched_balances
+        )
 
     def test_reamortisation_not_required_if_overpayment_and_preference_is_reduce_term(self):
         self.mock_get_parameter.side_effect = mock_utils_get_parameter(
@@ -1384,16 +1528,24 @@ class SupervisorOverpaymentReamortisationCondition(SupervisorFeatureTest):
 @patch.object(overpayment.utils, "balance_at_coordinates")
 @patch.object(overpayment.utils, "get_parameter")
 class PrincipalAdjustmentTest(OverpaymentTest):
-    def test_calculate_principal_adjustment_reduce_emi_non_default_args(self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock):
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"overpayment_impact_preference": overpayment.REDUCE_EMI})
+    def test_calculate_principal_adjustment_reduce_emi_non_default_args(
+        self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"overpayment_impact_preference": overpayment.REDUCE_EMI}
+        )
 
-        result = overpayment.calculate_principal_adjustment(vault=sentinel.vault, balances=sentinel.balances, denomination=sentinel.denomination)
+        result = overpayment.calculate_principal_adjustment(
+            vault=sentinel.vault, balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
         self.assertEqual(result, Decimal("0"))
 
         mock_balance_at_coordinates.assert_not_called()
 
-    def test_calculate_principal_adjustment_reduce_term_non_default_args(self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock):
+    def test_calculate_principal_adjustment_reduce_term_non_default_args(
+        self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "overpayment_impact_preference": overpayment.REDUCE_TERM,
@@ -1402,7 +1554,9 @@ class PrincipalAdjustmentTest(OverpaymentTest):
         # overpayment, emi_principal_excess
         mock_balance_at_coordinates.side_effect = [Decimal("1"), Decimal("2")]
 
-        result = overpayment.calculate_principal_adjustment(vault=sentinel.vault, balances=sentinel.balances, denomination=sentinel.denomination)
+        result = overpayment.calculate_principal_adjustment(
+            vault=sentinel.vault, balances=sentinel.balances, denomination=sentinel.denomination
+        )
 
         self.assertEqual(result, Decimal("3"))
 
@@ -1425,7 +1579,9 @@ class PrincipalAdjustmentTest(OverpaymentTest):
             ]
         )
 
-    def test_calculate_principal_adjustment_reduce_term_default_args(self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock):
+    def test_calculate_principal_adjustment_reduce_term_default_args(
+        self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "overpayment_impact_preference": overpayment.REDUCE_TERM,
@@ -1434,7 +1590,13 @@ class PrincipalAdjustmentTest(OverpaymentTest):
         )
         # overpayment, emi_principal_excess
         mock_balance_at_coordinates.side_effect = [Decimal("1"), Decimal("2")]
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation("expected_eod")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "expected_eod"
+                )
+            }
+        )
 
         result = overpayment.calculate_principal_adjustment(vault=mock_vault)
 
@@ -1463,11 +1625,19 @@ class PrincipalAdjustmentTest(OverpaymentTest):
 @patch.object(overpayment.utils, "balance_at_coordinates")
 @patch.object(overpayment.utils, "get_parameter")
 class SupervisorPrincipalAdjustmentTest(SupervisorFeatureTest):
-    def test_calculate_principal_adjustment_reduce_emi_non_default_args_supervisor(self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock):
+    def test_calculate_principal_adjustment_reduce_emi_non_default_args_supervisor(
+        self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
         mock_loan_vault = sentinel.loan_vault
         mock_main_vault = sentinel.main_vault
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter_for_multiple_vaults(parameters_per_vault={mock_main_vault: {overpayment.PARAM_OVERPAYMENT_IMPACT_PREFERENCE: overpayment.REDUCE_EMI}})
+        mock_get_parameter.side_effect = mock_utils_get_parameter_for_multiple_vaults(
+            parameters_per_vault={
+                mock_main_vault: {
+                    overpayment.PARAM_OVERPAYMENT_IMPACT_PREFERENCE: overpayment.REDUCE_EMI
+                }
+            }
+        )
 
         result = overpayment.supervisor_calculate_principal_adjustment(
             loan_vault=mock_loan_vault,
@@ -1480,12 +1650,18 @@ class SupervisorPrincipalAdjustmentTest(SupervisorFeatureTest):
 
         mock_balance_at_coordinates.assert_not_called()
 
-    def test_calculate_principal_adjustment_reduce_term_non_default_args_supervisor(self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock):
+    def test_calculate_principal_adjustment_reduce_term_non_default_args_supervisor(
+        self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
         mock_loan_vault = sentinel.loan_vault
         mock_main_vault = sentinel.main_vault
 
         mock_get_parameter.side_effect = mock_utils_get_parameter_for_multiple_vaults(
-            parameters_per_vault={mock_main_vault: {overpayment.PARAM_OVERPAYMENT_IMPACT_PREFERENCE: overpayment.REDUCE_TERM}}
+            parameters_per_vault={
+                mock_main_vault: {
+                    overpayment.PARAM_OVERPAYMENT_IMPACT_PREFERENCE: overpayment.REDUCE_TERM
+                }
+            }
         )
         # overpayment, emi_principal_excess
         mock_balance_at_coordinates.side_effect = [Decimal("1"), Decimal("2")]
@@ -1518,21 +1694,33 @@ class SupervisorPrincipalAdjustmentTest(SupervisorFeatureTest):
             ]
         )
 
-    def test_calculate_principal_adjustment_reduce_term_default_args_supervisor(self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock):
+    def test_calculate_principal_adjustment_reduce_term_default_args_supervisor(
+        self, mock_get_parameter: MagicMock, mock_balance_at_coordinates: MagicMock
+    ):
         mock_loan_vault = sentinel.loan_vault
         mock_main_vault = sentinel.main_vault
 
         # overpayment, emi_principal_excess
         mock_balance_at_coordinates.side_effect = [Decimal("1"), Decimal("2")]
-        mock_loan_vault = self.create_supervisee_mock(balances_observation_fetchers_mapping={overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation("expected_eod")})
+        mock_loan_vault = self.create_supervisee_mock(
+            balances_observation_fetchers_mapping={
+                overpayment.EXPECTED_INTEREST_ACCRUAL_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "expected_eod"
+                )
+            }
+        )
         mock_get_parameter.side_effect = mock_utils_get_parameter_for_multiple_vaults(
             parameters_per_vault={
-                mock_main_vault: {overpayment.PARAM_OVERPAYMENT_IMPACT_PREFERENCE: overpayment.REDUCE_TERM},
+                mock_main_vault: {
+                    overpayment.PARAM_OVERPAYMENT_IMPACT_PREFERENCE: overpayment.REDUCE_TERM
+                },
                 mock_loan_vault: {"denomination": sentinel.denomination},
             }
         )
 
-        result = overpayment.supervisor_calculate_principal_adjustment(loan_vault=mock_loan_vault, main_vault=mock_main_vault)
+        result = overpayment.supervisor_calculate_principal_adjustment(
+            loan_vault=mock_loan_vault, main_vault=mock_main_vault
+        )
 
         self.assertEqual(result, Decimal("3"))
 
@@ -1570,7 +1758,9 @@ class EarlyRepaymentOverpaymentFeeTest(OverpaymentTest):
         mock_get_overpayment_fee_rate_parameter.return_value = sentinel.overpayment_fee_rate
         mock_get_parameter.return_value = sentinel.denomination
         live_balance_obs = SentinelBalancesObservation("live")
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={fetchers.LIVE_BALANCES_BOF_ID: live_balance_obs}
+        )
         result = overpayment.get_early_repayment_overpayment_fee(
             vault=mock_vault,
         )

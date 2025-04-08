@@ -27,8 +27,12 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_extension import 
 
 DEFAULT_DATE = datetime(2020, 1, 1, tzinfo=ZoneInfo("UTC"))
 
-PRINCIPAL_COORDINATE = BalanceCoordinate(lending_addresses.PRINCIPAL, DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED)
-NOT_PRINCIPAL_COORDINATE = BalanceCoordinate("NOT_PRINCIPAL", DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED)
+PRINCIPAL_COORDINATE = BalanceCoordinate(
+    lending_addresses.PRINCIPAL, DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED
+)
+NOT_PRINCIPAL_COORDINATE = BalanceCoordinate(
+    "NOT_PRINCIPAL", DEFAULT_ASSET, sentinel.denomination, Phase.COMMITTED
+)
 
 
 class InterestAccrualTestCommon(FeatureTest):
@@ -49,7 +53,9 @@ class InterestAccrualTest(InterestAccrualTestCommon):
         )
         self.mock_vault = self.create_mock(
             account_id=sentinel.account_id,
-            balances_observation_fetchers_mapping={interest_accrual.fetchers.EOD_FETCHER_ID: self.account_balance_observation},
+            balances_observation_fetchers_mapping={
+                interest_accrual.fetchers.EOD_FETCHER_ID: self.account_balance_observation
+            },
         )
         self.mock_parameter_side_effect = mock_utils_get_parameter(
             parameters={
@@ -60,7 +66,9 @@ class InterestAccrualTest(InterestAccrualTestCommon):
             }
         )
 
-        self.mock_interest_rate_feature = MagicMock(get_annual_interest_rate=MagicMock(return_value=sentinel.yearly_interest_rate))
+        self.mock_interest_rate_feature = MagicMock(
+            get_annual_interest_rate=MagicMock(return_value=sentinel.yearly_interest_rate)
+        )
 
     def test_daily_accrual_schedule_logic_default_args(
         self,

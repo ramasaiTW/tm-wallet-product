@@ -27,8 +27,12 @@ default_parameters = {
     "denomination": DENOMINATION,
     unarranged_overdraft_fee.PARAM_UNARRANGED_OVERDRAFT_FEE: Decimal("5"),
     unarranged_overdraft_fee.PARAM_UNARRANGED_OVERDRAFT_FEE_CAP: Decimal("30"),
-    unarranged_overdraft_fee.PARAM_UNARRANGED_OVERDRAFT_FEE_INCOME_ACCOUNT: ("OVERDRAFT_FEE_INCOME_ACCOUNT"),
-    unarranged_overdraft_fee.PARAM_UNARRANGED_OVERDRAFT_FEE_RECEIVABLE_ACCOUNT: ("OVERDRAFT_FEE_RECEIVABLE_ACCOUNT"),
+    unarranged_overdraft_fee.PARAM_UNARRANGED_OVERDRAFT_FEE_INCOME_ACCOUNT: (
+        "OVERDRAFT_FEE_INCOME_ACCOUNT"
+    ),
+    unarranged_overdraft_fee.PARAM_UNARRANGED_OVERDRAFT_FEE_RECEIVABLE_ACCOUNT: (
+        "OVERDRAFT_FEE_RECEIVABLE_ACCOUNT"
+    ),
     overdraft_limit.PARAM_ARRANGED_OVERDRAFT_AMOUNT: Decimal("100"),
     overdraft_limit.PARAM_UNARRANGED_OVERDRAFT_AMOUNT: Decimal("300"),
 }
@@ -54,7 +58,9 @@ class EventTest(FeatureTest):
             [
                 SmartContractEventType(
                     name=unarranged_overdraft_fee.APPLICATION_EVENT,
-                    scheduler_tag_ids=[f"PRODUCT_A_{unarranged_overdraft_fee.APPLICATION_EVENT}_AST"],
+                    scheduler_tag_ids=[
+                        f"PRODUCT_A_{unarranged_overdraft_fee.APPLICATION_EVENT}_AST"
+                    ],
                 ),
             ],
         )
@@ -66,8 +72,12 @@ class EventTest(FeatureTest):
     ):
         mock_vault = sentinel.vault
         mock_daily_scheduled_event.return_value = sentinel.daily_scheduled_event
-        start_datetime = datetime(year=2023, month=1, day=1, hour=0, minute=0, second=0, tzinfo=ZoneInfo("UTC"))
-        scheduled_events = unarranged_overdraft_fee.accrual_scheduled_events(vault=mock_vault, start_datetime=start_datetime)
+        start_datetime = datetime(
+            year=2023, month=1, day=1, hour=0, minute=0, second=0, tzinfo=ZoneInfo("UTC")
+        )
+        scheduled_events = unarranged_overdraft_fee.accrual_scheduled_events(
+            vault=mock_vault, start_datetime=start_datetime
+        )
 
         self.assertDictEqual(
             scheduled_events,
@@ -88,8 +98,12 @@ class EventTest(FeatureTest):
     ):
         mock_vault = sentinel.vault
         mock_monthly_scheduled_event.return_value = sentinel.monthly_scheduled_event
-        start_datetime = datetime(year=2023, month=1, day=1, hour=0, minute=0, second=0, tzinfo=ZoneInfo("UTC"))
-        scheduled_events = unarranged_overdraft_fee.application_scheduled_events(vault=mock_vault, start_datetime=start_datetime)
+        start_datetime = datetime(
+            year=2023, month=1, day=1, hour=0, minute=0, second=0, tzinfo=ZoneInfo("UTC")
+        )
+        scheduled_events = unarranged_overdraft_fee.application_scheduled_events(
+            vault=mock_vault, start_datetime=start_datetime
+        )
 
         self.assertDictEqual(
             scheduled_events,
@@ -124,15 +138,23 @@ class AccrueFeeTest(FeatureTest):
         mock_are_optional_parameters_set: MagicMock,
     ):
         mock_are_optional_parameters_set.return_value = True
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         mock_balance_at_coordinates.side_effect = [Decimal("100")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")
+            }
+        )
 
         self.assertEquals(unarranged_overdraft_fee.accrue_fee(vault=mock_vault), [])
         mock_are_optional_parameters_set.assert_called_once()
         mock_get_parameter.assert_called_with(vault=mock_vault, name="denomination")
-        mock_balance_at_coordinates.assert_called_once_with(balances=sentinel.balances_eod_balance_observation, denomination=DENOMINATION)
+        mock_balance_at_coordinates.assert_called_once_with(
+            balances=sentinel.balances_eod_balance_observation, denomination=DENOMINATION
+        )
 
     @patch.object(unarranged_overdraft_fee.accruals, "accrual_custom_instruction")
     def test_overdraft_fee_accrued(
@@ -143,11 +165,17 @@ class AccrueFeeTest(FeatureTest):
         mock_are_optional_parameters_set: MagicMock,
     ):
         mock_are_optional_parameters_set.return_value = True
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         # Mock returns the Default address EOD balance and OVERDRAFT_FEE address balance
         mock_balance_at_coordinates.side_effect = [Decimal("-150"), Decimal("10")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")
+            }
+        )
         mock_accrual_custom_instruction_response = [sentinel.custom_instruction]
         mock_accrual_custom_instruction.side_effect = [mock_accrual_custom_instruction_response]
         postings = unarranged_overdraft_fee.accrue_fee(vault=mock_vault)
@@ -180,7 +208,11 @@ class AccrueFeeTest(FeatureTest):
         # Mock returns the Default address EOD balance and OVERDRAFT_FEE address balance
         mock_balance_at_coordinates.side_effect = [Decimal("-150"), Decimal("50")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")
+            }
+        )
         mock_accrual_custom_instruction_response = [sentinel.custom_instruction]
         mock_accrual_custom_instruction.side_effect = [mock_accrual_custom_instruction_response]
         postings = unarranged_overdraft_fee.accrue_fee(vault=mock_vault)
@@ -205,10 +237,16 @@ class AccrueFeeTest(FeatureTest):
         mock_are_optional_parameters_set: MagicMock,
     ):
         mock_are_optional_parameters_set.return_value = True
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         mock_balance_at_coordinates.side_effect = [Decimal("-100")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")
+            }
+        )
 
         self.assertEquals(unarranged_overdraft_fee.accrue_fee(vault=mock_vault), [])
 
@@ -219,11 +257,17 @@ class AccrueFeeTest(FeatureTest):
         mock_are_optional_parameters_set: MagicMock,
     ):
         mock_are_optional_parameters_set.return_value = True
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         # Mock returns the Default address EOD balance and OVERDRAFT_FEE address balance
         mock_balance_at_coordinates.side_effect = [Decimal("-150"), Decimal("30")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")
+            }
+        )
 
         self.assertEquals(unarranged_overdraft_fee.accrue_fee(vault=mock_vault), [])
 
@@ -236,11 +280,17 @@ class AccrueFeeTest(FeatureTest):
         mock_are_optional_parameters_set: MagicMock,
     ):
         mock_are_optional_parameters_set.return_value = True
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         # Mock returns the Default address EOD balance and OVERDRAFT_FEE address balance
         mock_balance_at_coordinates.side_effect = [Decimal("-150"), Decimal("26")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EOD_FETCHER_ID: SentinelBalancesObservation("eod_balance_observation")
+            }
+        )
         mock_accrual_custom_instruction_response = [sentinel.custom_instruction]
         mock_accrual_custom_instruction.side_effect = [mock_accrual_custom_instruction_response]
         postings = unarranged_overdraft_fee.accrue_fee(vault=mock_vault)
@@ -283,14 +333,18 @@ class ApplyFeeTest(FeatureTest):
     ):
         mock_are_optional_parameters_set.return_value = True
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         mock_balance_at_coordinates.side_effect = [Decimal("-25.232")]
 
         mock_vault = self.create_mock()
 
         mock_accrual_custom_instruction_response = [sentinel.custom_instruction]
         mock_accrual_custom_instruction.side_effect = [mock_accrual_custom_instruction_response]
-        postings = unarranged_overdraft_fee.apply_fee(vault=mock_vault, balances=sentinel.balances, denomination=sentinel.denomination)
+        postings = unarranged_overdraft_fee.apply_fee(
+            vault=mock_vault, balances=sentinel.balances, denomination=sentinel.denomination
+        )
         mock_are_optional_parameters_set.assert_called_once()
         self.assertEquals(postings, mock_accrual_custom_instruction_response)
         mock_accrual_custom_instruction.assert_called_once_with(
@@ -324,10 +378,18 @@ class ApplyFeeTest(FeatureTest):
     ):
         mock_are_optional_parameters_set.return_value = True
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         mock_balance_at_coordinates.side_effect = [Decimal("-25.232")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective_balance_observation"))})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+                    SentinelBalancesObservation("effective_balance_observation")
+                )
+            }
+        )
         mock_accrual_custom_instruction_response = [sentinel.custom_instruction]
         mock_accrual_custom_instruction.side_effect = [mock_accrual_custom_instruction_response]
         postings = unarranged_overdraft_fee.apply_fee(vault=mock_vault)
@@ -361,9 +423,17 @@ class ApplyFeeTest(FeatureTest):
         mock_are_optional_parameters_set: MagicMock,
     ):
         mock_are_optional_parameters_set.return_value = True
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=default_parameters.copy())
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=default_parameters.copy()
+        )
         mock_balance_at_coordinates.side_effect = [Decimal("0")]
 
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (SentinelBalancesObservation("effective_balance_observation"))})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: (
+                    SentinelBalancesObservation("effective_balance_observation")
+                )
+            }
+        )
 
         self.assertEquals(unarranged_overdraft_fee.apply_fee(vault=mock_vault), [])

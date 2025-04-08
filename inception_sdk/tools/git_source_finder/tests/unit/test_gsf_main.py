@@ -23,7 +23,9 @@ class TestSourceFinder(TestCase):
         return super().setUp()
 
     def set_gsf_mock_properties(self, mock_gsf) -> Mock:
-        mock_result = GitSourceFinderResult(source_code="source_code", file_hash="file_hash", git_commit_hash="commit_hash")
+        mock_result = GitSourceFinderResult(
+            source_code="source_code", file_hash="file_hash", git_commit_hash="commit_hash"
+        )
         mock_get_results = Mock(return_value=mock_result)
         mock_gsf.return_value = Mock(
             get_source=mock_get_results,

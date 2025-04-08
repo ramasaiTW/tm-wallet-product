@@ -48,14 +48,18 @@ class ScheduleLogicTest(OverdueTest):
         self,
     ):
         product_name = "product_a"
-        expected_notification_type = f"{product_name.upper()}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        expected_notification_type = (
+            f"{product_name.upper()}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        )
         # run function
         result_notification_type = overdue.notification_type(product_name=product_name)
         # validate results
         self.assertEqual(result_notification_type, expected_notification_type)
 
     @patch.object(overdue, "notification_type")
-    def test_get_overdue_repayment_notification_has_due_principal_only(self, mock_notification_type: MagicMock):
+    def test_get_overdue_repayment_notification_has_due_principal_only(
+        self, mock_notification_type: MagicMock
+    ):
         # expected values
         product_name = "PRODUCT_A"
         effective_datetime = DEFAULT_DATETIME
@@ -63,7 +67,9 @@ class ScheduleLogicTest(OverdueTest):
         due_interest_amount = Decimal("0")
         late_repayment_fee = Decimal("0")
 
-        expected_notification_type = f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        expected_notification_type = (
+            f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        )
         mock_notification_type.return_value = expected_notification_type
 
         # construct expected result
@@ -93,7 +99,9 @@ class ScheduleLogicTest(OverdueTest):
         self.assertListEqual(expected_notifications, result_notifications)
 
     @patch.object(overdue, "notification_type")
-    def test_get_overdue_repayment_notification_has_due_interest_only(self, mock_notification_type: MagicMock):
+    def test_get_overdue_repayment_notification_has_due_interest_only(
+        self, mock_notification_type: MagicMock
+    ):
         # expected values
         product_name = "PRODUCT_A"
         effective_datetime = DEFAULT_DATETIME
@@ -101,7 +109,9 @@ class ScheduleLogicTest(OverdueTest):
         due_interest_amount = Decimal("12")
         late_repayment_fee = Decimal("0")
 
-        expected_notification_type = f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        expected_notification_type = (
+            f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        )
         mock_notification_type.return_value = expected_notification_type
 
         # construct expected result
@@ -131,7 +141,9 @@ class ScheduleLogicTest(OverdueTest):
         self.assertListEqual(expected_notifications, result_notifications)
 
     @patch.object(overdue, "notification_type")
-    def test_get_overdue_repayment_notification_has_both_due_principal_and_due_interest(self, mock_notification_type: MagicMock):
+    def test_get_overdue_repayment_notification_has_both_due_principal_and_due_interest(
+        self, mock_notification_type: MagicMock
+    ):
         # expected values
         product_name = "PRODUCT_A"
         effective_datetime = DEFAULT_DATETIME
@@ -139,7 +151,9 @@ class ScheduleLogicTest(OverdueTest):
         due_interest_amount = Decimal("12")
         late_repayment_fee = Decimal("10")
 
-        expected_notification_type = f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        expected_notification_type = (
+            f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        )
         mock_notification_type.return_value = expected_notification_type
 
         # construct expected result
@@ -170,7 +184,9 @@ class ScheduleLogicTest(OverdueTest):
         self.assertListEqual(expected_notifications, result_notifications)
 
     @patch.object(overdue, "notification_type")
-    def test_get_overdue_repayment_notification_has_late_repayment_fee(self, mock_notification_type: MagicMock):
+    def test_get_overdue_repayment_notification_has_late_repayment_fee(
+        self, mock_notification_type: MagicMock
+    ):
         # expected values
         product_name = "PRODUCT_A"
         effective_datetime = DEFAULT_DATETIME
@@ -178,7 +194,9 @@ class ScheduleLogicTest(OverdueTest):
         due_interest_amount = Decimal("0")
         late_repayment_fee = Decimal("10")
 
-        expected_notification_type = f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        expected_notification_type = (
+            f"{product_name}{overdue.OVERDUE_REPAYMENT_NOTIFICATION_SUFFIX}"
+        )
         mock_notification_type.return_value = expected_notification_type
 
         # construct expected result
@@ -245,7 +263,9 @@ class ScheduleLogicTest(OverdueTest):
                 ),
             }
         )
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"denomination": sentinel.denomination}
+        )
         mock_create_postings.return_value = []
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         # run function
@@ -293,7 +313,9 @@ class ScheduleLogicTest(OverdueTest):
             }
         )
         mock_create_postings.side_effect = [principal_postings, interest_postings]
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"denomination": sentinel.denomination}
+        )
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_get_overdue_repayment_notification.return_value = []
         # run function
@@ -377,7 +399,9 @@ class ScheduleLogicTest(OverdueTest):
         # construct mocks
 
         mock_create_postings.side_effect = [principal_postings, interest_postings]
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"denomination": sentinel.denomination}
+        )
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_get_balance_at_coordinates.return_value = dummy_amount
         mock_get_overdue_repayment_notification.return_value = expected_notifications
@@ -474,7 +498,9 @@ class ScheduleLogicTest(OverdueTest):
         # construct mocks
 
         mock_create_postings.side_effect = [principal_postings, interest_postings]
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"denomination": sentinel.denomination}
+        )
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_get_balance_at_coordinates.return_value = dummy_amount
         mock_get_overdue_repayment_notification.return_value = expected_notifications
@@ -575,7 +601,9 @@ class ScheduleLogicTest(OverdueTest):
         # construct mocks
 
         mock_create_postings.side_effect = [principal_postings, interest_postings]
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"denomination": sentinel.denomination})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"denomination": sentinel.denomination}
+        )
         mock_standard_instruction_details.return_value = sentinel_instruction_details
         mock_get_balance_at_coordinates.return_value = dummy_amount
         mock_get_overdue_repayment_notification.return_value = expected_notifications
@@ -659,11 +687,14 @@ class ScheduleEventsTest(OverdueTest):
         # construct mocks
         mock_vault = sentinel.vault
         mock_get_schedule_expression_from_parameters.return_value = sched_expr
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_period": 7})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"repayment_period": 7}
+        )
         # construct expected result
         expected = {
             overdue.CHECK_OVERDUE_EVENT: ScheduledEvent(
-                start_datetime=due_calc_dt.replace(hour=0, minute=0, second=0) + relativedelta(days=7),
+                start_datetime=due_calc_dt.replace(hour=0, minute=0, second=0)
+                + relativedelta(days=7),
                 expression=sched_expr,
                 skip=False,
             )
@@ -697,17 +728,22 @@ class ScheduleEventsTest(OverdueTest):
         # construct mocks
         mock_vault = sentinel.vault
         mock_get_schedule_expression_from_parameters.return_value = sched_expr
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_period": 7})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"repayment_period": 7}
+        )
         # construct expected result
         expected = {
             overdue.CHECK_OVERDUE_EVENT: ScheduledEvent(
-                start_datetime=due_calc_dt.replace(hour=0, minute=0, second=0) + relativedelta(days=7),
+                start_datetime=due_calc_dt.replace(hour=0, minute=0, second=0)
+                + relativedelta(days=7),
                 expression=sched_expr,
                 skip=True,
             )
         }
         # run function
-        scheduled_events = overdue.scheduled_events(vault=mock_vault, first_due_amount_calculation_datetime=due_calc_dt, skip=True)
+        scheduled_events = overdue.scheduled_events(
+            vault=mock_vault, first_due_amount_calculation_datetime=due_calc_dt, skip=True
+        )
 
         # validate results
         self.assertDictEqual(scheduled_events, expected)
@@ -732,17 +768,22 @@ class ScheduleEventsTest(OverdueTest):
         # construct mocks
         mock_vault = sentinel.vault
         mock_get_schedule_expression_from_parameters.return_value = sched_expr
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={"repayment_period": 7})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={"repayment_period": 7}
+        )
         # construct expected result
         expected = {
             overdue.CHECK_OVERDUE_EVENT: ScheduledEvent(
-                start_datetime=due_calc_dt.replace(hour=0, minute=0, second=0) + relativedelta(days=7),
+                start_datetime=due_calc_dt.replace(hour=0, minute=0, second=0)
+                + relativedelta(days=7),
                 expression=sched_expr,
                 skip=False,
             )
         }
         # run function
-        scheduled_events = overdue.scheduled_events(vault=mock_vault, first_due_amount_calculation_datetime=due_calc_dt, is_one_off=True)
+        scheduled_events = overdue.scheduled_events(
+            vault=mock_vault, first_due_amount_calculation_datetime=due_calc_dt, is_one_off=True
+        )
 
         # validate results
         self.assertDictEqual(scheduled_events, expected)
@@ -766,7 +807,9 @@ class OverdueHelperTest(OverdueTest):
         # expected_overdue_datetime = due_amount_notification_datetime
         # + repayment_period + notification_period
         # hour minute second is not considered and will remain the same
-        expected_due_amount_notification_datetime = datetime(2020, 2, 8, 3, 4, 5, tzinfo=ZoneInfo("UTC"))
+        expected_due_amount_notification_datetime = datetime(
+            2020, 2, 8, 3, 4, 5, tzinfo=ZoneInfo("UTC")
+        )
 
         # run function
         next_due_amount_notification_datetime = overdue.get_overdue_datetime(
@@ -776,7 +819,9 @@ class OverdueHelperTest(OverdueTest):
         )
 
         # validate results
-        self.assertEqual(next_due_amount_notification_datetime, expected_due_amount_notification_datetime)
+        self.assertEqual(
+            next_due_amount_notification_datetime, expected_due_amount_notification_datetime
+        )
 
 
 class GetParametersTest(OverdueTest):
@@ -796,7 +841,9 @@ class GetParametersTest(OverdueTest):
         )
 
     @patch.object(overdue, "get_repayment_period_parameter")
-    def test_get_next_overdue_derived_parameter(self, mock_get_repayment_period_parameter: MagicMock):
+    def test_get_next_overdue_derived_parameter(
+        self, mock_get_repayment_period_parameter: MagicMock
+    ):
         mock_get_repayment_period_parameter.return_value = 5
         previous_event = DEFAULT_DATETIME - relativedelta(months=1)
         expected = previous_event + relativedelta(days=5)

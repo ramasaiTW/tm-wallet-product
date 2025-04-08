@@ -64,15 +64,24 @@ class TypeQualifier:
 
         if self._repeated:
             if not isinstance(value, (list, tuple)):
-                raise TypeError(f"{owner_str} expects an iterable of {' or '.join(names)}, instead got " f"non-iterable {type(value).__name__} ({value})")
+                raise TypeError(
+                    f"{owner_str} expects an iterable of {' or '.join(names)}, instead got "
+                    f"non-iterable {type(value).__name__} ({value})"
+                )
             bad_values = [v for v in value if not self._is_valid(v, expected_types)]
 
             if bad_values:
                 bad_types = set(type(v).__name__ for v in bad_values)
-                raise TypeError(f"{owner_str} expects an iterable of {' or '.join(names)}, instead got " f"iterable containing {' and '.join(bad_types)}")
+                raise TypeError(
+                    f"{owner_str} expects an iterable of {' or '.join(names)}, instead got "
+                    f"iterable containing {' and '.join(bad_types)}"
+                )
 
         elif not self._is_valid(value, expected_types):
-            raise TypeError(f"{owner_str} expects {' or '.join(names)}, instead got {type(value).__name__} " f"({value}))")
+            raise TypeError(
+                f"{owner_str} expects {' or '.join(names)}, instead got {type(value).__name__} "
+                f"({value}))"
+            )
 
     def _make_type_docstring(self, names: List[str]) -> str:
         if self._repeated:
@@ -81,12 +90,20 @@ class TypeQualifier:
             return make_docstring(names)
 
     def _make_docstring(self, key: str, names: List[str]) -> str:
-        return f"{{description: {self._description or ''}, name: {key}, " f"type: {repr(self._make_type_docstring(names))}}}"
+        return (
+            f"{{description: {self._description or ''}, name: {key}, "
+            f"type: {repr(self._make_type_docstring(names))}}}"
+        )
 
     @staticmethod
     def _is_valid(value: Any, expected_types: Tuple[Any]) -> bool:
         # Return whether value is valid for at least one of the expected types
-        return any(expected_type._is_valid_value(value) if hasattr(expected_type, "_is_valid_value") else isinstance(value, expected_type) for expected_type in expected_types)  # noqa:SLF001
+        return any(
+            expected_type._is_valid_value(value)
+            if hasattr(expected_type, "_is_valid_value")
+            else isinstance(value, expected_type)
+            for expected_type in expected_types
+        )  # noqa:SLF001
 
     def make_spec(self) -> Dict[str, Any]:
         return {
@@ -139,18 +156,24 @@ def TypedList(item_type: type):
             items = list(iterable)
             if not self._from_proto_list:
                 for i, item in enumerate(items):
-                    self._registry.assert_type_name(item_type, item, f"{self.__class__.__name__} item[{i}]")
+                    self._registry.assert_type_name(
+                        item_type, item, f"{self.__class__.__name__} item[{i}]"
+                    )
             list.extend(self, items)
 
         def __setitem__(self, key, value):
             if isinstance(key, int):
                 if not self._from_proto_list:
-                    self._registry.assert_type_name(item_type, value, f"{ self.__class__.__name__} item")
+                    self._registry.assert_type_name(
+                        item_type, value, f"{ self.__class__.__name__} item"
+                    )
             elif isinstance(key, slice):
                 value = list(value)
                 if not self._from_proto_list:
                     for v in value:
-                        self._registry.assert_type_name(item_type, v, f"{self.__class__.__name__} item")
+                        self._registry.assert_type_name(
+                            item_type, v, f"{self.__class__.__name__} item"
+                        )
             # else: Fall through and let list handle the key error
             list.__setitem__(self, key, value)
 
@@ -203,7 +226,9 @@ def TypedDefaultDict(dict_type: type):
             if mapping:
                 # Bypass initial checks if the dict populated from proto
                 if not _from_proto:
-                    self._registry.assert_type_name(dict_type, mapping, f"{self.__class__.__name__} key: value")
+                    self._registry.assert_type_name(
+                        dict_type, mapping, f"{self.__class__.__name__} key: value"
+                    )
             else:
                 mapping = {}
             super(_TypedDefaultDict, self).__init__(mapping)
@@ -214,7 +239,9 @@ def TypedDefaultDict(dict_type: type):
             value = self.default_factory(key)
             temp_dict = {key: value}
             # Always check the type of new key value pair set by end user
-            self._registry.assert_type_name(dict_type, temp_dict, f"{self.__class__.__name__} key: value")
+            self._registry.assert_type_name(
+                dict_type, temp_dict, f"{self.__class__.__name__} key: value"
+            )
             self[key] = value
             return value
 
@@ -227,7 +254,9 @@ def TypedDefaultDict(dict_type: type):
         def __setitem__(self, key, value):
             temp_dict = {key: value}
             # Always check the type of new key value pair set by end user
-            self._registry.assert_type_name(dict_type, temp_dict, f"{self.__class__.__name__} key: value")
+            self._registry.assert_type_name(
+                dict_type, temp_dict, f"{self.__class__.__name__} key: value"
+            )
             super(_TypedDefaultDict, self).__setitem__(key, value)
 
         # Used in private Contracts API library
@@ -235,17 +264,23 @@ def TypedDefaultDict(dict_type: type):
             temp_dict = {key: value}
             # Bypass initial checks of new key value pairs if populated from proto
             if not _from_proto:
-                self._registry.assert_type_name(dict_type, temp_dict, f"{self.__class__.__name__} key: value")
+                self._registry.assert_type_name(
+                    dict_type, temp_dict, f"{self.__class__.__name__} key: value"
+                )
             super(_TypedDefaultDict, self).__setitem__(key, value)
 
         def update(self, other_dict: Dict[Any, Any] = None, **kwargs):  # type: ignore
             _from_proto = kwargs.pop("_from_proto", False)
             # Bypass initial checks of the other dict if populated from proto
             if other_dict and not _from_proto:
-                self._registry.assert_type_name(dict_type, other_dict, f"{self.__class__.__name__} key: value")
+                self._registry.assert_type_name(
+                    dict_type, other_dict, f"{self.__class__.__name__} key: value"
+                )
             # Bypass initial checks of new key value pairs if populated from proto
             if kwargs and not _from_proto:
-                self._registry.assert_type_name(dict_type, kwargs, f"{self.__class__.__name__} key: value")
+                self._registry.assert_type_name(
+                    dict_type, kwargs, f"{self.__class__.__name__} key: value"
+                )
             super(_TypedDefaultDict, self).update(other_dict, **kwargs)  # type: ignore
 
         def setdefault(self, key: Any, default: Any = None):
@@ -253,7 +288,9 @@ def TypedDefaultDict(dict_type: type):
                 return self[key]
             temp_dict = {key: default}
             # Always check the type of new key value pair set by end user
-            self._registry.assert_type_name(dict_type, temp_dict, f"{self.__class__.__name__} key: value")
+            self._registry.assert_type_name(
+                dict_type, temp_dict, f"{self.__class__.__name__} key: value"
+            )
             super(_TypedDefaultDict, self).setdefault(key, default)
 
         def copy(self):
@@ -350,7 +387,10 @@ class MethodSpec:
         for arg_name, arg_value in args.items():
             arg_spec = self.args.get(arg_name)
             if not arg_spec:
-                raise ValueError(f"ArgSpec missing on class {cls_name} for method {self.name} arg " f"{repr(arg_name)}")
+                raise ValueError(
+                    f"ArgSpec missing on class {cls_name} for method {self.name} arg "
+                    f"{repr(arg_name)}"
+                )
             type_registry.assert_type_name(
                 arg_spec.type,
                 arg_value,
@@ -381,8 +421,12 @@ class ConstructorSpec(MethodSpec):
         for arg_name, arg_value in args.items():
             arg_spec = self.args.get(arg_name)
             if not arg_spec:
-                raise ValueError(f"ArgSpec missing on class {cls_name} for constructor arg {repr(arg_name)}")
-            type_registry.assert_type_name(arg_spec.type, arg_value, f"{cls_name}.__init__ arg {repr(arg_name)}")
+                raise ValueError(
+                    f"ArgSpec missing on class {cls_name} for constructor arg {repr(arg_name)}"
+                )
+            type_registry.assert_type_name(
+                arg_spec.type, arg_value, f"{cls_name}.__init__ arg {repr(arg_name)}"
+            )
 
 
 class ClassSpec:
@@ -399,9 +443,17 @@ class ClassSpec:
     ):
         self.name = name
         self.docstring = docstring
-        self.public_attributes: Dict[Any, ValueSpec] = {public_attribute.name: public_attribute for public_attribute in public_attributes} if public_attributes is not None else {}
+        self.public_attributes: Dict[Any, ValueSpec] = (
+            {public_attribute.name: public_attribute for public_attribute in public_attributes}
+            if public_attributes is not None
+            else {}
+        )
         self.constructor = constructor
-        self.public_methods: Dict[str, MethodSpec] = {public_method.name: public_method for public_method in public_methods} if public_methods is not None else {}
+        self.public_methods: Dict[str, MethodSpec] = (
+            {public_method.name: public_method for public_method in public_methods}
+            if public_methods is not None
+            else {}
+        )
 
     def assert_constructor_args(self, type_registry, method_args):
         if not self.constructor:
@@ -411,13 +463,17 @@ class ClassSpec:
     def assert_method_args(self, type_registry, method_name, method_args):
         method_spec = self.public_methods.get(method_name)
         if not method_spec:
-            raise ValueError(f"MethodSpec missing on class {self.name} for method {repr(method_name)}")
+            raise ValueError(
+                f"MethodSpec missing on class {self.name} for method {repr(method_name)}"
+            )
         method_spec.assert_args(type_registry, self.name, method_args)
 
     def assert_attribute_value(self, type_registry, name, value):
         attribute_spec = self.public_attributes.get(name)
         if not attribute_spec:
-            raise exceptions.StrongTypingError(f"ValueSpec missing on class {self.name} for attribute {name}")
+            raise exceptions.StrongTypingError(
+                f"ValueSpec missing on class {self.name} for attribute {name}"
+            )
         type_registry.assert_type_name(attribute_spec.type, value, f"{self.name}.{name}")
 
 
@@ -472,7 +528,10 @@ def Enum(
     def _type_check(value) -> bool:
         return value in valid_values
 
-    key_value_dict = {key: _WITH_VALUE_PROPERTY_CLASSES[type(value)](value) for key, value in key_value_dict.items()}
+    key_value_dict = {
+        key: _WITH_VALUE_PROPERTY_CLASSES[type(value)](value)
+        for key, value in key_value_dict.items()
+    }
     for k, v in key_value_dict.items():
         v.name = k
 
@@ -481,7 +540,11 @@ def Enum(
         return EnumSpec(
             name=name,
             docstring=docstring or "",
-            members=[{"name": name, "value": value} for name, value in sorted(key_value_dict.items()) if "UNKNOWN" not in name],
+            members=[
+                {"name": name, "value": value}
+                for name, value in sorted(key_value_dict.items())
+                if "UNKNOWN" not in name
+            ],
             show_values=show_values,
         )
 
@@ -506,7 +569,9 @@ def Timeseries(_item_type, _item_desc, _return_on_empty=None):
             self._from_proto_list = False
 
         @staticmethod
-        def _select_timestamp_or_date(timestamp: Optional[datetime] = None, date: Optional[datetime] = None):
+        def _select_timestamp_or_date(
+            timestamp: Optional[datetime] = None, date: Optional[datetime] = None
+        ):
             if timestamp and not date:
                 return timestamp
             elif date and not timestamp:
@@ -572,12 +637,18 @@ def Timeseries(_item_type, _item_desc, _return_on_empty=None):
                     public_methods=[
                         MethodSpec(
                             name="at",
-                            docstring=(f" Returns the latest available {item_desc} as of the given " "timestamp."),
+                            docstring=(
+                                f" Returns the latest available {item_desc} as of the given "
+                                "timestamp."
+                            ),
                             args=[
                                 ValueSpec(
                                     name="timestamp",
                                     type="datetime",
-                                    docstring=("The timestamp as of which to fetch the " f"latest {item_desc}."),
+                                    docstring=(
+                                        "The timestamp as of which to fetch the "
+                                        f"latest {item_desc}."
+                                    ),
                                 ),
                             ],
                             return_value=ReturnValueSpec(
@@ -587,17 +658,26 @@ def Timeseries(_item_type, _item_desc, _return_on_empty=None):
                         ),
                         MethodSpec(
                             name="before",
-                            docstring=(f"Returns the latest available {item_desc} as of just before the " "given timestamp."),
+                            docstring=(
+                                f"Returns the latest available {item_desc} as of just before the "
+                                "given timestamp."
+                            ),
                             args=[
                                 ValueSpec(
                                     name="timestamp",
                                     type="datetime",
-                                    docstring=("The timestamp just before which to fetch the " f"latest {item_desc}."),
+                                    docstring=(
+                                        "The timestamp just before which to fetch the "
+                                        f"latest {item_desc}."
+                                    ),
                                 ),
                             ],
                             return_value=ReturnValueSpec(
                                 type=cls.item_type,
-                                docstring=(f"The latest {item_desc} as of just before the timestamp " "provided."),
+                                docstring=(
+                                    f"The latest {item_desc} as of just before the timestamp "
+                                    "provided."
+                                ),
                             ),
                         ),
                         MethodSpec(
@@ -611,7 +691,9 @@ def Timeseries(_item_type, _item_desc, _return_on_empty=None):
                         ),
                         MethodSpec(
                             name="all",
-                            docstring=(f"Returns a list of all available {item_desc} values across time."),
+                            docstring=(
+                                f"Returns a list of all available {item_desc} values across time."
+                            ),
                             args=[],
                             return_value=ReturnValueSpec(
                                 type=f"List[Tuple[datetime, {cls.item_type}]]",
@@ -634,7 +716,9 @@ def merge_class_specs(*, derived_spec: ClassSpec, base_spec: ClassSpec) -> Class
     return ClassSpec(
         name=derived_spec.name,
         docstring=derived_spec.docstring or base_spec.docstring,
-        public_attributes=list(dict(base_spec.public_attributes, **derived_spec.public_attributes).values()),
+        public_attributes=list(
+            dict(base_spec.public_attributes, **derived_spec.public_attributes).values()
+        ),
         constructor=derived_spec.constructor or base_spec.constructor,
         public_methods=list(dict(base_spec.public_methods, **derived_spec.public_methods).values()),
     )
@@ -653,8 +737,14 @@ def transform_const_enum(
     :param const_enum: T
     he class from public.utils.symbols
     """
-    key_value_dict = {key: value for key, value in const_enum.__dict__.items() if not key.startswith("__") and key not in hide_keys}
-    return Enum(name=name, key_value_dict=key_value_dict, docstring=docstring, show_values=show_values)
+    key_value_dict = {
+        key: value
+        for key, value in const_enum.__dict__.items()
+        if not key.startswith("__") and key not in hide_keys
+    }
+    return Enum(
+        name=name, key_value_dict=key_value_dict, docstring=docstring, show_values=show_values
+    )
 
 
 class _EnumMember:
@@ -672,7 +762,11 @@ class _EnumMember:
 
 def enum_members(cls):
     "Helper function for Language v4+ to enable documentation generator to work with Python Enums"
-    return [_EnumMember(k, v) for k, v in sorted(cls.__dict__.items()) if not k.startswith("_") and "UNKNOWN" not in k]
+    return [
+        _EnumMember(k, v)
+        for k, v in sorted(cls.__dict__.items())
+        if not k.startswith("_") and "UNKNOWN" not in k
+    ]
 
 
 class EnumRepr:
@@ -704,7 +798,9 @@ def get_iterator(items: Iterable, hint: str, name, check_empty=False):
     if isinstance(items, str):
         raise exceptions.StrongTypingError(exception_message)
     if check_empty and not items:
-        raise exceptions.InvalidSmartContractError(f"'{name}' must be a non empty list, got {items}")
+        raise exceptions.InvalidSmartContractError(
+            f"'{name}' must be a non empty list, got {items}"
+        )
     try:
         iterator = iter(items)
     except TypeError:
@@ -736,14 +832,22 @@ def validate_type(
         or (not isinstance(item, expected))
     ):
         if not hint:
-            hint = "Union[" + ", ".join([e.__name__ for e in expected]) + "]" if isinstance(expected, tuple) else str(expected.__name__)
+            hint = (
+                "Union[" + ", ".join([e.__name__ for e in expected]) + "]"
+                if isinstance(expected, tuple)
+                else str(expected.__name__)
+            )
         if is_optional:
             hint += " if populated"
 
         if item is None:
             item_of_type = "None"
         else:
-            item_of_type = f"'{item}'" if isclass(item) or repr(item) == type(item).__name__ else f"'{item}' of type {type(item).__name__}"
+            item_of_type = (
+                f"'{item}'"
+                if isclass(item) or repr(item) == type(item).__name__
+                else f"'{item}' of type {type(item).__name__}"
+            )
 
         if prefix:
             message = f"'{prefix}' expected {hint}, got {item_of_type}"
@@ -753,5 +857,7 @@ def validate_type(
 
     if check_empty:
         if expected == str and item.strip() == "":
-            message = f"'{prefix}' must be a non-empty string" if prefix else "Expected non empty string"
+            message = (
+                f"'{prefix}' must be a non-empty string" if prefix else "Expected non empty string"
+            )
             raise exceptions.InvalidSmartContractError(message)

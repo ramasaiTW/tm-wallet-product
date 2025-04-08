@@ -44,12 +44,18 @@ datetimeObject = types_utils.NativeObjectSpec(
     name="datetime",
     object=datetime.datetime,
     package=datetime,
-    description=("Note: `datetime` module `today`, `timetuple` and `strftime` methods are not available."),
+    description=(
+        "Note: `datetime` module `today`, `timetuple` and `strftime` methods are not available."
+    ),
 )
 
-decimalObject = types_utils.NativeObjectSpec(name="Decimal", object=decimal.Decimal, package=decimal)
+decimalObject = types_utils.NativeObjectSpec(
+    name="Decimal", object=decimal.Decimal, package=decimal
+)
 
-defaultDict = types_utils.NativeObjectSpec(name="defaultdict", object=collections.defaultdict, package=collections)
+defaultDict = types_utils.NativeObjectSpec(
+    name="defaultdict", object=collections.defaultdict, package=collections
+)
 
 defaultDictObject = types_utils.NativeObjectSpec(
     name="DefaultDict",
@@ -141,11 +147,17 @@ relativedeltaObject = types_utils.NativeObjectSpec(
     docs="https://dateutil.readthedocs.io/en/stable/relativedelta.html",
 )
 
-roundFloorObject = types_utils.NativeObjectSpec(name="ROUND_FLOOR", object=decimal.ROUND_FLOOR, package=decimal)
+roundFloorObject = types_utils.NativeObjectSpec(
+    name="ROUND_FLOOR", object=decimal.ROUND_FLOOR, package=decimal
+)
 
-roundHalfDownObject = types_utils.NativeObjectSpec(name="ROUND_HALF_DOWN", object=decimal.ROUND_HALF_DOWN, package=decimal)
+roundHalfDownObject = types_utils.NativeObjectSpec(
+    name="ROUND_HALF_DOWN", object=decimal.ROUND_HALF_DOWN, package=decimal
+)
 
-roundHalfUpObject = types_utils.NativeObjectSpec(name="ROUND_HALF_UP", object=decimal.ROUND_HALF_UP, package=decimal)
+roundHalfUpObject = types_utils.NativeObjectSpec(
+    name="ROUND_HALF_UP", object=decimal.ROUND_HALF_UP, package=decimal
+)
 
 roundCeilingObject = types_utils.NativeObjectSpec(
     name="ROUND_CEILING",

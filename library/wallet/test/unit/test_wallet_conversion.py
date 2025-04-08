@@ -18,7 +18,9 @@ class ConversionHookTest(WalletTestBase):
         existing_schedule_expression = ScheduleExpression(second="0", minute="0", hour="0")
 
         # Mock existing scheduled event with the ScheduleExpression
-        existing_scheduled_event = ScheduledEvent(start_datetime=DEFAULT_DATETIME, expression=existing_schedule_expression)
+        existing_scheduled_event = ScheduledEvent(
+            start_datetime=DEFAULT_DATETIME, expression=existing_schedule_expression
+        )
         existing_schedules = {ZERO_OUT_DAILY_SPEND_EVENT: existing_scheduled_event}
 
         hook_arguments = ConversionHookArguments(

@@ -204,7 +204,9 @@ SCHEDULE_TAG = {
     }
 }
 
-EXAMPLE_OPERATION_EVENT = load_file_contents("inception_sdk/test_framework/endtoend/test/unit/input/operation_event.json")
+EXAMPLE_OPERATION_EVENT = load_file_contents(
+    "inception_sdk/test_framework/endtoend/test/unit/input/operation_event.json"
+)
 
 
 # For simplicity this schedule will be used for both plan and account schedule tests.
@@ -290,7 +292,9 @@ class AccountScheduleFetchingTest(TestCase):
         },
     }
 
-    def test_get_account_schedules_with_no_assocs(self, get_account_schedule_assocs, batch_get_schedules):
+    def test_get_account_schedules_with_no_assocs(
+        self, get_account_schedule_assocs, batch_get_schedules
+    ):
         get_account_schedule_assocs.return_value = []
         batch_get_schedules.return_value = {}
         self.assertDictEqual(
@@ -298,7 +302,9 @@ class AccountScheduleFetchingTest(TestCase):
             {},
         )
 
-    def test_get_account_schedules_with_no_schedules(self, get_account_schedule_assocs, batch_get_schedules):
+    def test_get_account_schedules_with_no_schedules(
+        self, get_account_schedule_assocs, batch_get_schedules
+    ):
         get_account_schedule_assocs.return_value = AccountScheduleFetchingTest.NORMAL_ASSOCS
         batch_get_schedules.return_value = {}
         self.assertDictEqual(
@@ -306,9 +312,13 @@ class AccountScheduleFetchingTest(TestCase):
             {},
         )
 
-    def test_get_account_schedules_filters_disabled_schedules_by_default(self, get_account_schedule_assocs, batch_get_schedules):
+    def test_get_account_schedules_filters_disabled_schedules_by_default(
+        self, get_account_schedule_assocs, batch_get_schedules
+    ):
         get_account_schedule_assocs.return_value = AccountScheduleFetchingTest.NORMAL_ASSOCS
-        batch_get_schedules.return_value = AccountScheduleFetchingTest.ONE_ENABLED_ONE_DISABLED_SCHEDULES
+        batch_get_schedules.return_value = (
+            AccountScheduleFetchingTest.ONE_ENABLED_ONE_DISABLED_SCHEDULES
+        )
         self.assertDictEqual(
             endtoend.schedule_helper.get_account_schedules(account_id="my_account_id"),
             {
@@ -322,9 +332,13 @@ class AccountScheduleFetchingTest(TestCase):
             },
         )
 
-    def test_get_account_schedules_returns_latest_schedule_with_same_name(self, get_account_schedule_assocs, batch_get_schedules):
+    def test_get_account_schedules_returns_latest_schedule_with_same_name(
+        self, get_account_schedule_assocs, batch_get_schedules
+    ):
         get_account_schedule_assocs.return_value = AccountScheduleFetchingTest.NORMAL_ASSOCS
-        batch_get_schedules.return_value = AccountScheduleFetchingTest.SCHEDULES_WITH_SAME_DISPLAYNAME
+        batch_get_schedules.return_value = (
+            AccountScheduleFetchingTest.SCHEDULES_WITH_SAME_DISPLAYNAME
+        )
         self.assertDictEqual(
             endtoend.schedule_helper.get_account_schedules(account_id="my_account_id"),
             {
@@ -338,11 +352,17 @@ class AccountScheduleFetchingTest(TestCase):
             },
         )
 
-    def test_get_account_schedules_filters_no_schedules_with_empty_list_of_statuses(self, get_account_schedule_assocs, batch_get_schedules):
+    def test_get_account_schedules_filters_no_schedules_with_empty_list_of_statuses(
+        self, get_account_schedule_assocs, batch_get_schedules
+    ):
         get_account_schedule_assocs.return_value = AccountScheduleFetchingTest.NORMAL_ASSOCS
-        batch_get_schedules.return_value = AccountScheduleFetchingTest.ONE_ENABLED_ONE_DISABLED_SCHEDULES
+        batch_get_schedules.return_value = (
+            AccountScheduleFetchingTest.ONE_ENABLED_ONE_DISABLED_SCHEDULES
+        )
         self.assertDictEqual(
-            endtoend.schedule_helper.get_account_schedules(account_id="my_account_id", statuses_to_exclude=[]),
+            endtoend.schedule_helper.get_account_schedules(
+                account_id="my_account_id", statuses_to_exclude=[]
+            ),
             {
                 "APPLY_MONTHLY_FEES": {
                     "id": "bfe2a0f8-1642-46b9-aba4-9c3068a00834",
@@ -361,9 +381,13 @@ class AccountScheduleFetchingTest(TestCase):
             },
         )
 
-    def test_get_account_schedules_filters_schedules_based_on_list_of_statuses(self, get_account_schedule_assocs, batch_get_schedules):
+    def test_get_account_schedules_filters_schedules_based_on_list_of_statuses(
+        self, get_account_schedule_assocs, batch_get_schedules
+    ):
         get_account_schedule_assocs.return_value = AccountScheduleFetchingTest.NORMAL_ASSOCS
-        batch_get_schedules.return_value = AccountScheduleFetchingTest.ONE_ENABLED_ONE_DISABLED_SCHEDULES
+        batch_get_schedules.return_value = (
+            AccountScheduleFetchingTest.ONE_ENABLED_ONE_DISABLED_SCHEDULES
+        )
         self.assertDictEqual(
             endtoend.schedule_helper.get_account_schedules(
                 account_id="my_account_id",
@@ -403,7 +427,9 @@ class PlanScheduleFetchingTest(TestCase):
         get_plan_schedules.return_value = self.PLAN_SCHEDULES
         batch_get_schedules.return_value = SCHEDULE
         self.assertDictEqual(
-            endtoend.schedule_helper.get_plan_schedules("7c99e8b4-a3e8-ef9e-cfe9-56d25e0471f3", statuses_to_exclude=[]),
+            endtoend.schedule_helper.get_plan_schedules(
+                "7c99e8b4-a3e8-ef9e-cfe9-56d25e0471f3", statuses_to_exclude=[]
+            ),
             {
                 "ACCRUE_OFFSET_INTEREST": {
                     "id": "cfdbbb01-bf72-4fe6-910e-02718bf28e20",
@@ -432,7 +458,9 @@ class GetSchedulesForJobTest(TestCase):
 
 class TriggerNextScheduleJobValidation(TestCase):
     @patch.object(schedule_helper, "get_account_schedules")
-    def test_trigger_next_schedule_job_raises_if_schedule_name_missing(self, mock_get_account_schedules: Mock):
+    def test_trigger_next_schedule_job_raises_if_schedule_name_missing(
+        self, mock_get_account_schedules: Mock
+    ):
         mock_get_account_schedules.return_value = {"other_schedule": {}}
         with self.assertRaises(KeyError) as ctx:
             schedule_helper.trigger_next_schedule_job(
@@ -443,11 +471,14 @@ class TriggerNextScheduleJobValidation(TestCase):
 
         self.assertEqual(
             ctx.exception.args[0],
-            "No enabled schedule_name='dummy' for resource_type.value='ACCOUNT' " "resource_id='account_id'",
+            "No enabled schedule_name='dummy' for resource_type.value='ACCOUNT' "
+            "resource_id='account_id'",
         )
 
     @patch.object(schedule_helper, "get_account_schedules")
-    def test_trigger_next_schedule_job_raises_on_tag_less_schedule(self, mock_get_account_schedules: Mock):
+    def test_trigger_next_schedule_job_raises_on_tag_less_schedule(
+        self, mock_get_account_schedules: Mock
+    ):
         mock_get_account_schedules.return_value = TAGLESS_SCHEDULES
         with self.assertRaises(ValueError) as ctx:
             schedule_helper.trigger_next_schedule_job(
@@ -458,7 +489,9 @@ class TriggerNextScheduleJobValidation(TestCase):
 
         self.assertEqual(
             ctx.exception.args[0],
-            "No tags found on schedule_name='ACCRUE_INTEREST' schedule_id='" "adda847e-602f-4d26-aa8c-ff36217d5fdd' for resource_type.value='ACCOUNT' " "resource_id='account_id'",
+            "No tags found on schedule_name='ACCRUE_INTEREST' schedule_id='"
+            "adda847e-602f-4d26-aa8c-ff36217d5fdd' for resource_type.value='ACCOUNT' "
+            "resource_id='account_id'",
         )
 
     @patch.object(schedule_helper, "get_account_schedules", Mock(return_value=DISABLED_SCHEDULE))
@@ -564,7 +597,9 @@ class TriggerNextScheduleJob(TestCase):
             fast_forward_to_date=datetime(2021, 5, 21, 0, 0, 1, tzinfo=timezone.utc),
         )
 
-    @patch.object(schedule_helper, "get_account_schedules", MagicMock(return_value=MULTI_TAG_SCHEDULES))
+    @patch.object(
+        schedule_helper, "get_account_schedules", MagicMock(return_value=MULTI_TAG_SCHEDULES)
+    )
     def test_first_of_multiple_schedule_tags_is_updated(
         self,
         mock_testhandle: MagicMock,
@@ -587,7 +622,9 @@ class TriggerNextScheduleJob(TestCase):
         )
         mock_fast_forward_tag.assert_not_called()
 
-    @patch.object(schedule_helper, "get_plan_schedules", MagicMock(return_value=MULTI_TAG_SCHEDULES))
+    @patch.object(
+        schedule_helper, "get_plan_schedules", MagicMock(return_value=MULTI_TAG_SCHEDULES)
+    )
     def test_handle_plan_schedules(
         self,
         mock_testhandle: MagicMock,
@@ -718,7 +755,11 @@ class WaitForScheduleJobTest(TestCase):
 class WaitForScheduleOperationEvents(TestCase):
     @patch.dict(
         "inception_sdk.test_framework.endtoend.testhandle.kafka_consumers",
-        {schedule_helper.SCHEDULER_OPERATION_EVENTS_TOPIC: MockConsumer([MockMessage(value=EXAMPLE_OPERATION_EVENT)])},
+        {
+            schedule_helper.SCHEDULER_OPERATION_EVENTS_TOPIC: MockConsumer(
+                [MockMessage(value=EXAMPLE_OPERATION_EVENT)]
+            )
+        },
     )
     def test_wait_for_operation_event_with_match(self):
         result = schedule_helper.wait_for_schedule_operation_events(
@@ -728,7 +769,11 @@ class WaitForScheduleOperationEvents(TestCase):
 
     @patch.dict(
         "inception_sdk.test_framework.endtoend.testhandle.kafka_consumers",
-        {schedule_helper.SCHEDULER_OPERATION_EVENTS_TOPIC: MockConsumer([MockMessage(value=EXAMPLE_OPERATION_EVENT)])},
+        {
+            schedule_helper.SCHEDULER_OPERATION_EVENTS_TOPIC: MockConsumer(
+                [MockMessage(value=EXAMPLE_OPERATION_EVENT)]
+            )
+        },
     )
     @patch.object(
         schedule_helper,
@@ -749,7 +794,9 @@ class WaitForScheduleOperationEvents(TestCase):
 class ScheduleHelperTest(TestCase):
     @patch.object(schedule_helper, "wait_for_schedule_job")
     @patch.object(schedule_helper, "trigger_next_schedule_job")
-    def test_trigger_next_schedule_job_and_wait(self, mock_trigger_next_schedule_job: MagicMock, mock_wait_for_schedule_job: MagicMock):
+    def test_trigger_next_schedule_job_and_wait(
+        self, mock_trigger_next_schedule_job: MagicMock, mock_wait_for_schedule_job: MagicMock
+    ):
         mock_trigger_next_schedule_job.return_value = (
             sentinel.tag_id,
             sentinel.schedule_id,
@@ -786,7 +833,9 @@ class ScheduleHelperTest(TestCase):
 
     @patch.object(endtoend.core_api_helper, "update_account_schedule_tag")
     def test_fast_forward_tag(self, mock_update_account_schedule_tag: MagicMock):
-        endtoend.schedule_helper.fast_forward_tag(paused_tag_id="my_tag", fast_forward_to_date=datetime(2020, 1, 5))
+        endtoend.schedule_helper.fast_forward_tag(
+            paused_tag_id="my_tag", fast_forward_to_date=datetime(2020, 1, 5)
+        )
         mock_update_account_schedule_tag.assert_called_once_with(
             account_schedule_tag_id="my_tag",
             schedule_status_override=AccountScheduleTagStatusOverride.FAST_FORWARD.value,
@@ -795,7 +844,9 @@ class ScheduleHelperTest(TestCase):
 
     @patch.object(endtoend.core_api_helper, "update_account_schedule_tag")
     def test_update_tag_test_pause_at_timestamp(self, mock_update_account_schedule_tag: MagicMock):
-        endtoend.schedule_helper.update_tag_test_pause_at_timestamp(schedule_tag_id="my_tag", test_pause_at_timestamp=datetime(2020, 1, 5))
+        endtoend.schedule_helper.update_tag_test_pause_at_timestamp(
+            schedule_tag_id="my_tag", test_pause_at_timestamp=datetime(2020, 1, 5)
+        )
         mock_update_account_schedule_tag.assert_called_once_with(
             account_schedule_tag_id="my_tag",
             test_pause_at_timestamp="2020-01-05T00:00:00+00:00",
@@ -934,7 +985,9 @@ class ScheduleHelperTest(TestCase):
             schedule_status_override=AccountScheduleTagStatusOverride.SKIPPED,
             test_pause_at_timestamp=end_skip_date.isoformat(),
         )
-        mock_log_info.assert_has_calls([call("Skipping ACCRUE_0 from 2020-05-27 10:00:00+00:00 to 2020-05-30 10:00:00+00:00")])
+        mock_log_info.assert_has_calls(
+            [call("Skipping ACCRUE_0 from 2020-05-27 10:00:00+00:00 to 2020-05-30 10:00:00+00:00")]
+        )
 
     @patch.object(schedule_helper, "get_plan_schedules")
     @patch.object(schedule_helper, "skip_scheduled_jobs_between_dates")
@@ -949,7 +1002,9 @@ class ScheduleHelperTest(TestCase):
         start_skip_date = datetime(2020, 5, 27, tzinfo=timezone.utc)
         end_skip_date = datetime(2020, 5, 30, tzinfo=timezone.utc)
 
-        mock_get_account_schedules.return_value = {schedule_name: {"tags": ["ACCRUE_TAG"], "id": "ACCRUE_ID"}}
+        mock_get_account_schedules.return_value = {
+            schedule_name: {"tags": ["ACCRUE_TAG"], "id": "ACCRUE_ID"}
+        }
 
         endtoend.schedule_helper.skip_scheduled_jobs_and_wait(
             schedule_name=schedule_name,
@@ -985,7 +1040,9 @@ class ScheduleHelperTest(TestCase):
         start_skip_date = datetime(2020, 5, 27, tzinfo=timezone.utc)
         end_skip_date = datetime(2020, 5, 30, tzinfo=timezone.utc)
 
-        mock_get_account_schedules.return_value = {schedule_name: {"tags": ["ACCRUE_TAG"], "id": "ACCRUE_ID"}}
+        mock_get_account_schedules.return_value = {
+            schedule_name: {"tags": ["ACCRUE_TAG"], "id": "ACCRUE_ID"}
+        }
 
         endtoend.schedule_helper.skip_scheduled_jobs_and_wait(
             schedule_name=schedule_name,
@@ -1029,7 +1086,8 @@ class ScheduleHelperTest(TestCase):
             )
         self.assertEquals(
             ctx.exception.args[0],
-            "No enabled schedule_name='ACCRUE' for resource_type.value='ACCOUNT' " "resource_id='my_account_id'",
+            "No enabled schedule_name='ACCRUE' for resource_type.value='ACCOUNT' "
+            "resource_id='my_account_id'",
         )
 
     @patch.object(schedule_helper, "get_account_schedules")
@@ -1037,8 +1095,12 @@ class ScheduleHelperTest(TestCase):
         account_id = "mock"
         get_account_schedules.return_value = ACCOUNT_SCHEDULES
         expected_result = {
-            "PAUSED_ACCRUE_INTEREST_ba0119d2-37fd-48f9-ac89-716cf2e5119f": datetime(2021, 5, 21, 0, 0, tzinfo=timezone.utc),
-            "PAUSED_PAYMENT_DUE_5b0524b1-6e2d-4244-8a56-c35ca2ef2f82": datetime(2021, 7, 14, 0, 0, 1, tzinfo=timezone.utc),
+            "PAUSED_ACCRUE_INTEREST_ba0119d2-37fd-48f9-ac89-716cf2e5119f": datetime(
+                2021, 5, 21, 0, 0, tzinfo=timezone.utc
+            ),
+            "PAUSED_PAYMENT_DUE_5b0524b1-6e2d-4244-8a56-c35ca2ef2f82": datetime(
+                2021, 7, 14, 0, 0, 1, tzinfo=timezone.utc
+            ),
         }
         result = schedule_helper.get_schedule_tag_next_run_times(account_id)
         self.assertEqual(result, expected_result)

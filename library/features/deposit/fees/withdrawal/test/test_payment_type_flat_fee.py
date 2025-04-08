@@ -38,7 +38,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_flat_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_flat_fee_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("1000"),
@@ -52,7 +54,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
         ]
         mock_standard_instruction_details.return_value = {"sentinel": "dictionary"}
 
-        results = payment_type_flat_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_flat_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         expected = [
             CustomInstruction(
@@ -80,7 +84,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_flat_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_flat_fee_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("1000"),
@@ -94,7 +100,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
         ]
         mock_standard_instruction_details.return_value = {"sentinel": "dictionary"}
 
-        results = payment_type_flat_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_flat_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         expected = [
             CustomInstruction(
@@ -122,7 +130,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_flat_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_flat_fee_parameters
+        )
         postings = [
             self.outbound_hard_settlement(
                 amount=Decimal("1000"),
@@ -130,7 +140,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
             )
         ]
 
-        results = payment_type_flat_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_flat_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         self.assertListEqual(results, [])
         mock_fee_postings.assert_not_called()
@@ -143,10 +155,14 @@ class TestPaymentTypeFlatFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_flat_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_flat_fee_parameters
+        )
         postings = [self.inbound_hard_settlement(amount=Decimal("1000"))]
 
-        results = payment_type_flat_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_flat_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         self.assertListEqual(results, [])
         mock_fee_postings.assert_not_called()
@@ -159,7 +175,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_flat_fee_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_flat_fee_parameters
+        )
         postings = [
             self.inbound_hard_settlement(
                 amount=Decimal("1000"),
@@ -167,7 +185,9 @@ class TestPaymentTypeFlatFee(FeatureTest):
             )
         ]
 
-        results = payment_type_flat_fee.apply_fees(vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION)
+        results = payment_type_flat_fee.apply_fees(
+            vault=mock_vault, postings=postings, denomination=DEFAULT_DENOMINATION
+        )
 
         self.assertListEqual(results, [])
         mock_fee_postings.assert_not_called()

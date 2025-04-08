@@ -14,7 +14,9 @@ def round_fulfilment(amount: Decimal) -> Decimal:
     return amount.quantize(Decimal(pad), rounding=ROUND_HALF_UP)
 
 
-def build_posting_instruction_batch(amount: Decimal, effective_date: datetime) -> PostingInstructionBatch:
+def build_posting_instruction_batch(
+    amount: Decimal, effective_date: datetime
+) -> PostingInstructionBatch:
     if amount < Decimal("0"):
         raise Rejected("Cannot build PostingInstructions with negative amount")
 

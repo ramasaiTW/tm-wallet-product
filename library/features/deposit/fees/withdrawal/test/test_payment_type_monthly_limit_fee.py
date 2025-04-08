@@ -93,7 +93,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock(balances_observation_fetchers_mapping={})
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # no fee charged since no debits for the payment type
@@ -142,7 +144,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # no fee charged since neither historic nor new debits exceed limit
@@ -172,7 +176,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # Charge 1x fee amount for first payment type since monthly limit 3 exceeded by 1 in
@@ -218,7 +224,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # No fee charged despite limit previous exceeded as no new withdrawals
@@ -253,7 +261,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # Charge 1x fee amount for first payment type since monthly limit 3 already exceeded in
@@ -304,7 +314,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # Charge 2x fee amount for first payment type since monthly limit 3 already exceeded in
@@ -355,7 +367,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # Charge 1x fee amount for first payment type since monthly limit 1 not previously
         # exceeded in historic cts but exceeded by 1 in updated cts
@@ -405,7 +419,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # Charge 2x fee amount for first payment type since monthly limit 1 not previously
@@ -455,7 +471,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
         # Charge 2x fee amount (0.50) for payment type ATM_ARBM since monthly limit exceeded by 2.
         # Charge 1x fee amount (3.25) for payment type ATM_XYC  since monthly limit exceeded by 1.
         total_fee = "4.25"
@@ -492,7 +510,8 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
             instruction_details={"sentinel": "dictionary"},
         )
         mock_standard_instruction_details.assert_called_once_with(
-            description="Total fees charged for limits on payment types: ATM_ARBM 1.00 GBP" ",ATM_XYZ 3.25 GBP",
+            description="Total fees charged for limits on payment types: ATM_ARBM 1.00 GBP"
+            ",ATM_XYZ 3.25 GBP",
             event_type="APPLY_PAYMENT_TYPE_WITHDRAWAL_LIMIT_FEES",
             gl_impacted=True,
         )
@@ -505,8 +524,16 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_fee_custom_instruction: MagicMock,
         mock_standard_instruction_details: MagicMock,
     ):
-        mock_vault = self.create_mock(client_transactions_mapping={payment_type_monthly_limit_fee.fetchers.MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID: (sentinel.historic_client_transactions)})
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_vault = self.create_mock(
+            client_transactions_mapping={
+                payment_type_monthly_limit_fee.fetchers.MONTH_TO_EFFECTIVE_POSTINGS_FETCHER_ID: (
+                    sentinel.historic_client_transactions
+                )
+            }
+        )
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
 
         # two calls per type, first is historic, second is new
         # no fee charged since no debits for the payment type
@@ -535,7 +562,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
         mock_standard_instruction_details: MagicMock,
     ):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=self.payment_type_monthly_limit_fees_parameters
+        )
         # Charge 2x fee amount (0.50) for payment type ATM_ARBM since monthly limit exceeded by 2.
         # Charge 1x fee amount (3.25) for payment type ATM_XYC  since monthly limit exceeded by 1.
         total_fee = "4.25"
@@ -572,7 +601,8 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
             instruction_details={"sentinel": "dictionary"},
         )
         mock_standard_instruction_details.assert_called_once_with(
-            description="Total fees charged for limits on payment types: ATM_ARBM 1.00 GBP" ",ATM_XYZ 3.25 GBP",
+            description="Total fees charged for limits on payment types: ATM_ARBM 1.00 GBP"
+            ",ATM_XYZ 3.25 GBP",
             event_type="APPLY_PAYMENT_TYPE_WITHDRAWAL_LIMIT_FEES",
             gl_impacted=True,
         )
@@ -598,7 +628,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
 
         # Mocks
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=payment_type_monthly_limit_fees_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = None
         mock_fee_custom_instruction.return_value = []
         mock_standard_instruction_details.return_value = {}
@@ -638,7 +670,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
 
         # Mocks
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=payment_type_monthly_limit_fees_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = None
         mock_fee_custom_instruction.return_value = []
         mock_standard_instruction_details.return_value = {}
@@ -679,7 +713,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
 
         # Mocks
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=payment_type_monthly_limit_fees_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = None
         mock_fee_custom_instruction.return_value = []
         mock_standard_instruction_details.return_value = {}
@@ -721,7 +757,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
 
         # Mocks
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=payment_type_monthly_limit_fees_parameters
+        )
         mock_extract_debits_by_instruction_details_key.side_effect = None
         mock_fee_custom_instruction.return_value = []
         mock_standard_instruction_details.return_value = {}
@@ -762,7 +800,9 @@ class TestPaymentTypeMonthlyLimit(FeatureTest):
             "payment_type_fee_income_account": "PAYMENT_TYPE_FEE_INCOME_ACCOUNT",
         }
 
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=payment_type_monthly_limit_fees_parameters)
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters=payment_type_monthly_limit_fees_parameters
+        )
         # Charge 1x fee amount for payment type ATM_ARBM since monthly limit exceeded by 1.
 
         mock_extract_debits_by_instruction_details_key.side_effect = [

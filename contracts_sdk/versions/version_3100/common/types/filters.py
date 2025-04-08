@@ -13,10 +13,14 @@ class BalancesFilter:
                 },
             )
         if len(addresses) < 1:
-            raise exceptions.InvalidSmartContractError("BalancesFilter addresses must contain at least one address.")
+            raise exceptions.InvalidSmartContractError(
+                "BalancesFilter addresses must contain at least one address."
+            )
 
         if len(set(addresses)) != len(addresses):
-            raise exceptions.InvalidSmartContractError("BalancesFilter addresses must not contain any duplicate addresses.")
+            raise exceptions.InvalidSmartContractError(
+                "BalancesFilter addresses must not contain any duplicate addresses."
+            )
 
         self.addresses = addresses
 
@@ -30,7 +34,9 @@ class BalancesFilter:
             name="BalancesFilter",
             docstring="A filter for refining the balances data retrieved by a fetcher.",
             public_attributes=cls._public_attributes(language_code),
-            constructor=types_utils.ConstructorSpec(docstring="", args=cls._public_attributes(language_code)),
+            constructor=types_utils.ConstructorSpec(
+                docstring="", args=cls._public_attributes(language_code)
+            ),
         )
 
     @classmethod
@@ -40,5 +46,7 @@ class BalancesFilter:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(name="addresses", type="List[str]", docstring="A list of balance addresses."),
+            types_utils.ValueSpec(
+                name="addresses", type="List[str]", docstring="A list of balance addresses."
+            ),
         ]

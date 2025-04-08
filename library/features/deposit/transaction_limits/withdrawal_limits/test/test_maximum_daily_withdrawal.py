@@ -23,7 +23,9 @@ from inception_sdk.test_framework.contracts.unit.contracts_api_extension import 
 @patch.object(maximum_daily_withdrawal.client_transaction_utils, "sum_client_transactions")
 @patch.object(maximum_daily_withdrawal.utils, "get_parameter")
 class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
-    def test_maximum_daily_withdrawal_ignore_deposit(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_withdrawal_ignore_deposit(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
@@ -51,16 +53,21 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
         )
         mock_get_parameter.assert_not_called()
 
-    def test_maximum_daily_withdrawal_exceeded_when_limit_has_not_been_spent(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_withdrawal_exceeded_when_limit_has_not_been_spent(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         expected_rejection = Rejection(
-            message=f"Transactions would cause the maximum daily withdrawal limit of " f"500 {DEFAULT_DENOMINATION} to be exceeded.",
+            message=f"Transactions would cause the maximum daily withdrawal limit of "
+            f"500 {DEFAULT_DENOMINATION} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_withdrawal": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_withdrawal": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("0"), Decimal("501")),
             (Decimal("0"), Decimal("0")),
@@ -94,13 +101,19 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
                 ),
             ]
         )
-        mock_get_parameter.assert_called_once_with(vault=sentinel.vault, name="maximum_daily_withdrawal")
+        mock_get_parameter.assert_called_once_with(
+            vault=sentinel.vault, name="maximum_daily_withdrawal"
+        )
 
-    def test_maximum_daily_withdrawal_met(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_withdrawal_met(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_withdrawal": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_withdrawal": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("0"), Decimal("300")),
             (Decimal("0"), Decimal("200")),
@@ -121,11 +134,15 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
         # assertions
         self.assertIsNone(result)
 
-    def test_maximum_daily_withdrawal_not_exceeded(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_withdrawal_not_exceeded(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_withdrawal": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_withdrawal": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("0"), Decimal("100")),
             (Decimal("0"), Decimal("200")),
@@ -146,17 +163,25 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
         # assertions
         self.assertIsNone(result)
 
-    def test_maximum_daily_withdrawal_not_exceeded_transactions_not_provided(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_withdrawal_not_exceeded_transactions_not_provided(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_withdrawal": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_withdrawal": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("0"), Decimal("100")),
             (Decimal("0"), Decimal("200")),
         ]
 
-        mock_vault = self.create_mock(client_transactions_mapping={"EFFECTIVE_DATE_POSTINGS_FETCHER": sentinel.effective_date_transactions})
+        mock_vault = self.create_mock(
+            client_transactions_mapping={
+                "EFFECTIVE_DATE_POSTINGS_FETCHER": sentinel.effective_date_transactions
+            }
+        )
 
         # call to function
         result = maximum_daily_withdrawal.validate(
@@ -187,16 +212,21 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
             ]
         )
 
-    def test_maximum_daily_withdrawal_exceeded_when_limit_has_been_partially_spent(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_withdrawal_exceeded_when_limit_has_been_partially_spent(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         expected_rejection = Rejection(
-            message=f"Transactions would cause the maximum daily withdrawal limit of " f"500 {DEFAULT_DENOMINATION} to be exceeded.",
+            message=f"Transactions would cause the maximum daily withdrawal limit of "
+            f"500 {DEFAULT_DENOMINATION} to be exceeded.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_withdrawal": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_withdrawal": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("0"), Decimal("100")),
             (Decimal("0"), Decimal("450")),
@@ -231,11 +261,15 @@ class TestMaximumDailyDepositLimit(CommonTransactionLimitTest):
             ]
         )
 
-    def test_maximum_daily_withdrawal_uses_proposed_client_transactions(self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock):
+    def test_maximum_daily_withdrawal_uses_proposed_client_transactions(
+        self, mock_get_parameter: MagicMock, mock_sum_client_transactions: MagicMock
+    ):
         value_datetime = CUT_OFF_DATE + timedelta(hours=1)
 
         # mocks
-        mock_get_parameter.side_effect = mock_utils_get_parameter({"maximum_daily_withdrawal": Decimal("500")})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            {"maximum_daily_withdrawal": Decimal("500")}
+        )
         mock_sum_client_transactions.side_effect = [
             (Decimal("0"), Decimal("100")),
             (Decimal("0"), Decimal("200")),

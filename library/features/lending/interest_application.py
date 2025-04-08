@@ -53,7 +53,9 @@ accrued_interest_one_month_ago_fetcher = BalancesObservationFetcher(
 )
 
 # Parameters
-PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = interest_accrual.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = (
+    interest_accrual.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+)
 PARAM_INTEREST_RECEIVED_ACCOUNT = "interest_received_account"
 PARAM_APPLICATION_PRECISION = "application_precision"
 
@@ -90,8 +92,12 @@ def apply_interest(
     denomination = utils.get_parameter(vault, "denomination")
     application_precision = get_application_precision(vault=vault)
 
-    effective_datetime_observation: BalancesObservation = vault.get_balances_observation(fetcher_id=ACCRUED_INTEREST_EFF_FETCHER_ID)
-    one_month_ago_observation: BalancesObservation = vault.get_balances_observation(fetcher_id=ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID)
+    effective_datetime_observation: BalancesObservation = vault.get_balances_observation(
+        fetcher_id=ACCRUED_INTEREST_EFF_FETCHER_ID
+    )
+    one_month_ago_observation: BalancesObservation = vault.get_balances_observation(
+        fetcher_id=ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID
+    )
 
     interest_application_amounts = _get_interest_to_apply(
         balances_at_application=effective_datetime_observation.balances,
@@ -106,7 +112,8 @@ def apply_interest(
         customer_account=vault.account_id,
         denomination=denomination,
         application_amount=interest_application_amounts.total_rounded,
-        accrual_amount=interest_application_amounts.emi_accrued + interest_application_amounts.non_emi_accrued,
+        accrual_amount=interest_application_amounts.emi_accrued
+        + interest_application_amounts.non_emi_accrued,
         accrual_customer_address=ACCRUED_INTEREST_RECEIVABLE,
         accrual_internal_account=accrual_internal_account,
         application_customer_address=application_interest_address,
@@ -139,7 +146,9 @@ def _interest_amounts(
         )
     ].net
 
-    return accrued_amount, utils.round_decimal(accrued_amount, decimal_places=precision, rounding=rounding)
+    return accrued_amount, utils.round_decimal(
+        accrued_amount, decimal_places=precision, rounding=rounding
+    )
 
 
 def _get_interest_to_apply(
@@ -203,10 +212,14 @@ def get_interest_to_apply(
     """
 
     if balances_at_application is None:
-        balances_at_application = vault.get_balances_observation(fetcher_id=ACCRUED_INTEREST_EFF_FETCHER_ID).balances
+        balances_at_application = vault.get_balances_observation(
+            fetcher_id=ACCRUED_INTEREST_EFF_FETCHER_ID
+        ).balances
 
     if balances_one_repayment_period_ago is None:
-        balances_one_repayment_period_ago = vault.get_balances_observation(fetcher_id=ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID).balances
+        balances_one_repayment_period_ago = vault.get_balances_observation(
+            fetcher_id=ACCRUED_INTEREST_ONE_MONTH_AGO_FETCHER_ID
+        ).balances
 
     if application_precision is None:
         application_precision = get_application_precision(vault=vault)
@@ -257,7 +270,9 @@ def repay_accrued_interest(
         denomination = utils.get_parameter(vault=vault, name="denomination")
 
     if balances is None:
-        balances = vault.get_balances_observation(fetcher_id=ACCRUED_INTEREST_EFF_FETCHER_ID).balances
+        balances = vault.get_balances_observation(
+            fetcher_id=ACCRUED_INTEREST_EFF_FETCHER_ID
+        ).balances
 
     accrual_internal_account = interest_accrual.get_accrual_internal_account(vault=vault)
     application_internal_account = get_application_internal_account(vault=vault)
@@ -303,7 +318,9 @@ def get_application_precision(vault: SmartContractVault) -> int:
 
 
 def get_application_internal_account(vault: SmartContractVault) -> str:
-    application_internal_account: str = utils.get_parameter(vault=vault, name=PARAM_INTEREST_RECEIVED_ACCOUNT)
+    application_internal_account: str = utils.get_parameter(
+        vault=vault, name=PARAM_INTEREST_RECEIVED_ACCOUNT
+    )
     return application_internal_account
 
 

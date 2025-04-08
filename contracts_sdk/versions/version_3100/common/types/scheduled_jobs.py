@@ -44,7 +44,11 @@ class ScheduledJob:
 
         return types_utils.ClassSpec(
             name="ScheduledJob",
-            docstring=("The details associated with a scheduled job for a particular account " "[EventType](#classes-EventType)" "**Only available in version 3.10.0+**."),
+            docstring=(
+                "The details associated with a scheduled job for a particular account "
+                "[EventType](#classes-EventType)"
+                "**Only available in version 3.10.0+**."
+            ),
             public_attributes=cls._public_attributes(language_code),
             constructor=types_utils.ConstructorSpec(
                 docstring=("Constructs a new ScheduledJob."),

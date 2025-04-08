@@ -63,11 +63,15 @@ def is_within_fixed_rate_term(
         elapsed_term = 0
     else:
         if balances is None:
-            balances = vault.get_balances_observation(fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID).balances
+            balances = vault.get_balances_observation(
+                fetcher_id=fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID
+            ).balances
         if denomination is None:
             denomination = utils.get_parameter(vault=vault, name="denomination")
 
-        elapsed_term = term_helpers.calculate_elapsed_term(balances=balances, denomination=denomination)
+        elapsed_term = term_helpers.calculate_elapsed_term(
+            balances=balances, denomination=denomination
+        )
 
     return elapsed_term < fixed_rate_term
 
@@ -85,9 +89,13 @@ def get_daily_interest_rate(
         denomination=denomination,
     )
     if is_fixed_interest:
-        return fixed_rate.get_daily_interest_rate(vault=vault, effective_datetime=effective_datetime)
+        return fixed_rate.get_daily_interest_rate(
+            vault=vault, effective_datetime=effective_datetime
+        )
     else:
-        return variable_rate.get_daily_interest_rate(vault=vault, effective_datetime=effective_datetime)
+        return variable_rate.get_daily_interest_rate(
+            vault=vault, effective_datetime=effective_datetime
+        )
 
 
 def get_monthly_interest_rate(
@@ -103,9 +111,13 @@ def get_monthly_interest_rate(
         denomination=denomination,
     )
     if is_fixed_interest:
-        return fixed_rate.get_monthly_interest_rate(vault=vault, effective_datetime=effective_datetime)
+        return fixed_rate.get_monthly_interest_rate(
+            vault=vault, effective_datetime=effective_datetime
+        )
     else:
-        return variable_rate.get_monthly_interest_rate(vault=vault, effective_datetime=effective_datetime)
+        return variable_rate.get_monthly_interest_rate(
+            vault=vault, effective_datetime=effective_datetime
+        )
 
 
 def get_annual_interest_rate(
@@ -121,9 +133,13 @@ def get_annual_interest_rate(
         denomination=denomination,
     )
     if is_fixed_interest:
-        return fixed_rate.get_annual_interest_rate(vault=vault, effective_datetime=effective_datetime)
+        return fixed_rate.get_annual_interest_rate(
+            vault=vault, effective_datetime=effective_datetime
+        )
     else:
-        return variable_rate.get_annual_interest_rate(vault=vault, effective_datetime=effective_datetime)
+        return variable_rate.get_annual_interest_rate(
+            vault=vault, effective_datetime=effective_datetime
+        )
 
 
 def should_trigger_reamortisation(
@@ -156,9 +172,15 @@ def should_trigger_reamortisation(
     # and we can't define this in ODF syntax
     # the elapsed term will only equal fixed interest term when we go from fixed to variable
     elif elapsed_term == int(utils.get_parameter(vault, "fixed_interest_term")):
-        return variable_rate.get_annual_interest_rate(vault=vault, effective_datetime=period_end_datetime) != fixed_rate.get_annual_interest_rate(vault=vault, effective_datetime=period_end_datetime)
+        return variable_rate.get_annual_interest_rate(
+            vault=vault, effective_datetime=period_end_datetime
+        ) != fixed_rate.get_annual_interest_rate(
+            vault=vault, effective_datetime=period_end_datetime
+        )
     else:
-        return variable_rate.should_trigger_reamortisation(vault, period_start_datetime, period_end_datetime, elapsed_term)
+        return variable_rate.should_trigger_reamortisation(
+            vault, period_start_datetime, period_end_datetime, elapsed_term
+        )
 
 
 InterestRate = lending_interfaces.InterestRate(
@@ -167,4 +189,6 @@ InterestRate = lending_interfaces.InterestRate(
     get_annual_interest_rate=get_annual_interest_rate,
 )
 
-ReamortisationCondition = lending_interfaces.ReamortisationCondition(should_trigger_reamortisation=should_trigger_reamortisation)
+ReamortisationCondition = lending_interfaces.ReamortisationCondition(
+    should_trigger_reamortisation=should_trigger_reamortisation
+)

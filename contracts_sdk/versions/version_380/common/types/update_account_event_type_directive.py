@@ -6,9 +6,14 @@ from .....utils.exceptions import InvalidSmartContractError
 
 
 class UpdateAccountEventTypeDirective:
-    def __init__(self, *, account_id, event_type, schedule=None, end_datetime=None, _from_proto=False):
+    def __init__(
+        self, *, account_id, event_type, schedule=None, end_datetime=None, _from_proto=False
+    ):
         if not end_datetime and not schedule:
-            raise InvalidSmartContractError("UpdateAccountEventTypeDirective object has to have either an end_datetime or a " "schedule defined")
+            raise InvalidSmartContractError(
+                "UpdateAccountEventTypeDirective object has to have either an end_datetime or a "
+                "schedule defined"
+            )
 
         if not _from_proto:
             self._spec().assert_constructor_args(
@@ -36,7 +41,11 @@ class UpdateAccountEventTypeDirective:
             docstring="",
             public_attributes=cls._public_attributes(language_code),
             constructor=types_utils.ConstructorSpec(
-                docstring=("A [HookDirective](#classes-HookDirectives) that instructs " "updating an Account Event Type. " "**Only available in version 3.8.0+**"),
+                docstring=(
+                    "A [HookDirective](#classes-HookDirectives) that instructs "
+                    "updating an Account Event Type. "
+                    "**Only available in version 3.8.0+**"
+                ),
                 args=cls._public_attributes(language_code),
             ),
         )
@@ -52,7 +61,9 @@ class UpdateAccountEventTypeDirective:
                 type="str",
                 docstring="The Account ID of the `event_type` that will be modified.",
             ),
-            types_utils.ValueSpec(name="event_type", type="str", docstring="The `event_type` that is to be modified."),
+            types_utils.ValueSpec(
+                name="event_type", type="str", docstring="The `event_type` that is to be modified."
+            ),
             types_utils.ValueSpec(
                 name="schedule",
                 type="Optional[EventTypeSchedule]",

@@ -6,7 +6,18 @@ from .....utils.exceptions import InvalidSmartContractError
 
 
 class EventTypeSchedule:
-    def __init__(self, *, day=None, day_of_week=None, hour=None, minute=None, second=None, month=None, year=None, _from_proto=False):
+    def __init__(
+        self,
+        *,
+        day=None,
+        day_of_week=None,
+        hour=None,
+        minute=None,
+        second=None,
+        month=None,
+        year=None,
+        _from_proto=False
+    ):
         if not _from_proto:
             if not any([day, day_of_week, hour, minute, second, month, year]):
                 raise InvalidSmartContractError("Empty EventTypeSchedule object created")
@@ -39,7 +50,9 @@ class EventTypeSchedule:
             raise ValueError("Language not supported")
 
         return [
-            types_utils.ValueSpec(name="day", type="Optional[str]", docstring="Day of the month (1-31)."),
+            types_utils.ValueSpec(
+                name="day", type="Optional[str]", docstring="Day of the month (1-31)."
+            ),
             types_utils.ValueSpec(
                 name="day_of_week",
                 type="Optional[str]",
@@ -49,7 +62,9 @@ class EventTypeSchedule:
             types_utils.ValueSpec(name="minute", type="Optional[str]", docstring="Minute (0-59)."),
             types_utils.ValueSpec(name="second", type="Optional[str]", docstring="Second (0-59)."),
             types_utils.ValueSpec(name="month", type="Optional[str]", docstring="Month (1-12)."),
-            types_utils.ValueSpec(name="year", type="Optional[str]", docstring="Year (4-digit year)."),
+            types_utils.ValueSpec(
+                name="year", type="Optional[str]", docstring="Year (4-digit year)."
+            ),
         ]
 
     @classmethod
@@ -69,7 +84,10 @@ class EventTypeSchedule:
             ),
             public_attributes=cls._public_attributes(language_code),
             constructor=types_utils.ConstructorSpec(
-                docstring=("Constructs a new EventTypeSchedule. At least one of the optional attributes " "must be provided."),
+                docstring=(
+                    "Constructs a new EventTypeSchedule. At least one of the optional attributes "
+                    "must be provided."
+                ),
                 args=cls._public_attributes(language_code),
             ),
         )

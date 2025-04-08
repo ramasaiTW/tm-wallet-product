@@ -38,8 +38,12 @@ INTEREST_ACCRUAL_PREFIX = interest_accrual_common.INTEREST_ACCRUAL_PREFIX
 PARAM_INTEREST_ACCRUAL_HOUR = interest_accrual_common.PARAM_INTEREST_ACCRUAL_HOUR
 PARAM_INTEREST_ACCRUAL_MINUTE = interest_accrual_common.PARAM_INTEREST_ACCRUAL_MINUTE
 PARAM_INTEREST_ACCRUAL_SECOND = interest_accrual_common.PARAM_INTEREST_ACCRUAL_SECOND
-PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT = interest_accrual_common.PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT
-PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = interest_accrual_common.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT = (
+    interest_accrual_common.PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT
+)
+PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = (
+    interest_accrual_common.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+)
 
 # Parameters
 PARAM_FIXED_INTEREST_RATE = "fixed_interest_rate"
@@ -105,7 +109,11 @@ def get_fixed_interest_rate_parameter(
     vault: SmartContractVault,
     effective_datetime: datetime | None = None,
 ) -> Decimal:
-    return Decimal(utils.get_parameter(vault=vault, name=PARAM_FIXED_INTEREST_RATE, at_datetime=effective_datetime))
+    return Decimal(
+        utils.get_parameter(
+            vault=vault, name=PARAM_FIXED_INTEREST_RATE, at_datetime=effective_datetime
+        )
+    )
 
 
 def get_daily_interest_rate(
@@ -115,7 +123,9 @@ def get_daily_interest_rate(
 ) -> Decimal:
     annual_rate = get_fixed_interest_rate_parameter(vault=vault)
     days_in_year = interest_accrual_common.get_days_in_year_parameter(vault=vault)
-    return utils.yearly_to_daily_rate(effective_date=effective_datetime, yearly_rate=annual_rate, days_in_year=days_in_year)
+    return utils.yearly_to_daily_rate(
+        effective_date=effective_datetime, yearly_rate=annual_rate, days_in_year=days_in_year
+    )
 
 
 # Interest calculations
@@ -157,7 +167,8 @@ def accrue_interest(
     )
 
     instruction_details = utils.standard_instruction_details(
-        description=f"Daily interest accrued at {(daily_rate * 100):0.5f}%" f" on balance of {effective_balance:0.2f}",
+        description=f"Daily interest accrued at {(daily_rate * 100):0.5f}%"
+        f" on balance of {effective_balance:0.2f}",
         event_type=interest_accrual_common.ACCRUAL_EVENT,
         gl_impacted=True,
         account_type=account_type,
@@ -184,6 +195,8 @@ def accrue_interest(
     )
 
 
-get_accrued_interest_payable_account_parameter = interest_accrual_common.get_accrued_interest_payable_account_parameter
+get_accrued_interest_payable_account_parameter = (
+    interest_accrual_common.get_accrued_interest_payable_account_parameter
+)
 
 get_interest_accrual_precision = interest_accrual_common.get_accrual_precision_parameter

@@ -92,11 +92,20 @@ class FlagParsingTest(TestCase):
 
 class DeploymentUtilsTest(TestCase):
     def test_extract_xsrf_token_from_cookie(self):
-        good_cookie = 'ABC; _xsrf=1|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; tm_ops_auth_token="'
-        short_cookie = 'ABC; _xsrf=|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; tm_ops_auth_token="'
-        long_cookie = "ABC; _xsrf=11|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; " + 'tm_ops_auth_token="'
+        good_cookie = (
+            'ABC; _xsrf=1|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; tm_ops_auth_token="'
+        )
+        short_cookie = (
+            'ABC; _xsrf=|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; tm_ops_auth_token="'
+        )
+        long_cookie = (
+            "ABC; _xsrf=11|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; "
+            + 'tm_ops_auth_token="'
+        )
         empty_token = 'ABC; _xsrf=; tm_ops_auth_token="'
-        no_header = 'ABC; 1|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; tm_ops_auth_token="'
+        no_header = (
+            'ABC; 1|1a2bc345|d6efgh78901ijk1234l567m890123n45|6789012345; tm_ops_auth_token="'
+        )
         no_token_no_header = 'ABC; tm_ops_auth_token="'
 
         self.assertEqual(

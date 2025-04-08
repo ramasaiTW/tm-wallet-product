@@ -59,13 +59,21 @@ def validate(
     using the LIVE_BALANCES_BOF_ID fetcher id
     :return: rejection if the minimum balance limit conditions are not met
     """
-    balances = balances or vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
+    balances = (
+        balances
+        or vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
+    )
 
     available_balance = utils.get_available_balance(balances=balances, denomination=denomination)
 
-    proposed_amount = sum(utils.get_available_balance(balances=posting.balances(), denomination=denomination) for posting in postings)
+    proposed_amount = sum(
+        utils.get_available_balance(balances=posting.balances(), denomination=denomination)
+        for posting in postings
+    )
 
-    min_balance_threshold_by_tier: dict[str, str] = utils.get_parameter(vault, PARAM_MIN_BALANCE_THRESHOLD, is_json=True)
+    min_balance_threshold_by_tier: dict[str, str] = utils.get_parameter(
+        vault, PARAM_MIN_BALANCE_THRESHOLD, is_json=True
+    )
     current_account_tier = account_tiers.get_account_tier(vault)
     min_balance = account_tiers.get_tiered_parameter_value_based_on_account_tier(
         tiered_parameter=min_balance_threshold_by_tier,
@@ -76,7 +84,9 @@ def validate(
 
     if available_balance + proposed_amount < min_balance:  # type: ignore
         return Rejection(
-            message=f"Transaction amount {proposed_amount} {denomination} will result in the " f"account balance falling below the minimum permitted " f"of {min_balance} {denomination}.",
+            message=f"Transaction amount {proposed_amount} {denomination} will result in the "
+            f"account balance falling below the minimum permitted "
+            f"of {min_balance} {denomination}.",
             reason_code=RejectionReason.AGAINST_TNC,
         )
 

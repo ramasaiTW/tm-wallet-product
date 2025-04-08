@@ -20,5 +20,7 @@ class PublicSupervisorContractsV370TypesTestCase(
 
     def test_smart_contract_descriptor_attributes_are_verified(self):
         with self.assertRaises(StrongTypingError) as ex:
-            SmartContractDescriptor(alias=None, smart_contract_version_id="test_smart_contract_version_id")
+            SmartContractDescriptor(
+                alias=None, smart_contract_version_id="test_smart_contract_version_id"
+            )
         self.assertIn("'alias' expected str but got value None", str(ex.exception))

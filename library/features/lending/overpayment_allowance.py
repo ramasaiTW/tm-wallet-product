@@ -113,7 +113,8 @@ overpayment_allowance_fee_percentage_param = Parameter(
     name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE,
     shape=NumberShape(min_value=Decimal("0"), max_value=Decimal("1"), step=Decimal("0.0001")),
     level=ParameterLevel.TEMPLATE,
-    description="Percentage of excess allowance charged as a fee when going over " "overpayment allowance.",
+    description="Percentage of excess allowance charged as a fee when going over "
+    "overpayment allowance.",
     display_name="Overpayment Fee Percentage",
     default_value=Decimal("0.05"),
 )
@@ -154,7 +155,8 @@ overpayment_allowance_remaining_param = Parameter(
     shape=NumberShape(min_value=0),
     level=ParameterLevel.INSTANCE,
     derived=True,
-    description="Remaining overpayment allowance that can be used without incurring a fee in the " "current allowance period.",
+    description="Remaining overpayment allowance that can be used without incurring a fee in the "
+    "current allowance period.",
     display_name="Overpayment Allowance Remaining",
 )
 overpayment_allowance_used_param = Parameter(
@@ -214,7 +216,9 @@ def scheduled_events(
     :return: Schedule events for the yearly overpayment allowance check
     """
 
-    one_year_from_period_start = allowance_period_start_datetime.replace(hour=0, minute=0, second=0, microsecond=0) + relativedelta(years=1)
+    one_year_from_period_start = allowance_period_start_datetime.replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) + relativedelta(years=1)
 
     return {
         CHECK_OVERPAYMENT_ALLOWANCE_EVENT: ScheduledEvent(
@@ -244,7 +248,9 @@ def update_scheduled_event(
     :return: Schedule events for the yearly overpayment allowance check
     """
 
-    one_year_from_effective_datetime = effective_datetime.replace(hour=0, minute=0, second=0, microsecond=0) + relativedelta(years=1)
+    one_year_from_effective_datetime = effective_datetime.replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) + relativedelta(years=1)
 
     return {
         CHECK_OVERPAYMENT_ALLOWANCE_EVENT: ScheduledEvent(
@@ -261,7 +267,9 @@ def update_scheduled_event(
     }
 
 
-def get_allowance_for_period(start_of_period_balances: BalanceDefaultDict, allowance_percentage: Decimal, denomination: str) -> Decimal:
+def get_allowance_for_period(
+    start_of_period_balances: BalanceDefaultDict, allowance_percentage: Decimal, denomination: str
+) -> Decimal:
     """Determine the allowance for the period
 
     :param start_of_period_balances: balances at start of the allowance period
@@ -322,7 +330,9 @@ def get_allowance_usage(
     return used_allowance
 
 
-def get_allowance_usage_fee(allowance: Decimal, used_allowance: Decimal, overpayment_allowance_fee_percentage: Decimal) -> Decimal:
+def get_allowance_usage_fee(
+    allowance: Decimal, used_allowance: Decimal, overpayment_allowance_fee_percentage: Decimal
+) -> Decimal:
     """Determine the fee amount to charge
 
     :param allowance: the allowance for the period
@@ -333,7 +343,9 @@ def get_allowance_usage_fee(allowance: Decimal, used_allowance: Decimal, overpay
     if used_allowance <= allowance:
         return Decimal(0)
 
-    return utils.round_decimal(overpayment_allowance_fee_percentage * (used_allowance - allowance), decimal_places=2)
+    return utils.round_decimal(
+        overpayment_allowance_fee_percentage * (used_allowance - allowance), decimal_places=2
+    )
 
 
 def handle_allowance_usage(
@@ -350,12 +362,22 @@ def handle_allowance_usage(
     """
     custom_instructions: list[CustomInstruction] = []
     denomination: str = utils.get_parameter(vault=vault, name="denomination")
-    overpayment_percentage: Decimal = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE)
-    overpayment_allowance_fee_percentage: Decimal = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE)
-    overpayment_allowance_fee_income_account: str = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT)
+    overpayment_percentage: Decimal = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE
+    )
+    overpayment_allowance_fee_percentage: Decimal = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE
+    )
+    overpayment_allowance_fee_income_account: str = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT
+    )
 
-    start_of_period_balances = vault.get_balances_observation(fetcher_id=ONE_YEAR_OVERPAYMENT_ALLOWANCE_FETCHER_ID).balances
-    end_of_period_balances = vault.get_balances_observation(fetcher_id=EOD_OVERPAYMENT_ALLOWANCE_FETCHER_ID).balances
+    start_of_period_balances = vault.get_balances_observation(
+        fetcher_id=ONE_YEAR_OVERPAYMENT_ALLOWANCE_FETCHER_ID
+    ).balances
+    end_of_period_balances = vault.get_balances_observation(
+        fetcher_id=EOD_OVERPAYMENT_ALLOWANCE_FETCHER_ID
+    ).balances
 
     # the overpayment allowance tracker balance needs to be
     # updated with the new overpayment allowance amount every
@@ -396,7 +418,9 @@ def handle_allowance_usage(
     return custom_instructions
 
 
-def handle_allowance_usage_adhoc(vault: SmartContractVault, account_type: str, effective_datetime: datetime) -> list[CustomInstruction]:
+def handle_allowance_usage_adhoc(
+    vault: SmartContractVault, account_type: str, effective_datetime: datetime
+) -> list[CustomInstruction]:
     """Checks the overpayments in the past year and charges a fee if the total exceeds the
     allowance. For use inside ad-hoc hook executions, such as conversion or deactivation,
     where the start_of_period is not at a fixed delta from the effective date.
@@ -407,16 +431,26 @@ def handle_allowance_usage_adhoc(vault: SmartContractVault, account_type: str, e
     """
     # data extraction
     denomination: str = utils.get_parameter(vault=vault, name="denomination")
-    overpayment_percentage: Decimal = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE)
-    overpayment_allowance_fee_percentage: Decimal = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE)
-    overpayment_allowance_fee_income_account: str = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT)
+    overpayment_percentage: Decimal = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE
+    )
+    overpayment_allowance_fee_percentage: Decimal = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE
+    )
+    overpayment_allowance_fee_income_account: str = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_INCOME_ACCOUNT
+    )
 
-    one_year_balances = vault.get_balances_timeseries(fetcher_id=ONE_YEAR_OVERPAYMENT_ALLOWANCE_INTERVAL_FETCHER_ID)
+    one_year_balances = vault.get_balances_timeseries(
+        fetcher_id=ONE_YEAR_OVERPAYMENT_ALLOWANCE_INTERVAL_FETCHER_ID
+    )
 
     start_of_period_datetime = get_start_of_current_allowance_period(
         effective_datetime=effective_datetime,
         account_creation_datetime=vault.get_account_creation_datetime(),
-        check_overpayment_allowance_last_execution_datetime=vault.get_last_execution_datetime(event_type=CHECK_OVERPAYMENT_ALLOWANCE_EVENT),
+        check_overpayment_allowance_last_execution_datetime=vault.get_last_execution_datetime(
+            event_type=CHECK_OVERPAYMENT_ALLOWANCE_EVENT
+        ),
     )
 
     start_of_period_balances = _extract_balance_default_dict_from_interval(
@@ -480,7 +514,8 @@ def _handle_allowance_usage_inner(
         internal_account=overpayment_allowance_fee_income_account,
         customer_account_address=lending_addresses.PENALTIES,
         instruction_details=utils.standard_instruction_details(
-            description=f"Overpayment fee charged due to used allowance {used_allowance} " f"{denomination} exceeding allowance {allowance} {denomination}",
+            description=f"Overpayment fee charged due to used allowance {used_allowance} "
+            f"{denomination} exceeding allowance {allowance} {denomination}",
             event_type="CHARGE_OVERPAYMENT_FEE",
             gl_impacted=True,
             account_type=account_type,
@@ -505,8 +540,12 @@ def _extract_balance_default_dict_from_interval(
         denomination=denomination,
         phase=Phase.COMMITTED,
     )
-    overpayment_at_effective_datetime = balance_interval[overpayment_coordinate].at(at_datetime=effective_datetime)
-    principal_at_effective_datetime = balance_interval[principal_coordinate].at(at_datetime=effective_datetime)
+    overpayment_at_effective_datetime = balance_interval[overpayment_coordinate].at(
+        at_datetime=effective_datetime
+    )
+    principal_at_effective_datetime = balance_interval[principal_coordinate].at(
+        at_datetime=effective_datetime
+    )
 
     return BalanceDefaultDict(
         mapping={
@@ -516,7 +555,9 @@ def _extract_balance_default_dict_from_interval(
     )
 
 
-def get_overpayment_allowance_status(vault: SmartContractVault, effective_datetime: datetime) -> tuple[Decimal, Decimal]:
+def get_overpayment_allowance_status(
+    vault: SmartContractVault, effective_datetime: datetime
+) -> tuple[Decimal, Decimal]:
     """Determines the original and used overpayment allowance for the current allowance period.
     For use in adhoc situations (e.g. derived parameters)
     Both numbers should be >= 0, but there is no strict relationship between the two (i.e.
@@ -528,11 +569,15 @@ def get_overpayment_allowance_status(vault: SmartContractVault, effective_dateti
     """
 
     denomination: str = utils.get_parameter(vault=vault, name="denomination")
-    one_year_balances = vault.get_balances_timeseries(fetcher_id=ONE_YEAR_OVERPAYMENT_ALLOWANCE_INTERVAL_FETCHER_ID)
+    one_year_balances = vault.get_balances_timeseries(
+        fetcher_id=ONE_YEAR_OVERPAYMENT_ALLOWANCE_INTERVAL_FETCHER_ID
+    )
     start_of_period_datetime = get_start_of_current_allowance_period(
         effective_datetime=effective_datetime,
         account_creation_datetime=vault.get_account_creation_datetime(),
-        check_overpayment_allowance_last_execution_datetime=vault.get_last_execution_datetime(event_type=CHECK_OVERPAYMENT_ALLOWANCE_EVENT),
+        check_overpayment_allowance_last_execution_datetime=vault.get_last_execution_datetime(
+            event_type=CHECK_OVERPAYMENT_ALLOWANCE_EVENT
+        ),
     )
     allowance_percentage = utils.get_parameter(
         vault=vault,
@@ -582,9 +627,13 @@ def get_start_of_current_allowance_period(
     :return: the start of the allowance period
     """
     if check_overpayment_allowance_last_execution_datetime is not None:
-        return check_overpayment_allowance_last_execution_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+        return check_overpayment_allowance_last_execution_datetime.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
 
-    one_year_ago = effective_datetime.replace(hour=0, minute=0, second=0, microsecond=0) - relativedelta(years=1)
+    one_year_ago = effective_datetime.replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) - relativedelta(years=1)
 
     # we must leave time components on account creation as the period cannot start before the
     # account was actually created
@@ -685,7 +734,9 @@ def reduce_overpayment_allowance(
     # since an overpayment can also pay off accrued interest, it is technically
     # possible for an overpayment to be greater than the outstanding principal on the
     # loan, which is why the check below is needed
-    if (overpayment_posting_amount := min(overpayment_amount, outstanding_principal)) > Decimal("0"):
+    if (overpayment_posting_amount := min(overpayment_amount, outstanding_principal)) > Decimal(
+        "0"
+    ):
         postings += utils.create_postings(
             amount=overpayment_posting_amount,
             debit_account=vault.account_id,
@@ -724,7 +775,9 @@ def get_overpayment_allowance_fee_for_early_repayment(
     if balances is None:
         balances = vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
 
-    overpayment_allowance_fee_percentage = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE)
+    overpayment_allowance_fee_percentage = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_FEE_PERCENTAGE
+    )
 
     total_outstanding_debt = utils.sum_balances(
         balances=balances,
@@ -760,7 +813,11 @@ def get_overpayment_allowance_fee_for_early_repayment(
     # the customer has not yet exceeded the overpayment allowance amount.
     # If the tracker balance is negative, the customer has exceeded the overpayment
     # allowance amount by the tracker balance amount.
-    overpayment_allowance_exceeded_amount = abs(inflight_overpayment_allowance_amount) if inflight_overpayment_allowance_amount < Decimal("0") else Decimal("0")
+    overpayment_allowance_exceeded_amount = (
+        abs(inflight_overpayment_allowance_amount)
+        if inflight_overpayment_allowance_amount < Decimal("0")
+        else Decimal("0")
+    )
 
     return utils.round_decimal(
         amount=overpayment_allowance_fee_percentage * overpayment_allowance_exceeded_amount,
@@ -794,7 +851,9 @@ def initialise_overpayment_allowance_from_principal_amount(
     if denomination is None:
         denomination = utils.get_parameter(vault=vault, name=PARAM_DENOMINATION)
 
-    overpayment_allowance_percentage: Decimal = utils.get_parameter(vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE)
+    overpayment_allowance_percentage: Decimal = utils.get_parameter(
+        vault=vault, name=PARAM_OVERPAYMENT_ALLOWANCE_PERCENTAGE
+    )
 
     return set_overpayment_allowance_for_period(
         current_overpayment_allowance=Decimal("0"),
@@ -804,7 +863,9 @@ def initialise_overpayment_allowance_from_principal_amount(
     )
 
 
-def get_residual_cleanup_postings(balances: BalanceDefaultDict, account_id: str, denomination: str) -> list[Posting]:
+def get_residual_cleanup_postings(
+    balances: BalanceDefaultDict, account_id: str, denomination: str
+) -> list[Posting]:
     """
     Returns the postings needed to cleanup the overpayment allowance tracker balance.
 
@@ -824,8 +885,12 @@ def get_residual_cleanup_postings(balances: BalanceDefaultDict, account_id: str,
         amount=abs(overpayment_allowance_amount),
         debit_account=account_id,
         credit_account=account_id,
-        debit_address=common_addresses.INTERNAL_CONTRA if overpayment_allowance_amount > 0 else REMAINING_OVERPAYMENT_ALLOWANCE_TRACKER,
-        credit_address=REMAINING_OVERPAYMENT_ALLOWANCE_TRACKER if overpayment_allowance_amount > 0 else common_addresses.INTERNAL_CONTRA,
+        debit_address=common_addresses.INTERNAL_CONTRA
+        if overpayment_allowance_amount > 0
+        else REMAINING_OVERPAYMENT_ALLOWANCE_TRACKER,
+        credit_address=REMAINING_OVERPAYMENT_ALLOWANCE_TRACKER
+        if overpayment_allowance_amount > 0
+        else common_addresses.INTERNAL_CONTRA,
         denomination=denomination,
     )
 
@@ -834,4 +899,6 @@ OverpaymentAllowanceFeature = lending_interfaces.Overpayment(
     handle_overpayment=reduce_overpayment_allowance,
 )
 
-OverpaymentAllowanceResidualCleanupFeature = lending_interfaces.ResidualCleanup(get_residual_cleanup_postings=get_residual_cleanup_postings)
+OverpaymentAllowanceResidualCleanupFeature = lending_interfaces.ResidualCleanup(
+    get_residual_cleanup_postings=get_residual_cleanup_postings
+)

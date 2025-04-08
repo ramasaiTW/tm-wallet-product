@@ -14,7 +14,9 @@ class SupervisedHooks:
         # This can be extended later to check that at least one hook
         # supervision is specified.
         if not self.pre_posting_hook:
-            raise exceptions.InvalidSmartContractError("At least one hook supervision must be specified.")
+            raise exceptions.InvalidSmartContractError(
+                "At least one hook supervision must be specified."
+            )
 
     @classmethod
     @lru_cache()
@@ -76,7 +78,9 @@ class SmartContractDescriptor:
             raise exceptions.StrongTypingError("SmartContractDescriptor 'alias' must be populated")
 
         if self.smart_contract_version_id is None:
-            raise exceptions.StrongTypingError("SmartContractDescriptor 'smart_contract_version_id' must be populated")
+            raise exceptions.StrongTypingError(
+                "SmartContractDescriptor 'smart_contract_version_id' must be populated"
+            )
 
         types_utils.validate_type(
             self.supervised_hooks,

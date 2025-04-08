@@ -145,7 +145,13 @@ class ResetTrackingInstructionsTest(FeatureTest):
         ]
 
         # construct mocks
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation("eod_balances")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "eod_balances"
+                )
+            }
+        )
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 direct_deposit_tracker.common_parameters.PARAM_DENOMINATION: DEFAULT_DENOMINATION,
@@ -184,7 +190,13 @@ class ResetTrackingInstructionsTest(FeatureTest):
         mock_balance_at_coordinates: MagicMock,
     ):
         # construct mocks
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation("eod_balances")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "eod_balances"
+                )
+            }
+        )
         mock_balance_at_coordinates.return_value = Decimal("0")
 
         # run function
@@ -204,7 +216,9 @@ class ResetTrackingInstructionsTest(FeatureTest):
 
 class IsDepositTrackingAddressAboveThresholdTest(FeatureTest):
     @patch.object(direct_deposit_tracker.utils, "balance_at_coordinates")
-    @patch.object(direct_deposit_tracker.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        direct_deposit_tracker.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(direct_deposit_tracker.account_tiers, "get_account_tier")
     @patch.object(direct_deposit_tracker.utils, "get_parameter")
     def test_is_deposit_tracking_address_above_threshold(
@@ -215,7 +229,13 @@ class IsDepositTrackingAddressAboveThresholdTest(FeatureTest):
         mock_balance_at_coordinates: MagicMock,
     ):
         # construct mocks
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation("eod_balances")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "eod_balances"
+                )
+            }
+        )
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "deposit_threshold_by_tier": dumps({"LOWER_TIER": "100"}),
@@ -261,7 +281,9 @@ class IsDepositTrackingAddressAboveThresholdTest(FeatureTest):
         )
 
     @patch.object(direct_deposit_tracker.utils, "balance_at_coordinates")
-    @patch.object(direct_deposit_tracker.account_tiers, "get_tiered_parameter_value_based_on_account_tier")
+    @patch.object(
+        direct_deposit_tracker.account_tiers, "get_tiered_parameter_value_based_on_account_tier"
+    )
     @patch.object(direct_deposit_tracker.account_tiers, "get_account_tier")
     @patch.object(direct_deposit_tracker.utils, "get_parameter")
     def test_is_deposit_tracking_address_above_threshold_no_deposits(
@@ -272,7 +294,13 @@ class IsDepositTrackingAddressAboveThresholdTest(FeatureTest):
         mock_balance_at_coordinates: MagicMock,
     ):
         # construct mocks
-        mock_vault = self.create_mock(balances_observation_fetchers_mapping={direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation("eod_balances")})
+        mock_vault = self.create_mock(
+            balances_observation_fetchers_mapping={
+                direct_deposit_tracker.DIRECT_DEPOSIT_EOD_FETCHER_ID: SentinelBalancesObservation(
+                    "eod_balances"
+                )
+            }
+        )
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             parameters={
                 "deposit_threshold_by_tier": dumps({"LOWER_TIER": "100"}),

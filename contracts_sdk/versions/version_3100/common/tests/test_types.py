@@ -91,12 +91,16 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             Shift()
 
-        self.assertEqual(str(e.exception), "Shift object needs to be populated with at least one attribute.")
+        self.assertEqual(
+            str(e.exception), "Shift object needs to be populated with at least one attribute."
+        )
 
     def test_shift_raises_if_invalid_argument_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Shift(days="2")
-        self.assertEqual(str(e.exception), "Shift.__init__ arg 'days' expected Optional[int] but got value '2'")
+        self.assertEqual(
+            str(e.exception), "Shift.__init__ arg 'days' expected Optional[int] but got value '2'"
+        )
 
     def test_defined_date_time_enum(self):
         self.assertEqual(DefinedDateTime.LIVE, -1)
@@ -140,7 +144,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             Override()
 
-        self.assertEqual(str(e.exception), "Override object needs to be populated with at least one attribute.")
+        self.assertEqual(
+            str(e.exception), "Override object needs to be populated with at least one attribute."
+        )
 
     def test_override_raises_if_invalid_argument_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
@@ -180,12 +186,16 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
     def test_next_with_all_values_not_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Next()
-        self.assertEqual(str(e.exception), "Next.__init__ arg 'day' expected int but got value None")
+        self.assertEqual(
+            str(e.exception), "Next.__init__ arg 'day' expected int but got value None"
+        )
 
     def test_previous_with_all_values_not_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous()
-        self.assertEqual(str(e.exception), "Previous.__init__ arg 'day' expected int but got value None")
+        self.assertEqual(
+            str(e.exception), "Previous.__init__ arg 'day' expected int but got value None"
+        )
 
     def test_next_with_all_values_populated(self):
         next_native_type = Next(month=1, day=12, hour=4, minute=5, second=6)
@@ -211,7 +221,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
     def test_previous_raises_error_if_invalid_argument_types_provided(self):
         with self.assertRaises(StrongTypingError) as e:
             Previous(day="2")
-        self.assertEqual(str(e.exception), "Previous.__init__ arg 'day' expected int but got value '2'")
+        self.assertEqual(
+            str(e.exception), "Previous.__init__ arg 'day' expected int but got value '2'"
+        )
 
     def test_next_raises_if_values_out_of_range(self):
         with self.assertRaises(InvalidSmartContractError) as ex1:
@@ -374,7 +386,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
     def test_postings_interval_fetcher_with_relative_datetime_start(self):
         postings_interval_fetcher = PostingsIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+            ),
             end=DefinedDateTime.EFFECTIVE_TIME,
         )
 
@@ -389,13 +403,16 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
             PostingsIntervalFetcher(fetcher_id="fetcher_id", end=DefinedDateTime.EFFECTIVE_TIME)
         self.assertEqual(
             str(e.exception),
-            "PostingsIntervalFetcher.__init__ arg 'start' expected " "Union[RelativeDateTime, DefinedDateTime] but got value None",
+            "PostingsIntervalFetcher.__init__ arg 'start' expected "
+            "Union[RelativeDateTime, DefinedDateTime] but got value None",
         )
 
     def test_postings_interval_fetcher_errors_without_id(self):
         with self.assertRaises(StrongTypingError) as e:
             PostingsIntervalFetcher(
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_TIME,
             )
         self.assertEqual(
@@ -407,7 +424,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             PostingsIntervalFetcher(
                 fetcher_id="",
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_TIME,
             )
         self.assertEqual(str(e.exception), "PostingsIntervalFetcher 'fetcher_id' cannot be empty")
@@ -415,7 +434,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
     def test_postings_interval_fetcher_succeeds_without_end(self):
         postings_interval_fetcher = PostingsIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+            ),
         )
         self.assertEqual("fetcher_id", postings_interval_fetcher.fetcher_id)
 
@@ -424,7 +445,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         self.assertEqual(DefinedDateTime.LIVE, postings_interval_fetcher.end)
 
     def test_postings_interval_fetcher_with_defined_datetime_start(self):
-        postings_interval_fetcher = PostingsIntervalFetcher(fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME)
+        postings_interval_fetcher = PostingsIntervalFetcher(
+            fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME
+        )
         self.assertEqual("fetcher_id", postings_interval_fetcher.fetcher_id)
         self.assertEqual(DefinedDateTime.EFFECTIVE_TIME, postings_interval_fetcher.start)
         self.assertEqual(DefinedDateTime.LIVE, postings_interval_fetcher.end)
@@ -441,7 +464,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         )
 
     def test_postings_interval_fetcher_between_effective_and_live(self):
-        postings_interval_fetcher = PostingsIntervalFetcher(fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME, end=DefinedDateTime.LIVE)
+        postings_interval_fetcher = PostingsIntervalFetcher(
+            fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME, end=DefinedDateTime.LIVE
+        )
         self.assertEqual(DefinedDateTime.EFFECTIVE_TIME, postings_interval_fetcher.start)
         self.assertEqual(DefinedDateTime.LIVE, postings_interval_fetcher.end)
 
@@ -472,17 +497,22 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             PostingsIntervalFetcher(
                 fetcher_id="fetcher_id",
-                start=RelativeDateTime(origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)
+                ),
             )
         self.assertEqual(
             str(e.exception),
-            "PostingsIntervalFetcher 'start' origin value must be set to " "'DefinedDateTime.EFFECTIVE_TIME'",
+            "PostingsIntervalFetcher 'start' origin value must be set to "
+            "'DefinedDateTime.EFFECTIVE_TIME'",
         )
 
     def test_balances_interval_fetcher_with_relative_datetime_start(self):
         balances_interval_fetcher = BalancesIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+            ),
             end=DefinedDateTime.EFFECTIVE_TIME,
         )
 
@@ -497,13 +527,16 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
             BalancesIntervalFetcher(fetcher_id="fetcher_id", end=DefinedDateTime.EFFECTIVE_TIME)
         self.assertEqual(
             str(e.exception),
-            "BalancesIntervalFetcher.__init__ arg 'start' expected " "Union[RelativeDateTime, DefinedDateTime] but got value None",
+            "BalancesIntervalFetcher.__init__ arg 'start' expected "
+            "Union[RelativeDateTime, DefinedDateTime] but got value None",
         )
 
     def test_balances_interval_fetcher_errors_without_id(self):
         with self.assertRaises(StrongTypingError) as e:
             BalancesIntervalFetcher(
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_TIME,
             )
         self.assertEqual(
@@ -515,7 +548,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesIntervalFetcher(
                 fetcher_id="",
-                start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+                ),
                 end=DefinedDateTime.EFFECTIVE_TIME,
             )
         self.assertEqual(str(e.exception), "BalancesIntervalFetcher 'fetcher_id' cannot be empty")
@@ -523,7 +558,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
     def test_balances_interval_fetcher_succeeds_without_end(self):
         balances_interval_fetcher = BalancesIntervalFetcher(
             fetcher_id="fetcher_id",
-            start=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)),
+            start=RelativeDateTime(
+                origin=DefinedDateTime.EFFECTIVE_TIME, shift=Shift(years=-1, months=2)
+            ),
         )
         self.assertEqual("fetcher_id", balances_interval_fetcher.fetcher_id)
 
@@ -532,7 +569,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         self.assertEqual(DefinedDateTime.LIVE, balances_interval_fetcher.end)
 
     def test_balances_interval_fetcher_with_defined_datetime_start(self):
-        balances_interval_fetcher = BalancesIntervalFetcher(fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME)
+        balances_interval_fetcher = BalancesIntervalFetcher(
+            fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME
+        )
         self.assertEqual("fetcher_id", balances_interval_fetcher.fetcher_id)
         self.assertEqual(DefinedDateTime.EFFECTIVE_TIME, balances_interval_fetcher.start)
         self.assertEqual(DefinedDateTime.LIVE, balances_interval_fetcher.end)
@@ -549,7 +588,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         )
 
     def test_balances_interval_fetcher_between_effective_and_live(self):
-        balances_interval_fetcher = BalancesIntervalFetcher(fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME, end=DefinedDateTime.LIVE)
+        balances_interval_fetcher = BalancesIntervalFetcher(
+            fetcher_id="fetcher_id", start=DefinedDateTime.EFFECTIVE_TIME, end=DefinedDateTime.LIVE
+        )
         self.assertEqual(DefinedDateTime.EFFECTIVE_TIME, balances_interval_fetcher.start)
         self.assertEqual(DefinedDateTime.LIVE, balances_interval_fetcher.end)
 
@@ -580,11 +621,14 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesIntervalFetcher(
                 fetcher_id="fetcher_id",
-                start=RelativeDateTime(origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)),
+                start=RelativeDateTime(
+                    origin=DefinedDateTime.INTERVAL_START, shift=Shift(years=-1)
+                ),
             )
         self.assertEqual(
             str(e.exception),
-            "BalancesIntervalFetcher 'start' origin value must be set to " "'DefinedDateTime.EFFECTIVE_TIME'",
+            "BalancesIntervalFetcher 'start' origin value must be set to "
+            "'DefinedDateTime.EFFECTIVE_TIME'",
         )
 
     def test_balances_interval_fetcher_with_filter(self):
@@ -616,26 +660,37 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
             ScheduledJob(pause_datetime="2")
         self.assertEqual(
             str(e.exception),
-            ("ScheduledJob.__init__ arg 'pause_datetime' expected Optional[datetime] " "but got value '2'"),
+            (
+                "ScheduledJob.__init__ arg 'pause_datetime' expected Optional[datetime] "
+                "but got value '2'"
+            ),
         )
 
     def test_balances_observation_fetcher_with_defined_datetime(self):
         filter = BalancesFilter(addresses=["CUSTOM_ADDRESS", "DEFAULT_ADDRESS"])
-        balances_observation_fetcher = BalancesObservationFetcher(fetcher_id="fetcher_id", at=DefinedDateTime.EFFECTIVE_TIME, filter=filter)
+        balances_observation_fetcher = BalancesObservationFetcher(
+            fetcher_id="fetcher_id", at=DefinedDateTime.EFFECTIVE_TIME, filter=filter
+        )
         self.assertEqual("fetcher_id", balances_observation_fetcher.fetcher_id)
         self.assertEqual(DefinedDateTime.EFFECTIVE_TIME, balances_observation_fetcher.at)
         self.assertEqual(filter, balances_observation_fetcher.filter)
 
     def test_balances_observation_fetcher_with_relative_datetime(self):
         filter = BalancesFilter(addresses=["CUSTOM_ADDRESS", "DEFAULT_ADDRESS"])
-        relative_date_time = RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_TIME)
-        balances_observation_fetcher = BalancesObservationFetcher(fetcher_id="fetcher_id", at=relative_date_time, filter=filter)
+        relative_date_time = RelativeDateTime(
+            shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_TIME
+        )
+        balances_observation_fetcher = BalancesObservationFetcher(
+            fetcher_id="fetcher_id", at=relative_date_time, filter=filter
+        )
         self.assertEqual("fetcher_id", balances_observation_fetcher.fetcher_id)
         self.assertEqual(relative_date_time, balances_observation_fetcher.at)
         self.assertEqual(filter, balances_observation_fetcher.filter)
 
     def test_balances_observation_fetcher_with_no_filter(self):
-        relative_date_time = RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_TIME)
+        relative_date_time = RelativeDateTime(
+            shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_TIME
+        )
         balances_observation_fetcher = BalancesObservationFetcher(
             fetcher_id="fetcher_id",
             at=relative_date_time,
@@ -650,15 +705,22 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
                 at=RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_TIME),
             )
 
-        self.assertEqual(str(e.exception), "BalancesObservationFetcher 'fetcher_id' cannot be empty")
+        self.assertEqual(
+            str(e.exception), "BalancesObservationFetcher 'fetcher_id' cannot be empty"
+        )
 
     def test_balances_observation_fetcher_raises_with_fetcher_id_not_populated(self):
         with self.assertRaises(StrongTypingError) as e:
-            BalancesObservationFetcher(at=RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_TIME))
+            BalancesObservationFetcher(
+                at=RelativeDateTime(shift=Shift(months=-1), origin=DefinedDateTime.EFFECTIVE_TIME)
+            )
 
         self.assertEqual(
             str(e.exception),
-            ("BalancesObservationFetcher.__init__ arg 'fetcher_id' expected str but got value " "None"),
+            (
+                "BalancesObservationFetcher.__init__ arg 'fetcher_id' expected str but got value "
+                "None"
+            ),
         )
 
     def test_balances_observation_fetcher_raises_if_at_attribute_not_populated(self):
@@ -669,7 +731,10 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
 
         self.assertEqual(
             str(e.exception),
-            ("BalancesObservationFetcher.__init__ arg 'at' expected Union[DefinedDateTime, " "RelativeDateTime] but got value None"),
+            (
+                "BalancesObservationFetcher.__init__ arg 'at' expected Union[DefinedDateTime, "
+                "RelativeDateTime] but got value None"
+            ),
         )
 
     def test_balances_observation_fetcher_raises_if_at_populated_with_interval_start(self):
@@ -692,7 +757,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         self.assertEqual(ScheduleFailover.FIRST_VALID_DAY_BEFORE, end_of_month_schedule.failover)
 
     def test_end_of_month_schedule_type_can_set_values(self):
-        end_of_month_schedule = EndOfMonthSchedule(day=15, hour=10, minute=20, second=5, failover=ScheduleFailover.FIRST_VALID_DAY_BEFORE)
+        end_of_month_schedule = EndOfMonthSchedule(
+            day=15, hour=10, minute=20, second=5, failover=ScheduleFailover.FIRST_VALID_DAY_BEFORE
+        )
         self.assertEqual(15, end_of_month_schedule.day)
         self.assertEqual(10, end_of_month_schedule.hour)
         self.assertEqual(20, end_of_month_schedule.minute)
@@ -728,19 +795,23 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
                 EndOfMonthSchedule(**value)
             self.assertEqual(
                 str(e.exception),
-                f"Argument {time_component} of EndOfMonthSchedule" f" object is out of range({low}-{high}).",
+                f"Argument {time_component} of EndOfMonthSchedule"
+                f" object is out of range({low}-{high}).",
             )
 
     def test_end_of_month_schedule_raises_strong_typing_error(self):
         with self.assertRaises(Exception) as e:
             EndOfMonthSchedule(hour=5, minute=6)
-        self.assertEqual(str(e.exception), "__init__() missing 1 required keyword-only argument: 'day'")
+        self.assertEqual(
+            str(e.exception), "__init__() missing 1 required keyword-only argument: 'day'"
+        )
 
         with self.assertRaises(StrongTypingError) as e:
             EndOfMonthSchedule(day=1, failover=3)
         self.assertEqual(
             str(e.exception),
-            "EndOfMonthSchedule.__init__ arg 'failover' expected " "Optional[ScheduleFailover] but got value 3",
+            "EndOfMonthSchedule.__init__ arg 'failover' expected "
+            "Optional[ScheduleFailover] but got value 3",
         )
 
     def test_hook_directives(self):
@@ -821,12 +892,24 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
                 )
             ],
         )
-        self.assertEqual(self.request_id_3100, hook_directives.add_account_note_directives[0].idempotency_key)
-        self.assertEqual(self.request_id_3100, hook_directives.amend_schedule_directives[0].request_id)
-        self.assertEqual(self.request_id_3100, hook_directives.remove_schedules_directives[0].request_id)
-        self.assertEqual(self.request_id_3100, hook_directives.posting_instruction_batch_directives[0].request_id)
-        self.assertEqual(self.request_id_3100, hook_directives.workflow_start_directives[0].idempotency_key)
-        self.assertEqual(self.account_id_3100, hook_directives.update_account_event_type_directives[0].account_id)
+        self.assertEqual(
+            self.request_id_3100, hook_directives.add_account_note_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.request_id_3100, hook_directives.amend_schedule_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3100, hook_directives.remove_schedules_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3100, hook_directives.posting_instruction_batch_directives[0].request_id
+        )
+        self.assertEqual(
+            self.request_id_3100, hook_directives.workflow_start_directives[0].idempotency_key
+        )
+        self.assertEqual(
+            self.account_id_3100, hook_directives.update_account_event_type_directives[0].account_id
+        )
 
     def test_update_account_event_type_directive_can_be_created(self):
         update_account_event_type_directive = UpdateAccountEventTypeDirective(
@@ -880,7 +963,8 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
                 schedule=EventTypeSchedule(day="1"),
             )
         self.assertEqual(
-            "UpdateAccountEventTypeDirective cannot contain both" " schedule and schedule_method fields",
+            "UpdateAccountEventTypeDirective cannot contain both"
+            " schedule and schedule_method fields",
             str(ex.exception),
         )
 
@@ -894,7 +978,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         )
         balance_dict = BalanceDefaultDict()
         balance_dict[balance_key_1] = Balance(net=Decimal("20"), credit=Decimal("20"))
-        balances_observation = BalancesObservation(value_datetime=value_datetime, balances=balance_dict)
+        balances_observation = BalancesObservation(
+            value_datetime=value_datetime, balances=balance_dict
+        )
         self.assertEqual(balance_dict, balances_observation.balances)
         self.assertEqual(value_datetime, balances_observation.value_datetime)
 
@@ -904,13 +990,16 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
             BalancesObservation(value_datetime=value_datetime, balances=None)
         self.assertEqual(
             str(e.exception),
-            "BalancesObservation.__init__ arg 'balances' expected BalanceDefaultDict but got value" " None",
+            "BalancesObservation.__init__ arg 'balances' expected BalanceDefaultDict but got value"
+            " None",
         )
 
     def test_balances_observation_empty_balances(self):
         value_datetime = datetime(year=2020, month=2, day=20)
         balance_dict = BalanceDefaultDict()
-        balances_observation = BalancesObservation(value_datetime=value_datetime, balances=balance_dict)
+        balances_observation = BalancesObservation(
+            value_datetime=value_datetime, balances=balance_dict
+        )
         self.assertEqual(value_datetime, balances_observation.value_datetime)
         self.assertEqual(balance_dict, balances_observation.balances)
 
@@ -985,7 +1074,10 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
             )
 
         self.assertIn(
-            ("'update_account_event_type_directives' expected " "List[UpdateAccountEventTypeDirective] but got value 'bad'"),
+            (
+                "'update_account_event_type_directives' expected "
+                "List[UpdateAccountEventTypeDirective] but got value 'bad'"
+            ),
             str(ex.exception),
         )
 
@@ -1060,7 +1152,10 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
             )
 
         self.assertIn(
-            ("__init__() missing 1 required keyword-only argument: " "'update_account_event_type_directives'"),
+            (
+                "__init__() missing 1 required keyword-only argument: "
+                "'update_account_event_type_directives'"
+            ),
             str(ex.exception),
         )
 
@@ -1098,11 +1193,15 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
+        )
         self.assertTrue(hasattr(pi, "advice"))
         self.assertFalse(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.CUSTOM_INSTRUCTION, phase=Phase.COMMITTED, **common_kwargs
+        )
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.HARD_SETTLEMENT, **common_kwargs)
@@ -1112,7 +1211,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         pi = PostingInstruction(type=PostingInstructionType.RELEASE, **common_kwargs)
         self.assertFalse(hasattr(pi, "advice"))
 
-        pi = PostingInstruction(type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.SETTLEMENT, final=False, **common_kwargs
+        )
         self.assertFalse(hasattr(pi, "advice"))
 
         pi = PostingInstruction(type=PostingInstructionType.TRANSFER, **common_kwargs)
@@ -1136,7 +1237,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
-        pi = PostingInstruction(type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs)
+        pi = PostingInstruction(
+            type=PostingInstructionType.AUTHORISATION_ADJUSTMENT, **common_kwargs
+        )
         self.assertTrue(hasattr(pi, "advice"))
         self.assertTrue(pi.advice)
 
@@ -1289,7 +1392,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
         self.assertEqual("Blossom", pi.transaction_code.domain)
 
     def test_event_types_group_can_be_created(self):
-        event_types_group = EventTypesGroup(name="TestEvenTypesGroup", event_types_order=["EVENT_TYPE1", "EVENT_TYPE2"])
+        event_types_group = EventTypesGroup(
+            name="TestEvenTypesGroup", event_types_order=["EVENT_TYPE1", "EVENT_TYPE2"]
+        )
         self.assertEqual(event_types_group.name, "TestEvenTypesGroup")
         self.assertEqual(event_types_group.event_types_order, ["EVENT_TYPE1", "EVENT_TYPE2"])
 
@@ -1301,7 +1406,9 @@ class PublicCommonV3100TypesTestCase(PublicCommonV390TypesTestCase):
     def test_event_types_group_attributes_are_verified(self):
         with self.assertRaises(StrongTypingError) as ex:
             EventTypesGroup(name="TestEvenTypesGroup", event_types_order=None)
-        self.assertIn("'event_types_order' expected List[str] but got value None", str(ex.exception))
+        self.assertIn(
+            "'event_types_order' expected List[str] but got value None", str(ex.exception)
+        )
 
     def test_posting_instruction_batch_validation_is_skipped_if_from_proto(self):
         # This instantiation should not raise an error even though the arguments are

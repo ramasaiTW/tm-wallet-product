@@ -46,7 +46,9 @@ INTEREST_DUE_COORDINATE = BalanceCoordinate(
     sentinel.denomination,
     Phase.COMMITTED,
 )
-PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = interest_application_supervisor.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = (
+    interest_application_supervisor.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+)
 PARAM_INTEREST_RECEIVED_ACCOUNT = interest_application_supervisor.PARAM_INTEREST_RECEIVED_ACCOUNT
 PARAM_APPLICATION_PRECISION = interest_application_supervisor.PARAM_APPLICATION_PRECISION
 
@@ -82,7 +84,9 @@ class InterestApplicationTest(InterestApplicationTestCommon):
     ):
         mock_vault = self.create_mock(
             account_id=sentinel.account_id,
-            balances_observation_fetchers_mapping={fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")},
+            balances_observation_fetchers_mapping={
+                fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")
+            },
         )
         mock_get_interest_to_apply.return_value = lending_interfaces.InterestAmounts(
             emi_accrued=Decimal("10.32345"),
@@ -107,14 +111,18 @@ class InterestApplicationTest(InterestApplicationTestCommon):
             previous_application_datetime=sentinel.previous_application_datetime,
         )
 
-        self.assertListEqual(daily_accrual_ci, [sentinel.application_postings, sentinel.application_postings])
+        self.assertListEqual(
+            daily_accrual_ci, [sentinel.application_postings, sentinel.application_postings]
+        )
         expected_calls = [
             call(
                 customer_account=sentinel.account_id,
                 denomination=sentinel.denomination,
                 application_amount=Decimal("10.32"),
                 accrual_amount=Decimal("10.32345"),
-                accrual_customer_address=(interest_application_supervisor.ACCRUED_INTEREST_RECEIVABLE),
+                accrual_customer_address=(
+                    interest_application_supervisor.ACCRUED_INTEREST_RECEIVABLE
+                ),
                 accrual_internal_account=sentinel.accrued_int_receivable_account,
                 application_customer_address=interest_application_supervisor.INTEREST_DUE,
                 application_internal_account=sentinel.interest_received_account,
@@ -125,7 +133,9 @@ class InterestApplicationTest(InterestApplicationTestCommon):
                 denomination=sentinel.denomination,
                 application_amount=Decimal("10.43"),
                 accrual_amount=Decimal("10.42345"),
-                accrual_customer_address=(interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE),
+                accrual_customer_address=(
+                    interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+                ),
                 accrual_internal_account=sentinel.accrued_int_receivable_account,
                 application_customer_address=interest_application_supervisor.INTEREST_DUE,
                 application_internal_account=sentinel.interest_received_account,
@@ -141,32 +151,42 @@ class InterestApplicationTest(InterestApplicationTestCommon):
 
     def test_get_emi_interest_to_apply(self):
         self.assertTupleEqual(
-            interest_application_supervisor._get_emi_interest_to_apply(self.balances, sentinel.denomination),
+            interest_application_supervisor._get_emi_interest_to_apply(
+                self.balances, sentinel.denomination
+            ),
             (Decimal("10.12345"), Decimal("10.12")),
         )
 
     def test_get_emi_interest_to_apply_non_default_rounding(self):
         self.assertTupleEqual(
-            interest_application_supervisor._get_emi_interest_to_apply(self.balances, sentinel.denomination, precision=3),
+            interest_application_supervisor._get_emi_interest_to_apply(
+                self.balances, sentinel.denomination, precision=3
+            ),
             (Decimal("10.12345"), Decimal("10.123")),
         )
 
     def test_get_non_emi_interest_to_apply(self):
         self.assertTupleEqual(
-            interest_application_supervisor._get_non_emi_interest_to_apply(self.balances, sentinel.denomination),
+            interest_application_supervisor._get_non_emi_interest_to_apply(
+                self.balances, sentinel.denomination
+            ),
             (Decimal("10.45678"), Decimal("10.46")),
         )
 
     def test_get_non_emi_interest_to_apply_non_default_rounding(self):
         self.assertTupleEqual(
-            interest_application_supervisor._get_non_emi_interest_to_apply(self.balances, sentinel.denomination, precision=1),
+            interest_application_supervisor._get_non_emi_interest_to_apply(
+                self.balances, sentinel.denomination, precision=1
+            ),
             (Decimal("10.45678"), Decimal("10.5")),
         )
 
     @patch.object(interest_application_supervisor.utils, "get_parameter")
     def test_get_application_precision(self, mock_get_parameter: MagicMock):
         mock_vault = self.create_mock()
-        mock_get_parameter.side_effect = mock_utils_get_parameter(parameters={interest_application_supervisor.PARAM_APPLICATION_PRECISION: 2})
+        mock_get_parameter.side_effect = mock_utils_get_parameter(
+            parameters={interest_application_supervisor.PARAM_APPLICATION_PRECISION: 2}
+        )
         self.assertEqual(interest_application_supervisor.get_application_precision(mock_vault), 2)
 
     @patch.object(interest_application_supervisor, "_get_non_emi_interest_to_apply")
@@ -226,7 +246,9 @@ class InterestApplicationTest(InterestApplicationTestCommon):
         mock_get_balance_default_dict_from_mapping.return_value = sentinel.balance_dict
         mock_get_interest_to_apply.return_value = sentinel.interest_amounts
         mock_get_parameter.side_effect = mock_utils_get_parameter(self.parameters)
-        mock_vault = self.create_supervisee_mock(requires_fetched_balances=sentinel.fetched_balances)
+        mock_vault = self.create_supervisee_mock(
+            requires_fetched_balances=sentinel.fetched_balances
+        )
 
         self.assertEqual(
             interest_application_supervisor.get_interest_to_apply(
@@ -281,17 +303,25 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         interest_application_supervisor.PARAM_APPLICATION_PRECISION: sentinel.precision,
     }
 
-    common_bof_mapping = {interest_application_supervisor.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("effective")}  # noqa: E501
+    common_bof_mapping = {
+        interest_application_supervisor.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+            "effective"
+        )
+    }  # noqa: E501
 
     def test_repay_accrued_interest_with_0_amount(self):
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=sentinel.vault, repayment_amount=Decimal("0")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=sentinel.vault, repayment_amount=Decimal("0")
+            ),
             [],
         )
 
     def test_repay_accrued_interest_with_negative_amount(self):
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=sentinel.vault, repayment_amount=Decimal("-1")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=sentinel.vault, repayment_amount=Decimal("-1")
+            ),
             [],
         )
 
@@ -311,7 +341,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_emi_interest_to_apply.return_value = (0, 0)
 
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=mock_vault, repayment_amount=Decimal("10")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=mock_vault, repayment_amount=Decimal("10")
+            ),
             [],
         )
 
@@ -334,7 +366,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_accrual_application_postings.side_effect = [[sentinel.non_emi_posting]]
 
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=mock_vault, repayment_amount=Decimal("1.01")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=mock_vault, repayment_amount=Decimal("1.01")
+            ),
             [sentinel.non_emi_posting],
         )
 
@@ -350,7 +384,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             denomination=sentinel.denomination,
             application_amount=Decimal("1.01"),
             accrual_amount=Decimal("1.01234"),
-            accrual_customer_address=(interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE),
+            accrual_customer_address=(
+                interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+            ),
             accrual_internal_account=sentinel.receivable,
             application_customer_address=DEFAULT_ADDRESS,
             application_internal_account=sentinel.received,
@@ -376,7 +412,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_accrual_application_postings.side_effect = [[sentinel.non_emi_posting]]
 
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=mock_vault, repayment_amount=Decimal("100")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=mock_vault, repayment_amount=Decimal("100")
+            ),
             [sentinel.non_emi_posting],
         )
 
@@ -396,7 +434,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             denomination=sentinel.denomination,
             application_amount=Decimal("1.01"),
             accrual_amount=Decimal("1.01234"),
-            accrual_customer_address=(interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE),
+            accrual_customer_address=(
+                interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+            ),
             accrual_internal_account=sentinel.receivable,
             application_customer_address=DEFAULT_ADDRESS,
             application_internal_account=sentinel.received,
@@ -422,7 +462,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_accrual_application_postings.side_effect = [[sentinel.non_emi_posting]]
 
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=mock_vault, repayment_amount=Decimal("1.01")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=mock_vault, repayment_amount=Decimal("1.01")
+            ),
             [sentinel.non_emi_posting],
         )
 
@@ -438,7 +480,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             denomination=sentinel.denomination,
             application_amount=Decimal("1.01"),
             accrual_amount=Decimal("1.01"),
-            accrual_customer_address=(interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE),
+            accrual_customer_address=(
+                interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+            ),
             accrual_internal_account=sentinel.receivable,
             application_customer_address=DEFAULT_ADDRESS,
             application_internal_account=sentinel.received,
@@ -467,7 +511,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         ]
 
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=mock_vault, repayment_amount=Decimal("5.02")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=mock_vault, repayment_amount=Decimal("5.02")
+            ),
             [sentinel.non_emi_posting, sentinel.emi_posting],
         )
 
@@ -487,7 +533,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             denomination=sentinel.denomination,
             application_amount=Decimal("2.01"),
             accrual_amount=Decimal("2.01234"),
-            accrual_customer_address=(interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE),
+            accrual_customer_address=(
+                interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+            ),
             accrual_internal_account=sentinel.receivable,
             application_customer_address=DEFAULT_ADDRESS,
             application_internal_account=sentinel.received,
@@ -505,7 +553,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             payable=False,
         )
 
-        mock_accrual_application_postings.assert_has_calls([non_emi_application_call, emi_application_call])
+        mock_accrual_application_postings.assert_has_calls(
+            [non_emi_application_call, emi_application_call]
+        )
 
     @patch.object(interest_application_supervisor.accruals, "accrual_application_postings")
     @patch.object(interest_application_supervisor.utils, "get_parameter")
@@ -529,7 +579,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         ]
 
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=mock_vault, repayment_amount=Decimal("4.5")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=mock_vault, repayment_amount=Decimal("4.5")
+            ),
             [sentinel.non_emi_posting, sentinel.emi_posting],
         )
 
@@ -550,7 +602,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             denomination=sentinel.denomination,
             application_amount=Decimal("2.01"),
             accrual_amount=Decimal("2.01234"),
-            accrual_customer_address=(interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE),
+            accrual_customer_address=(
+                interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+            ),
             accrual_internal_account=sentinel.receivable,
             application_customer_address=DEFAULT_ADDRESS,
             application_internal_account=sentinel.received,
@@ -568,7 +622,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             payable=False,
         )
 
-        mock_accrual_application_postings.assert_has_calls([non_emi_application_call, emi_application_call])
+        mock_accrual_application_postings.assert_has_calls(
+            [non_emi_application_call, emi_application_call]
+        )
 
     @patch.object(interest_application_supervisor.accruals, "accrual_application_postings")
     @patch.object(interest_application_supervisor.utils, "get_parameter")
@@ -592,7 +648,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         ]
 
         self.assertListEqual(
-            interest_application_supervisor.repay_accrued_interest(vault=mock_vault, repayment_amount=Decimal("100")),
+            interest_application_supervisor.repay_accrued_interest(
+                vault=mock_vault, repayment_amount=Decimal("100")
+            ),
             [sentinel.non_emi_posting, sentinel.emi_posting],
         )
 
@@ -613,7 +671,9 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             denomination=sentinel.denomination,
             application_amount=Decimal("2.01"),
             accrual_amount=Decimal("2.01234"),
-            accrual_customer_address=(interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE),
+            accrual_customer_address=(
+                interest_application_supervisor.NON_EMI_ACCRUED_INTEREST_RECEIVABLE
+            ),
             accrual_internal_account=sentinel.receivable,
             application_customer_address=DEFAULT_ADDRESS,
             application_internal_account=sentinel.received,
@@ -631,4 +691,6 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
             payable=False,
         )
 
-        mock_accrual_application_postings.assert_has_calls([non_emi_application_call, emi_application_call])
+        mock_accrual_application_postings.assert_has_calls(
+            [non_emi_application_call, emi_application_call]
+        )

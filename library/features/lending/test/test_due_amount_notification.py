@@ -36,7 +36,9 @@ class ScheduleLogicTest(DueNotificationAmountTest):
         # expected values
         product_name = "PRODUCT_A"
         # construct expected result
-        expected_notification_type = f"{product_name}{due_amount_notification.REPAYMENT_NOTIFICATION_SUFFIX}"
+        expected_notification_type = (
+            f"{product_name}{due_amount_notification.REPAYMENT_NOTIFICATION_SUFFIX}"
+        )
         # run function
         notification_type = due_amount_notification.notification_type(product_name=product_name)
         # validate results
@@ -309,25 +311,35 @@ class ScheduleLogicTest(DueNotificationAmountTest):
         # due_amount_notification_datetime + relative delta + notification period +
         # hour minute second doesn't come from the parameters so will remain
         # with the original value.
-        next_due_amount_notification_datetime = datetime(2021, 3, 7, 3, 4, 5, tzinfo=ZoneInfo("UTC"))
+        next_due_amount_notification_datetime = datetime(
+            2021, 3, 7, 3, 4, 5, tzinfo=ZoneInfo("UTC")
+        )
 
         # construct mocks
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=param_return_vals)
-        mock_get_next_due_amount_notification_schedule.return_value = next_due_amount_notification_datetime
+        mock_get_next_due_amount_notification_schedule.return_value = (
+            next_due_amount_notification_datetime
+        )
         mock_vault = self.create_mock()
 
         # run function
-        next_due_amount_notification_datetime = due_amount_notification.get_next_due_amount_notification_datetime(
-            vault=mock_vault,
-            current_due_amount_notification_datetime=due_amount_notification_datetime,
-            repayment_frequency_delta=repayment_frequency_delta,
+        next_due_amount_notification_datetime = (
+            due_amount_notification.get_next_due_amount_notification_datetime(
+                vault=mock_vault,
+                current_due_amount_notification_datetime=due_amount_notification_datetime,
+                repayment_frequency_delta=repayment_frequency_delta,
+            )
         )
 
         # validate results
-        self.assertEqual(next_due_amount_notification_datetime, next_due_amount_notification_datetime)
+        self.assertEqual(
+            next_due_amount_notification_datetime, next_due_amount_notification_datetime
+        )
         mock_get_next_due_amount_notification_schedule.assert_called_once_with(
             vault=mock_vault,
-            next_due_amount_calc_datetime=due_amount_notification_datetime + repayment_frequency_delta + relativedelta(days=int(notification_period)),
+            next_due_amount_calc_datetime=due_amount_notification_datetime
+            + repayment_frequency_delta
+            + relativedelta(days=int(notification_period)),
         )
 
 
@@ -345,7 +357,9 @@ class ScheduleEventsTest(DueNotificationAmountTest):
             [
                 SmartContractEventType(
                     name=due_amount_notification.NOTIFY_DUE_AMOUNT_EVENT,
-                    scheduler_tag_ids=[f"{product_name}_{due_amount_notification.NOTIFY_DUE_AMOUNT_EVENT}_AST"],
+                    scheduler_tag_ids=[
+                        f"{product_name}_{due_amount_notification.NOTIFY_DUE_AMOUNT_EVENT}_AST"
+                    ],
                 )
             ],
         )
@@ -364,7 +378,9 @@ class ScheduleEventsTest(DueNotificationAmountTest):
         due_amount_notification_datetime = datetime(2020, 2, 3, 3, 4, 5, tzinfo=ZoneInfo("UTC"))
 
         # construct expected result
-        expected_schedule_expression = SentinelScheduleExpression(due_amount_notification.NOTIFY_DUE_AMOUNT_EVENT)
+        expected_schedule_expression = SentinelScheduleExpression(
+            due_amount_notification.NOTIFY_DUE_AMOUNT_EVENT
+        )
         expected = {
             due_amount_notification.NOTIFY_DUE_AMOUNT_EVENT: ScheduledEvent(
                 start_datetime=due_amount_notification_datetime - relativedelta(seconds=1),
@@ -373,23 +389,31 @@ class ScheduleEventsTest(DueNotificationAmountTest):
         }
 
         # construct mocks
-        mock_get_next_due_amount_notification_schedule.return_value = due_amount_notification_datetime
+        mock_get_next_due_amount_notification_schedule.return_value = (
+            due_amount_notification_datetime
+        )
         mock_one_off_schedule_expression.return_value = expected_schedule_expression
         mock_vault = self.create_mock()
 
         # run function
-        scheduled_events = due_amount_notification.scheduled_events(vault=mock_vault, next_due_amount_calc_datetime=due_amount_datetime)
+        scheduled_events = due_amount_notification.scheduled_events(
+            vault=mock_vault, next_due_amount_calc_datetime=due_amount_datetime
+        )
 
         # validate results
         self.assertDictEqual(
             scheduled_events,
             expected,
         )
-        mock_get_next_due_amount_notification_schedule.assert_called_once_with(vault=mock_vault, next_due_amount_calc_datetime=due_amount_datetime)
+        mock_get_next_due_amount_notification_schedule.assert_called_once_with(
+            vault=mock_vault, next_due_amount_calc_datetime=due_amount_datetime
+        )
 
     @patch.object(due_amount_notification.utils, "get_schedule_time_from_parameters")
     @patch.object(due_amount_notification.utils, "get_parameter")
-    def test_get_next_due_amount_notification_schedule(self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock):
+    def test_get_next_due_amount_notification_schedule(
+        self, mock_get_parameter: MagicMock, mock_get_schedule_time_from_parameters: MagicMock
+    ):
         # expected values
         notification_period = "2"
         # due_amount_datetime = start datetime + PARAM_REPAYMENT_FREQUENCY
@@ -407,13 +431,21 @@ class ScheduleEventsTest(DueNotificationAmountTest):
         # expected_due_amount_notification_datetime =
         # due_amount_datetime - PARAM_NOTIFICATION_PERIOD
         # hour minute second comes from parameters
-        expected_due_amount_notification_datetime = datetime(2020, 2, 2, 0, 0, 0, tzinfo=ZoneInfo("UTC"))
+        expected_due_amount_notification_datetime = datetime(
+            2020, 2, 2, 0, 0, 0, tzinfo=ZoneInfo("UTC")
+        )
 
         # run function
-        next_due_amount_notification_datetime = due_amount_notification.get_next_due_amount_notification_schedule(vault=mock_vault, next_due_amount_calc_datetime=due_amount_datetime)
+        next_due_amount_notification_datetime = (
+            due_amount_notification.get_next_due_amount_notification_schedule(
+                vault=mock_vault, next_due_amount_calc_datetime=due_amount_datetime
+            )
+        )
 
         # validate results
-        self.assertEqual(next_due_amount_notification_datetime, expected_due_amount_notification_datetime)
+        self.assertEqual(
+            next_due_amount_notification_datetime, expected_due_amount_notification_datetime
+        )
 
 
 @patch.object(due_amount_notification.utils, "get_parameter")
@@ -422,7 +454,9 @@ class GetParametersTest(DueNotificationAmountTest):
         notification_period_parameter = 100
 
         mock_get_parameter.side_effect = mock_utils_get_parameter(
-            parameters={due_amount_notification.PARAM_NOTIFICATION_PERIOD: notification_period_parameter},
+            parameters={
+                due_amount_notification.PARAM_NOTIFICATION_PERIOD: notification_period_parameter
+            },
         )
 
         result = due_amount_notification.get_notification_period_parameter(vault=sentinel.vault)

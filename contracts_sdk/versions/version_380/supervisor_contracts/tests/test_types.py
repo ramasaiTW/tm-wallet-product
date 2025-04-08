@@ -34,7 +34,10 @@ class PublicSupervisorContractsV380TypesTestCase(
             )
 
         self.assertIn(
-            ("UpdatePlanEventTypeDirective object has to have either an end_datetime or a " "schedule defined"),
+            (
+                "UpdatePlanEventTypeDirective object has to have either an end_datetime or a "
+                "schedule defined"
+            ),
             str(ex.exception),
         )
 

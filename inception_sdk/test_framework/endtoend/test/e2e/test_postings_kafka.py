@@ -14,7 +14,8 @@ logging.basicConfig(
 
 endtoend.testhandle.CONTRACTS = {
     "test_contract": {
-        "path": "inception_sdk/test_framework/endtoend/test/e2e/input/template/" "contract_template.py",
+        "path": "inception_sdk/test_framework/endtoend/test/e2e/input/template/"
+        "contract_template.py",
         "template_params": {},
     },
 }
@@ -37,7 +38,9 @@ class TestPostingsKafka(endtoend.End2Endtest):
 
         # This will always trigger an error as it violates Postings API validation
         with self.assertRaises(Exception) as ctx:
-            endtoend.postings_helper.inbound_auth(amount="-1", account_id=account["id"], denomination="GBP")
+            endtoend.postings_helper.inbound_auth(
+                amount="-1", account_id=account["id"], denomination="GBP"
+            )
         self.assertRegex(
             ctx.exception.args[0],
             r"Posting request_id='[\d\-\w]+' resulted in error={'type': "
@@ -49,6 +52,8 @@ class TestPostingsKafka(endtoend.End2Endtest):
         pib = endtoend.postings_helper.get_posting_batch(pib_id=pib_id)
         self.assertEqual(pib["status"], "POSTING_INSTRUCTION_BATCH_STATUS_ACCEPTED")
 
-        pib_id = endtoend.postings_helper.settlement(amount="1", client_transaction_id="non-existent-cti")
+        pib_id = endtoend.postings_helper.settlement(
+            amount="1", client_transaction_id="non-existent-cti"
+        )
         pib = endtoend.postings_helper.get_posting_batch(pib_id=pib_id)
         self.assertEqual(pib["status"], "POSTING_INSTRUCTION_BATCH_STATUS_REJECTED")

@@ -102,7 +102,9 @@ def is_instance_stuck(
         # parent instance only considered stuck if the child is also stuck
         log.info("checking children")
         try:
-            child_workflow_id = get_child_workflow_id(instance_id, latest_state["state_name"], wait_for_parent_state=False)
+            child_workflow_id = get_child_workflow_id(
+                instance_id, latest_state["state_name"], wait_for_parent_state=False
+            )
             return is_instance_stuck(child_workflow_id)
         except ChildWorkflowError:
             # No child workflow can be found, so parent is genuinely stuck
@@ -143,9 +145,17 @@ def wait_for_state(
         if latest_state["state_name"] == state_name and latest_state["id"] != starting_state_id:
             return latest_state
         elif is_instance_stuck(wf_id, transition_timeout, latest_state):
-            raise WorkflowStuckError(f"{datetime.utcnow()} - " f'Workflow {wf_id} stuck in state {latest_state["state_name"]}' f' since {latest_state["timestamp"]}. Started checks at {start_time}')
+            raise WorkflowStuckError(
+                f"{datetime.utcnow()} - "
+                f'Workflow {wf_id} stuck in state {latest_state["state_name"]}'
+                f' since {latest_state["timestamp"]}. Started checks at {start_time}'
+            )
         sleep(0.5)
-    raise WorkflowStuckError(f"{datetime.utcnow()} - " f"Workflow {wf_id} failed to reach state {state_name} after" f" overall timeout of {overall_timeout} seconds")
+    raise WorkflowStuckError(
+        f"{datetime.utcnow()} - "
+        f"Workflow {wf_id} failed to reach state {state_name} after"
+        f" overall timeout of {overall_timeout} seconds"
+    )
 
 
 def get_current_workflow_state(instance_id) -> dict[str, Any]:
@@ -199,13 +209,17 @@ def get_child_workflow_id(
 
     if wait_for_parent_state:
         wait_for_state(parent_instance_id, parent_state_name)
-    parent_instance = workflows_api.batch_get_workflow_instances([parent_instance_id])[parent_instance_id]
+    parent_instance = workflows_api.batch_get_workflow_instances([parent_instance_id])[
+        parent_instance_id
+    ]
 
     # TODO: because we're likely to call this method a lot, consider caching the results
     wf_definition_id = parent_instance["workflow_definition_id"]
     wf_definition_version_id = parent_instance["workflow_definition_version_id"]
     wf_version = workflows_api.get_workflow_definition_version(wf_definition_version_id)
-    parent_state_definition = next(iter([state for state in wf_version["states"] if state["name"] == parent_state_name]))
+    parent_state_definition = next(
+        iter([state for state in wf_version["states"] if state["name"] == parent_state_name])
+    )
     if not parent_state_definition["spawns_children"]:
         raise ChildWorkflowError(
             f"{datetime.utcnow()} - "
@@ -214,7 +228,9 @@ def get_child_workflow_id(
         )
 
     # we may need to expand this if a workflow can loop and trigger the same workflow multiple times
-    child_workflow_definition_version_ids = parent_state_definition["child_workflow_definition_version_ids"]
+    child_workflow_definition_version_ids = parent_state_definition[
+        "child_workflow_definition_version_ids"
+    ]
     child_workflow = endtoend.helper.retry_call(
         func=workflows_api.get_workflow_instances,
         f_kwargs=dict(
@@ -224,15 +240,31 @@ def get_child_workflow_id(
         expected_result=True,
         result_wrapper=lambda all_child_workflows: (
             len(all_child_workflows) > 0
-            and (not existing_instantiated_child_workflows or any(child_workflow["id"] not in existing_instantiated_child_workflows for child_workflow in all_child_workflows))
+            and (
+                not existing_instantiated_child_workflows
+                or any(
+                    child_workflow["id"] not in existing_instantiated_child_workflows
+                    for child_workflow in all_child_workflows
+                )
+            )
         ),
-        failure_message=f"Could not get child workflow id for parent workflow id" f" {parent_instance_id} and definition version id" f" {child_workflow_definition_version_ids[0]}",
+        failure_message=f"Could not get child workflow id for parent workflow id"
+        f" {parent_instance_id} and definition version id"
+        f" {child_workflow_definition_version_ids[0]}",
     )
     try:
         if existing_instantiated_child_workflows:
-            return [workflow["id"] for workflow in child_workflow if workflow["id"] not in existing_instantiated_child_workflows][0]
+            return [
+                workflow["id"]
+                for workflow in child_workflow
+                if workflow["id"] not in existing_instantiated_child_workflows
+            ][0]
     except IndexError:
-        raise WorkflowError(f"Could not get child workflow id for parent workflow id" f" {parent_instance_id} and definition version id" f" {child_workflow_definition_version_ids[0]}")
+        raise WorkflowError(
+            f"Could not get child workflow id for parent workflow id"
+            f" {parent_instance_id} and definition version id"
+            f" {child_workflow_definition_version_ids[0]}"
+        )
 
     return child_workflow[0]["id"]
 
@@ -332,7 +364,8 @@ def wait_for_ticket_creation(
         expected_result=expected_number_of_tickets,
         max_retries=max_retries,
         result_wrapper=lambda x: len(x),
-        failure_message=f"Could not find expected number of tickets for workflow ID " f"{workflow_instance_id}",
+        failure_message=f"Could not find expected number of tickets for workflow ID "
+        f"{workflow_instance_id}",
     )
 
     return tickets
@@ -340,7 +373,9 @@ def wait_for_ticket_creation(
 
 def start_workflow(wf_name, wf_version=None, context: dict[str, str] | None = None, force_id=False):
     if not hasattr(endtoend.testhandle, "workflow_definition_id_mapping") and not force_id:
-        raise WorkflowError(f"{datetime.utcnow()} - Workflow started but no workflows specified in test file")
+        raise WorkflowError(
+            f"{datetime.utcnow()} - Workflow started but no workflows specified in test file"
+        )
     request_id = uuid.uuid4().hex
 
     if force_id:
@@ -410,13 +445,19 @@ def check_workflow_version(wf_definition_id: str, wf_abs_path: str):
 
     # If this workflow is loaded on the instance and at the same version,
     # check the content is the same
-    wf_definition_version = workflows_api.get_workflow_definition_version(file_version + "," + wf_definition_id)
+    wf_definition_version = workflows_api.get_workflow_definition_version(
+        file_version + "," + wf_definition_id
+    )
     if not wf_definition_version:
         log.warning(f"{wf_definition_id} {file_version} not present on env or network error")
     else:
         from_instance = wf_definition_version["specification"]
         if from_instance != wf_yaml:
-            raise WorkflowError(f"{datetime.utcnow()} -" f" Instance has different content for {wf_definition_id} {file_version}:" f" Version increment may be required")
+            raise WorkflowError(
+                f"{datetime.utcnow()} -"
+                f" Instance has different content for {wf_definition_id} {file_version}:"
+                f" Version increment may be required"
+            )
         else:
             log.info(f"{wf_definition_id} {file_version} matches on instance")
 
@@ -431,7 +472,10 @@ def create_workflow_definition_id_mapping():
     if not hasattr(endtoend.testhandle, "WORKFLOWS"):
         return
 
-    workflow_definition_id_mapping = {workflow_definition_id: generate_unique_workflow_definition_id(workflow_definition_id) for workflow_definition_id in endtoend.testhandle.WORKFLOWS}
+    workflow_definition_id_mapping = {
+        workflow_definition_id: generate_unique_workflow_definition_id(workflow_definition_id)
+        for workflow_definition_id in endtoend.testhandle.WORKFLOWS
+    }
 
     endtoend.testhandle.workflow_definition_id_mapping = workflow_definition_id_mapping
 
@@ -501,11 +545,15 @@ def update_and_upload_workflow(
         parsed_definition["instance_title"] = "e2e " + parsed_definition["instance_title"]
 
     # Any hardcoded ids must be replaced with the unique e2e ids
-    parsed_definition = replace_child_workflow_definition_ids(parsed_definition, workflow_definition_id_mapping)
+    parsed_definition = replace_child_workflow_definition_ids(
+        parsed_definition, workflow_definition_id_mapping
+    )
 
     parsed_definition = replace_product_ids(parsed_definition, contract_pid_to_uploaded_pid)
 
-    parsed_definition = replace_internal_account_ids(parsed_definition, internal_account_id_to_uploaded_id)
+    parsed_definition = replace_internal_account_ids(
+        parsed_definition, internal_account_id_to_uploaded_id
+    )
 
     serialised_data = yaml.dump(parsed_definition)
     log.info("Uploading workflow %s", mapped_workflow_definition_id)
@@ -536,7 +584,14 @@ def replace_clu_syntax_resource_in_workflows(
         resource_ids_str = str(match_groupdict["ids"])
         resource_ids = resource_ids_str.split(",")
 
-        resource_ids = [resource.replace(" ", "").replace('"', "").replace("&", "").replace("{", "").replace("}", "") for resource in resource_ids]
+        resource_ids = [
+            resource.replace(" ", "")
+            .replace('"', "")
+            .replace("&", "")
+            .replace("{", "")
+            .replace("}", "")
+            for resource in resource_ids
+        ]
 
         prefix = str(match_groupdict.get("prefix", ""))
         suffix = str(match_groupdict.get("suffix", ""))
@@ -549,7 +604,10 @@ def replace_clu_syntax_resource_in_workflows(
                 resource_key = resource_id
             mapped_tag_id = id_mapping.get(resource_key)
             if not mapped_tag_id:
-                log.info(f"Did not find mapped resource id for {resource_id}." f" Using original id (CLU syntax will be removed).")
+                log.info(
+                    f"Did not find mapped resource id for {resource_id}."
+                    f" Using original id (CLU syntax will be removed)."
+                )
                 mapped_resource_ids.append(prefix + resource_id + suffix)
             else:
                 mapped_resource_ids.append(mapped_tag_id)
@@ -590,11 +648,15 @@ def replace_internal_account_ids(
         #            be used for internal account id replacement 'parse("$..internal_account.id")'
         internal_account_id_expr: JSONPath = parse("$..internal_account_id.`parent`")
 
-        internal_accounts = [match.value for match in internal_account_id_expr.find(parsed_definition)]
+        internal_accounts = [
+            match.value for match in internal_account_id_expr.find(parsed_definition)
+        ]
 
         for internal_account in internal_accounts:
             if internal_account["internal_account_id"] in internal_account_id_to_uploaded_id:
-                internal_account["internal_account_id"] = internal_account_id_to_uploaded_id[internal_account["internal_account_id"]]
+                internal_account["internal_account_id"] = internal_account_id_to_uploaded_id[
+                    internal_account["internal_account_id"]
+                ]
             else:
                 raise WorkflowError(
                     f"Could not update workflow with E2E internal account id. Internal account "
@@ -606,7 +668,9 @@ def replace_internal_account_ids(
     return parsed_definition
 
 
-def replace_product_ids(parsed_definition: WorkflowDefinition, contract_pid_to_uploaded_pid: dict[str, str]) -> WorkflowDefinition:
+def replace_product_ids(
+    parsed_definition: WorkflowDefinition, contract_pid_to_uploaded_pid: dict[str, str]
+) -> WorkflowDefinition:
     # Modify workflow to use uploaded contract
     if contract_pid_to_uploaded_pid:
         product_id_expr: JSONPath = parse("$..product_id.`parent`")
@@ -650,7 +714,8 @@ def wait_for_smart_contract_initiated_workflows(
         result_wrapper=lambda x: len(x) > 0,
         back_off=1.5,
         max_retries=10,
-        failure_message=f"Could not find workflow for account id `{account_id}` and definition " f"`{workflow_definition_id}`",
+        failure_message=f"Could not find workflow for account id `{account_id}` and definition "
+        f"`{workflow_definition_id}`",
     )
 
 
@@ -675,11 +740,15 @@ def get_smart_contract_initiated_workflow_ids(
         workflows_api.WorkflowInstanceStatus.WORKFLOW_INSTANCE_STATUS_CLOSED,
     ]
 
-    workflow_instances = workflows_api.get_workflow_instances(workflow_definition_id=workflow_definition_id, include_statuses=include_statuses)
+    workflow_instances = workflows_api.get_workflow_instances(
+        workflow_definition_id=workflow_definition_id, include_statuses=include_statuses
+    )
 
     smart_contract_initiated_workflow_ids = []
     for workflow_instance in workflow_instances:
-        wf_instantiation_context = workflows_api.get_workflow_instantiation_context(workflow_instance["id"])
+        wf_instantiation_context = workflows_api.get_workflow_instantiation_context(
+            workflow_instance["id"]
+        )
 
         if wf_instantiation_context.get("account_id") == account_id:
             smart_contract_initiated_workflow_ids.append(

@@ -15,7 +15,10 @@ from ....utils import symbols
 class UpdatePlanEventTypeDirective:
     def __init__(self, *, plan_id, event_type, schedule=None, end_datetime=None, _from_proto=False):
         if not schedule and not end_datetime:
-            raise InvalidSmartContractError("UpdatePlanEventTypeDirective object has to have either an end_datetime or a " "schedule defined")
+            raise InvalidSmartContractError(
+                "UpdatePlanEventTypeDirective object has to have either an end_datetime or a "
+                "schedule defined"
+            )
 
         if not _from_proto:
             self._spec().assert_constructor_args(
@@ -43,7 +46,11 @@ class UpdatePlanEventTypeDirective:
             docstring="Specifies a directive to update an event type.",
             public_attributes=cls._public_attributes(language_code),
             constructor=types_utils.ConstructorSpec(
-                docstring=("A [HookDirective](#classes-HookDirectives) that instructs " "updating a Plan Event Type. " "**Only available in version 3.8.0+**"),
+                docstring=(
+                    "A [HookDirective](#classes-HookDirectives) that instructs "
+                    "updating a Plan Event Type. "
+                    "**Only available in version 3.8.0+**"
+                ),
                 args=cls._public_attributes(language_code),
             ),
         )
@@ -59,7 +66,9 @@ class UpdatePlanEventTypeDirective:
                 type="str",
                 docstring="The Plan ID of the `event_type` that will be modified.",
             ),
-            types_utils.ValueSpec(name="event_type", type="str", docstring="The `event_type` that is to be modified."),
+            types_utils.ValueSpec(
+                name="event_type", type="str", docstring="The `event_type` that is to be modified."
+            ),
             types_utils.ValueSpec(
                 name="schedule",
                 type="Optional[EventTypeSchedule]",

@@ -65,14 +65,18 @@ parameters = [
 
 @requires(event_type="ACCRUE_INTEREST", parameters=True)
 @fetch_account_data(event_type="ACCRUE_INTEREST", balances=["daily_spend_balances"])
-def scheduled_event_hook(vault: SmartContractVault, hook_arguments: ScheduledEventHookArguments) -> ScheduledEventHookResult | None:
+def scheduled_event_hook(
+    vault: SmartContractVault, hook_arguments: ScheduledEventHookArguments
+) -> ScheduledEventHookResult | None:
     now = datetime.now()
     utcnow = datetime.utcnow()
 
 
 @requires(parameters=True, flags=True)
 @fetch_account_data(balances=["latest_live_balances"])
-def pre_posting_hook(vault: SmartContractVault, hook_arguments: PrePostingHookArguments) -> PrePostingHookResult | None:
+def pre_posting_hook(
+    vault: SmartContractVault, hook_arguments: PrePostingHookArguments
+) -> PrePostingHookResult | None:
     now = datetime.now()
     utcnow = datetime.utcnow()
 
@@ -130,17 +134,23 @@ def _helper_function(*, vault) -> bool:
 
 
 @requires(parameters=True, balances="latest")
-def pre_parameter_change_hook(vault: SmartContractVault, hook_arguments: PreParameterChangeHookArguments) -> PreParameterChangeHookResult | None:
+def pre_parameter_change_hook(
+    vault: SmartContractVault, hook_arguments: PreParameterChangeHookArguments
+) -> PreParameterChangeHookResult | None:
     pass
 
 
 @requires(parameters=True, balances="latest")
-def conversion_hook(vault: SmartContractVault, hook_arguments: ConversionHookArguments) -> ConversionHookResult | None:
+def conversion_hook(
+    vault: SmartContractVault, hook_arguments: ConversionHookArguments
+) -> ConversionHookResult | None:
     return
 
 
 @requires(parameters=True, balances="latest")
-def activation_hook(vault: SmartContractVault, hook_arguments: ActivationHookArguments) -> ActivationHookResult | None:
+def activation_hook(
+    vault: SmartContractVault, hook_arguments: ActivationHookArguments
+) -> ActivationHookResult | None:
     return ActivationHookResult()
 
 

@@ -36,7 +36,8 @@ parameters = [
     Parameter(
         name=PARAM_DEPOSIT_THRESHOLD_BY_TIER,
         level=ParameterLevel.TEMPLATE,
-        description="The deposit threshold by account tier." "This is used as the minimum deposit amount for the WAIVE_FEE_CONDITION.",
+        description="The deposit threshold by account tier."
+        "This is used as the minimum deposit amount for the WAIVE_FEE_CONDITION.",
         display_name="Deposit Threshold By Tier",
         shape=StringShape(),
         default_value=dumps(
@@ -53,7 +54,9 @@ parameters = [
 DIRECT_DEPOSIT_EOD_FETCHER_ID = "EOD_FETCHER"
 DIRECT_DEPOSIT_EOD_FETCHER = BalancesObservationFetcher(
     fetcher_id=DIRECT_DEPOSIT_EOD_FETCHER_ID,
-    at=RelativeDateTime(origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)),
+    at=RelativeDateTime(
+        origin=DefinedDateTime.EFFECTIVE_DATETIME, find=Override(hour=0, minute=0, second=0)
+    ),
     filter=BalancesFilter(addresses=[DIRECT_DEPOSIT_TRACKING_ADDRESS]),
 )
 
@@ -88,7 +91,9 @@ def generate_tracking_instructions(
             values=[DIRECT_DEPOSIT],
         ):
             posting_balances = posting_instruction.balances()
-            deposit_value = utils.balance_at_coordinates(balances=posting_balances, denomination=denomination)
+            deposit_value = utils.balance_at_coordinates(
+                balances=posting_balances, denomination=denomination
+            )
             total_deposit_amount += deposit_value
 
     if total_deposit_amount > Decimal("0"):
@@ -103,7 +108,8 @@ def generate_tracking_instructions(
                     denomination=denomination,
                 ),
                 instruction_details=utils.standard_instruction_details(
-                    description=f"Updating tracking balance with amount " f"{total_deposit_amount} {denomination}.",
+                    description=f"Updating tracking balance with amount "
+                    f"{total_deposit_amount} {denomination}.",
                     event_type="GENERATE_DEPOSIT_TRACKING_INSTRUCTIONS",
                 ),
             )
@@ -199,4 +205,6 @@ def get_deposit_threshold_tiers_parameter(vault: SmartContractVault) -> dict[str
     return utils.get_parameter(vault, name=PARAM_DEPOSIT_THRESHOLD_BY_TIER, is_json=True)
 
 
-WAIVE_FEE_AFTER_SUFFICIENT_DEPOSITS = deposit_interfaces.WaiveFeeCondition(waive_fees=_is_deposit_tracking_address_above_threshold)
+WAIVE_FEE_AFTER_SUFFICIENT_DEPOSITS = deposit_interfaces.WaiveFeeCondition(
+    waive_fees=_is_deposit_tracking_address_above_threshold
+)

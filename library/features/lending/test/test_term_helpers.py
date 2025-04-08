@@ -23,7 +23,9 @@ class TermHelpersCommon(FeatureTest):
 
 class CalculateElapsedTermTest(TermHelpersCommon):
     @patch.object(term_helpers.utils, "balance_at_coordinates")
-    def test_elapsed_term_extracted_from_tracker_balance(self, mock_balance_at_coordinates: MagicMock):
+    def test_elapsed_term_extracted_from_tracker_balance(
+        self, mock_balance_at_coordinates: MagicMock
+    ):
         mock_balance_at_coordinates.return_value = Decimal(10)
 
         self.assertEqual(
@@ -44,8 +46,14 @@ class CalculateElapsedTermTest(TermHelpersCommon):
 class CalculateTermDetailsFromCounter(TermHelpersCommon):
     @patch.object(term_helpers.utils, "balance_at_coordinates")
     @patch.object(term_helpers.utils, "get_parameter")
-    def test_elapsed_term_extracted_from_tracker_balance(self, mock_get_parameter, mock_balance_at_coordinates: MagicMock):
-        mock_balance_observation_fetcher_mapping = {term_helpers.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("dummy_observation")}
+    def test_elapsed_term_extracted_from_tracker_balance(
+        self, mock_get_parameter, mock_balance_at_coordinates: MagicMock
+    ):
+        mock_balance_observation_fetcher_mapping = {
+            term_helpers.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                "dummy_observation"
+            )
+        }
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping=mock_balance_observation_fetcher_mapping,
         )
@@ -72,7 +80,9 @@ class CalculateTermDetailsFromCounter(TermHelpersCommon):
 
     @patch.object(term_helpers.utils, "balance_at_coordinates")
     @patch.object(term_helpers.utils, "get_parameter")
-    def test_elapsed_term_extracted_from_tracker_balance_all_args_provided(self, mock_get_parameter, mock_balance_at_coordinates: MagicMock):
+    def test_elapsed_term_extracted_from_tracker_balance_all_args_provided(
+        self, mock_get_parameter, mock_balance_at_coordinates: MagicMock
+    ):
         mock_vault = self.create_mock()
         mock_balance_at_coordinates.return_value = Decimal(10)
         mock_get_parameter.side_effect = mock_utils_get_parameter(
@@ -98,8 +108,14 @@ class CalculateTermDetailsFromCounter(TermHelpersCommon):
 
     @patch.object(term_helpers.utils, "balance_at_coordinates")
     @patch.object(term_helpers.utils, "get_parameter")
-    def test_elapsed_term_extracted_from_tracker_balance_same_datetime_as_account_creation(self, mock_get_parameter, mock_balance_at_coordinates: MagicMock):
-        mock_balance_observation_fetcher_mapping = {term_helpers.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation("dummy_observation")}
+    def test_elapsed_term_extracted_from_tracker_balance_same_datetime_as_account_creation(
+        self, mock_get_parameter, mock_balance_at_coordinates: MagicMock
+    ):
+        mock_balance_observation_fetcher_mapping = {
+            term_helpers.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
+                "dummy_observation"
+            )
+        }
         mock_vault = self.create_mock(
             creation_date=sentinel.creation_date,
             balances_observation_fetchers_mapping=mock_balance_observation_fetcher_mapping,

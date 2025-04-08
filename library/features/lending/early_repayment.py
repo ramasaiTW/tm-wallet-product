@@ -42,7 +42,9 @@ early_repayment_fee_income_account_param = Parameter(
 early_repayment_flat_fee_param = Parameter(
     name=PARAM_EARLY_REPAYMENT_FLAT_FEE,
     level=ParameterLevel.TEMPLATE,
-    description="Flat fee to charge for an early repayment. " "Typically this would be used instead of Early Repayment Fee Rate, " "otherwise they will both be added together.",
+    description="Flat fee to charge for an early repayment. "
+    "Typically this would be used instead of Early Repayment Fee Rate, "
+    "otherwise they will both be added together.",
     display_name="Early Repayment Flat Fee",
     shape=NumberShape(min_value=0),
     default_value=Decimal("0"),
@@ -144,7 +146,9 @@ def get_total_early_repayment_amount(
     # and therefore any repayment posting would not be for an early repayment.
     # However, if an overpayment has resulted in zero principal, there may still be accrued interest
     # that has not yet been applied
-    if not check_for_outstanding_accrued_interest_on_zero_principal and _is_zero_principal(balances=balances, denomination=denomination):
+    if not check_for_outstanding_accrued_interest_on_zero_principal and _is_zero_principal(
+        balances=balances, denomination=denomination
+    ):
         return utils.round_decimal(Decimal("0"), precision)
 
     return _get_sum_of_early_repayment_fees_and_outstanding_debt(
@@ -266,10 +270,16 @@ def _get_denomination(vault: SmartContractVault, denomination: str | None = None
     :param denomination: denomination of the relevant loan
     :return: the denomination
     """
-    return utils.get_parameter(vault=vault, name="denomination") if denomination is None else denomination
+    return (
+        utils.get_parameter(vault=vault, name="denomination")
+        if denomination is None
+        else denomination
+    )
 
 
-def _get_balances(vault: SmartContractVault, balances: BalanceDefaultDict | None = None) -> BalanceDefaultDict:
+def _get_balances(
+    vault: SmartContractVault, balances: BalanceDefaultDict | None = None
+) -> BalanceDefaultDict:
     """
     Return the balances that are passed in or get the live balances of the account.
 
@@ -277,7 +287,11 @@ def _get_balances(vault: SmartContractVault, balances: BalanceDefaultDict | None
     :param balances: balances to base calculations on
     :return: the balances
     """
-    return vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances if balances is None else balances
+    return (
+        vault.get_balances_observation(fetcher_id=fetchers.LIVE_BALANCES_BOF_ID).balances
+        if balances is None
+        else balances
+    )
 
 
 def _get_sum_of_early_repayment_fees_and_outstanding_debt(
@@ -309,7 +323,9 @@ def _get_sum_of_early_repayment_fees_and_outstanding_debt(
             precision=precision,
         )
 
-    total_outstanding_debt = derived_params.get_total_outstanding_debt(balances=balances, denomination=denomination, debt_addresses=debt_addresses)
+    total_outstanding_debt = derived_params.get_total_outstanding_debt(
+        balances=balances, denomination=denomination, debt_addresses=debt_addresses
+    )
     return total_outstanding_debt + early_repayment_fees_sum
 
 

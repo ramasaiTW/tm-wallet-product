@@ -36,7 +36,8 @@ parameters = [
     Parameter(
         name=PARAM_DAILY_WITHDRAWAL_LIMIT_BY_TRANSACTION,
         level=ParameterLevel.INSTANCE,
-        description="The maximum amount that can be withdrawn from an account " "over the current day by transaction type.",
+        description="The maximum amount that can be withdrawn from an account "
+        "over the current day by transaction type.",
         display_name="Maximum Daily Withdrawal Amount",
         update_permission=ParameterUpdatePermission.OPS_EDITABLE,
         shape=StringShape(),
@@ -93,20 +94,33 @@ def validate(
     :return: rejection if the limit conditions are surpassed
     """
     account_tier = account_tiers.get_account_tier(vault)
-    tiered_daily_limits: dict[str, dict[str, str]] = utils.get_parameter(vault, name=PARAM_TIERED_DAILY_WITHDRAWAL_LIMIT, is_json=True)
-    daily_limit_by_transaction = utils.get_parameter(vault, name=PARAM_DAILY_WITHDRAWAL_LIMIT_BY_TRANSACTION, is_json=True)
+    tiered_daily_limits: dict[str, dict[str, str]] = utils.get_parameter(
+        vault, name=PARAM_TIERED_DAILY_WITHDRAWAL_LIMIT, is_json=True
+    )
+    daily_limit_by_transaction = utils.get_parameter(
+        vault, name=PARAM_DAILY_WITHDRAWAL_LIMIT_BY_TRANSACTION, is_json=True
+    )
 
     if denomination is None:
         denomination = utils.get_parameter(vault, name="denomination")
 
-    if (not tiered_daily_limits and not daily_limit_by_transaction) or not hook_arguments.client_transactions:
+    if (
+        not tiered_daily_limits and not daily_limit_by_transaction
+    ) or not hook_arguments.client_transactions:
         return None
 
     limit_per_transaction_type: dict[str, str] = (
-        _get_limit_per_transaction_type(tiered_daily_limits[account_tier], daily_limit_by_transaction) if account_tier in tiered_daily_limits.keys() else daily_limit_by_transaction
+        _get_limit_per_transaction_type(
+            tiered_daily_limits[account_tier], daily_limit_by_transaction
+        )
+        if account_tier in tiered_daily_limits.keys()
+        else daily_limit_by_transaction
     )
 
-    effective_date_client_transactions = effective_date_client_transactions or vault.get_client_transactions(fetcher_id=fetchers.EFFECTIVE_DATE_POSTINGS_FETCHER_ID)
+    effective_date_client_transactions = (
+        effective_date_client_transactions
+        or vault.get_client_transactions(fetcher_id=fetchers.EFFECTIVE_DATE_POSTINGS_FETCHER_ID)
+    )
 
     for transaction_type, transaction_type_limit in limit_per_transaction_type.items():
         # filter proposed client_transactions by transaction_type
@@ -134,17 +148,21 @@ def validate(
             continue
 
         # filter effective date client_transactions by transaction_type
-        filtered_effective_date_client_transactions = client_transaction_utils.filter_client_transactions(
-            client_transactions=effective_date_client_transactions,
-            client_transaction_ids_to_ignore=[""],
-            denomination=denomination,
-            key=INSTRUCTION_DETAILS_KEY,
-            value=transaction_type,
+        filtered_effective_date_client_transactions = (
+            client_transaction_utils.filter_client_transactions(
+                client_transactions=effective_date_client_transactions,
+                client_transaction_ids_to_ignore=[""],
+                denomination=denomination,
+                key=INSTRUCTION_DETAILS_KEY,
+                value=transaction_type,
+            )
         )
 
         # obtain the amount of deposits and withdrawals for the day excluding proposed
         (_, amount_withdrawn_actual) = client_transaction_utils.sum_client_transactions(
-            cutoff_datetime=(hook_arguments.effective_datetime).replace(hour=0, minute=0, second=0, microsecond=0),
+            cutoff_datetime=(hook_arguments.effective_datetime).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            ),
             client_transactions=filtered_effective_date_client_transactions,
             denomination=denomination,
         )
@@ -154,24 +172,31 @@ def validate(
 
         if final_withdrawal_daily_spend > Decimal(transaction_type_limit):
             return Rejection(
-                message=f"Transactions would cause the maximum daily {transaction_type} withdrawal " f"limit of {transaction_type_limit} {denomination} to be exceeded.",
+                message=f"Transactions would cause the maximum daily {transaction_type} withdrawal "
+                f"limit of {transaction_type_limit} {denomination} to be exceeded.",
                 reason_code=RejectionReason.AGAINST_TNC,
             )
 
     return None
 
 
-def _get_limit_per_transaction_type(tiered_limit_dict: dict[str, str], daily_limit_dict: dict[str, str]) -> dict[str, str]:
+def _get_limit_per_transaction_type(
+    tiered_limit_dict: dict[str, str], daily_limit_dict: dict[str, str]
+) -> dict[str, str]:
     limit_per_transaction_type: dict[str, str] = tiered_limit_dict
     for transaction_type, limit in daily_limit_dict.items():
         limit_per_transaction_type[transaction_type] = (
-            limit if transaction_type not in limit_per_transaction_type.keys() else str(min(Decimal(limit), Decimal(limit_per_transaction_type[transaction_type])))
+            limit
+            if transaction_type not in limit_per_transaction_type.keys()
+            else str(min(Decimal(limit), Decimal(limit_per_transaction_type[transaction_type])))
         )
 
     return limit_per_transaction_type
 
 
-def validate_parameter_change(*, vault: SmartContractVault, proposed_parameter_value: str) -> Rejection | None:
+def validate_parameter_change(
+    *, vault: SmartContractVault, proposed_parameter_value: str
+) -> Rejection | None:
     """
     Validates daily_withdrawal_limit_by_transaction_type change.
     It returns rejection if the amount per transaction type is higher than the tiered one.
@@ -182,7 +207,9 @@ def validate_parameter_change(*, vault: SmartContractVault, proposed_parameter_v
     :return: rejection if any of new limits per transaction type is higher than the tiered one
     """
     account_tier = account_tiers.get_account_tier(vault)
-    tiered_daily_limits: dict[str, dict[str, str]] = utils.get_parameter(vault, name=PARAM_TIERED_DAILY_WITHDRAWAL_LIMIT, is_json=True)
+    tiered_daily_limits: dict[str, dict[str, str]] = utils.get_parameter(
+        vault, name=PARAM_TIERED_DAILY_WITHDRAWAL_LIMIT, is_json=True
+    )
 
     if not tiered_daily_limits or account_tier not in tiered_daily_limits:
         return None

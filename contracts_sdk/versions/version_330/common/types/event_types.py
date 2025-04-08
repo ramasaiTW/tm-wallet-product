@@ -7,10 +7,14 @@ from .....utils import symbols
 
 class EventTypesGroup:
     def __init__(self, *, name, event_types_order):
-        self._spec().assert_constructor_args(self._registry, {"name": name, "event_types_order": event_types_order})
+        self._spec().assert_constructor_args(
+            self._registry, {"name": name, "event_types_order": event_types_order}
+        )
 
         if len(event_types_order) < 2:
-            raise exceptions.InvalidSmartContractError(f"An EventTypesGroup must have at least two event types")
+            raise exceptions.InvalidSmartContractError(
+                f"An EventTypesGroup must have at least two event types"
+            )
 
         self.name = name
         self.event_types_order = event_types_order

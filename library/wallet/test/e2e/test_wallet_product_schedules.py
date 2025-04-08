@@ -33,7 +33,9 @@ endtoend.testhandle.FLAG_DEFINITIONS = {"AUTO_TOP_UP_WALLET": files.AUTO_TOP_UP_
 
 
 class WalletSchedulesTest(endtoend.AcceleratedEnd2EndTest):
-    @endtoend.AcceleratedEnd2EndTest.Decorators.control_schedules({WALLET_PRODUCT: [wallet.ZERO_OUT_DAILY_SPEND_EVENT]})
+    @endtoend.AcceleratedEnd2EndTest.Decorators.control_schedules(
+        {WALLET_PRODUCT: [wallet.ZERO_OUT_DAILY_SPEND_EVENT]}
+    )
     def test_zero_out_daily_spend(self):
         endtoend.standard_setup()
         opening_date = datetime(2020, 5, 1, tzinfo=timezone.utc)
