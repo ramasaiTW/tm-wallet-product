@@ -19,6 +19,5 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: run super-linter
-        run: |
-          python3 -m flake8 .
+      - name: Run Black
+        run: black --check .
