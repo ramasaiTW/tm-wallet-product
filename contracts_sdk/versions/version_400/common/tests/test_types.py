@@ -737,12 +737,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             ]
         )
         self.assertEqual(
-            "First value", parameters.at(at_datetime=datetime(2020, 1, 10,
-                                                              tzinfo=ZoneInfo("UTC")))
+            "First value", parameters.at(at_datetime=datetime(2020, 1, 10, tzinfo=ZoneInfo("UTC")))
         )
         self.assertEqual(
-            "Second value", parameters.at(at_datetime=datetime(2020, 2, 10,
-                                                               tzinfo=ZoneInfo("UTC")))
+            "Second value", parameters.at(at_datetime=datetime(2020, 2, 10, tzinfo=ZoneInfo("UTC")))
         )
 
     def test_parameter_timeseries_raises_with_naive_datetime(self):
@@ -792,7 +790,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             parameters.at(at_datetime=datetime(2020, 1, 10, tzinfo=ZoneInfo("US/Pacific")))
         self.assertEqual(
-            "'at_datetime' of ParameterTimeseries.at() must have timezone UTC, currently US/Pacific.", # noqa: E501
+            "'at_datetime' of ParameterTimeseries.at() must have timezone UTC, currently US/Pacific.",  # noqa: E501
             str(e.exception),
         )
 
@@ -1276,8 +1274,7 @@ class PublicCommonV400TypesTestCase(TestCase):
                 (datetime(2020, 3, 25, 22, 30, tzinfo=ZoneInfo("UTC")), False),
             ]
         )
-        self.assertTrue(flags.at(at_datetime=datetime(2020, 3, 25, 13, 45,
-                                                      tzinfo=ZoneInfo("UTC"))))
+        self.assertTrue(flags.at(at_datetime=datetime(2020, 3, 25, 13, 45, tzinfo=ZoneInfo("UTC"))))
         self.assertFalse(
             flags.at(at_datetime=datetime(2020, 3, 25, 23, 15, tzinfo=ZoneInfo("UTC")))
         )
@@ -1340,8 +1337,7 @@ class PublicCommonV400TypesTestCase(TestCase):
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
-            flags.at(at_datetime=datetime(2020, 3, 25, 13, 45,
-                                          tzinfo=ZoneInfo("US/Pacific")))
+            flags.at(at_datetime=datetime(2020, 3, 25, 13, 45, tzinfo=ZoneInfo("US/Pacific")))
         self.assertEqual(
             "'at_datetime' of FlagTimeseries.at() must have timezone UTC, currently US/Pacific.",
             str(e.exception),
@@ -1383,10 +1379,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
-            flags.before(at_datetime=datetime(2020, 3, 25, 13, 45,
-                                              tzinfo=ZoneInfo("US/Pacific")))
+            flags.before(at_datetime=datetime(2020, 3, 25, 13, 45, tzinfo=ZoneInfo("US/Pacific")))
         self.assertEqual(
-            "'at_datetime' of FlagTimeseries.before() must have timezone UTC, currently US/Pacific.", # noqa: E501
+            "'at_datetime' of FlagTimeseries.before() must have timezone UTC, currently US/Pacific.",  # noqa: E501
             str(e.exception),
         )
 
@@ -1422,8 +1417,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
         self.assertEqual(
             flags.all()[1],
-            TimeseriesItem((datetime(2020, 3, 25, 22, 30,
-                                     tzinfo=ZoneInfo("UTC")), False)),
+            TimeseriesItem((datetime(2020, 3, 25, 22, 30, tzinfo=ZoneInfo("UTC")), False)),
         )
 
     def test_flag_timeseries_all_get_attributes(self):
@@ -1436,8 +1430,7 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         timeseries_item = flags.all()[0]
         self.assertEqual(
-            timeseries_item.at_datetime, datetime(2020, 3, 25, 10, 30,
-                                                  tzinfo=ZoneInfo("UTC"))
+            timeseries_item.at_datetime, datetime(2020, 3, 25, 10, 30, tzinfo=ZoneInfo("UTC"))
         )
         self.assertEqual(timeseries_item.value, True)
 
@@ -2039,8 +2032,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             DerivedParameterHookArguments(
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
             )
-        expected = ("'effective_datetime' of DerivedParameterHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of DerivedParameterHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # SupervisorActivationHookArguments
@@ -2100,8 +2095,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             SupervisorActivationHookArguments(
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
             )
-        expected = ("'effective_datetime' of SupervisorActivationHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorActivationHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # SupervisorConversionHookArguments
@@ -2198,8 +2195,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
                 existing_schedules={},
             )
-        expected = ("'effective_datetime' of SupervisorConversionHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorConversionHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # ActivationHookArguments
@@ -2464,8 +2463,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 old_parameter_values={},
                 updated_parameter_values={},
             )
-        expected = ("'effective_datetime' of PostParameterChangeHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of PostParameterChangeHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # Posting
@@ -2711,8 +2712,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 posting_instructions=[],
                 client_transactions={},
             )
-        expected = ("'effective_datetime' of PostPostingHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of PostPostingHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_post_posting_hook_spec(self):
@@ -2951,8 +2954,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 supervisee_posting_instructions={},
                 supervisee_client_transactions={},
             )
-        expected = ("'effective_datetime' of SupervisorPostPostingHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorPostPostingHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_post_posting_hook_spec(self):
@@ -3138,8 +3143,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 posting_instructions=[],
                 client_transactions={},
             )
-        expected = ("'effective_datetime' of PrePostingHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of PrePostingHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_pre_posting_hook_spec(self):
@@ -3440,8 +3447,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
                 updated_parameter_values=parameters,
             )
-        expected = ("'effective_datetime' of PreParameterChangeHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of PreParameterChangeHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_only_set_pre_parameter_change_hook_arguments_attributes_can_be_accessed(self):
@@ -3564,8 +3573,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 event_type=event_type,
                 pause_at_datetime=pause_at_datetime,
             )
-        expected = ("'pause_at_datetime' of ScheduledEventHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'pause_at_datetime' of ScheduledEventHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_incorrect_pause_at_datetime_type(self):
@@ -3704,8 +3715,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime={},
             )
-        expected = ("'effective_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_scheduled_event_hook_arguments_raises_with_naive_pause_at_datetime(self):
@@ -3733,8 +3746,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime={},
             )
-        expected = ("'pause_at_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC,"
-                    " currently US/Pacific.")  # noqa: E501
+        expected = (
+            "'pause_at_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_naive_supervisee_pause_at_datetime(self):
@@ -3752,8 +3767,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             )
-        expected = ("'supervisee_pause_at_datetime['supervisee_account_id_naive']' of "
-                    "SupervisorScheduledEventHookArguments is not timezone aware.")  # noqa: E501
+        expected = (
+            "'supervisee_pause_at_datetime['supervisee_account_id_naive']' of "
+            "SupervisorScheduledEventHookArguments is not timezone aware."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_incorrect_supervisee_pause_at_datetime_type(
@@ -3773,8 +3790,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             )
-        expected = ("'supervisee_pause_at_datetime['supervisee_account_id_wrong_type']' "
-                    "expected datetime, got 'False' of type bool")  # noqa: E501
+        expected = (
+            "'supervisee_pause_at_datetime['supervisee_account_id_wrong_type']' "
+            "expected datetime, got 'False' of type bool"
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_non_utc_supervisee_pause_at_datetime(self):
@@ -3792,8 +3811,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             )
-        expected = ("'supervisee_pause_at_datetime['supervisee_account_id_naive']' of "
-                    "SupervisorScheduledEventHookArguments must have timezone UTC, currently US/Pacific.")
+        expected = (
+            "'supervisee_pause_at_datetime['supervisee_account_id_naive']' of "
+            "SupervisorScheduledEventHookArguments must have timezone UTC, currently US/Pacific."
+        )
         # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
@@ -7663,8 +7684,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(False, trans.completed())
         self.assertEqual(True, trans.released())
         self.assertEqual(
-            False, trans.released(effective_datetime=datetime(2021, 1, 1,
-                                                              tzinfo=ZoneInfo("UTC")))
+            False, trans.released(effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC")))
         )
         self.assertEqual(
             Balance(
@@ -7813,8 +7833,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(False, trans.released())
         self.assertEqual(True, trans.completed())
         self.assertEqual(
-            False, trans.completed(effective_datetime=datetime(2021, 1, 1,
-                                                               tzinfo=ZoneInfo("UTC")))
+            False, trans.completed(effective_datetime=datetime(2021, 1, 1, tzinfo=ZoneInfo("UTC")))
         )
         self.assertEqual(
             Balance(
@@ -8676,7 +8695,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
 
     def test_posting_instructions_directive_validates_net_zero_sum_across_multiple_accounts_ids(
-            # noqa: E501
+        # noqa: E501
         self,
     ):
         # Test the zero net sum validation when the Postings of a CustomInstruction affect multiple
@@ -9038,15 +9057,12 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
         self.assertEqual(
-            balances.at(at_datetime=datetime(2020, 1, 15, 11, 20, 0,
-                                             tzinfo=ZoneInfo("UTC"))),
+            balances.at(at_datetime=datetime(2020, 1, 15, 11, 20, 0, tzinfo=ZoneInfo("UTC"))),
             purchase,
         )
 
@@ -9057,10 +9073,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
@@ -9077,15 +9091,12 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
-            balances.at(at_datetime=datetime(2020, 1, 15, 11, 20, 0,
-                                             tzinfo=ZoneInfo("US/Pacific")))
+            balances.at(at_datetime=datetime(2020, 1, 15, 11, 20, 0, tzinfo=ZoneInfo("US/Pacific")))
         self.assertEqual(
             "'at_datetime' of BalanceTimeseries.at() must have timezone UTC, currently US/Pacific.",
             # noqa: E501
@@ -9099,10 +9110,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
@@ -9120,10 +9129,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
@@ -9140,16 +9147,13 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
             balances.before(
-                at_datetime=datetime(2020, 1, 15, 11, 20, 0,
-                                     tzinfo=ZoneInfo("US/Pacific"))
+                at_datetime=datetime(2020, 1, 15, 11, 20, 0, tzinfo=ZoneInfo("US/Pacific"))
             )
         self.assertEqual(
             "'at_datetime' of BalanceTimeseries.before() must have timezone UTC, currently US/Pacific.",
@@ -9164,10 +9168,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
         with self.assertRaises(InvalidSmartContractError) as e:
@@ -9186,8 +9188,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalanceTimeseries(
                 [
-                    (datetime(2020, 1, 15, 11, 19, 0,
-                              tzinfo=ZoneInfo("UTC")), purchase),
+                    (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
                     (datetime(2020, 1, 15, 12, 25, 0), refund),
                 ]
             )
@@ -9201,10 +9202,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalanceTimeseries(
                 [
-                    (datetime(2020, 1, 15, 11, 19, 0,
-                              tzinfo=ZoneInfo("UTC")), purchase),
-                    (datetime(2020, 1, 15, 12, 25, 0,
-                              tzinfo=ZoneInfo("US/Pacific")), refund),
+                    (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                    (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("US/Pacific")), refund),
                 ]
             )
         self.assertEqual(
@@ -9220,8 +9219,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalanceTimeseries(
                 [
-                    (datetime(2020, 1, 15, 11, 19, 0,
-                              tzinfo=ZoneInfo("UTC")), purchase),
+                    (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
                     (datetime.fromtimestamp(1, timezone.utc), refund),
                 ]
             )
@@ -9232,8 +9230,7 @@ class PublicCommonV400TypesTestCase(TestCase):
         )
 
     def test_balances_timeseries_return_missing_balance(self):
-        balance_time = datetime(2020, 1, 15, 11, 19, 0,
-                                tzinfo=ZoneInfo("UTC"))
+        balance_time = datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC"))
         purchase = (balance_time, Balance(credit=Decimal("99.99")))
         balances = BalanceTimeseries([purchase])
         self.assertEqual(balances.at(at_datetime=balance_time), purchase[1])
@@ -9286,12 +9283,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         not_a_balance = "not_a_balance"
         BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
-                (datetime(2020, 1, 15, 12, 31, 0,
-                          tzinfo=ZoneInfo("UTC")), not_a_balance),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 12, 31, 0, tzinfo=ZoneInfo("UTC")), not_a_balance),
             ],
         )
 
@@ -9302,10 +9296,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         refund = BalanceDefaultDict(mapping={key_in: Balance(debit=Decimal(5.50))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
-                (datetime(2020, 1, 15, 12, 25, 0,
-                          tzinfo=ZoneInfo("UTC")), refund),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund),
             ]
         )
 
@@ -9317,13 +9309,11 @@ class PublicCommonV400TypesTestCase(TestCase):
         self.assertEqual(len(balances.all()), 2)
         self.assertEqual(
             balances.all()[0],
-            TimeseriesItem((datetime(2020, 1, 15, 11, 19, 0,
-                                     tzinfo=ZoneInfo("UTC")), purchase)),
+            TimeseriesItem((datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase)),
         )
         self.assertEqual(
             balances.all()[1],
-            TimeseriesItem((datetime(2020, 1, 15, 12, 25, 0,
-                                     tzinfo=ZoneInfo("UTC")), refund)),
+            TimeseriesItem((datetime(2020, 1, 15, 12, 25, 0, tzinfo=ZoneInfo("UTC")), refund)),
         )
 
     def test_balance_timeseries_all_get_attributes(self):
@@ -9331,16 +9321,14 @@ class PublicCommonV400TypesTestCase(TestCase):
         purchase = BalanceDefaultDict(mapping={key_out: Balance(credit=Decimal(99.99))})
         balances = BalanceTimeseries(
             [
-                (datetime(2020, 1, 15, 11, 19, 0,
-                          tzinfo=ZoneInfo("UTC")), purchase),
+                (datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC")), purchase),
             ]
         )
         self.assertEqual(len(balances.all()), 1)
 
         timeseries_item = balances.all()[0]
         self.assertEqual(
-            timeseries_item.at_datetime, datetime(2020, 1, 15, 11, 19, 0,
-                                                  tzinfo=ZoneInfo("UTC"))
+            timeseries_item.at_datetime, datetime(2020, 1, 15, 11, 19, 0, tzinfo=ZoneInfo("UTC"))
         )
         self.assertEqual(timeseries_item.value, purchase)
 

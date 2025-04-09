@@ -438,8 +438,8 @@ class VaultFunctionsABC(types_utils.StrictInterface):
                         name="name",
                         type="str",
                         docstring="The name of the [ContractParameter]"
-                                  "(/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ContractParameter]"
-                                  ".",  # noqa: E501
+                        "(/reference/contracts/contracts_api_4xx/common_types_4xx/classes/#ContractParameter]"
+                        ".",  # noqa: E501
                     ),
                 ],
                 return_value=types_utils.ReturnValueSpec(

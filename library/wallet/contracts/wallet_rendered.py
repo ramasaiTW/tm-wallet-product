@@ -3,19 +3,29 @@
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:573bb8a0d6f63bbea2d5c82fc93bab66
+# md5:5077be992d8e45f4f155d4b05266c793
 
 from contracts_api import (
     BalancesObservationFetcher,
     DefinedDateTime,
+    Override,
+    PostingsIntervalFetcher,
+    RelativeDateTime,
+    Shift,
     DEFAULT_ADDRESS,
     DEFAULT_ASSET,
     AuthorisationAdjustment,
+    Balance,
     BalanceCoordinate,
     BalanceDefaultDict,
+    BalanceTimeseries,
+    CalendarEvents,
     CustomInstruction,
+    EndOfMonthSchedule,
+    FlagTimeseries,
     InboundAuthorisation,
     InboundHardSettlement,
+    OptionalValue,
     OutboundAuthorisation,
     OutboundHardSettlement,
     Phase,
@@ -26,9 +36,13 @@ from contracts_api import (
     Release,
     ScheduledEvent,
     ScheduleExpression,
+    ScheduleFailover,
+    ScheduleSkip,
     Settlement,
     Transfer,
     Tside,
+    UnionItemValue,
+    UpdateAccountEventTypeDirective,
     AccountIdShape,
     ActivationHookArguments,
     ActivationHookResult,
@@ -55,12 +69,13 @@ from contracts_api import (
     ConversionHookArguments,
     ConversionHookResult,
 )
+from calendar import isleap
 from datetime import datetime
-from decimal import Decimal
+from dateutil.relativedelta import relativedelta
+from decimal import Decimal, ROUND_HALF_UP
 from json import dumps, loads
-from typing import Any
-from inception_sdk.vault.contracts.extensions.contracts_api_extensions import SmartContractVault
-
+from typing import Any, Iterable, Mapping
+from zoneinfo import ZoneInfo
 
 api = "4.0.0"
 version = "3.0.7"
@@ -70,7 +85,7 @@ supported_denominations = ["GBP", "SGD", "USD"]
 
 @requires(parameters=True)
 def activation_hook(
-    vault: SmartContractVault, hook_arguments: ActivationHookArguments
+    vault: Any, hook_arguments: ActivationHookArguments
 ) -> ActivationHookResult | None:
     effective_datetime = hook_arguments.effective_datetime
     scheduled_events: dict[str, ScheduledEvent] = {}
@@ -83,7 +98,7 @@ def activation_hook(
 @requires(parameters=True)
 @fetch_account_data(balances=["EFFECTIVE_FETCHER"])
 def conversion_hook(
-    vault: SmartContractVault, hook_arguments: ConversionHookArguments
+    vault: Any, hook_arguments: ConversionHookArguments
 ) -> ConversionHookResult | None:
     effective_datetime = hook_arguments.effective_datetime
     scheduled_events = hook_arguments.existing_schedules
@@ -99,7 +114,7 @@ def conversion_hook(
 @requires(parameters=True)
 @fetch_account_data(balances=["live_balances_bof"])
 def deactivation_hook(
-    vault: SmartContractVault, hook_arguments: DeactivationHookArguments
+    vault: Any, hook_arguments: DeactivationHookArguments
 ) -> DeactivationHookResult | None:
     zero_out_daily_spend_directives = _get_zero_out_daily_spend_instructions(
         vault,
@@ -116,7 +131,7 @@ def deactivation_hook(
 @requires(parameters=True)
 @fetch_account_data(balances=["live_balances_bof"])
 def post_parameter_change_hook(
-    vault: SmartContractVault, hook_arguments: PostParameterChangeHookArguments
+    vault: Any, hook_arguments: PostParameterChangeHookArguments
 ) -> PostParameterChangeHookResult | None:
     """
     Checks if the customer or bank wallet limit has been lowered and sweep
@@ -154,7 +169,7 @@ def post_parameter_change_hook(
 @requires(parameters=True, flags=True)
 @fetch_account_data(balances=["live_balances_bof"])
 def post_posting_hook(
-    vault: SmartContractVault, hook_arguments: PostPostingHookArguments
+    vault: Any, hook_arguments: PostPostingHookArguments
 ) -> PostPostingHookResult | None:
     """
     If the posting is a Spend, duplicates the spending to TODAYS_SPENDING to keep track
@@ -236,7 +251,7 @@ def post_posting_hook(
 @requires(parameters=True, flags=True)
 @fetch_account_data(balances=["live_balances_bof"])
 def pre_posting_hook(
-    vault: SmartContractVault, hook_arguments: PrePostingHookArguments
+    vault: Any, hook_arguments: PrePostingHookArguments
 ) -> PrePostingHookResult | None:
     if utils_is_force_override(posting_instructions=hook_arguments.posting_instructions):
         return None
@@ -315,8 +330,7 @@ def pre_posting_hook(
             elif denomination != default_denomination:
                 return PrePostingHookResult(
                     rejection=Rejection(
-                        message=f"Postings total {denomination} {proposed_delta}, "
-                        f"which exceeds the available balance of {denomination} {available_balance}",
+                        message=f"Postings total {denomination} {proposed_delta}, which exceeds the available balance of {denomination} {available_balance}",
                         reason_code=RejectionReason.INSUFFICIENT_FUNDS,
                     )
                 )
@@ -326,7 +340,7 @@ def pre_posting_hook(
 @requires(event_type="ZERO_OUT_DAILY_SPEND", parameters=True)
 @fetch_account_data(event_type="ZERO_OUT_DAILY_SPEND", balances=["EFFECTIVE_FETCHER"])
 def scheduled_event_hook(
-    vault: SmartContractVault, hook_arguments: ScheduledEventHookArguments
+    vault: Any, hook_arguments: ScheduledEventHookArguments
 ) -> ScheduledEventHookResult | None:
     effective_datetime = hook_arguments.effective_datetime
     pi_directives: list[PostingInstructionsDirective] = []
@@ -476,7 +490,7 @@ def utils_get_available_balance(
 
 # Objects below have been imported from:
 #    library/wallet/contracts/template/wallet.py
-# md5:573bb8a0d6f63bbea2d5c82fc93bab66
+# md5:5077be992d8e45f4f155d4b05266c793
 
 INTERNAL_CONTRA = "INTERNAL_CONTRA"
 TODAY_SPENDING = "TODAY_SPENDING"
