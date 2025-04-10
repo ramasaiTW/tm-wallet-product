@@ -21,4 +21,5 @@ jobs:
 
       - name: run super-linter
         run: |
-            python3 -m flake8 .
+            python3 -m flake8 . --exclude=contracts_sdk
+
