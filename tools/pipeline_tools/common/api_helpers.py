@@ -1,4 +1,4 @@
-from common import config
+from tools.pipeline_tools.common import config
 import requests
 import json
 from typing import Any, List
