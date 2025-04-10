@@ -21,3 +21,7 @@ jobs:
 
       - name: Run Black
         run: black --check .
+
+      - name: run super-linter
+        run: |
+            python3 -m flake8 .
