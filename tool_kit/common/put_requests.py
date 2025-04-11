@@ -5,7 +5,8 @@ from tool_kit.helpers.core_api_helper import api_request
 
 def update_account_schedule_tag(account_schedule_tag_id=None) -> List[Any]:
     """
-    :param account_schedule_tag_id: The ID of the AccountScheduleTag; it is used to tag schedules in a Smart Contract or Supervisor Contract.
+    :param account_schedule_tag_id: The ID of the AccountScheduleTag; it is used to tag schedules in a
+    Smart Contract or Supervisor Contract.
     """
 
     request_body = {}
@@ -163,7 +164,8 @@ def update_customer_additional_details(customer_id=None) -> List[Any]:
 
 def update_flag_definition(flag_definition_id=None) -> List[Any]:
     """
-    :param flag_definition_id: The ID of the Flag Definition. Matches the name field. One of ID or name must be provided for create requests. If both are provided, ID will be used.
+    :param flag_definition_id: The ID of the Flag Definition. Matches the name field. One of ID or name must
+    be provided for create requests. If both are provided, ID will be used.
     """
 
     request_body = {}
@@ -185,7 +187,10 @@ def update_flag(flag_id=None) -> List[Any]:
 
 def update_parameter_value_hierarchy_node(parameter_value_hierarchy_node_id=None) -> List[Any]:
     """
-    :param parameter_value_hierarchy_node_id: Unique identifier for the Parameter Value Hierarchy Node. Forms part of the `parent_path` for child nodes. This should not have any meaning related to the resource. It must match the regex `^[A-Za-z0-9][A-Za-z0-9-_.]*$` and its length must not exceed 256 characters. Required for create or update requests.
+    :param parameter_value_hierarchy_node_id: Unique identifier for the Parameter Value Hierarchy Node.
+    Forms part of the `parent_path` for child nodes. This should not have any meaning related to the resource.
+    It must match the regex `^[A-Za-z0-9][A-Za-z0-9-_.]*$` and its length must not exceed 256 characters.
+    Required for create or update requests.
     """
 
     request_body = {}
@@ -199,7 +204,8 @@ def update_parameter_value_hierarchy_node(parameter_value_hierarchy_node_id=None
 
 def update_parameter_value(parameter_value_id=None) -> List[Any]:
     """
-    :param parameter_value_id: Unique UUID identifier for the Parameter Value. Read-only and set to a random UUID on creation.
+    :param parameter_value_id: Unique UUID identifier for the Parameter Value. Read-only and set
+    to a random UUID on creation.
     """
 
     request_body = {}
@@ -211,7 +217,8 @@ def update_parameter_value(parameter_value_id=None) -> List[Any]:
 
 def update_payment_device_link(payment_device_link_id=None) -> List[Any]:
     """
-    :param payment_device_link_id: A caller-injected or Vault auto-generated unique ID for the payment device link. When auto-generated, this is a UUID in the canonical 8-4-4-4-12 form.
+    :param payment_device_link_id: A caller-injected or Vault auto-generated unique ID for the payment device link.
+    When auto-generated, this is a UUID in the canonical 8-4-4-4-12 form.
     """
     request_body = {}
 
@@ -222,7 +229,8 @@ def update_payment_device_link(payment_device_link_id=None) -> List[Any]:
 
 def update_payment_device(payment_device_id=None) -> List[Any]:
     """
-    :param payment_device_id: Caller injected or Vault auto-generated unique ID for payment device. Optional. When auto-generated, this is a UUID in the canonical 8-4-4-4-12 form.
+    :param payment_device_id: Caller injected or Vault auto-generated unique ID for payment device. Optional.
+    When auto-generated, this is a UUID in the canonical 8-4-4-4-12 form.
     """
 
     request_body = {}
@@ -290,9 +298,9 @@ def update_restriction_set(restriction_set_id=None) -> List[Any]:
     )
 
 
-def delete_post_posting_failures(id=None) -> List[Any]:
+def delete_post_posting_failures(pib_id=None) -> List[Any]:
     """
-    :param restriction_set_id: The unique identifier for this restriction set.
+    :param pib_id: The unique identifier for this restriction set.
     """
 
-    return api_request("put", f"/v1/post-posting-failures/{id}")
+    return api_request("put", f"/v1/post-posting-failures/{pib_id}")
