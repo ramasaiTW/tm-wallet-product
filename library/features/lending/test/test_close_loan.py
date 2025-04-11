@@ -341,9 +341,7 @@ class TestNetBalances(CloseLoanTestCommon):
         mock_balance_at_coordinates.return_value = Decimal("24")
         balances = sentinel.balances
         mock_emi_postings: list[Posting] = [SentinelPosting("emi_posting")] * 2  # type: ignore
-        mock_feature_postings: list[Posting] = [
-            SentinelPosting("feature_posting")
-        ] * 2  # type: ignore
+        mock_feature_postings: list[Posting] = [SentinelPosting("feature_posting")] * 2  # type: ignore
         mock_create_postings.return_value = mock_emi_postings
 
         residual_cleanup_feature = Mock(

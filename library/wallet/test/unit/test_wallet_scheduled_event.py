@@ -89,7 +89,7 @@ class ScheduledEventHookTest(WalletTestBase):
 
         hook_arguments = ScheduledEventHookArguments(
             effective_datetime=DEFAULT_DATETIME,
-            event_type=ZERO_OUT_DAILY_SPEND_EVENT,
+            event_type=contract.ZERO_OUT_DAILY_SPEND_EVENT,
             pause_at_datetime=None,
         )
 
@@ -97,7 +97,6 @@ class ScheduledEventHookTest(WalletTestBase):
         result_pid_list = hook_result.posting_instructions_directives
         for result_pid, expected_pid in list(zip(result_pid_list, expected_pid_list)):
             self.assertEqual(result_pid, expected_pid)
-
 
     def test_scheduled_event_hook_event_type_not_found(self):
         mock_vault = self.create_mock()

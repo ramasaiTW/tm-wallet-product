@@ -74,5 +74,5 @@ interest_rate_interface = lending_interfaces.InterestRate(
 )
 
 FixedReamortisationCondition = lending_interfaces.ReamortisationCondition(
-    should_trigger_reamortisation=lambda vault, period_start_datetime, period_end_datetime, elapsed_term: False  # noqa: E501
-)
+    should_trigger_reamortisation=lambda vault, period_start_datetime, period_end_datetime, elapsed_term: False
+)  # noqa: E501

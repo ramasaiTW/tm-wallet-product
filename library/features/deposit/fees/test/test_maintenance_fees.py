@@ -281,11 +281,11 @@ class TestMonthlyMaintenanceFees(FeatureTest):
         mock_fee_custom_instruction.return_value = [sentinel.fee_custom_instruction]
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                maintenance_fees.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+                maintenance_fees.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
                     "effective"
                 )
             }
-        )
+        )  # noqa: E501
 
         fee_postings = maintenance_fees.apply_monthly_fee(
             vault=mock_vault,

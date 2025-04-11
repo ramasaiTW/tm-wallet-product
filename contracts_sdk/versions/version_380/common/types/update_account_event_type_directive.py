@@ -76,7 +76,8 @@ class UpdateAccountEventTypeDirective:
                     "Optional datetime that indicates when the schedule should stop executing. "
                     "Must be based on the `events_timezone` field defined in the "
                     "[Smart](../../smart_contracts_api_reference3xx/metadata/#events_timezone) and "
-                    "[Supervisor](../../supervisor_contracts_api_reference3xx/metadata/#events_timezone) Contract metadata. Note that once "
+                    "[Supervisor](../../supervisor_contracts_api_reference3xx/metadata/#events_timezone) "
+                    "Contract metadata. Note that once "
                     "the end_datetime has been reached, the schedule can **no longer** be updated "
                     "or re-enabled."
                 ),

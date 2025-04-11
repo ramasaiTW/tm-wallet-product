@@ -102,8 +102,8 @@ class CommonUtilsTest(TestCase):
                     "example4": {"flag_key": {"example1": "500"}},
                 },
                 "US_SAVINGS_ACCOUNT_TIER_LOWER": {
-                    "flag_key": {"example2": "500"}  # again, example2 is not in mapping
-                },
+                    "flag_key": {"example2": "500"}
+                },  # again, example2 is not in mapping
                 "US_SAVINGS_ACCOUNT_TIER_MIDDLE": {"example5": "500"},
             }
         }

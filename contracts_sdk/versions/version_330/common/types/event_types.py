@@ -13,7 +13,7 @@ class EventTypesGroup:
 
         if len(event_types_order) < 2:
             raise exceptions.InvalidSmartContractError(
-                f"An EventTypesGroup must have at least two event types"
+                "An EventTypesGroup must have at least two event types"
             )
 
         self.name = name

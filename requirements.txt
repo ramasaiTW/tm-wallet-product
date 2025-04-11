@@ -43,3 +43,4 @@ types-urllib3==1.26.25.14
 # ! please note this S3 bucket is only accessible on TM wifi/VPN
 # https://s3-eu-west-1.amazonaws.com/tm-py-wheels/py39/contracts_api-4.6.5-py3-none-any.whl
 pytest==8.3.5
+-e ./contracts_sdk

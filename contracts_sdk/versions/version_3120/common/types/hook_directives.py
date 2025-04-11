@@ -42,8 +42,8 @@ class HookDirectives(types3110.HookDirectives):
             self._spec().assert_constructor_args(
                 self._registry,
                 {
-                    "instruct_account_notification_directives": instruct_account_notification_directives  # noqa: E501
-                },
+                    "instruct_account_notification_directives": instruct_account_notification_directives
+                },  # noqa: E501
             )
 
         self.instruct_account_notification_directives = instruct_account_notification_directives
@@ -58,7 +58,8 @@ class HookDirectives(types3110.HookDirectives):
                 type="List[InstructAccountNotificationDirective]",
                 docstring="""
                         A list of
-                        [InstructAccountNotificationDirective](#classes-InstructAccountNotificationDirective) objects.
+                        [InstructAccountNotificationDirective]
+                        (#classes-InstructAccountNotificationDirective) objects.
                         **Only available in version 3.12+**
                     """,  # noqa: E501
             )

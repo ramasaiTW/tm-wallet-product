@@ -168,7 +168,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                 `get_posting_batches` function call, then the time window is specified by the
                 definition of the
                 [PostingsIntervalFetcher](../types/#classes-PostingsIntervalFetcher) with the
-                specified `fetcher_id` in the [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list
+                specified `fetcher_id` in the [data_fetchers]
+                (../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list
                 of the Contract metadata. If no hook decorator is provided and the current hook
                 is pre/post_posting_code, this returns any covering posting batches of the
                 proposed batch (plus the proposed posting batch, if `include_proposed=True`).
@@ -183,7 +184,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                         The id of the
                         [PostingsIntervalFetcher](../types/#classes-PostingsIntervalFetcher).
                         1. Define the fetcher in the [Contract Metadata](../metadata/)
-                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list. 2. Define the fetcher
+                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers)
+                         list. 2. Define the fetcher
                         id in the postings argument in the `@fetch_account_data` decorator. If
                         this function is called using a supervisee Vault object, the population
                         of this argument will raise an `InvalidSmartContractError`.
@@ -229,7 +231,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                 `get_client_transactions`function call, then the time window is specified in
                 the definition of the
                 [PostingsIntervalFetcher](../types/#classes-PostingsIntervalFetcher) with the
-                specified `fetcher_id` in the [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list
+                specified `fetcher_id` in the [data_fetchers]
+                (../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list
                 of the Contract metadata. If no hook decorator is provided and the current hook
                 is pre/post_posting_code, this returns the client transactions with the
                 covering postings of the proposed batch. If `include_proposed=True`, these
@@ -248,7 +251,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                         The id of the
                         [PostingsIntervalFetcher](../types/#classes-PostingsIntervalFetcher).
                         1. Define the fetcher in the [Contract Metadata](../metadata/)
-                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list. 2. Define the fetcher
+                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers)
+                         list. 2. Define the fetcher
                         id in the postings argument in the `@fetch_account_data` decorator. If
                         this function is called using a supervisee Vault object, the population
                         of this argument will raise an `InvalidSmartContractError`.
@@ -298,7 +302,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                         The id of the
                         [BalancesObservationFetcher](../types/#classes-BalancesObservationFetcher).
                         1. Define the fetcher in the [Contract Metadata](../metadata/)
-                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list. 2. Define the fetcher
+                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers)
+                         list. 2. Define the fetcher
                         id in the balances argument in the `@fetch_account_data` decorator.
                     """,
                 ),
@@ -361,7 +366,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                 `@fetch_account_data` decorator and passed as an argument in the function call,
                 then the time window is specified in the definition of the
                 [BalancesIntervalFetcher](../types/#classes-BalancesIntervalFetcher) with the
-                specified `fetcher_id` in the [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list
+                specified `fetcher_id` in the [data_fetchers]
+                (../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list
                 of the Contract metadata. If no hook decorator is provided, then an empty
                 result is returned if no `fetcher_id` is passed as an argument, otherwise an
                 `InvalidSmartContractError` is raised.
@@ -374,7 +380,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                         The id of the
                         [BalancesIntervalFetcher](../types/#classes-BalancesIntervalFetcher).
                         1. Define the fetcher in the [Contract Metadata](../metadata/)
-                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers) list. 2. Define the fetcher
+                        [data_fetchers](../../smart_contracts_api_reference3xx/metadata/#data_fetchers)
+                         list. 2. Define the fetcher
                         id in the balances argument in the `@fetch_account_data` decorator. If
                         this function is called using a supervisee Vault object, the population
                         of this argument will raise an `InvalidSmartContractError`.
@@ -468,7 +475,8 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
                     docstring="""
                         Optional datetime to determine when the schedule needs to stop
                         executing. Must have the same timezone localisation as the Contract
-                        based on the [Event Timezone](../../smart_contracts_api_reference3xx/metadata/#events_timezone).
+                        based on the [Event Timezone]
+                        (../../smart_contracts_api_reference3xx/metadata/#events_timezone).
 
                         NOTE: Once the `end_datetime` has been reached, the schedule can
                         **no longer** be updated or re-enabled.
@@ -525,7 +533,9 @@ class VaultFunctionsABC(v390_lib.VaultFunctionsABC):
             name="get_alias",
             docstring="""
                 Returns the alias value set for the Smart Contract Version in the Supervisor
-                [SmartContractDescriptor](/reference/contracts/contracts_api_3xx/supervisor_contracts_api_reference3xx/types/#classes-SmartContractDescriptor)
+                [SmartContractDescriptor]
+                (/reference/contracts/contracts_api_3xx/supervisor_contracts_api_reference3xx/
+                types/#classes-SmartContractDescriptor)
                 object. Available on Supervisor Contract versions 3.4.0+ for use on the
                 Supervisees
                 [Vault](/reference/contracts/contracts_api_3xx/smart_contracts_api_reference3xx/vault/)

@@ -475,11 +475,11 @@ class PartialMinimumMonthlyBalanceFeeApplicationTest(FeatureTest):
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                minimum_monthly_balance.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+                minimum_monthly_balance.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
                     "effective"
                 )
             }
-        )
+        )  # noqa: E501
 
         result = minimum_monthly_balance.apply_minimum_balance_fee(
             vault=mock_vault,

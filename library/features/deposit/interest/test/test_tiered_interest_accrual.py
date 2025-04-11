@@ -13,8 +13,8 @@ ACCRUED_INTEREST_PAYABLE_ACCOUNT = (
     tiered_interest_accrual.interest_accrual_common.PARAM_ACCRUED_INTEREST_PAYABLE_ACCOUNT
 )
 ACCRUED_INTEREST_RECEIVABLE_ACCOUNT = (
-    tiered_interest_accrual.interest_accrual_common.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT  # noqa: E501
-)
+    tiered_interest_accrual.interest_accrual_common.PARAM_ACCRUED_INTEREST_RECEIVABLE_ACCOUNT
+)  # noqa: E501
 ACCRUED_INTEREST_RECEIVABLE = tiered_interest_accrual.ACCRUED_INTEREST_RECEIVABLE
 ACCRUED_INTEREST_PAYABLE = tiered_interest_accrual.ACCRUED_INTEREST_PAYABLE
 

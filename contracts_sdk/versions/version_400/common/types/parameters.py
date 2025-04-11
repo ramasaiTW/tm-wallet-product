@@ -717,9 +717,9 @@ class Parameter:
                 default_value = self.default_value.value
 
             if isinstance(actual_shape, UnionShape):
-                actual_shape._validate_native_value(  # noqa: SLF001
+                actual_shape._validate_native_value(
                     default_value, [i.key for i in actual_shape.items]
-                )
+                )  # noqa: SLF001
             else:
                 actual_shape._validate_native_value(default_value)  # noqa: SLF001
 

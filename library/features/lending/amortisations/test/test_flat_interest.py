@@ -292,11 +292,11 @@ class ApplyInterestTest(FeatureTest):
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+                flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
                     "effective"
                 )
             }
-        )
+        )  # noqa: E501
 
         self.assertEqual(
             flat_interest.apply_interest(
@@ -361,11 +361,11 @@ class GetInterestToApplyTest(FeatureTest):
 
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+                flat_interest.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
                     "effective"
                 )
             }
-        )
+        )  # noqa: E501
 
         self.assertEqual(
             flat_interest.get_interest_to_apply(

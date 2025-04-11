@@ -288,13 +288,9 @@ def post_parameter_change_hook(
     updated_parameter_values = hook_arguments.updated_parameter_values
 
     # The type warnings aren't helpful as we know this specific parameter will have a Decimal value
-    old_limit: Decimal = old_parameter_values.get(
-        PARAM_CUSTOMER_WALLET_LIMIT, Decimal(0)  # type: ignore
-    )
+    old_limit: Decimal = old_parameter_values.get(PARAM_CUSTOMER_WALLET_LIMIT, Decimal(0))  # type: ignore
     # updated_parameter_values only contains changed parameters
-    new_limit: Decimal = updated_parameter_values.get(
-        PARAM_CUSTOMER_WALLET_LIMIT, old_limit  # type: ignore
-    )
+    new_limit: Decimal = updated_parameter_values.get(PARAM_CUSTOMER_WALLET_LIMIT, old_limit)  # type: ignore
 
     if old_limit > new_limit:
         denomination = utils.get_parameter(vault, name=PARAM_DENOMINATION)

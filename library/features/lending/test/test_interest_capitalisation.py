@@ -197,11 +197,11 @@ class HandlePenaltyInterestCapitalisationTest(InterestCapitalisationTest):
         mock_handle_interest_capitalisation.return_value = [sentinel.custom_instructions]
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                interest_capitalisation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+                interest_capitalisation.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
                     "effective"
                 )
             }
-        )
+        )  # noqa: E501
         result = interest_capitalisation.handle_penalty_interest_capitalisation(
             vault=mock_vault,
             account_type=sentinel.account_type,
@@ -274,11 +274,11 @@ class HandleInterestCapitalisationTest(InterestCapitalisationTest):
     ):
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                interest_capitalisation.fetchers.EOD_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+                interest_capitalisation.fetchers.EOD_FETCHER_ID: SentinelBalancesObservation(
                     "effective"
                 )
             }
-        )
+        )  # noqa: E501
         mock_capitalise_interest.return_value = [sentinel.capitalisation_postings]
         mock_get_parameter.side_effect = mock_utils_get_parameter(
             {

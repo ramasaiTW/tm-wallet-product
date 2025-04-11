@@ -63,7 +63,9 @@ class VaultFunctionsABC(v320_lib.VaultFunctionsABC):
             Replaces the schedule for *event_type* with *new_schedule*.
             Requires full definition of *new_schedule* as this function
             disables the old schedule and creates a *new_schedule* in Vault.
-            See [execution_schedules](../../smart_contracts_api_reference3xx/hooks/#execution_schedules) for information on schedules.
+            See [execution_schedules]
+            (../../smart_contracts_api_reference3xx/hooks/#execution_schedules)
+             for information on schedules.
             In versions 3.3+, amending schedules that belong to event type group is not allowed.
         """
         spec.public_methods[

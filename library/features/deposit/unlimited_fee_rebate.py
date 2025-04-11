@@ -155,9 +155,7 @@ def rebate_fees(
     return [
         CustomInstruction(
             postings=utils.create_postings(
-                amount=_get_charged_fee_amount(
-                    posting_instruction=posting, denomination=denomination  # type: ignore
-                ),
+                amount=_get_charged_fee_amount(posting_instruction=posting, denomination=denomination),  # type: ignore
                 # One of the conditions to be eligible for a rebate is that the internal account
                 # exists in the fee_rebate_internal_accounts parameter so we can access the key
                 # directly without causing a KeyError()

@@ -522,7 +522,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as ex:
             OptionalValue(datetime.fromtimestamp(1, timezone.utc))
         self.assertEqual(
-            "'value' of OptionalValue must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'value' of OptionalValue must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
 
@@ -587,7 +588,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 ),
             )
         self.assertEqual(
-            "'default_value' of Parameter must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'default_value' of Parameter must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
 
@@ -688,7 +690,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 max_date=datetime(2020, 3, 31, tzinfo=ZoneInfo("UTC")),
             )
         self.assertEqual(
-            "'min_date' of DateShape must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'min_date' of DateShape must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
 
@@ -721,7 +724,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 max_date=datetime.fromtimestamp(1, timezone.utc),
             )
         self.assertEqual(
-            "'max_date' of DateShape must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'max_date' of DateShape must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
 
@@ -772,7 +776,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
         self.assertEqual(
             str(e.exception),
-            "'at_datetime' of TimeseriesItem must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of TimeseriesItem must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
         )
 
     def test_parameter_timeseries_at_raises_with_non_utc_timezone(self):
@@ -799,7 +804,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             parameters.at(at_datetime=datetime.fromtimestamp(1, timezone.utc))
         self.assertEqual(
-            "'at_datetime' of ParameterTimeseries.at() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of ParameterTimeseries.at() must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 
@@ -826,7 +832,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             parameters.before(at_datetime=datetime(2020, 1, 10, tzinfo=ZoneInfo("US/Pacific")))
         self.assertEqual(
-            "'at_datetime' of ParameterTimeseries.before() must have timezone UTC, currently US/Pacific.",  # noqa: E501
+            "'at_datetime' of ParameterTimeseries.before() must have timezone UTC, currently US/Pacific.",
+            # noqa: E501
             str(e.exception),
         )
 
@@ -840,7 +847,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             parameters.before(at_datetime=datetime.fromtimestamp(1, timezone.utc))
         self.assertEqual(
-            "'at_datetime' of ParameterTimeseries.before() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of ParameterTimeseries.before() must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 
@@ -1303,7 +1311,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 ]
             )
         self.assertEqual(
-            "'at_datetime' of TimeseriesItem must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of TimeseriesItem must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 
@@ -1344,7 +1353,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             flags.at(at_datetime=datetime.fromtimestamp(1, timezone.utc))
         self.assertEqual(
-            "'at_datetime' of FlagTimeseries.at() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of FlagTimeseries.at() must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 
@@ -1385,7 +1395,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             flags.before(at_datetime=datetime.fromtimestamp(1, timezone.utc))
         self.assertEqual(
-            "'at_datetime' of FlagTimeseries.before() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of FlagTimeseries.before() must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 
@@ -1763,7 +1774,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 end_datetime=datetime.fromtimestamp(1, timezone.utc),
             )
         self.assertEqual(
-            "'end_datetime' of CalendarEvent must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'end_datetime' of CalendarEvent must have timezone of type ZoneInfo,"
+            " currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
 
@@ -1963,7 +1975,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             DeactivationHookArguments(
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
             )
-        expected = "'effective_datetime' of DeactivationHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = "'effective_datetime' of DeactivationHookArguments must have timezone UTC, currently US/Pacific."
+        # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # DerivedParameterHookArguments
@@ -1986,8 +1999,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "DerivedParameterHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -1997,9 +2010,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_derived_parameters_arguments_public_attributes(self):
         hook_args = DerivedParameterHookArguments(effective_datetime=self.test_zoned_datetime_utc)
 
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 1)
         effective_datetime_attribute = public_attributes[0]
@@ -2019,7 +2032,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             DerivedParameterHookArguments(
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
             )
-        expected = "'effective_datetime' of DerivedParameterHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of DerivedParameterHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # SupervisorActivationHookArguments
@@ -2044,8 +2060,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
         self.assertEqual("SupervisorActivationHookArguments", spec.name)
         self.assertEqual(public_attributes_dict.keys(), spec.public_attributes.keys())
         self.assertEqual(public_attributes_dict.keys(), spec.constructor.args.keys())
@@ -2055,9 +2071,9 @@ class PublicCommonV400TypesTestCase(TestCase):
         hook_args = SupervisorActivationHookArguments(
             effective_datetime=self.test_zoned_datetime_utc
         )
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEqual(1, len(public_attributes))
         effective_datetime_attribute = public_attributes[0]
@@ -2079,7 +2095,10 @@ class PublicCommonV400TypesTestCase(TestCase):
             SupervisorActivationHookArguments(
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
             )
-        expected = "'effective_datetime' of SupervisorActivationHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorActivationHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # SupervisorConversionHookArguments
@@ -2129,8 +2148,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual("SupervisorConversionHookArguments", spec.name)
         self.assertEqual(public_attributes_dict.keys(), spec.public_attributes.keys())
@@ -2148,9 +2167,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
         )
 
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
         self.assertEqual(2, len(public_attributes))
         effective_datetime_attribute = public_attributes[0]
         self.assertEquals("effective_datetime", effective_datetime_attribute.name)
@@ -2176,7 +2195,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
                 existing_schedules={},
             )
-        expected = "'effective_datetime' of SupervisorConversionHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorConversionHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # ActivationHookArguments
@@ -2199,8 +2221,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "ActivationHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -2210,9 +2232,9 @@ class PublicCommonV400TypesTestCase(TestCase):
     def test_post_activate_code_arguments_public_attributes(self):
         hook_args = ActivationHookArguments(effective_datetime=self.test_zoned_datetime_utc)
 
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 1)
         effective_datetime_attribute = public_attributes[0]
@@ -2232,7 +2254,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             ActivationHookArguments(
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
             )
-        expected = "'effective_datetime' of ActivationHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = "'effective_datetime' of ActivationHookArguments must have timezone UTC, currently US/Pacific."
+        # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # ConversionHookArguments
@@ -2283,8 +2306,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals("ConversionHookArguments", spec.name)
         self.assertEquals(public_attributes_dict.keys(), spec.public_attributes.keys())
@@ -2302,9 +2325,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             effective_datetime=self.test_zoned_datetime_utc, existing_schedules=existing_schedules
         )
 
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEquals(2, len(public_attributes))
         effective_datetime_attribute = public_attributes[0]
@@ -2329,7 +2352,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
                 existing_schedules={},
             )
-        expected = "'effective_datetime' of ConversionHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = "'effective_datetime' of ConversionHookArguments must have timezone UTC, currently US/Pacific."
+        # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # PostParameterChangeHookArguments
@@ -2384,8 +2408,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PostParameterChangeHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -2400,9 +2424,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             old_parameter_values=old_parameter_values,
             updated_parameter_values=updated_parameter_values,
         )
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 3)
         effective_datetime_attr, old_param_vals_attr, updated_param_vals_attr = public_attributes
@@ -2439,7 +2463,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 old_parameter_values={},
                 updated_parameter_values={},
             )
-        expected = "'effective_datetime' of PostParameterChangeHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of PostParameterChangeHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     # Posting
@@ -2685,7 +2712,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 posting_instructions=[],
                 client_transactions={},
             )
-        expected = "'effective_datetime' of PostPostingHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of PostPostingHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_post_posting_hook_spec(self):
@@ -2697,8 +2727,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PostPostingHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -2924,7 +2954,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 supervisee_posting_instructions={},
                 supervisee_client_transactions={},
             )
-        expected = "'effective_datetime' of SupervisorPostPostingHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorPostPostingHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_post_posting_hook_spec(self):
@@ -2937,8 +2970,8 @@ class PublicCommonV400TypesTestCase(TestCase):
 
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual(spec.name, "SupervisorPostPostingHookArguments")
         self.assertEqual(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3110,7 +3143,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 posting_instructions=[],
                 client_transactions={},
             )
-        expected = "'effective_datetime' of PrePostingHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of PrePostingHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_pre_posting_hook_spec(self):
@@ -3122,8 +3158,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PrePostingHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3361,8 +3397,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "SupervisorPrePostingHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3411,7 +3447,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 effective_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
                 updated_parameter_values=parameters,
             )
-        expected = "'effective_datetime' of PreParameterChangeHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of PreParameterChangeHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_only_set_pre_parameter_change_hook_arguments_attributes_can_be_accessed(self):
@@ -3445,8 +3484,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEquals(spec.name, "PreParameterChangeHookArguments")
         self.assertEquals(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3459,9 +3498,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             effective_datetime=self.test_zoned_datetime_utc,
             updated_parameter_values=parameters,
         )
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEquals(len(public_attributes), 2)
         effective_datetime_attr, parameters_attr = public_attributes
@@ -3534,7 +3573,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 event_type=event_type,
                 pause_at_datetime=pause_at_datetime,
             )
-        expected = "'pause_at_datetime' of ScheduledEventHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'pause_at_datetime' of ScheduledEventHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_incorrect_pause_at_datetime_type(self):
@@ -3583,8 +3625,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual(spec.name, "ScheduledEventHookArguments")
         self.assertEqual(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3599,9 +3641,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             event_type=event_type,
             pause_at_datetime=pause_at_datetime,
         )
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEqual(len(public_attributes), 3)
         effective_datetime_attr, event_type_attr, scheduled_job_attr = public_attributes
@@ -3673,7 +3715,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime={},
             )
-        expected = "'effective_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'effective_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_supervisor_scheduled_event_hook_arguments_raises_with_naive_pause_at_datetime(self):
@@ -3701,7 +3746,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime={},
             )
-        expected = "'pause_at_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'pause_at_datetime' of SupervisorScheduledEventHookArguments must have timezone UTC,"
+            " currently US/Pacific."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_naive_supervisee_pause_at_datetime(self):
@@ -3719,7 +3767,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             )
-        expected = "'supervisee_pause_at_datetime['supervisee_account_id_naive']' of SupervisorScheduledEventHookArguments is not timezone aware."  # noqa: E501
+        expected = (
+            "'supervisee_pause_at_datetime['supervisee_account_id_naive']' of "
+            "SupervisorScheduledEventHookArguments is not timezone aware."
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_incorrect_supervisee_pause_at_datetime_type(
@@ -3739,7 +3790,10 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             )
-        expected = "'supervisee_pause_at_datetime['supervisee_account_id_wrong_type']' expected datetime, got 'False' of type bool"  # noqa: E501
+        expected = (
+            "'supervisee_pause_at_datetime['supervisee_account_id_wrong_type']' "
+            "expected datetime, got 'False' of type bool"
+        )  # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_scheduled_event_hook_arguments_raises_with_non_utc_supervisee_pause_at_datetime(self):
@@ -3757,7 +3811,11 @@ class PublicCommonV400TypesTestCase(TestCase):
                 pause_at_datetime=pause_at_datetime,
                 supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             )
-        expected = "'supervisee_pause_at_datetime['supervisee_account_id_naive']' of SupervisorScheduledEventHookArguments must have timezone UTC, currently US/Pacific."  # noqa: E501
+        expected = (
+            "'supervisee_pause_at_datetime['supervisee_account_id_naive']' of "
+            "SupervisorScheduledEventHookArguments must have timezone UTC, currently US/Pacific."
+        )
+        # noqa: E501
         self.assertEquals(expected, str(ex.exception))
 
     def test_only_set_supervisor_scheduled_event_hook_arguments_attributes_can_be_accessed(self):
@@ -3805,8 +3863,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         spec = hook_args._spec(language_code=symbols.Languages.ENGLISH)  # noqa: SLF001
         public_attributes_dict = {
             attribute.name: attribute
-            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)  # noqa: SLF001
-        }
+            for attribute in hook_args._public_attributes(symbols.Languages.ENGLISH)
+        }  # noqa: SLF001
 
         self.assertEqual(spec.name, "SupervisorScheduledEventHookArguments")
         self.assertEqual(spec.public_attributes.keys(), public_attributes_dict.keys())
@@ -3823,9 +3881,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             supervisee_pause_at_datetime=supervisee_pause_at_datetime,
             pause_at_datetime=pause_at_datetime,
         )
-        public_attributes = hook_args._public_attributes(  # noqa: SLF001
+        public_attributes = hook_args._public_attributes(
             language_code=symbols.Languages.ENGLISH
-        )
+        )  # noqa: SLF001
 
         self.assertEqual(len(public_attributes), 4)
         (
@@ -5836,9 +5894,9 @@ class PublicCommonV400TypesTestCase(TestCase):
             transaction_code=TransactionCode(domain="A", family="B", subfamily="C"),
             instruction_details={"testy": "test"},
         )
-        pi._set_output_attributes(  # noqa: SLF001
+        pi._set_output_attributes(
             own_account_id=self.test_account_id, tside=Tside.ASSET
-        )
+        )  # noqa: SLF001
         pi._committed_postings = []  # noqa: SLF001
 
         balances = pi.balances()
@@ -6974,7 +7032,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             trans.balances(effective_datetime=datetime(2022, 1, 1, tzinfo=ZoneInfo("US/Pacific")))
 
         self.assertEqual(
-            "'effective_datetime' of ClientTransaction.balances() must have timezone UTC, currently US/Pacific.",  # noqa: E501
+            "'effective_datetime' of ClientTransaction.balances() must have timezone UTC, currently US/Pacific.",
+            # noqa: E501
             str(ex.exception),
         )
         self.assertEqual("ClientTransaction(1 posting instruction(s))", str(trans))
@@ -7018,7 +7077,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             trans.balances(effective_datetime=datetime.fromtimestamp(1, timezone.utc))
 
         self.assertEqual(
-            "'effective_datetime' of ClientTransaction.balances() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'effective_datetime' of ClientTransaction.balances() must have timezone of type ZoneInfo, "
+            "currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
         self.assertEqual("ClientTransaction(1 posting instruction(s))", str(trans))
@@ -7106,7 +7166,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             trans.effects(effective_datetime=datetime(2022, 1, 1, tzinfo=ZoneInfo("US/Pacific")))
 
         self.assertEqual(
-            "'effective_datetime' of ClientTransaction.effects() must have timezone UTC, currently US/Pacific.",  # noqa: E501
+            "'effective_datetime' of ClientTransaction.effects() must have timezone UTC, currently US/Pacific.",
+            # noqa: E501
             str(ex.exception),
         )
         self.assertEqual("ClientTransaction(1 posting instruction(s))", str(trans))
@@ -7191,7 +7252,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             trans.effects(effective_datetime=datetime.fromtimestamp(1, timezone.utc))
 
         self.assertEqual(
-            "'effective_datetime' of ClientTransaction.effects() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'effective_datetime' of ClientTransaction.effects() must have timezone of type ZoneInfo, "
+            "currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
         self.assertEqual("ClientTransaction(1 posting instruction(s))", str(trans))
@@ -8340,7 +8402,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 value_datetime=self.test_naive_datetime.replace(tzinfo=ZoneInfo("US/Pacific")),
             )
         self.assertEqual(
-            "'value_datetime' of PostingInstructionsDirective must have timezone UTC, currently US/Pacific.",  # noqa: E501
+            "'value_datetime' of PostingInstructionsDirective must have timezone UTC, currently US/Pacific.",
+            # noqa: E501
             str(ex.exception),
         )
 
@@ -8379,7 +8442,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 value_datetime=datetime.fromtimestamp(1, timezone.utc),
             )
         self.assertEqual(
-            "'value_datetime' of PostingInstructionsDirective must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'value_datetime' of PostingInstructionsDirective must have timezone of type ZoneInfo, "
+            "currently <class 'datetime.timezone'>.",  # noqa: E501
             str(ex.exception),
         )
 
@@ -8630,7 +8694,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             .net,
         )
 
-    def test_posting_instructions_directive_validates_net_zero_sum_across_multiple_accounts_ids(  # noqa: E501
+    def test_posting_instructions_directive_validates_net_zero_sum_across_multiple_accounts_ids(
+        # noqa: E501
         self,
     ):
         # Test the zero net sum validation when the Postings of a CustomInstruction affect multiple
@@ -9033,7 +9098,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             balances.at(at_datetime=datetime(2020, 1, 15, 11, 20, 0, tzinfo=ZoneInfo("US/Pacific")))
         self.assertEqual(
-            "'at_datetime' of BalanceTimeseries.at() must have timezone UTC, currently US/Pacific.",  # noqa: E501
+            "'at_datetime' of BalanceTimeseries.at() must have timezone UTC, currently US/Pacific.",
+            # noqa: E501
             str(e.exception),
         )
 
@@ -9051,7 +9117,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             balances.at(at_datetime=datetime.fromtimestamp(1, timezone.utc))
         self.assertEqual(
-            "'at_datetime' of BalanceTimeseries.at() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of BalanceTimeseries.at() must have timezone of type ZoneInfo, "
+            "currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 
@@ -9089,7 +9156,8 @@ class PublicCommonV400TypesTestCase(TestCase):
                 at_datetime=datetime(2020, 1, 15, 11, 20, 0, tzinfo=ZoneInfo("US/Pacific"))
             )
         self.assertEqual(
-            "'at_datetime' of BalanceTimeseries.before() must have timezone UTC, currently US/Pacific.",  # noqa: E501
+            "'at_datetime' of BalanceTimeseries.before() must have timezone UTC, currently US/Pacific.",
+            # noqa: E501
             str(e.exception),
         )
 
@@ -9107,7 +9175,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             balances.before(at_datetime=datetime.fromtimestamp(1, timezone.utc))
         self.assertEqual(
-            "'at_datetime' of BalanceTimeseries.before() must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of BalanceTimeseries.before() must have timezone of type ZoneInfo, "
+            "currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 
@@ -9156,7 +9225,8 @@ class PublicCommonV400TypesTestCase(TestCase):
             )
         self.assertEqual(
             str(e.exception),
-            "'at_datetime' of TimeseriesItem must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'at_datetime' of TimeseriesItem must have timezone of type ZoneInfo, "
+            "currently <class 'datetime.timezone'>.",  # noqa: E501
         )
 
     def test_balances_timeseries_return_missing_balance(self):
@@ -10369,7 +10439,8 @@ class PublicCommonV400TypesTestCase(TestCase):
         with self.assertRaises(InvalidSmartContractError) as e:
             BalancesObservation(value_datetime=value_datetime, balances=balance_dict)
         self.assertEqual(
-            "'value_datetime' of BalancesObservation must have timezone of type ZoneInfo, currently <class 'datetime.timezone'>.",  # noqa: E501
+            "'value_datetime' of BalancesObservation must have timezone of type ZoneInfo, "
+            "currently <class 'datetime.timezone'>.",  # noqa: E501
             str(e.exception),
         )
 

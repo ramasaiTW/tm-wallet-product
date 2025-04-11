@@ -113,9 +113,7 @@ class IsWithinFixedRateTermTest(FixedToVariableTest):
                 SentinelBalancesObservation("fetched")
             )
         }
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=balance_observation_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=balance_observation_mapping)  # type: ignore
 
         self.assertFalse(
             fixed_to_variable.is_within_fixed_rate_term(

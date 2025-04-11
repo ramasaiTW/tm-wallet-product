@@ -232,11 +232,11 @@ class TestApplyInterestApplication(FeatureTest):
         mock_standard_instruction_details.side_effect = [sentinel.value, sentinel.value]
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                interest_application.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+                interest_application.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
                     "balances_obs"
                 )
             }
-        )
+        )  # noqa: E501
         # feature call
         custom_instructions = interest_application.apply_interest(
             vault=mock_vault, account_type="dummy_account"

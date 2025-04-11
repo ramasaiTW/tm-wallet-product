@@ -381,10 +381,8 @@ class _TypeCheckingDict:
             def _type_check(obj: Any):
                 return isinstance(obj, dict) and all(
                     self._registry.is_valid_type(types[0], key)
-                    and self._registry.is_valid_type(  # noqa: SLF001
-                        types[1], value
-                    )  # noqa: SLF001
-                    for key, value in obj.items()
+                    and self._registry.is_valid_type(types[1], value)
+                    for key, value in obj.items()  # noqa: SLF001  # noqa: SLF001
                 )
 
         return TypeCheckingDict
@@ -401,8 +399,8 @@ class _TypeCheckingList:
             @staticmethod
             def _type_check(obj):
                 return isinstance(obj, list) and all(
-                    self._registry.is_valid_type(type, item) for item in obj  # noqa: SLF001
-                )
+                    self._registry.is_valid_type(type, item) for item in obj
+                )  # noqa: SLF001
 
         return TypeCheckingList
 

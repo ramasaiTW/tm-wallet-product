@@ -411,9 +411,7 @@ class PostingInstructionBase:
             if committed_postings.account_id == account_id:
                 committed_postings_in_account_id.append(committed_postings)
 
-        balance_diffs = derive_balance_diff_from_committed_postings(
-            committed_postings_in_account_id  # type: ignore
-        )
+        balance_diffs = derive_balance_diff_from_committed_postings(committed_postings_in_account_id)  # type: ignore
 
         def _transform_balance_to_versioned_balance(balance_value):
             result = self._balance_class()

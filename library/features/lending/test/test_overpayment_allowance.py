@@ -250,12 +250,8 @@ class HandleAllowanceUsageTest(FeatureTest):
         one_year_observation = SentinelBalancesObservation("one_year")
         mock_vault = self.create_mock(
             balances_observation_fetchers_mapping={
-                overpayment_allowance.EOD_OVERPAYMENT_ALLOWANCE_FETCHER_ID: (  # type: ignore
-                    eod_observation
-                ),
-                overpayment_allowance.ONE_YEAR_OVERPAYMENT_ALLOWANCE_FETCHER_ID: (  # type: ignore
-                    one_year_observation
-                ),
+                overpayment_allowance.EOD_OVERPAYMENT_ALLOWANCE_FETCHER_ID: (eod_observation),  # type: ignore
+                overpayment_allowance.ONE_YEAR_OVERPAYMENT_ALLOWANCE_FETCHER_ID: (one_year_observation),  # type: ignore
             }
         )
 

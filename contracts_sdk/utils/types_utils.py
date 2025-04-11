@@ -99,11 +99,11 @@ class TypeQualifier:
     def _is_valid(value: Any, expected_types: Tuple[Any]) -> bool:
         # Return whether value is valid for at least one of the expected types
         return any(
-            expected_type._is_valid_value(value)  # noqa:SLF001
+            expected_type._is_valid_value(value)
             if hasattr(expected_type, "_is_valid_value")
             else isinstance(value, expected_type)
             for expected_type in expected_types
-        )
+        )  # noqa:SLF001
 
     def make_spec(self) -> Dict[str, Any]:
         return {

@@ -304,10 +304,10 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
     }
 
     common_bof_mapping = {
-        interest_application_supervisor.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(  # noqa: E501
+        interest_application_supervisor.fetchers.EFFECTIVE_OBSERVATION_FETCHER_ID: SentinelBalancesObservation(
             "effective"
         )
-    }
+    }  # noqa: E501
 
     def test_repay_accrued_interest_with_0_amount(self):
         self.assertListEqual(
@@ -334,9 +334,7 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_emi_interest_to_apply: MagicMock,
         mock_get_parameter: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=self.common_bof_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=self.common_bof_mapping)  # type: ignore
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
 
         mock_non_emi_interest_to_apply.return_value = (0, 0)
@@ -360,9 +358,7 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_parameter: MagicMock,
         mock_accrual_application_postings: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=self.common_bof_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=self.common_bof_mapping)  # type: ignore
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
 
         mock_non_emi_interest_to_apply.return_value = (Decimal("1.01234"), Decimal("1.01"))
@@ -408,9 +404,7 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_parameter: MagicMock,
         mock_accrual_application_postings: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=self.common_bof_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=self.common_bof_mapping)  # type: ignore
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
 
         mock_non_emi_interest_to_apply.return_value = (Decimal("1.01234"), Decimal("1.01"))
@@ -460,9 +454,7 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_parameter: MagicMock,
         mock_accrual_application_postings: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=self.common_bof_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=self.common_bof_mapping)  # type: ignore
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
 
         mock_non_emi_interest_to_apply.return_value = (Decimal("2.01234"), Decimal("2.01"))
@@ -508,9 +500,7 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_parameter: MagicMock,
         mock_accrual_application_postings: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=self.common_bof_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=self.common_bof_mapping)  # type: ignore
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
 
         mock_non_emi_interest_to_apply.return_value = (Decimal("2.01234"), Decimal("2.01"))
@@ -578,9 +568,7 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_parameter: MagicMock,
         mock_accrual_application_postings: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=self.common_bof_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=self.common_bof_mapping)  # type: ignore
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
 
         mock_non_emi_interest_to_apply.return_value = (Decimal("2.01234"), Decimal("2.01"))
@@ -649,9 +637,7 @@ class RepayAccruedInterestTest(InterestApplicationTestCommon):
         mock_get_parameter: MagicMock,
         mock_accrual_application_postings: MagicMock,
     ):
-        mock_vault = self.create_mock(
-            balances_observation_fetchers_mapping=self.common_bof_mapping  # type: ignore
-        )
+        mock_vault = self.create_mock(balances_observation_fetchers_mapping=self.common_bof_mapping)  # type: ignore
         mock_get_parameter.side_effect = mock_utils_get_parameter(parameters=self.common_parameters)
 
         mock_non_emi_interest_to_apply.return_value = (Decimal("2.01234"), Decimal("2.01"))
