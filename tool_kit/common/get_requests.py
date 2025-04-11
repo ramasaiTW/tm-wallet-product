@@ -13,7 +13,8 @@ def list_account_schedule_tags(all_pages=True, page_size=500) -> List[Any]:
 
 def batch_get_account_schedule_tags(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of the AccountScheduleTags that are to be retrieved. The 6.0 release will reduce the maximum number of IDs to 50. Required. Min count: 1. Max count: 500.
+    :param ids: A list of the IDs of the AccountScheduleTags that are to be retrieved. The 6.0 release will reduce the
+    maximum number of IDs to 50. Required. Min count: 1. Max count: 500.
     """
     if ids is None:
         ids = []
@@ -310,7 +311,6 @@ def list_balances_live(
     :param account_ids: The IDs of the accounts the balances belong to. Required.
     :param account_addresses: Filters results by account address. Optional.
     :param page_size: The number of results to be retrieved. Required. Required. Min value: 1. Max value: 10000.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, this is the first page of results. Optional.
     """
     if account_ids is None:
         account_ids = []
@@ -337,11 +337,15 @@ def list_balances_time_range(
     :param all_pages: To get the all pages
     :param account_ids: The IDs of the accounts the balances belong to. Required.
     :param account_addresses: Filters results by account address.
-    :param from_time: The earliest time in the time range of the returned balances in UTC. Optional. If included, will also return the latest balance event before the `from_time` for comparison. If omitted, the results will start from the first available balance event. Formatted as an RFC3339 timestamp.
-    :param to_time: The latest time in the time range of the returned balances in UTC. Optional. If omitted, the results will end at the last available balance event. Formatted as an RFC3339 timestamp.
+    :param from_time: The earliest time in the time range of the returned balances in UTC. Optional. If included,
+    will also return the latest balance event before the `from_time` for comparison. If omitted, the results will
+    start from the first available balance event. Formatted as an RFC3339 timestamp.
+    :param to_time: The latest time in the time range of the returned balances in UTC. Optional. If omitted, the
+    results will end at the last available balance event. Formatted as an RFC3339 timestamp.
     :param page_size: The number of results to be retrieved. Required. Required. Min value: 1. Max value: 10000.
-    :param page_token: Token of the page the results are to be retrieved from. If empty, this is the first page of results. Optional.
-    :param snapshot_timestamp: If supplied, the balances time range will take into account only those postings inserted into Vault up to this time, and exclude balance changes from any postings inserted after this time. Optional.
+    :param snapshot_timestamp: If supplied, the balances time range will take into account only those postings
+    inserted into Vault up to this time, and exclude balance changes from any postings inserted after this time.
+    Optional.
     """
     if account_ids is None:
         account_ids = []
@@ -376,12 +380,14 @@ def list_calendar_events(
     """
     :param all_pages: To get the all pages
     :param calendar_ids: Filters by Calendars IDs; if this is not set, all Calendars will be included.
-    :param calendar_event_names: Filters by Calendar Event names; if filter criteria are not given, all Calendar Event names will be listed.
+    :param calendar_event_names: Filters by Calendar Event names; if filter criteria are not given,
+    all Calendar Event names will be listed.
     :param page_size: The number of results to be listed. Must be non-zero. Required.
-    :param page_token: Token of the page the results are to be retrieved from. If set, all other filtering parameters are ignored.
     :param active_calendar_event:
-    :param calendar_timestamp_range_from: The Timestamp range that the Calendar Event is valid for. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param calendar_timestamp_range_to: The Timestamp range that the Calendar Event is valid for. This is an auto generated field to make the swagger compatible with the third party codegen tool.
+    :param calendar_timestamp_range_from: The Timestamp range that the Calendar Event is valid for. This is an auto
+    generated field to make the swagger compatible with the third party codegen tool.
+    :param calendar_timestamp_range_to: The Timestamp range that the Calendar Event is valid for. This is an auto
+    generated field to make the swagger compatible with the third party codegen tool.
     """
     if calendar_ids is None:
         calendar_ids = []
@@ -433,8 +439,10 @@ def get_bookkeeping_date(id=None) -> List[Any]:
 
 def calculate_calendar_period(calendar_id=None, timestamp=None) -> List[Any]:
     """
-    :param calendar_id: The Calendar ID that will be used when calculating the number of period resolution units from the Calendar's start epoch.
-    :param timestamp: The latest time that the number of period resolution units is calculated up to. Defaults to the current time in UTC. Must be formatted as an RFC3339 timestamp.
+    :param calendar_id: The Calendar ID that will be used when calculating the number of period resolution units
+    from the Calendar's start epoch.
+    :param timestamp: The latest time that the number of period resolution units is calculated up to. Defaults to the
+     current time in UTC. Must be formatted as an RFC3339 timestamp.
     """
     if timestamp is None:
         timestamp = ""
@@ -458,7 +466,6 @@ def list_calendars(
     """
     :param all_pages: To get the all pages
     :param page_size: The number of results to be listed. Must be non-zero. Required.
-    :param page_token: If a page token is supplied, the page size value must match the original value used to generate the token. Optional.
     :param order_by: The ordering of the results. Optional.
     :param name_pattern_match:
     """
@@ -484,16 +491,6 @@ def list_contract_executions(
     execution_timestamp_range_from=None,
     execution_timestamp_range_to=None,
 ) -> List[Any]:
-    """
-    :param all_pages: To get the all pages
-    :param page_size: The number of ContractExecutions to be returned. Maximum 50. Required. Required. Min value: 1. Max value: 50.
-    :param contract_event_ids: A set of Contract Event IDs. This filters ContractExecutions returned in the response to only those with a `contract_event_id` in the set. Must not contain IDs that are empty strings. Required if both `account_ids` and `plan_ids` are empty. Filters response to include only ContractExecutions that have field `contract_event_id` matching matching ANY `contract_event_id` provided in this set. Must not contain IDs that are empty strings. Required if both `account_ids` and `plan_ids` are empty.
-    :param account_ids: Filters response to include only ContractExecutions that have field `account_id` matching matching ANY `account_id` provided in this set. Must not contain IDs that are empty strings. Required if both `contract_event_ids` and `plan_ids` are empty. Note, specifying both `account_ids` and `plan_ids` filters will never return any Contract Executions, as a ContractExecution is associated with a single account or plan only. To list ContractExecutions that match any `account_ids` OR `plan_ids`, use the `or_fields` field and provide values `OR_FIELD_ACCOUNT_IDS` and `OR_FIELD_PLAN_IDS`.
-    :param plan_ids: Filters response to include only ContractExecutions that have field `plan_id` matching matching ANY `plan_id` provided in this set. Must not contain IDs that are empty strings. Required if both `contract_event_ids` and `account_ids` are empty. Note, specifying both `account_ids` and `plan_ids` filters will never return any Contract Executions, as a ContractExecution is associated with a single account or plan only. To list ContractExecutions that match any `account_ids` OR `plan_ids`, use the `or_fields` field and provide values `OR_FIELD_ACCOUNT_IDS` and `OR_FIELD_PLAN_IDS`.
-    :param or_fields: Optional. This field specifies that a ContractExecution should be returned if ANY of the following field filters match. This is opposed to the default behaviour, which only returns a ContractExecution is ALL field filters in the request are matched.
-    :param execution_timestamp_range_from: Optional. The timestamp range that the ContractExecution's `execution_timestamp` must be within. This range is from `execution_timestamp_range.from` inclusive up to `execution_timestamp_range.to` exclusive. If `execution_timestamp_range.from` is not provided, defaults to the zero timestamp. If `execution_timestamp_range.to` is not provided, defaults to +inf. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param execution_timestamp_range_to: Optional. The timestamp range that the ContractExecution's `execution_timestamp` must be within. This range is from `execution_timestamp_range.from` inclusive up to `execution_timestamp_range.to` exclusive. If `execution_timestamp_range.from` is not provided, defaults to the zero timestamp. If `execution_timestamp_range.to` is not provided, defaults to +inf. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    """
     if contract_event_ids is None:
         contract_event_ids = []
     if account_ids is None:
@@ -525,7 +522,6 @@ def list_contract_module_versions(
     :param all_pages: To get the all pages
     :param contract_module_id: The Contract Module ID to retrieve values for. Required.
     :param page_size: The number of Contract Module Versions to be retrieved. Required. Min value: 1. Max value: 20.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, this returns the first page of results.
     """
     if contract_module_id is None:
         contract_module_id = ""
@@ -541,7 +537,9 @@ def list_contract_module_versions(
 def batch_get_contract_module_versions(ids=None, fields_to_include=None) -> List[Any]:
     """
     :param ids: List of IDs of the Contract Module Versions to retrieve.
-    :param fields_to_include: Additional fields to return; optional. Some Contract Module Version fields are omitted by default as they are bulky or costly; if those fields are specified here, they will be populated in the response.
+    :param fields_to_include: Additional fields to return; optional. Some Contract Module Version fields are
+    omitted by default as they are bulky or costly; if those fields are specified here,
+    they will be populated in the response.
     """
     if ids is None:
         ids = []
@@ -559,7 +557,6 @@ def list_contract_modules(all_pages=True, page_size=50) -> List[Any]:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Contract Modules to be retrieved. Required. Min value: 1. Max value: 50.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, this returns the first page of results.
     """
 
     return load_paginated_data("get", "/v1/contract-modules", page_size, all_pages)
@@ -586,7 +583,6 @@ def list_smart_contract_module_versions_links(
     :param smart_contract_version_ids: The Smart Contract Version IDs to retrieve values for.
     :param contract_module_version_ids: The Contract Module Version IDs to retrieve values for.
     :param page_size: The number of Contract Module Versions to be retrieved. Required. Min value: 1. Max value: 50.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, this returns the first page of results.
     """
     if smart_contract_version_ids is None:
         smart_contract_version_ids = []
@@ -621,7 +617,8 @@ def list_customer_addresses(
     """
     :param all_pages: To get the all pages
     :param customer_id: The unique ID of the customer. Required.
-    :param include_previous: Includes previous addresses for the customer. A previous address has an end_timestamp which is in the past. Optional; defaults to false.
+    :param include_previous: Includes previous addresses for the customer. A previous address has an end_timestamp
+    which is in the past. Optional; defaults to false.
     :param page_size: The number of addresses to be retrieved. Required. Min value: 1. Max value: 1000.
     """
     if customer_id is None:
@@ -651,7 +648,6 @@ def list_customers(
     :param phone_identifiers: List of inclusive OR phone number identifier filters. Must be URL encoded. Optional.
     :param username_identifiers: List of inclusive OR username identifier filters. Must be URL encoded. Optional.
     :param page_size: Number of customers to be listed. Required. Min value: 1. Max value: 200.
-    :param page_token: Token of the page the results are to retrieved from. If empty, returns the first page of results. Optional.
     """
     if statuses is None:
         statuses = []
@@ -671,17 +667,11 @@ def list_customers(
     return load_paginated_data("get", "/v1/customers", query_params, page_size, all_pages)
 
 
-def get_customer(id=None) -> List[Any]:
+def get_customer(customer_id=None) -> List[Any]:
     """
-    :param id: The unique ID of the customer.
+    :param customer_id: The unique ID of the customer.
     """
-    if id is None:
-        id = ""
-
-    query_params = {
-        "id": id,
-    }
-    return load_paginated_data("get", "/v1/customers/{id}")
+    return api_request("get", f"/v1/customers/{customer_id}")
 
 
 def batch_get_customers(ids=None) -> List[Any]:
@@ -700,7 +690,8 @@ def batch_get_customers(ids=None) -> List[Any]:
 def get_derived_parameter_values(account_id=None, effective_timestamp=None) -> List[Any]:
     """
     :param account_id: The Account ID for which derived parameters are calculated for.
-    :param effective_timestamp: The returned derived parameter values will be calculated as of this timestamp. Defaults to the current time in UTC. Should be formatted as an RFC3339 timestamp.
+    :param effective_timestamp: The returned derived parameter values will be calculated as of this timestamp.
+    Defaults to the current time in UTC. Should be formatted as an RFC3339 timestamp.
     """
     if account_id is None:
         account_id = ""
@@ -761,10 +752,14 @@ def list_flag_definitions(
 ) -> List[Any]:
     """
     :param all_pages: To get the all pages
-    :param flag_visibility_level: The Flag visibility level that Flag Definitions are to be returned for. Set this to FLAG_VISIBILITY_OPERATOR to return Flag Definitions with Flag visibility=FLAG_VISIBILITY_OPERATOR. Set this to FLAG_VISIBILITY_CONTRACT to return all Flag Definitions. Optional.
-    :param flag_levels: The Flag levels in the Flag Definition. If unspecified, this is equivalent to all Flag levels. Optional.
+    :param flag_visibility_level: The Flag visibility level that Flag Definitions are to be returned for. Set this to
+    FLAG_VISIBILITY_OPERATOR to return Flag Definitions with Flag visibility=FLAG_VISIBILITY_OPERATOR. Set this to
+    FLAG_VISIBILITY_CONTRACT to return all Flag Definitions. Optional.
+    :param flag_levels: The Flag levels in the Flag Definition. If unspecified,
+    this is equivalent to all Flag levels. Optional.
     :param include_inactive: Indicates whether inactive Flag Definitions are included. Optional.
-    :param page_size: Number of results to be retrieved. Required; must be non-zero. The Vault Core 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 500.
+    :param page_size: Number of results to be retrieved. Required; must be non-zero. The Vault Core 6.0 release will
+    reduce the maximum page size to 100. Required. Min value: 1. Max value: 500.
     """
     if flag_visibility_level is None:
         flag_visibility_level = ""
@@ -783,7 +778,8 @@ def list_flag_definitions(
 
 def batch_get_flag_definitions(ids=None) -> List[Any]:
     """
-    :param ids: The Flag Definition IDs or names to be retrieved. The Vault Core 6.0 release will enforce a maximum number of IDs of 50.
+    :param ids: The Flag Definition IDs or names to be retrieved. The Vault Core 6.0 release will enforce a
+    maximum number of IDs of 50.
     """
     if ids is None:
         ids = []
@@ -807,19 +803,6 @@ def list_flags(
     effective_timestamp_range_from=None,
     effective_timestamp_range_to=None,
 ) -> List[Any]:
-    """
-    :param all_pages: To get the all pages
-    :param flag_definition_id: The Flag Definition ID that returned Flags should correspond to. Optional.
-    :param customer_ids: The IDs of customers the applied Flags should be included for. Optional. If used in conjunction with account_ids or payment_device_ids (deprecated), each Flag returned will match one of the provided filters.
-    :param account_ids: The IDs of accounts the applied Flags should be included for. Optional. If used in conjunction with customer_ids or payment_device_ids (deprecated), each Flag returned will match one of the provided filters.
-    :param payment_device_ids: The IDs of payment devices the applied Flags should be included for. Optional. If used in conjunction with account_ids or customer_ids, each Flag returned will match one of the provided filters.
-    :param flag_visibility_level: The Flag visibility level that Flags are to be returned for. Set this to FLAG_VISIBILITY_OPERATOR to return only Flags belonging to a Flag Definition with a flag_visibility=FLAG_VISIBILITY_OPERATOR. Set this to FLAG_VISIBILITY_CONTRACT to return all Flags. Optional.
-    :param effective_timestamp: Timestamp after which the Flag will be effective, in UTC. Cannot be used in conjunction with effective_timestamp_range. Optional. Must be formatted as an RFC3339 timestamp. Will be truncated to microsecond precision.
-    :param include_inactive: Indicates whether inactive Flags are included. Optional.
-    :param page_size: The number of results to be retrieved. Required; must be non-zero and less than 3000. The 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 3000.
-    :param effective_timestamp_range_from: The timestamp range that must overlap with the period of time when a Flag becomes effective and expires if the Flag is to be included; if the range and period of time do not overlap, the Flag will not be included. This range is from effective_timestamp_range.from up to and not including effective_timestamp_range.to. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param effective_timestamp_range_to: The timestamp range that must overlap with the period of time when a Flag becomes effective and expires if the Flag is to be included; if the range and period of time do not overlap, the Flag will not be included. This range is from effective_timestamp_range.from up to and not including effective_timestamp_range.to. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    """
     if flag_definition_id is None:
         flag_definition_id = ""
     if customer_ids is None:
@@ -855,7 +838,8 @@ def list_flags(
 
 def batch_get_flags(ids=None) -> List[Any]:
     """
-    :param ids: The Flag Definition IDs or names to be retrieved. The maximum number of IDs is 50. Required. Max count: 50.
+    :param ids: The Flag Definition IDs or names to be retrieved. The maximum number of IDs is 50.
+    Required. Max count: 50.
     """
     if ids is None:
         ids = []
@@ -873,14 +857,6 @@ def list_global_parameter_values(
     effective_timestamp_range_from=None,
     effective_timestamp_range_to=None,
 ) -> List[Any]:
-    """
-    :param all_pages: To get the all pages
-    :param global_parameter_id: The `GlobalParameter` ID to retrieve values for. Required.
-    :param page_size: The number of `GlobalParametersValues` to be retrieved. Required. Min value: 1. Max value: 100.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, this returns the first page of results.
-    :param effective_timestamp_range_from: Optional time range. If provided, only `GlobalParameterValue`s that have the appropriate `effective_timestamp` will be retrieved. If the `effective_timestamp_range.from` attribute is not provided, it defaults to the minimum timestamp. If `effective_timestamp_range.to` is not provided, it defaults to the maximum timestamp. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param effective_timestamp_range_to: Optional time range. If provided, only `GlobalParameterValue`s that have the appropriate `effective_timestamp` will be retrieved. If the `effective_timestamp_range.from` attribute is not provided, it defaults to the minimum timestamp. If `effective_timestamp_range.to` is not provided, it defaults to the maximum timestamp. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    """
     if global_parameter_id is None:
         global_parameter_id = ""
     if effective_timestamp_range_from is None:
@@ -902,7 +878,6 @@ def list_global_parameters(all_pages=True, page_size=100) -> List[Any]:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of `GlobalParameter`s to be retrieved. Required. Min value: 1. Max value: 100.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, this returns the first page of results.
     """
 
     return load_paginated_data("get", "/v1/global-parameters", page_size, all_pages)
@@ -932,7 +907,8 @@ def list_internal_accounts(all_pages=True, view=None, page_size=1000) -> List[An
     """
     :param all_pages: To get the all pages
     :param view: The view of the data to return. Optional; default ACCOUNT_VIEW_BASIC.
-    :param page_size: The number of results to be listed. Required; must be non-zero and no greater than 1000. The 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 1000.
+    :param page_size: The number of results to be listed. Required; must be non-zero and no greater than 1000.
+    The 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 1000.
     """
     if view is None:
         view = ""
@@ -959,7 +935,8 @@ def get_internal_account(id=None, view=None) -> List[Any]:
 
 def batch_get_internal_accounts(ids=None, view=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of internal accounts to be retrieved. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
+    :param ids: A list of the IDs of internal accounts to be retrieved. Required; must be non-empty.
+    The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
     :param view: View of the data to return. Optional; default ACCOUNT_VIEW_BASIC.
     """
     if ids is None:
@@ -980,9 +957,10 @@ def list_ledger_balances(
     """
     :param all_pages: To get the all pages
     :param account_ids: The IDs of the accounts that Ledger Balances are to be listed for. Required.
-    :param ledger_timestamp: The Postings Ledger timestamp at which to retrieve Ledger Balances. Must be formatted as an RFC3339 timestamp. Required.
-    :param page_size: The number of results to be retrieved. Validated in the ledger balance service. Required. Min value: 1. Max value: 10000.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, the first page of results will be returned. Optional.
+    :param ledger_timestamp: The Postings Ledger timestamp at which to retrieve Ledger Balances.
+    Must be formatted as an RFC3339 timestamp. Required.
+    :param page_size: The number of results to be retrieved. Validated in the ledger balance service.
+    Required. Min value: 1. Max value: 10000.
     """
     if account_ids is None:
         account_ids = []
@@ -1009,10 +987,12 @@ def list_parameter_value_hierarchy_nodes(
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Parameter Value Hierarchy Nodes to be returned. Maximum 100. Required.
-    :param page_token: The token of the requested page, which comes from a previous GET v1/parameter-value-hierarchy-nodes response. If empty, the first page will be returned.
-    :param order_by: The order in which Parameter Value Hierarchy Nodes will be returned. When ordering results with the same value, Parameter Value Hierarchy Nodes will be sorted by ascending `parent_id` and then by ascending `id`.
-    :param parent_ids: A set of Parameter Value Hierarchy Node IDs. Matches all Parameter Value Hierarchy Nodes with a `parent_id` in the set. Must not contain empty IDs.
-    :param names: A set of names. Matches all Parameter Value Hierarchy Nodes with a `name` in the provided names. Must not contain empty strings.
+    :param order_by: The order in which Parameter Value Hierarchy Nodes will be returned. When ordering results with
+    the same value, Parameter Value Hierarchy Nodes will be sorted by ascending `parent_id` and then by ascending `id`.
+    :param parent_ids: A set of Parameter Value Hierarchy Node IDs. Matches all Parameter Value Hierarchy Nodes with
+    a `parent_id` in the set. Must not contain empty IDs.
+    :param names: A set of names. Matches all Parameter Value Hierarchy Nodes with a `name` in the provided names.
+     Must not contain empty strings.
     """
     if order_by is None:
         order_by = ""
@@ -1056,19 +1036,6 @@ def list_parameter_values(
     effective_timestamp_range_from=None,
     effective_timestamp_range_to=None,
 ) -> List[Any]:
-    """
-    :param all_pages: To get the all pages
-    :param page_size: The number of Parameter Values to be returned. Maximum 100. Required.
-    :param page_token: The token of the requested page, which comes from a previous GET v1/parameter-values response. If empty, the first page will be returned.
-    :param parameter_ids: Parameter IDs to filter values on. Required.
-    :param global_param: Only globally owned Parameter Values will be returned. Equivalent to, but should be used instead of, account_config_group_ids='root'. Cannot be used with `account_config_group_ids`, `parameter_value_hierarchy_node_ids` or `account_ids`.
-    :param account_config_group_ids: The only value that can return matches is `root`, which is exactly equivalent to filtering on `global` being `true`. Cannot be used with `account_ids`, `parameter_value_hierarchy_node_ids` or `global`.
-    :param account_ids: Only Parameter Values owned by the given Customer Accounts will be returned. Cannot be used with `account_config_group_ids`, `parameter_value_hierarchy_node_ids` or `global`.
-    :param is_cancelled: Filter by the Parameter Value's `is_cancelled` field.<br><br> - `BOTH` does not filter by `is_cancelled`.<br> - `ONLY_TRUE` returns only Parameter Values that have been cancelled.<br> - `ONLY_FALSE` returns only Parameter Values that have not been cancelled.
-    :param parameter_value_hierarchy_node_ids: Only Parameter Values owned by the given Parameter Value Hierarchy Nodes will be returned. Cannot be used with `account_config_group_ids`, `global` or `account_ids`.
-    :param effective_timestamp_range_from: Only values with an effective timestamp range which overlaps with the `effective_timestamp_range` will be returned. The `from` timestamps in both ranges are inclusive and the `to` timestamps in both ranges are exclusive. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param effective_timestamp_range_to: Only values with an effective timestamp range which overlaps with the `effective_timestamp_range` will be returned. The `from` timestamps in both ranges are inclusive and the `to` timestamps in both ranges are exclusive. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    """
     if parameter_ids is None:
         parameter_ids = []
     if global_param is None:
@@ -1116,7 +1083,6 @@ def list_parameters(all_pages=True, page_size=1000) -> List[Any]:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Parameters to be returned. Maximum 1000. Required.
-    :param page_token: The page token which comes from a previous ListParameters response. If empty, the first page will be returned.
     """
 
     return load_paginated_data("get", "/v1/parameters", page_size, all_pages)
@@ -1146,7 +1112,8 @@ def list_payment_device_links(
     :param tokens: List of payment device link tokens.
     :param payment_device_ids: List of payment device IDs.
     :param account_ids: List of account IDs.
-    :param effective_timestamp: Maximum start timestamp of listed links. Optional. Defaults to current time. Must be formatted as an RFC3339 timestamp.
+    :param effective_timestamp: Maximum start timestamp of listed links. Optional. Defaults to current time.
+    Must be formatted as an RFC3339 timestamp.
     :param include_inactive: Indicates whether to include inactive payment device links in the response.
     """
     if tokens is None:
@@ -1172,7 +1139,8 @@ def list_payment_device_links(
 
 def batch_get_payment_device_links(ids=None) -> List[Any]:
     """
-    :param ids: List of IDs of payment device links to fetch. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50.
+    :param ids: List of IDs of payment device links to fetch. Required; must be non-empty.
+    The 6.0 release will enforce a maximum number of IDs of 50.
     """
     if ids is None:
         ids = []
@@ -1185,7 +1153,8 @@ def batch_get_payment_device_links(ids=None) -> List[Any]:
 
 def batch_get_payment_devices(ids=None) -> List[Any]:
     """
-    :param ids: List of IDs of payment devices to fetch. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50.
+    :param ids: List of IDs of payment devices to fetch. Required; must be non-empty.
+    The 6.0 release will enforce a maximum number of IDs of 50.
     """
     if ids is None:
         ids = []
@@ -1206,17 +1175,6 @@ def list_account_plan_assocs(
     end_timestamp_range_from=None,
     end_timestamp_range_to=None,
 ) -> List[Any]:
-    """
-    :param all_pages: To get the all pages
-    :param account_ids: The IDs of accounts that Account Plan Associations are to be listed for. Optional.
-    :param plan_ids: The IDs of plans that Account Plan Associations are to be listed for. Optional.
-    :param page_size: The number of results to be retrieved. Required. Required. Min value: 1. Max value: 100.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, the first page of results will be returned. Optional.
-    :param start_timestamp_range_from: The timestamp range that the start timestamp must belong to. This range is from start_timestamp_range.from up to and not including start_timestamp_range.to. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param start_timestamp_range_to: The timestamp range that the start timestamp must belong to. This range is from start_timestamp_range.from up to and not including start_timestamp_range.to. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param end_timestamp_range_from: The timestamp range that the end timestamp must belong to. This range is from end_timestamp_range.from up to and not including end_timestamp_range.to. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param end_timestamp_range_to: The timestamp range that the end timestamp must belong to. This range is from end_timestamp_range.from up to and not including end_timestamp_range.to. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    """
     if account_ids is None:
         account_ids = []
     if plan_ids is None:
@@ -1243,7 +1201,8 @@ def list_account_plan_assocs(
 
 def batch_get_account_plan_assocs(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of the account Plan Associations that are to be retrieved. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
+    :param ids: A list of the IDs of the account Plan Associations that are to be retrieved.
+    Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
     """
     if ids is None:
         ids = []
@@ -1259,7 +1218,6 @@ def list_plan_migrations(all_pages=True, statuses=None, page_size=100) -> List[A
     :param all_pages: To get the all pages
     :param statuses: Statuses of Plan Migrations to filter on. Optional.
     :param page_size: Number of results to be retrieved. Must be non-zero. Required. Min value: 1. Max value: 100.
-    :param page_token: Token of the page from which to retrieve the results. If empty, the first page of results will be returned. Optional.
     """
     if statuses is None:
         statuses = []
@@ -1272,7 +1230,8 @@ def list_plan_migrations(all_pages=True, statuses=None, page_size=100) -> List[A
 
 def batch_get_plan_migrations(ids=None) -> List[Any]:
     """
-    :param ids: IDs of the Plan Migrations to get. Mandatory. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
+    :param ids: IDs of the Plan Migrations to get. Mandatory.
+    The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
     """
     if ids is None:
         ids = []
@@ -1290,8 +1249,9 @@ def list_plan_schedules(
     :param all_pages: To get the all pages
     :param plan_id: The Plan ID that Plan Schedules are to be listed for. Required; must be non-empty.
     :param page_size: The number of results to be retrieved. Required. Required. Min value: 1. Max value: 20.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, the first page of results will be returned. Optional.
-    :param include_disassociated: A boolean controlling the Plan Schedules that are returned. When set to `false`, only associated Plan Schedules, that is, Plan Schedules with `is_associated=true`, are returned. When set to `true`, associated and disassociated Plan Schedules are returned. An optional field. False by default.
+    :param include_disassociated: A boolean controlling the Plan Schedules that are returned. When set to `false`,
+    only associated Plan Schedules, that is, Plan Schedules with `is_associated=true`, are returned.
+    When set to `true`, associated and disassociated Plan Schedules are returned. An optional field. False by default.
     """
     if plan_id is None:
         plan_id = ""
@@ -1310,11 +1270,12 @@ def list_plan_updates(
 ) -> List[Any]:
     """
     :param all_pages: To get the all pages
-    :param plan_ids: The IDs of Plans that Plan Updates are to be listed for. At least one of plan_ids and job_ids is required; must be non-empty.
-    :param job_ids: IDs of the jobs that Plan Updates are to be listed for. At least one of plan_ids and job_ids is required.
+    :param plan_ids: The IDs of Plans that Plan Updates are to be listed for. At least one of plan_ids and job_ids
+    is required; must be non-empty.
+    :param job_ids: IDs of the jobs that Plan Updates are to be listed for.
+    At least one of plan_ids and job_ids is required.
     :param statuses: The statuses of Plan Updates to filter on. Optional.
     :param page_size: The number of results to be retrieved. Required. Required. Min value: 1. Max value: 100.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, the first page of results will be returned. Optional.
     """
     if plan_ids is None:
         plan_ids = []
@@ -1333,7 +1294,8 @@ def list_plan_updates(
 
 def batch_get_plan_updates(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of the Plan Updates that are to be retrieved. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
+    :param ids: A list of the IDs of the Plan Updates that are to be retrieved. Required; must be non-empty.
+    The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
     """
     if ids is None:
         ids = []
@@ -1346,7 +1308,8 @@ def batch_get_plan_updates(ids=None) -> List[Any]:
 
 def batch_get_plans(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of the Plans that are to be retrieved. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
+    :param ids: A list of the IDs of the Plans that are to be retrieved. Required; must be non-empty. The 6.0 release
+     will enforce a maximum number of IDs of 50. Required. Min count: 1.
     """
     if ids is None:
         ids = []
@@ -1364,8 +1327,8 @@ def list_policies(
     :param all_pages: To get the all pages
     :param policy_schema_ids: The policy schema ID or IDs to filter results by. Optional.
     :param fields_to_include: Fields to include in the response that are omitted by default. Optional.
-    :param page_size: The number of results to be listed. Required; must be non-zero. Maximum value of 100. Required. Min value: 1. Max value: 100.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, the first page of results will be returned. Optional.
+    :param page_size: The number of results to be listed. Required; must be non-zero. Maximum value of 100.
+    Required. Min value: 1. Max value: 100.
     """
     if policy_schema_ids is None:
         policy_schema_ids = []
@@ -1413,9 +1376,9 @@ def list_post_posting_failures(
     """
     :param all_pages: To get the all pages
     :param account_ids: Filters Post-Posting Failures by the account IDs of their associated failures. Optional.
-    :param posting_instruction_batch_ids: Filters Post-Posting Failures by the posting instruction batch IDs of their associated failures. Optional.
+    :param posting_instruction_batch_ids: Filters Post-Posting Failures by the posting instruction batch IDs of their
+    associated failures. Optional.
     :param page_size: The number of Post-Posting Failures to be retrieved. Required. Min value: 1. Max value: 50.
-    :param page_token: The token of the page the results are to be retrieved from. If empty, this returns the first page of results.
     :param post_posting_failure_statuses: Filters Post Posting Failures by the provided failure status. Optional.
     """
     if account_ids is None:
