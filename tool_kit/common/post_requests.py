@@ -212,21 +212,11 @@ def create_restriction_set_definition_version() -> List[Any]:
 
 
 def create_restriction_set_definition_version2(
-    restriction_set_definition_version_restriction_set_definition_id=None,
+    restriction_set_definition_id=None,
 ) -> List[Any]:
-    """
-    :param restriction_set_definition_version_restriction_set_definition_id: The ID or name of the restriction set definition this version belongs to. Required for create requests.
-    """
-    if restriction_set_definition_version_restriction_set_definition_id is None:
-        restriction_set_definition_version_restriction_set_definition_id = ""
-
-    request_body = {
-        "restriction_set_definition_version.restriction_set_definition_id": restriction_set_definition_version_restriction_set_definition_id,
-    }
     return api_request(
         "post",
-        f"/v1/restriction-set-definition/{restriction_set_definition_version_restriction_set_definition_id}/versions",
-        data=json.dumps(request_body),
+        f"/v1/restriction-set-definition/{restriction_set_definition_id}/versions",
     )
 
 
