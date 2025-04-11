@@ -29,7 +29,8 @@ def list_account_migrations(all_pages=True, statuses=None, page_size=1000) -> Li
     """
     :param all_pages: To get the all pages
     :param statuses: The statuses of account migrations; these are used to filter on. Optional.
-    :param page_size: The number of results to be listed. Required; must be non-zero. The 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 1000.
+    :param page_size: The number of results to be listed. Required; must be non-zero.
+    The 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 1000.
     """
     if statuses is None:
         statuses = []
@@ -42,7 +43,8 @@ def list_account_migrations(all_pages=True, statuses=None, page_size=1000) -> Li
 
 def batch_get_account_migrations(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of account migrations that are to be retrieved. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
+    :param ids: A list of the IDs of account migrations that are to be retrieved. Required; must be non-empty.
+    The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
     """
     if ids is None:
         ids = []
@@ -100,7 +102,8 @@ def list_account_update_batches(
 
 def batch_get_account_update_batches(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of account update batches that are to be retrieved. Required; must be non-empty. Required. Min count: 1. Max count: 20.
+    :param ids: A list of the IDs of account update batches that are to be retrieved. Required; must be non-empty.
+    Required. Min count: 1. Max count: 20.
     """
     if ids is None:
         ids = []
@@ -118,7 +121,8 @@ def list_account_updates(
     :param all_pages: To get the all pages
     :param account_id: The ID of the account that updates are to be listed for. Required.
     :param statuses: Statuses of account updates to filter on. Optional.
-    :param page_size: The number of results to be listed. Required; must be non-zero. The 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 1000.
+    :param page_size: The number of results to be listed. Required; must be non-zero. The 6.0 release will
+    reduce the maximum page size to 100. Required. Min value: 1. Max value: 1000.
     """
     if account_id is None:
         account_id = ""
@@ -141,7 +145,8 @@ def get_account_update(id=None) -> List[Any]:
 
 def batch_get_account_updates(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of account updates that are to be retrieved. Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
+    :param ids: A list of the IDs of account updates that are to be retrieved. Required; must be non-empty.
+    The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
     """
     if ids is None:
         ids = []
@@ -163,17 +168,6 @@ def list_accounts(
     closing_timestamp_range_from=None,
     closing_timestamp_range_to=None,
 ) -> List[Any]:
-    """
-    :param all_pages: To get the all pages
-    :param stakeholder_id: The ID of the stakeholder whose accounts are to be listed. Optional.
-    :param page_size: The number of results to be listed. The 6.0 release will reduce the maximum page size to 100. Required. Min value: 1. Max value: 1000.
-    :param account_statuses: List of inclusive OR account status filters. Must be URL encoded. Optional.
-    :param product_version_ids: List of inclusive OR product version ID filters. Must be URL encoded. Optional.
-    :param opening_timestamp_range_from: The timestamp range that the account's `opening_timestamp` must be within. This range is from `opening_timestamp_range.from` up to and not including `opening_timestamp_range.to`. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param opening_timestamp_range_to: The timestamp range that the account's `opening_timestamp` must be within. This range is from `opening_timestamp_range.from` up to and not including `opening_timestamp_range.to`. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param closing_timestamp_range_from: The timestamp range that the account's `closing_timestamp` must be within. This range is from `closing_timestamp_range.from` up to and not including `closing_timestamp_range.to`. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    :param closing_timestamp_range_to: The timestamp range that the account's `closing_timestamp` must be within. This range is from `closing_timestamp_range.from` up to and not including `closing_timestamp_range.to`. Optional. This is an auto generated field to make the swagger compatible with the third party codegen tool.
-    """
     if stakeholder_id is None:
         stakeholder_id = ""
     if account_statuses is None:
@@ -288,7 +282,8 @@ def get_service_account(id=None) -> List[Any]:
 
 def batch_get_service_accounts(ids=None) -> List[Any]:
     """
-    :param ids: A list of the IDs of service accounts that are to be retrieved. Required; must be non-empty. Required. Min length: 1 characters.
+    :param ids: A list of the IDs of service accounts that are to be retrieved. Required; must be non-empty.
+    Required. Min length: 1 characters.
     """
     if ids is None:
         ids = []
