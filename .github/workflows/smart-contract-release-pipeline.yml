@@ -1,0 +1,40 @@
+name: Smart contract release pipeline
+run-name: Smart contract ${{ inputs.product }} product deployment
+on:
+  workflow_dispatch:
+    inputs:
+      product:
+        description: 'Product'
+        default: 'wallet'
+        required: true
+        type: choice
+        options:
+          - wallet
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    env:
+      PRODUCT: ${{inputs.product}}
+      TM_ACCESS_TOKEN: ${{secrets.TM_ACCESS_TOKEN}}
+      TM_CORE_API_URL: ${{secrets.TM_CORE_API_URL}}
+      PYTHONPATH: ./
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: set up python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: execute deployer script
+        id: clu_deployer
+        run: |
+          OUTPUT=$(./configuration-layer-utility/gha_deployer.sh);
