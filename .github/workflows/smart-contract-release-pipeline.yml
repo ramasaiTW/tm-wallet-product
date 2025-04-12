@@ -11,10 +11,12 @@ on:
         options:
           - wallet
 jobs:
-  deployment:
+  dev-deployment:
     runs-on: ubuntu-latest
+    environment: dev
     env:
       PRODUCT: ${{inputs.product}}
+      ENVIRONMENT: dev
       TM_ACCESS_TOKEN: ${{secrets.TM_ACCESS_TOKEN}}
       TM_CORE_API_URL: ${{secrets.TM_CORE_API_URL}}
       PYTHONPATH: ./
