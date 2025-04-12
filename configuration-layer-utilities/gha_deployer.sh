@@ -17,8 +17,8 @@ fi
 
 CONTENTS="./library"
 COMMON_MANIFEST="$CONTENTS/common_manifest.yaml"
-PRODUCT_MANIFEST="$CONTENTS/${PRODUCT}_manifest.yaml"
-CLU_RUNNER=./configuration-layer-utility/clu-linux-amd64
+PRODUCT_MANIFEST="$CONTENTS/wallet_manifest.yaml"
+CLU_RUNNER=./configuration-layer-utilities/clu-darwin-amd64
 
 echo "Running CLU validate on '${COMMON_MANIFEST}' and '${PRODUCT_MANIFEST}'..."
 
