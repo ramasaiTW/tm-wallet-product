@@ -39,4 +39,4 @@ jobs:
       - name: execute deployer script
         id: clu_deployer
         run: |
-          OUTPUT=$(./configuration-layer-utilities/gha_deployer.sh);
+          ./configuration-layer-utilities/gha_deployer.sh
