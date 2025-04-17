@@ -68,7 +68,7 @@ from contracts_api import (
 )
 
 api = "4.0.0"
-version = "3.0.7"
+version = "3.0.1"
 tside = Tside.LIABILITY
 supported_denominations = ["GBP", "SGD", "USD"]
 

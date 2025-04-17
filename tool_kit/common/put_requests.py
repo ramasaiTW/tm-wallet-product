@@ -24,7 +24,6 @@ def update_account_schedule_tag(
         },
         "update_mask": {"paths": paths},
     }
-
     return api_request(
         "put", f"/v1/account-schedule-tags/{account_schedule_tag_id}", data=json.dumps(request_body)
     )
@@ -144,7 +143,6 @@ def update_service_account_permissions(
         "items_to_add": items_to_add,
         "items_to_remove": items_to_remove,
     }
-
     return api_request(
         "put",
         f"/v1/service-accounts/{service_account_id}:updatePermissions",
@@ -169,7 +167,6 @@ def update_calendar_event(
             "paths": paths,
         },
     }
-
     return api_request(
         "put",
         f"/v1/calendar-event/{calendar_event_id}:updateDetails",
@@ -388,7 +385,6 @@ def update_flag_definition(
         "request_id": request_id,
         "update_mask": {"paths": paths},
     }
-
     return api_request(
         "put", f"/v1/flag-definitions/{flag_definition_id}", data=json.dumps(request_body)
     )
@@ -406,7 +402,6 @@ def update_flag(
         "request_id": request_id,
         "update_mask": {"paths": paths},
     }
-
     return api_request("put", f"/v1/flags/{flag_id}", data=json.dumps(request_body))
 
 
@@ -422,7 +417,6 @@ def update_parameter_value_hierarchy_node(
         "parameter_value_hierarchy_node": {"name": name, "metadata": metadata},
         "update_mask": {"paths": paths},
     }
-
     return api_request(
         "put",
         f"/v1/parameter-value-hierarchy-nodes/{parameter_value_hierarchy_node_id}",
@@ -451,7 +445,6 @@ def update_parameter_value(
         },
         "effective_to_timestamp_update_options": {"set_to_now": set_to_now},
     }
-
     return api_request(
         "put", f"/v1/parameter-values/{parameter_value_id}", data=json.dumps(request_body)
     )
@@ -468,7 +461,6 @@ def update_payment_device_link(
         "request_id": request_id,
         "update_mask": {"paths": paths},
     }
-
     return api_request(
         "put", f"/v1/payment-device-links/{payment_device_link_id}", data=json.dumps(request_body)
     )
@@ -496,7 +488,6 @@ def update_payment_device(
             }
         },
     }
-
     return api_request(
         "put", f"/v1/payment-devices/{payment_device_id}", data=json.dumps(request_body)
     )
@@ -514,7 +505,6 @@ def update_policy(
         "policy": {"description": description, "rego_source": rego_source},
         "update_mask": {"paths": paths},
     }
-
     return api_request("put", f"/v1/policies/{policy_id}", data=json.dumps(request_body))
 
 
@@ -537,12 +527,11 @@ def update_postings_apiclient(
         },
         "update_mask": {"paths": update_mask_paths or ["response_topic_low_priority"]},
     }
-
     return api_request(
         "put", f"/v1/postings-api-clients/{postings_api_client_id}", data=json.dumps(request_body)
     )
 
-
+  
 def update_processing_group(
     processing_group_id: str = None,
     request_id: str = None,
@@ -561,7 +550,6 @@ def update_processing_group(
             "schedules_observe_balances_at_unpause_time": True
         },
     }
-
     return api_request(
         "put", f"/v1/processing-groups/{processing_group_id}", data=json.dumps(request_body)
     )
@@ -591,7 +579,6 @@ def update_product_version_params(
             }
         ],
     }
-
     return api_request(
         "put",
         f"/v1/product-versions/{product_version_id}:updateParams",
@@ -610,7 +597,6 @@ def update_restriction_set(
         "request_id": request_id,
         "update_mask": {"paths": update_mask_paths},
     }
-
     return api_request(
         "put", f"/v1/restriction-sets/{restriction_set_id}", data=json.dumps(request_body)
     )
