@@ -154,7 +154,7 @@ def create_plan_update() -> List[Any]:
     request_body = {}
     return api_request("post", "/v1/plan-updates", data=json.dumps(request_body))
 
-  
+
 def create_plan(
     request_id: str = None,
     plan_id: str = None,

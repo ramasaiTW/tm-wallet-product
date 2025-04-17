@@ -531,7 +531,7 @@ def update_postings_apiclient(
         "put", f"/v1/postings-api-clients/{postings_api_client_id}", data=json.dumps(request_body)
     )
 
-  
+
 def update_processing_group(
     processing_group_id: str = None,
     request_id: str = None,
