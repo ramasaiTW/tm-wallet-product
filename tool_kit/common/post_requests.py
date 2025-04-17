@@ -4,14 +4,14 @@ from tool_kit.helpers.core_api_helper import api_request
 
 
 def create_account_schedule_tag(
-    request_id: str = "",
-    tag_id: str = "",
-    description: str = "",
+    request_id: str = None,
+    tag_id: str = None,
+    description: str = None,
     sends_scheduled_operation_reports: bool = False,
     schedule_status_override: str = "ACCOUNT_SCHEDULE_TAG_SCHEDULE_STATUS_OVERRIDE_UNKNOWN",
-    override_start_timestamp: str = "",
-    override_end_timestamp: str = "",
-    test_pause_at_timestamp: str = "",
+    override_start_timestamp: str = None,
+    override_end_timestamp: str = None,
+    test_pause_at_timestamp: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -29,10 +29,10 @@ def create_account_schedule_tag(
 
 
 def create_account_migration(
-    request_id: str = "",
-    migration_id: str = "",
+    request_id: str = None,
+    migration_id: str = None,
     from_product_version_ids: List[str] = None,
-    to_product_version_id: str = "",
+    to_product_version_id: str = None,
     schedule_migration_type: str = "SCHEDULE_MIGRATION_TYPE_RECREATE_ALL_SCHEDULES_AND_GROUPS",
 ) -> List[Any]:
     if from_product_version_ids is None:
@@ -53,17 +53,36 @@ def create_account_migration(
 
 
 def create_account_update_batch(
-    request_id: str = "",
-    batch_id: str = "",
-    account_updates: Optional[List[Dict[str, Any]]] = None,
+    request_id: Optional[str] = None,
+    batch_id: Optional[str] = None,
+    account_update_id: Optional[str] = None,
+    account_id: Optional[str] = None,
+    create_timestamp: Optional[str] = None,
+    last_status_update_timestamp: Optional[str] = None,
+    account_update_batch_id: Optional[str] = None,
+    instance_param_key: Optional[str] = None,
+    instance_param_value: Optional[str] = None,
     invalid_account_update_handling_type: str = "INVALID_ACCOUNT_UPDATE_HANDLING_TYPE_FAIL_BATCH",
 ) -> List[Any]:
-    if account_updates is None:
-        account_updates = []
-
     request_body: Dict[str, Any] = {
         "request_id": request_id,
-        "account_update_batch": {"id": batch_id, "account_updates": account_updates},
+        "account_update_batch": {
+            "id": batch_id,
+            "account_updates": [
+                {
+                    "id": account_update_id,
+                    "account_id": account_id,
+                    "create_timestamp": create_timestamp,
+                    "last_status_update_timestamp": last_status_update_timestamp,
+                    "account_update_batch_id": account_update_batch_id,
+                    "instance_param_vals_update": {
+                        "instance_param_vals": {instance_param_key: instance_param_value}
+                        if instance_param_key is not None
+                        else {}
+                    },
+                }
+            ],
+        },
         "create_options": {
             "invalid_account_update_handling_type": invalid_account_update_handling_type
         },
@@ -72,9 +91,9 @@ def create_account_update_batch(
 
 
 def create_account_update(
-    request_id: str = "",
-    update_id: str = "",
-    account_id: str = "",
+    request_id: str = None,
+    update_id: str = None,
+    account_id: str = None,
     instance_param_vals: Optional[Dict[str, Any]] = None,
 ) -> List[Any]:
     if instance_param_vals is None:
@@ -92,13 +111,13 @@ def create_account_update(
 
 
 def create_account(
-    request_id: str = "",
-    account_id: str = "",
-    product_id: str = "",
-    product_version_id: str = "",
+    request_id: str = None,
+    account_id: str = None,
+    product_id: str = None,
+    product_version_id: str = None,
     permitted_denominations: Optional[List[str]] = None,
     status: str = "ACCOUNT_STATUS_UNKNOWN",
-    opening_timestamp: str = "",
+    opening_timestamp: str = None,
     stakeholder_ids: Optional[List[str]] = None,
     instance_param_vals: Optional[Dict[str, Any]] = None,
     details: Optional[Dict[str, Any]] = None,
@@ -130,7 +149,7 @@ def create_account(
 
 
 def create_service_account(
-    name: str = "", permissions: Optional[List[str]] = None, request_id: str = ""
+    name: str = None, permissions: Optional[List[str]] = None, request_id: str = None
 ) -> List[Any]:
     if permissions is None:
         permissions = []
@@ -143,13 +162,13 @@ def create_service_account(
 
 
 def create_calendar(
-    request_id: str = "",
-    calendar_id: str = "",
-    calendar_period_descriptor_id: str = "",
+    request_id: str = None,
+    calendar_id: str = None,
+    calendar_period_descriptor_id: str = None,
     is_active: bool = False,
-    create_timestamp: str = "",
-    display_name: str = "",
-    description: str = "",
+    create_timestamp: str = None,
+    display_name: str = None,
+    description: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -166,13 +185,13 @@ def create_calendar(
 
 
 def create_calendar_event(
-    request_id: str = "",
-    event_id: str = "",
-    calendar_id: str = "",
-    name: str = "",
+    request_id: str = None,
+    event_id: str = None,
+    calendar_id: str = None,
+    name: str = None,
     is_active: bool = False,
-    start_timestamp: str = "",
-    end_timestamp: str = "",
+    start_timestamp: str = None,
+    end_timestamp: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -189,10 +208,10 @@ def create_calendar_event(
 
 
 def create_calendar_period_descriptor(
-    request_id: str = "",
-    descriptor_id: str = "",
-    name: str = "",
-    start_timestamp: str = "",
+    request_id: str = None,
+    descriptor_id: str = None,
+    name: str = None,
+    start_timestamp: str = None,
     resolution_unit: str = "TIME_UNIT_UNKNOWN",
     resolution_value: int = 0,
 ) -> List[Any]:
@@ -209,12 +228,12 @@ def create_calendar_period_descriptor(
 
 
 def create_contract_module_version(
-    request_id: str = "",
-    version_id: str = "",
-    contract_module_id: str = "",
-    display_name: str = "",
-    description: str = "",
-    code: str = "",
+    request_id: str = None,
+    version_id: str = None,
+    contract_module_id: str = None,
+    display_name: str = None,
+    description: str = None,
+    code: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -230,7 +249,7 @@ def create_contract_module_version(
 
 
 def create_contract_module(
-    request_id: str = "", module_id: str = "", display_name: str = "", description: str = ""
+    request_id: str = None, module_id: str = None, display_name: str = None, description: str = None
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -244,9 +263,9 @@ def create_contract_module(
 
 
 def create_smart_contract_module_versions_link(
-    request_id: str = "",
-    link_id: str = "",
-    smart_contract_version_id: str = "",
+    request_id: str = None,
+    link_id: str = None,
+    smart_contract_version_id: str = None,
     alias_to_contract_module_version_id: Optional[Dict[str, str]] = None,
 ) -> List[Any]:
     if alias_to_contract_module_version_id is None:
@@ -266,8 +285,8 @@ def create_smart_contract_module_versions_link(
 
 
 def simulate_contracts(
-    start_timestamp: str = "",
-    end_timestamp: str = "",
+    start_timestamp: str = None,
+    end_timestamp: str = None,
     smart_contracts: Optional[List[Dict[str, Any]]] = None,
     existing_smart_contracts: Optional[List[Dict[str, Any]]] = None,
     supervisor_contracts: Optional[List[Dict[str, Any]]] = None,
@@ -318,19 +337,19 @@ def simulate_contracts(
 
 
 def create_customer_address(
-    request_id: str = "",
-    house_name: str = "",
-    street_number: str = "",
-    street: str = "",
-    local_municipality: str = "",
-    city: str = "",
-    postal_area: str = "",
-    governing_district: str = "",
-    country: str = "",
+    request_id: str = None,
+    house_name: str = None,
+    street_number: str = None,
+    street: str = None,
+    local_municipality: str = None,
+    city: str = None,
+    postal_area: str = None,
+    governing_district: str = None,
+    country: str = None,
     address_type: str = "CUSTOMER_ADDRESS_TYPE_UNKNOWN",
-    start_timestamp: str = "",
-    end_timestamp: str = "",
-    customer_id: str = "",
+    start_timestamp: str = None,
+    end_timestamp: str = None,
+    customer_id: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -352,13 +371,95 @@ def create_customer_address(
     return api_request("post", "/v1/customer-addresses", data=json.dumps(request_body))
 
 
-def create_customer() -> List[Any]:
-    request_body = {}
+def create_customer(
+    request_id: str = None,
+    id: str = None,
+    status: str = "CUSTOMER_STATUS_UNKNOWN",
+    identifiers: List[Dict[str, str]] = None,
+    title: str = None,
+    first_name: str = None,
+    middle_name: str = None,
+    last_name: str = None,
+    dob: str = None,
+    gender: str = None,
+    nationality: str = None,
+    email_address: str = None,
+    mobile_phone_number: str = None,
+    home_phone_number: str = None,
+    business_phone_number: str = None,
+    contact_method: str = None,
+    country_of_residence: str = None,
+    country_of_taxation: str = None,
+    accessibility: str = None,
+    external_customer_id: str = None,
+    additional_details: Dict[str, str] = None,
+) -> List[Any]:
+    if identifiers is None:
+        identifiers = []
+    if additional_details is None:
+        additional_details = {}
+
+    request_body: Dict[str, Any] = {
+        "request_id": request_id,
+        "customer": {
+            "id": id,
+            "status": status,
+            "identifiers": identifiers,
+            "customer_details": {
+                "title": title,
+                "first_name": first_name,
+                "middle_name": middle_name,
+                "last_name": last_name,
+                "dob": dob,
+                "gender": gender,
+                "nationality": nationality,
+                "email_address": email_address,
+                "mobile_phone_number": mobile_phone_number,
+                "home_phone_number": home_phone_number,
+                "business_phone_number": business_phone_number,
+                "contact_method": contact_method,
+                "country_of_residence": country_of_residence,
+                "country_of_taxation": country_of_taxation,
+                "accessibility": accessibility,
+                "external_customer_id": external_customer_id,
+            },
+            "additional_details": additional_details,
+        },
+    }
     return api_request("post", "/v1/customers", data=json.dumps(request_body))
 
 
-def search_customers() -> List[Any]:
-    request_body = {}
+def search_customers(
+    statuses: List[str] = None,
+    email_identifiers: List[str] = None,
+    phone_identifiers: List[str] = None,
+    username_identifiers: List[str] = None,
+    external_customer_id_pattern: str = None,
+    match_type: str = None,
+    page_size: str = None,
+    page_token: str = None,
+) -> List[Any]:
+    if statuses is None:
+        statuses = []
+    if email_identifiers is None:
+        email_identifiers = []
+    if phone_identifiers is None:
+        phone_identifiers = []
+    if username_identifiers is None:
+        username_identifiers = []
+
+    request_body: Dict[str, Any] = {
+        "statuses": statuses,
+        "email_identifiers": email_identifiers,
+        "phone_identifiers": phone_identifiers,
+        "username_identifiers": username_identifiers,
+        "external_customer_id_pattern_match": {
+            "pattern": external_customer_id_pattern,
+            "match_type": match_type,
+        },
+        "page_size": page_size,
+        "page_token": page_token,
+    }
     return api_request("post", "/v1/customers:search", data=json.dumps(request_body))
 
 
@@ -377,12 +478,12 @@ def replay_journal_events(
 
 
 def create_flag_definition(
-    id: str = "",
-    name: str = "",
-    description: str = "",
+    id: str = None,
+    name: str = None,
+    description: str = None,
     required_flag_level: str = "FLAG_LEVEL_UNKNOWN",
     flag_visibility: str = "FLAG_VISIBILITY_UNKNOWN",
-    request_id: str = "",
+    request_id: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "flag_definition": {
@@ -398,12 +499,12 @@ def create_flag_definition(
 
 
 def create_flag(
-    flag_definition_id: str = "",
-    description: str = "",
-    effective_timestamp: str = "",
-    expiry_timestamp: str = "",
-    customer_id: str = "",
-    request_id: str = "",
+    flag_definition_id: str = None,
+    description: str = None,
+    effective_timestamp: str = None,
+    expiry_timestamp: str = None,
+    customer_id: str = None,
+    request_id: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "flag": {
@@ -419,10 +520,10 @@ def create_flag(
 
 
 def create_global_parameter_value(
-    request_id: str = "",
-    global_parameter_id: str = "",
-    value: str = "",
-    effective_timestamp: str = "",
+    request_id: str = None,
+    global_parameter_id: str = None,
+    value: str = None,
+    effective_timestamp: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -436,15 +537,15 @@ def create_global_parameter_value(
 
 
 def create_global_parameter(
-    request_id: str = "",
-    id: str = "",
-    display_name: str = "",
-    description: str = "",
+    request_id: str = None,
+    id: str = None,
+    display_name: str = None,
+    description: str = None,
     value_type: str = "NUMBER_FIELD_DISPLAY_STYLE_NOT_SPECIFIED",
-    min_value: str = "",
-    max_value: str = "",
-    step: str = "",
-    initial_value: str = "",
+    min_value: str = None,
+    max_value: str = None,
+    step: str = None,
+    initial_value: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
@@ -465,9 +566,9 @@ def create_global_parameter(
 
 
 def create_internal_account(
-    request_id: str = "",
-    id: str = "",
-    product_id: str = "",
+    request_id: str = None,
+    id: str = None,
+    product_id: str = None,
     permitted_denominations: List[str] = None,
     details: Dict[str, str] = None,
     tside: str = "TSIDE_UNKNOWN",
@@ -490,32 +591,105 @@ def create_internal_account(
     return api_request("post", "/v1/internal-accounts", data=json.dumps(request_body))
 
 
-def create_parameter_value_hierarchy_node() -> List[Any]:
-    request_body = {}
+def create_parameter_value_hierarchy_node(
+    request_id: str = None,
+    node_id: str = None,
+    name: str = None,
+    parent_id: str = None,
+    metadata: Optional[Dict[str, str]] = None,
+) -> List[Any]:
+    if metadata is None:
+        metadata = {}
+
+    request_body: Dict[str, Any] = {
+        "request_id": request_id,
+        "parameter_value_hierarchy_node": {
+            "id": node_id,
+            "name": name,
+            "parent_id": parent_id,
+            "metadata": metadata,
+        },
+    }
     return api_request("post", "/v1/parameter-value-hierarchy-nodes", data=json.dumps(request_body))
 
 
-def create_parameter_value() -> List[Any]:
-    request_body = {}
+def create_parameter_value(
+    request_id: str = None,
+    parameter_id: str = None,
+    effective_from_timestamp: str = None,
+    is_backdated: bool = False,
+    string_value: str = None,
+    account_config_group_id: str = None,
+    account_id: str = None,
+) -> List[Any]:
+    request_body: Dict[str, Any] = {
+        "request_id": request_id,
+        "parameter_value": {
+            "parameter_id": parameter_id,
+            "effective_from_timestamp": effective_from_timestamp,
+            "is_backdated": is_backdated,
+            "value": {"string_value": string_value},
+            "account_config_group_id": account_config_group_id,
+            "account_id": account_id,
+        },
+    }
     return api_request("post", "/v1/parameter-values", data=json.dumps(request_body))
 
 
-def batch_create_parameter_values() -> List[Any]:
-    request_body = {}
+def batch_create_parameter_values(
+    request_id: str = None,
+    parameter_id: str = None,
+    effective_from_timestamp: str = None,
+    is_backdated: bool = False,
+    string_value: str = None,
+    account_config_group_id: str = None,
+    account_id: str = None,
+) -> List[Any]:
+    request_body: Dict[str, Any] = {
+        "request_id": request_id,
+        "parameter_values": [
+            {
+                "parameter_id": parameter_id,
+                "effective_from_timestamp": effective_from_timestamp,
+                "is_backdated": is_backdated,
+                "value": {"string_value": string_value},
+                "account_config_group_id": account_config_group_id,
+                "account_id": account_id,
+            }
+        ],
+    }
     return api_request("post", "/v1/parameter-values:batchCreate", data=json.dumps(request_body))
 
 
-def create_parameter() -> List[Any]:
-    request_body = {}
+def create_parameter(
+    request_id: str = None,
+    parameter_id: str = None,
+    min_length: int = 0,
+    max_length: int = 0,
+    metadata: Dict[str, str] = None,
+) -> List[Any]:
+    if metadata is None:
+        metadata = {}
+
+    request_body: Dict[str, Any] = {
+        "request_id": request_id,
+        "parameter": {
+            "id": parameter_id,
+            "constraint": {
+                "string_constraint": {"min_length": min_length, "max_length": max_length}
+            },
+            "metadata": metadata,
+        },
+    }
     return api_request("post", "/v1/parameters", data=json.dumps(request_body))
 
 
 def create_payment_device_link(
-    request_id: str = "",
-    id: str = "",
-    token: str = "",
-    payment_device_id: str = "",
-    account_id: str = "",
+    request_id: str = None,
+    id: str = None,
+    token: str = None,
+    payment_device_id: str = None,
+    account_id: str = None,
     status: str = "PAYMENT_DEVICE_LINK_STATUS_UNKNOWN",
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
@@ -533,8 +707,8 @@ def create_payment_device_link(
 
 
 def create_payment_device(
-    request_id: str = "",
-    id: str = "",
+    request_id: str = None,
+    id: str = None,
     routing_info: Dict[str, str] = None,
     status: str = "PAYMENT_DEVICE_STATUS_UNKNOWN",
     start_timestamp: str = "",
@@ -561,10 +735,10 @@ def create_payment_device(
 
 
 def create_plan_migration(
-    request_id: str = "",
-    id: str = "",
+    request_id: str = None,
+    id: str = None,
     from_supervisor_contract_version_ids: List[str] = None,
-    to_supervisor_contract_version_id: str = "",
+    to_supervisor_contract_version_id: str = None,
     schedule_migration_type: str = "SCHEDULE_MIGRATION_TYPE_RECREATE_ALL_SCHEDULES_AND_GROUPS",
 ) -> List[Any]:
     if from_supervisor_contract_version_ids is None:
@@ -586,12 +760,12 @@ def create_plan_migration(
 
 
 def create_plan_update(
-    request_id: str = "",
-    id: str = "",
-    plan_id: str = "",
-    job_id: str = "",
+    request_id: str = None,
+    id: str = None,
+    plan_id: str = None,
+    job_id: str = None,
     status: str = "PLAN_UPDATE_STATUS_UNKNOWN",
-    account_id: str = "",
+    account_id: str = None,
 ) -> List[Any]:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
