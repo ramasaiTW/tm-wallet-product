@@ -1,17 +1,19 @@
-from typing import List, Any
-from tool_kit.helpers.core_api_helper import load_paginated_data, api_request
+from typing import Any
+from tool_kit.helpers.core_api_helper import load_paginated_data, send_api_request
 
 
-def list_account_schedule_tags(all_pages=True, page_size=500) -> List[Any]:
+def list_account_schedule_tags(all_pages=True, page_size=500) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of results to be listed. Required. Min value: 1. Max value: 500.
     """
 
-    return load_paginated_data("get", "/v1/account-schedule-tags", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/account-schedule-tags", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_account_schedule_tags(ids=None) -> List[Any]:
+def batch_get_account_schedule_tags(ids=None) -> Any:
     """
     :param ids: A list of the IDs of the AccountScheduleTags that are to be retrieved. The 6.0 release will reduce the
     maximum number of IDs to 50. Required. Min count: 1. Max count: 500.
@@ -22,10 +24,10 @@ def batch_get_account_schedule_tags(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/account-schedule-tags:batchGet", query_params)
+    return send_api_request("get", "/v1/account-schedule-tags:batchGet", query_params)
 
 
-def list_account_migrations(all_pages=True, statuses=None, page_size=1000) -> List[Any]:
+def list_account_migrations(all_pages=True, statuses=None, page_size=1000) -> Any:
     """
     :param all_pages: To get the all pages
     :param statuses: The statuses of account migrations; these are used to filter on. Optional.
@@ -38,10 +40,16 @@ def list_account_migrations(all_pages=True, statuses=None, page_size=1000) -> Li
     query_params = {
         "statuses": statuses,
     }
-    return load_paginated_data("get", "/v1/account-migrations", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get",
+        "/v1/account-migrations",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
+    )
 
 
-def batch_get_account_migrations(ids=None) -> List[Any]:
+def batch_get_account_migrations(ids=None) -> Any:
     """
     :param ids: A list of the IDs of account migrations that are to be retrieved. Required; must be non-empty.
     The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -52,10 +60,10 @@ def batch_get_account_migrations(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/account-migrations:batchGet", query_params)
+    return send_api_request("get", "/v1/account-migrations:batchGet", query_params)
 
 
-def list_account_schedule_assocs(all_pages=True, account_id=None, page_size=500) -> List[Any]:
+def list_account_schedule_assocs(all_pages=True, account_id=None, page_size=500) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_id: The account ID that Account Schedule associations are to be listed for. Required.
@@ -68,20 +76,22 @@ def list_account_schedule_assocs(all_pages=True, account_id=None, page_size=500)
         "account_id": account_id,
     }
     return load_paginated_data(
-        "get", "/v1/account-schedule-assocs", query_params, page_size, all_pages
+        "get",
+        "/v1/account-schedule-assocs",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def get_account_schedule_assoc(id=None) -> List[Any]:
+def get_account_schedule_assoc(id=None) -> Any:
     """
     :param id: The ID of the Account Schedule association that is to be retrieved. Required.
     """
-    return api_request("get", f"/v1/account-schedule-assocs/{id}")
+    return send_api_request("get", f"/v1/account-schedule-assocs/{id}")
 
 
-def list_account_update_batches(
-    all_pages=True, account_migration_ids=None, page_size=20
-) -> List[Any]:
+def list_account_update_batches(all_pages=True, account_migration_ids=None, page_size=20) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_migration_ids: The IDs of the account migrations that account update batches are to be listed for.
@@ -96,11 +106,15 @@ def list_account_update_batches(
         "account_migration_ids": account_migration_ids,
     }
     return load_paginated_data(
-        "get", "/v1/account-update-batches", query_params, page_size, all_pages
+        "get",
+        "/v1/account-update-batches",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def batch_get_account_update_batches(ids=None) -> List[Any]:
+def batch_get_account_update_batches(ids=None) -> Any:
     """
     :param ids: A list of the IDs of account update batches that are to be retrieved. Required; must be non-empty.
     Required. Min count: 1. Max count: 20.
@@ -111,12 +125,10 @@ def batch_get_account_update_batches(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/account-update-batches:batchGet", query_params)
+    return send_api_request("get", "/v1/account-update-batches:batchGet", query_params)
 
 
-def list_account_updates(
-    all_pages=True, account_id=None, statuses=None, page_size=1000
-) -> List[Any]:
+def list_account_updates(all_pages=True, account_id=None, statuses=None, page_size=1000) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_id: The ID of the account that updates are to be listed for. Required.
@@ -133,17 +145,19 @@ def list_account_updates(
         "account_id": account_id,
         "statuses": statuses,
     }
-    return load_paginated_data("get", "/v1/account-updates", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/account-updates", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_account_update(id=None) -> List[Any]:
+def get_account_update(id=None) -> Any:
     """
     :param id: The ID of the account update that is to be retrieved. Required.
     """
-    return api_request("get", f"/v1/account-updates/{id}")
+    return send_api_request("get", f"/v1/account-updates/{id}")
 
 
-def batch_get_account_updates(ids=None) -> List[Any]:
+def batch_get_account_updates(ids=None) -> Any:
     """
     :param ids: A list of the IDs of account updates that are to be retrieved. Required; must be non-empty.
     The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -154,7 +168,7 @@ def batch_get_account_updates(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/account-updates:batchGet", query_params)
+    return send_api_request("get", "/v1/account-updates:batchGet", query_params)
 
 
 def list_accounts(
@@ -167,7 +181,7 @@ def list_accounts(
     opening_timestamp_range_to=None,
     closing_timestamp_range_from=None,
     closing_timestamp_range_to=None,
-) -> List[Any]:
+) -> Any:
     if stakeholder_id is None:
         stakeholder_id = ""
     if account_statuses is None:
@@ -192,19 +206,21 @@ def list_accounts(
         "closing_timestamp_range.from": closing_timestamp_range_from,
         "closing_timestamp_range.to": closing_timestamp_range_to,
     }
-    return load_paginated_data("get", "/v1/accounts", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/accounts", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def list_account_param_timeseries(account_id=None) -> List[Any]:
+def list_account_param_timeseries(account_id=None) -> Any:
     """
     :param account_id: The account ID a parameter timeseries is to be retrieved for.
     """
-    return api_request("get", f"/v1/accounts/{account_id}:paramTimeseries")
+    return send_api_request("get", f"/v1/accounts/{account_id}:paramTimeseries")
 
 
 def get_account(
     id=None, fields_to_include=None, instance_param_vals_effective_timestamp=None
-) -> List[Any]:
+) -> Any:
     """
     :param id: The ID of the account to be retrieved. Required.
     :param fields_to_include: A list of fields to display, which are omitted by default. When set to
@@ -222,12 +238,12 @@ def get_account(
         "fields_to_include": fields_to_include,
         "instance_param_vals_effective_timestamp": instance_param_vals_effective_timestamp,
     }
-    return api_request("get", f"/v1/accounts/{id}", query_params)
+    return send_api_request("get", f"/v1/accounts/{id}", query_params)
 
 
 def list_account_attribute_values(
     all_pages=True, page_size=100, account_ids=None, attribute_names=None, effective_timestamps=None
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The page size of Account Attribute values to be returned. Maximum 100. Required.
@@ -250,13 +266,15 @@ def list_account_attribute_values(
         "effective_timestamps": effective_timestamps,
     }
     return load_paginated_data(
-        "get", "/v1/account-attribute-values", query_params, page_size, all_pages
+        "get",
+        "/v1/account-attribute-values",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def list_service_accounts(
-    all_pages=True, service_account_statuses=None, page_size=100
-) -> List[Any]:
+def list_service_accounts(all_pages=True, service_account_statuses=None, page_size=100) -> Any:
     """
     :param all_pages: To get the all pages
     :param service_account_statuses: A list of service account statuses that may be used as logical OR
@@ -270,17 +288,19 @@ def list_service_accounts(
     query_params = {
         "service_account_statuses": service_account_statuses,
     }
-    return load_paginated_data("get", "/v1/service-accounts", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/service-accounts", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_service_account(id=None) -> List[Any]:
+def get_service_account(id=None) -> Any:
     """
     :param id: The ID of the service account that is to be retrieved.
     """
-    return api_request("get", f"/v1/service-accounts/{id}")
+    return send_api_request("get", f"/v1/service-accounts/{id}")
 
 
-def batch_get_service_accounts(ids=None) -> List[Any]:
+def batch_get_service_accounts(ids=None) -> Any:
     """
     :param ids: A list of the IDs of service accounts that are to be retrieved. Required; must be non-empty.
     Required. Min length: 1 characters.
@@ -291,16 +311,16 @@ def batch_get_service_accounts(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/service-accounts:batchGet", query_params)
+    return send_api_request("get", "/v1/service-accounts:batchGet", query_params)
 
 
-def validate_token() -> List[Any]:
-    return api_request("get", "/v1/token:validate")
+def validate_token() -> Any:
+    return send_api_request("get", "/v1/token:validate")
 
 
 def list_balances_live(
     all_pages=True, account_ids=None, account_addresses=None, page_size=10000
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_ids: The IDs of the accounts the balances belong to. Required.
@@ -316,7 +336,9 @@ def list_balances_live(
         "account_ids": account_ids,
         "account_addresses": account_addresses,
     }
-    return load_paginated_data("get", "/v1/balances/live", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/balances/live", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
 def list_balances_time_range(
@@ -327,7 +349,7 @@ def list_balances_time_range(
     to_time=None,
     page_size=10000,
     snapshot_timestamp=None,
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_ids: The IDs of the accounts the balances belong to. Required.
@@ -360,7 +382,13 @@ def list_balances_time_range(
         "to_time": to_time,
         "snapshot_timestamp": snapshot_timestamp,
     }
-    return load_paginated_data("get", "/v1/balances/timerange", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get",
+        "/v1/balances/timerange",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
+    )
 
 
 def list_calendar_events(
@@ -371,7 +399,7 @@ def list_calendar_events(
     active_calendar_event=None,
     calendar_timestamp_range_from=None,
     calendar_timestamp_range_to=None,
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param calendar_ids: Filters by Calendars IDs; if this is not set, all Calendars will be included.
@@ -402,17 +430,19 @@ def list_calendar_events(
         "calendar_timestamp_range.from": calendar_timestamp_range_from,
         "calendar_timestamp_range.to": calendar_timestamp_range_to,
     }
-    return load_paginated_data("get", "/v1/calendar-event", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/calendar-event", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_calendar_event(id=None) -> List[Any]:
+def get_calendar_event(id=None) -> Any:
     """
     :param id: Maps the ID to the requested CalendarEvent.
     """
-    return api_request("get", f"/v1/calendar-event/{id}")
+    return send_api_request("get", f"/v1/calendar-event/{id}")
 
 
-def batch_get_calendar_events(ids=None) -> List[Any]:
+def batch_get_calendar_events(ids=None) -> Any:
     """
     :param ids: Maps the Calendar ID to the requested Calendars.
     """
@@ -422,17 +452,17 @@ def batch_get_calendar_events(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/calendar-event:batchGet", query_params)
+    return send_api_request("get", "/v1/calendar-event:batchGet", query_params)
 
 
-def get_bookkeeping_date(id=None) -> List[Any]:
+def get_bookkeeping_date(id=None) -> Any:
     """
     :param id: The associated Calendar to retrieve the next Bookkeeping Date for
     """
-    return api_request("get", f"/v1/calendar/bookkeeping-date/{id}")
+    return send_api_request("get", f"/v1/calendar/bookkeeping-date/{id}")
 
 
-def calculate_calendar_period(calendar_id=None, timestamp=None) -> List[Any]:
+def calculate_calendar_period(calendar_id=None, timestamp=None) -> Any:
     """
     :param calendar_id: The Calendar ID that will be used when calculating the number of period resolution units
     from the Calendar's start epoch.
@@ -445,19 +475,17 @@ def calculate_calendar_period(calendar_id=None, timestamp=None) -> List[Any]:
     query_params = {
         "timestamp": timestamp,
     }
-    return api_request("get", f"/v1/calendar/{calendar_id}:calculatePeriod", query_params)
+    return send_api_request("get", f"/v1/calendar/{calendar_id}:calculatePeriod", query_params)
 
 
-def get_calendar(id=None) -> List[Any]:
+def get_calendar(id=None) -> Any:
     """
     :param id: Maps the ID to the requested Calendar.
     """
-    return api_request("get", f"/v1/calendar/{id}")
+    return send_api_request("get", f"/v1/calendar/{id}")
 
 
-def list_calendars(
-    all_pages=True, page_size=10, order_by=None, name_pattern_match=None
-) -> List[Any]:
+def list_calendars(all_pages=True, page_size=10, order_by=None, name_pattern_match=None) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of results to be listed. Must be non-zero. Required.
@@ -473,7 +501,9 @@ def list_calendars(
         "order_by": order_by,
         "name_pattern_match": name_pattern_match,
     }
-    return load_paginated_data("get", "/v1/calendars", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/calendars", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
 def list_contract_executions(
@@ -485,7 +515,7 @@ def list_contract_executions(
     or_fields=None,
     execution_timestamp_range_from=None,
     execution_timestamp_range_to=None,
-) -> List[Any]:
+) -> Any:
     if contract_event_ids is None:
         contract_event_ids = []
     if account_ids is None:
@@ -507,12 +537,16 @@ def list_contract_executions(
         "execution_timestamp_range.from": execution_timestamp_range_from,
         "execution_timestamp_range.to": execution_timestamp_range_to,
     }
-    return load_paginated_data("get", "/v1/contract-executions", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get",
+        "/v1/contract-executions",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
+    )
 
 
-def list_contract_module_versions(
-    all_pages=True, contract_module_id=None, page_size=20
-) -> List[Any]:
+def list_contract_module_versions(all_pages=True, contract_module_id=None, page_size=20) -> Any:
     """
     :param all_pages: To get the all pages
     :param contract_module_id: The Contract Module ID to retrieve values for. Required.
@@ -525,11 +559,15 @@ def list_contract_module_versions(
         "contract_module_id": contract_module_id,
     }
     return load_paginated_data(
-        "get", "/v1/contract-module-versions", query_params, page_size, all_pages
+        "get",
+        "/v1/contract-module-versions",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def batch_get_contract_module_versions(ids=None, fields_to_include=None) -> List[Any]:
+def batch_get_contract_module_versions(ids=None, fields_to_include=None) -> Any:
     """
     :param ids: List of IDs of the Contract Module Versions to retrieve.
     :param fields_to_include: Additional fields to return; optional. Some Contract Module Version fields are
@@ -545,19 +583,21 @@ def batch_get_contract_module_versions(ids=None, fields_to_include=None) -> List
         "ids": ids,
         "fields_to_include": fields_to_include,
     }
-    return api_request("get", "/v1/contract-module-versions:batchGet", query_params)
+    return send_api_request("get", "/v1/contract-module-versions:batchGet", query_params)
 
 
-def list_contract_modules(all_pages=True, page_size=50) -> List[Any]:
+def list_contract_modules(all_pages=True, page_size=50) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Contract Modules to be retrieved. Required. Min value: 1. Max value: 50.
     """
 
-    return load_paginated_data("get", "/v1/contract-modules", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/contract-modules", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_contract_modules(ids=None) -> List[Any]:
+def batch_get_contract_modules(ids=None) -> Any:
     """
     :param ids: List of IDs of the Contract Modules to retrieve.
     """
@@ -567,12 +607,12 @@ def batch_get_contract_modules(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/contract-modules:batchGet", query_params)
+    return send_api_request("get", "/v1/contract-modules:batchGet", query_params)
 
 
 def list_smart_contract_module_versions_links(
     all_pages=True, smart_contract_version_ids=None, contract_module_version_ids=None, page_size=50
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param smart_contract_version_ids: The Smart Contract Version IDs to retrieve values for.
@@ -589,11 +629,15 @@ def list_smart_contract_module_versions_links(
         "contract_module_version_ids": contract_module_version_ids,
     }
     return load_paginated_data(
-        "get", "/v1/smart-contract-module-versions-links", query_params, page_size, all_pages
+        "get",
+        "/v1/smart-contract-module-versions-links",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def batch_get_smart_contract_module_versions_links(ids=None) -> List[Any]:
+def batch_get_smart_contract_module_versions_links(ids=None) -> Any:
     """
     :param ids: List of IDs of the Smart Contract Module Versions Links to retrieve.
     """
@@ -603,12 +647,14 @@ def batch_get_smart_contract_module_versions_links(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/smart-contract-module-versions-links:batchGet", query_params)
+    return send_api_request(
+        "get", "/v1/smart-contract-module-versions-links:batchGet", query_params
+    )
 
 
 def list_customer_addresses(
     all_pages=True, customer_id=None, include_previous=None, page_size=1000
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param customer_id: The unique ID of the customer. Required.
@@ -625,7 +671,13 @@ def list_customer_addresses(
         "customer_id": customer_id,
         "include_previous": include_previous,
     }
-    return load_paginated_data("get", "/v1/customer-addresses", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get",
+        "/v1/customer-addresses",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
+    )
 
 
 def list_customers(
@@ -635,7 +687,7 @@ def list_customers(
     phone_identifiers=None,
     username_identifiers=None,
     page_size=200,
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param statuses: List of inclusive OR customer status filters. Optional.
@@ -659,17 +711,19 @@ def list_customers(
         "phone_identifiers": phone_identifiers,
         "username_identifiers": username_identifiers,
     }
-    return load_paginated_data("get", "/v1/customers", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/customers", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_customer(customer_id=None) -> List[Any]:
+def get_customer(customer_id=None) -> Any:
     """
     :param customer_id: The unique ID of the customer.
     """
-    return api_request("get", f"/v1/customers/{customer_id}")
+    return send_api_request("get", f"/v1/customers/{customer_id}")
 
 
-def batch_get_customers(ids=None) -> List[Any]:
+def batch_get_customers(ids=None) -> Any:
     """
     :param ids: A list of the IDs of customers that are to be retrieved. Required. Min length: 1 characters.
     """
@@ -679,10 +733,10 @@ def batch_get_customers(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/customers:batchGet", query_params)
+    return send_api_request("get", "/v1/customers:batchGet", query_params)
 
 
-def get_derived_parameter_values(account_id=None, effective_timestamp=None) -> List[Any]:
+def get_derived_parameter_values(account_id=None, effective_timestamp=None) -> Any:
     """
     :param account_id: The Account ID for which derived parameters are calculated for.
     :param effective_timestamp: The returned derived parameter values will be calculated as of this timestamp.
@@ -697,12 +751,10 @@ def get_derived_parameter_values(account_id=None, effective_timestamp=None) -> L
         "account_id": account_id,
         "effective_timestamp": effective_timestamp,
     }
-    return api_request("get", "/v1/derived-parameter-values", query_params)
+    return send_api_request("get", "/v1/derived-parameter-values", query_params)
 
 
-def list_journal_events(
-    all_pages=True, time_window=None, resource_type=None, page_size=100
-) -> List[Any]:
+def list_journal_events(all_pages=True, time_window=None, resource_type=None, page_size=100) -> Any:
     """
     :param all_pages: To get the all pages
     :param time_window:
@@ -718,10 +770,12 @@ def list_journal_events(
         "time_window": time_window,
         "resource_type": resource_type,
     }
-    return load_paginated_data("get", "/v1/journal-events", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/journal-events", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_journal_events_checksum(time_window=None, resource_type=None) -> List[Any]:
+def get_journal_events_checksum(time_window=None, resource_type=None) -> Any:
     """
     :param time_window:
     :param resource_type: The type of the Vault resource. Required.
@@ -735,7 +789,7 @@ def get_journal_events_checksum(time_window=None, resource_type=None) -> List[An
         "time_window": time_window,
         "resource_type": resource_type,
     }
-    return api_request("get", "/v1/journal-events:checksum", query_params)
+    return send_api_request("get", "/v1/journal-events:checksum", query_params)
 
 
 def list_flag_definitions(
@@ -744,7 +798,7 @@ def list_flag_definitions(
     flag_levels=None,
     include_inactive=None,
     page_size=500,
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param flag_visibility_level: The Flag visibility level that Flag Definitions are to be returned for. Set this to
@@ -768,10 +822,12 @@ def list_flag_definitions(
         "flag_levels": flag_levels,
         "include_inactive": include_inactive,
     }
-    return load_paginated_data("get", "/v1/flag-definitions", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/flag-definitions", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_flag_definitions(ids=None) -> List[Any]:
+def batch_get_flag_definitions(ids=None) -> Any:
     """
     :param ids: The Flag Definition IDs or names to be retrieved. The Vault Core 6.0 release will enforce a
     maximum number of IDs of 50.
@@ -782,7 +838,7 @@ def batch_get_flag_definitions(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/flag-definitions:batchGet", query_params)
+    return send_api_request("get", "/v1/flag-definitions:batchGet", query_params)
 
 
 def list_flags(
@@ -797,7 +853,7 @@ def list_flags(
     page_size=3000,
     effective_timestamp_range_from=None,
     effective_timestamp_range_to=None,
-) -> List[Any]:
+) -> Any:
     if flag_definition_id is None:
         flag_definition_id = ""
     if customer_ids is None:
@@ -818,20 +874,14 @@ def list_flags(
         effective_timestamp_range_to = ""
 
     query_params = {
-        "flag_definition_id": flag_definition_id,
-        "customer_ids": customer_ids,
-        "account_ids": account_ids,
-        "payment_device_ids": payment_device_ids,
-        "flag_visibility_level": flag_visibility_level,
-        "effective_timestamp": effective_timestamp,
-        "include_inactive": include_inactive,
-        "effective_timestamp_range.from": effective_timestamp_range_from,
-        "effective_timestamp_range.to": effective_timestamp_range_to,
+
     }
-    return load_paginated_data("get", "/v1/flags", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/flags", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_flags(ids=None) -> List[Any]:
+def batch_get_flags(ids=None) -> Any:
     """
     :param ids: The Flag Definition IDs or names to be retrieved. The maximum number of IDs is 50.
     Required. Max count: 50.
@@ -842,7 +892,7 @@ def batch_get_flags(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/flags:batchGet", query_params)
+    return send_api_request("get", "/v1/flags:batchGet", query_params)
 
 
 def list_global_parameter_values(
@@ -851,7 +901,7 @@ def list_global_parameter_values(
     page_size=100,
     effective_timestamp_range_from=None,
     effective_timestamp_range_to=None,
-) -> List[Any]:
+) -> Any:
     if global_parameter_id is None:
         global_parameter_id = ""
     if effective_timestamp_range_from is None:
@@ -865,27 +915,33 @@ def list_global_parameter_values(
         "effective_timestamp_range.to": effective_timestamp_range_to,
     }
     return load_paginated_data(
-        "get", "/v1/global-parameter-values", query_params, page_size, all_pages
+        "get",
+        "/v1/global-parameter-values",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def list_global_parameters(all_pages=True, page_size=100) -> List[Any]:
+def list_global_parameters(all_pages=True, page_size=100) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of `GlobalParameter`s to be retrieved. Required. Min value: 1. Max value: 100.
     """
 
-    return load_paginated_data("get", "/v1/global-parameters", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/global-parameters", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_global_parameter(id=None) -> List[Any]:
+def get_global_parameter(id=None) -> Any:
     """
     :param id: The ID of the `GlobalParameter` to be retrieved.
     """
-    return api_request("get", f"/v1/global-parameters/{id}")
+    return send_api_request("get", f"/v1/global-parameters/{id}")
 
 
-def batch_get_global_parameters(ids=None) -> List[Any]:
+def batch_get_global_parameters(ids=None) -> Any:
     """
     :param ids: A list of IDs of `GlobalParameter`s to be retrieved.
     """
@@ -895,10 +951,10 @@ def batch_get_global_parameters(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/global-parameters:batchGet", query_params)
+    return send_api_request("get", "/v1/global-parameters:batchGet", query_params)
 
 
-def list_internal_accounts(all_pages=True, view=None, page_size=1000) -> List[Any]:
+def list_internal_accounts(all_pages=True, view=None, page_size=1000) -> Any:
     """
     :param all_pages: To get the all pages
     :param view: The view of the data to return. Optional; default ACCOUNT_VIEW_BASIC.
@@ -911,10 +967,12 @@ def list_internal_accounts(all_pages=True, view=None, page_size=1000) -> List[An
     query_params = {
         "view": view,
     }
-    return load_paginated_data("get", "/v1/internal-accounts", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/internal-accounts", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_internal_account(id=None, view=None) -> List[Any]:
+def get_internal_account(id=None, view=None) -> Any:
     """
     :param id: The ID of the internal account that is to be retrieved. Required.
     :param view: View of the data to return. Optional; default ACCOUNT_VIEW_BASIC.
@@ -925,10 +983,10 @@ def get_internal_account(id=None, view=None) -> List[Any]:
     query_params = {
         "view": view,
     }
-    return api_request("get", f"/v1/internal-accounts/{id}", query_params)
+    return send_api_request("get", f"/v1/internal-accounts/{id}", query_params)
 
 
-def batch_get_internal_accounts(ids=None, view=None) -> List[Any]:
+def batch_get_internal_accounts(ids=None, view=None) -> Any:
     """
     :param ids: A list of the IDs of internal accounts to be retrieved. Required; must be non-empty.
     The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -943,12 +1001,12 @@ def batch_get_internal_accounts(ids=None, view=None) -> List[Any]:
         "ids": ids,
         "view": view,
     }
-    return api_request("get", "/v1/internal-accounts:batchGet", query_params)
+    return send_api_request("get", "/v1/internal-accounts:batchGet", query_params)
 
 
 def list_ledger_balances(
     all_pages=True, account_ids=None, ledger_timestamp=None, page_size=10000
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_ids: The IDs of the accounts that Ledger Balances are to be listed for. Required.
@@ -966,19 +1024,21 @@ def list_ledger_balances(
         "account_ids": account_ids,
         "ledger_timestamp": ledger_timestamp,
     }
-    return load_paginated_data("get", "/v1/ledger-balances", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/ledger-balances", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_ledger_balance(id=None) -> List[Any]:
+def get_ledger_balance(id=None) -> Any:
     """
     :param id: The ID of the Ledger Balance to be retrieved. Required.
     """
-    return api_request("get", f"/v1/ledger-balances/{id}")
+    return send_api_request("get", f"/v1/ledger-balances/{id}")
 
 
 def list_parameter_value_hierarchy_nodes(
     all_pages=True, page_size=100, order_by=None, parent_ids=None, names=None
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Parameter Value Hierarchy Nodes to be returned. Maximum 100. Required.
@@ -1002,11 +1062,15 @@ def list_parameter_value_hierarchy_nodes(
         "names": names,
     }
     return load_paginated_data(
-        "get", "/v1/parameter-value-hierarchy-nodes", query_params, page_size, all_pages
+        "get",
+        "/v1/parameter-value-hierarchy-nodes",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def batch_get_parameter_value_hierarchy_nodes(ids=None) -> List[Any]:
+def batch_get_parameter_value_hierarchy_nodes(ids=None) -> Any:
     """
     :param ids: A list of Parameter Value Hierarchy Node IDs to retrieve. Maximum 100. Required.
     """
@@ -1016,7 +1080,7 @@ def batch_get_parameter_value_hierarchy_nodes(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/parameter-value-hierarchy-nodes:batchGet", query_params)
+    return send_api_request("get", "/v1/parameter-value-hierarchy-nodes:batchGet", query_params)
 
 
 def list_parameter_values(
@@ -1030,7 +1094,7 @@ def list_parameter_values(
     parameter_value_hierarchy_node_ids=None,
     effective_timestamp_range_from=None,
     effective_timestamp_range_to=None,
-) -> List[Any]:
+) -> Any:
     if parameter_ids is None:
         parameter_ids = []
     if global_param is None:
@@ -1058,10 +1122,12 @@ def list_parameter_values(
         "effective_timestamp_range.from": effective_timestamp_range_from,
         "effective_timestamp_range.to": effective_timestamp_range_to,
     }
-    return load_paginated_data("get", "/v1/parameter-values", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/parameter-values", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_parameter_values(ids=None) -> List[Any]:
+def batch_get_parameter_values(ids=None) -> Any:
     """
     :param ids: IDs of Parameter Values to retrieve. Maximum 100. Required.
     """
@@ -1071,19 +1137,21 @@ def batch_get_parameter_values(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/parameter-values:batchGet", query_params)
+    return send_api_request("get", "/v1/parameter-values:batchGet", query_params)
 
 
-def list_parameters(all_pages=True, page_size=1000) -> List[Any]:
+def list_parameters(all_pages=True, page_size=1000) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Parameters to be returned. Maximum 1000. Required.
     """
 
-    return load_paginated_data("get", "/v1/parameters", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/parameters", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_parameters(ids=None) -> List[Any]:
+def batch_get_parameters(ids=None) -> Any:
     """
     :param ids: IDs of Parameters to retrieve. Maximum 100. Required.
     """
@@ -1093,7 +1161,7 @@ def batch_get_parameters(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/parameters:batchGet", query_params)
+    return send_api_request("get", "/v1/parameters:batchGet", query_params)
 
 
 def list_payment_device_links(
@@ -1102,7 +1170,7 @@ def list_payment_device_links(
     account_ids=None,
     effective_timestamp=None,
     include_inactive=None,
-) -> List[Any]:
+) -> Any:
     """
     :param tokens: List of payment device link tokens.
     :param payment_device_ids: List of payment device IDs.
@@ -1129,10 +1197,10 @@ def list_payment_device_links(
         "effective_timestamp": effective_timestamp,
         "include_inactive": include_inactive,
     }
-    return api_request("get", "/v1/payment-device-links", query_params)
+    return send_api_request("get", "/v1/payment-device-links", query_params)
 
 
-def batch_get_payment_device_links(ids=None) -> List[Any]:
+def batch_get_payment_device_links(ids=None) -> Any:
     """
     :param ids: List of IDs of payment device links to fetch. Required; must be non-empty.
     The 6.0 release will enforce a maximum number of IDs of 50.
@@ -1143,10 +1211,10 @@ def batch_get_payment_device_links(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/payment-device-links:batchGet", query_params)
+    return send_api_request("get", "/v1/payment-device-links:batchGet", query_params)
 
 
-def batch_get_payment_devices(ids=None) -> List[Any]:
+def batch_get_payment_devices(ids=None) -> Any:
     """
     :param ids: List of IDs of payment devices to fetch. Required; must be non-empty.
     The 6.0 release will enforce a maximum number of IDs of 50.
@@ -1157,7 +1225,7 @@ def batch_get_payment_devices(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/payment-devices:batchGet", query_params)
+    return send_api_request("get", "/v1/payment-devices:batchGet", query_params)
 
 
 def list_account_plan_assocs(
@@ -1169,7 +1237,7 @@ def list_account_plan_assocs(
     start_timestamp_range_to=None,
     end_timestamp_range_from=None,
     end_timestamp_range_to=None,
-) -> List[Any]:
+) -> Any:
     if account_ids is None:
         account_ids = []
     if plan_ids is None:
@@ -1191,10 +1259,16 @@ def list_account_plan_assocs(
         "end_timestamp_range.from": end_timestamp_range_from,
         "end_timestamp_range.to": end_timestamp_range_to,
     }
-    return load_paginated_data("get", "/v1/account-plan-assocs", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get",
+        "/v1/account-plan-assocs",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
+    )
 
 
-def batch_get_account_plan_assocs(ids=None) -> List[Any]:
+def batch_get_account_plan_assocs(ids=None) -> Any:
     """
     :param ids: A list of the IDs of the account Plan Associations that are to be retrieved.
     Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -1205,10 +1279,10 @@ def batch_get_account_plan_assocs(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/account-plan-assocs:batchGet", query_params)
+    return send_api_request("get", "/v1/account-plan-assocs:batchGet", query_params)
 
 
-def list_plan_migrations(all_pages=True, statuses=None, page_size=100) -> List[Any]:
+def list_plan_migrations(all_pages=True, statuses=None, page_size=100) -> Any:
     """
     :param all_pages: To get the all pages
     :param statuses: Statuses of Plan Migrations to filter on. Optional.
@@ -1220,10 +1294,12 @@ def list_plan_migrations(all_pages=True, statuses=None, page_size=100) -> List[A
     query_params = {
         "statuses": statuses,
     }
-    return load_paginated_data("get", "/v1/plan-migrations", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/plan-migrations", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_plan_migrations(ids=None) -> List[Any]:
+def batch_get_plan_migrations(ids=None) -> Any:
     """
     :param ids: IDs of the Plan Migrations to get. Mandatory.
     The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -1234,12 +1310,12 @@ def batch_get_plan_migrations(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/plan-migrations:batchGet", query_params)
+    return send_api_request("get", "/v1/plan-migrations:batchGet", query_params)
 
 
 def list_plan_schedules(
     all_pages=True, plan_id=None, page_size=20, include_disassociated=None
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param plan_id: The Plan ID that Plan Schedules are to be listed for. Required; must be non-empty.
@@ -1257,12 +1333,14 @@ def list_plan_schedules(
         "plan_id": plan_id,
         "include_disassociated": include_disassociated,
     }
-    return load_paginated_data("get", "/v1/plan-schedules", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/plan-schedules", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
 def list_plan_updates(
     all_pages=True, plan_ids=None, job_ids=None, statuses=None, page_size=100
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param plan_ids: The IDs of Plans that Plan Updates are to be listed for. At least one of plan_ids and job_ids
@@ -1284,10 +1362,12 @@ def list_plan_updates(
         "job_ids": job_ids,
         "statuses": statuses,
     }
-    return load_paginated_data("get", "/v1/plan-updates", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/plan-updates", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_plan_updates(ids=None) -> List[Any]:
+def batch_get_plan_updates(ids=None) -> Any:
     """
     :param ids: A list of the IDs of the Plan Updates that are to be retrieved. Required; must be non-empty.
     The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -1298,10 +1378,10 @@ def batch_get_plan_updates(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/plan-updates:batchGet", query_params)
+    return send_api_request("get", "/v1/plan-updates:batchGet", query_params)
 
 
-def batch_get_plans(ids=None) -> List[Any]:
+def batch_get_plans(ids=None) -> Any:
     """
     :param ids: A list of the IDs of the Plans that are to be retrieved. Required; must be non-empty. The 6.0 release
      will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -1312,12 +1392,12 @@ def batch_get_plans(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/plans:batchGet", query_params)
+    return send_api_request("get", "/v1/plans:batchGet", query_params)
 
 
 def list_policies(
     all_pages=True, policy_schema_ids=None, fields_to_include=None, page_size=100
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param policy_schema_ids: The policy schema ID or IDs to filter results by. Optional.
@@ -1334,17 +1414,19 @@ def list_policies(
         "policy_schema_ids": policy_schema_ids,
         "fields_to_include": fields_to_include,
     }
-    return load_paginated_data("get", "/v1/policies", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/policies", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_policy(id=None) -> List[Any]:
+def get_policy(id=None) -> Any:
     """
     :param id: The ID of the Policy that is to be retrieved. Required.
     """
-    return api_request("get", f"/v1/policies/{id}")
+    return send_api_request("get", f"/v1/policies/{id}")
 
 
-def batch_get_policies(ids=None, fields_to_include=None) -> List[Any]:
+def batch_get_policies(ids=None, fields_to_include=None) -> Any:
     """
     :param ids: The IDs of the Policies to be retrieved. Required.
     :param fields_to_include: Fields to include in the response that are omitted by default. Optional.
@@ -1358,7 +1440,7 @@ def batch_get_policies(ids=None, fields_to_include=None) -> List[Any]:
         "ids": ids,
         "fields_to_include": fields_to_include,
     }
-    return api_request("get", "/v1/policies:batchGet", query_params)
+    return send_api_request("get", "/v1/policies:batchGet", query_params)
 
 
 def list_post_posting_failures(
@@ -1367,7 +1449,7 @@ def list_post_posting_failures(
     posting_instruction_batch_ids=None,
     page_size=50,
     post_posting_failure_statuses=None,
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_ids: Filters Post-Posting Failures by the account IDs of their associated failures. Optional.
@@ -1389,11 +1471,15 @@ def list_post_posting_failures(
         "post_posting_failure_statuses": post_posting_failure_statuses,
     }
     return load_paginated_data(
-        "get", "/v1/post-posting-failures", query_params, page_size, all_pages
+        "get",
+        "/v1/post-posting-failures",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def batch_get_post_posting_failures(ids=None) -> List[Any]:
+def batch_get_post_posting_failures(ids=None) -> Any:
     """
     :param ids: A list of IDs of Post-Posting Failures to be retrieved. Required. Required. Min count: 1. Max count: 50.
     """
@@ -1403,7 +1489,7 @@ def batch_get_post_posting_failures(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/post-posting-failures:batchGet", query_params)
+    return send_api_request("get", "/v1/post-posting-failures:batchGet", query_params)
 
 
 def list_posting_instruction_batches(
@@ -1416,7 +1502,7 @@ def list_posting_instruction_batches(
     order_by_direction=None,
     start_time=None,
     end_time=None,
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param account_ids: Filters posting instruction batches by the `account_ids` of their
@@ -1460,11 +1546,15 @@ def list_posting_instruction_batches(
         "end_time": end_time,
     }
     return load_paginated_data(
-        "get", "/v1/posting-instruction-batches", query_params, page_size, all_pages
+        "get",
+        "/v1/posting-instruction-batches",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def batch_get_async_operations(ids=None) -> List[Any]:
+def batch_get_async_operations(ids=None) -> Any:
     """
     :param ids: The IDs of the AsyncOperations to retrieve.
     """
@@ -1474,19 +1564,19 @@ def batch_get_async_operations(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request(
+    return send_api_request(
         "get", "/v1/posting-instruction-batches/async-operations:batchGet", query_params
     )
 
 
-def get_posting_instruction_batch(id=None) -> List[Any]:
+def get_posting_instruction_batch(id=None) -> Any:
     """
     :param id: The ID of the posting instruction batch to retrieve.
     """
-    return api_request("get", f"/v1/posting-instruction-batches/{id}")
+    return send_api_request("get", f"/v1/posting-instruction-batches/{id}")
 
 
-def batch_get_posting_instruction_batches(ids=None) -> List[Any]:
+def batch_get_posting_instruction_batches(ids=None) -> Any:
     """
     :param ids: A list of IDs of posting instruction batches to retrieve. Required; must be non-empty.
     This field must contain a valid UUID in the canonical 8-4-4-4-12 form. Required.
@@ -1497,27 +1587,29 @@ def batch_get_posting_instruction_batches(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/posting-instruction-batches:batchGet", query_params)
+    return send_api_request("get", "/v1/posting-instruction-batches:batchGet", query_params)
 
 
-def list_postings_apiclients(all_pages=True, page_size=10) -> List[Any]:
+def list_postings_apiclients(all_pages=True, page_size=10) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of results to retrieve. Required; must be non-zero.
     the first page of results will be returned. Optional.
     """
 
-    return load_paginated_data("get", "/v1/postings-api-clients", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/postings-api-clients", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_postings_apiclient(id=None) -> List[Any]:
+def get_postings_apiclient(id=None) -> Any:
     """
     :param id: A unique ID that identifies a `PostingsAPIClient` to the Postings API. Required.
     """
-    return api_request("get", f"/v1/postings-api-clients/{id}")
+    return send_api_request("get", f"/v1/postings-api-clients/{id}")
 
 
-def batch_get_postings_apiclients(ids=None) -> List[Any]:
+def batch_get_postings_apiclients(ids=None) -> Any:
     """
     :param ids: A list of unique IDs that identify `PostingsAPIClient`s to the Postings API. Required.
     """
@@ -1527,26 +1619,28 @@ def batch_get_postings_apiclients(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/postings-api-clients:batchGet", query_params)
+    return send_api_request("get", "/v1/postings-api-clients:batchGet", query_params)
 
 
-def list_processing_groups(all_pages=True, page_size=100) -> List[Any]:
+def list_processing_groups(all_pages=True, page_size=100) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Processing Groups to be listed per page. Required. Min value: 1. Max value: 100.
     """
 
-    return load_paginated_data("get", "/v1/processing-groups", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/processing-groups", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def get_processing_group(id=None) -> List[Any]:
+def get_processing_group(id=None) -> Any:
     """
     :param id: The ID of the Processing Group to be retrieved. Required.
     """
-    return api_request("get", f"/v1/processing-groups/{id}")
+    return send_api_request("get", f"/v1/processing-groups/{id}")
 
 
-def list_product_versions(all_pages=True, product_id=None, view=None, page_size=30) -> List[Any]:
+def list_product_versions(all_pages=True, product_id=None, view=None, page_size=30) -> Any:
     """
     :param all_pages: To get the all pages
     :param product_id: The product ID that product versions are to be listed for. Required.
@@ -1562,17 +1656,19 @@ def list_product_versions(all_pages=True, product_id=None, view=None, page_size=
         "product_id": product_id,
         "view": view,
     }
-    return load_paginated_data("get", "/v1/product-versions", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/product-versions", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def list_product_version_parameters_timeseries(product_version_id=None) -> List[Any]:
+def list_product_version_parameters_timeseries(product_version_id=None) -> Any:
     """
     :param product_version_id: The product version ID the parameter timeseries is to be retrieved for.
     """
-    return api_request("get", f"/v1/product-versions/{product_version_id}:paramTimeseries")
+    return send_api_request("get", f"/v1/product-versions/{product_version_id}:paramTimeseries")
 
 
-def batch_get_product_versions(ids=None, view=None) -> List[Any]:
+def batch_get_product_versions(ids=None, view=None) -> Any:
     """
     :param ids: A list of the IDs of the product versions to be retrieved. Required; must be non-empty.
     :param view: Indicates which fields should be included for the product versions. Optional; default is basic view.
@@ -1586,10 +1682,10 @@ def batch_get_product_versions(ids=None, view=None) -> List[Any]:
         "ids": ids,
         "view": view,
     }
-    return api_request("get", "/v1/product-versions:batchGet", query_params)
+    return send_api_request("get", "/v1/product-versions:batchGet", query_params)
 
 
-def list_products(all_pages=True, include_internality=None, page_size=30) -> List[Any]:
+def list_products(all_pages=True, include_internality=None, page_size=30) -> Any:
     """
     :param all_pages: To get the all pages
     :param include_internality: Whether to include internal and/or external Products in the results.
@@ -1601,10 +1697,12 @@ def list_products(all_pages=True, include_internality=None, page_size=30) -> Lis
     query_params = {
         "include_internality": include_internality,
     }
-    return load_paginated_data("get", "/v1/products", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/products", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_products(ids=None) -> List[Any]:
+def batch_get_products(ids=None) -> Any:
     """
     :param ids: The list of product IDs for the products that are to be retrieved. Required; must be non-empty.
     """
@@ -1614,12 +1712,12 @@ def batch_get_products(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/products:batchGet", query_params)
+    return send_api_request("get", "/v1/products:batchGet", query_params)
 
 
 def list_restriction_set_definition_versions(
     exclude_previous_versions=None, restriction_set_definition_id=None
-) -> List[Any]:
+) -> Any:
     """
     :param exclude_previous_versions: Indicates if previous versions should be excluded. Optional; default false.
     :param restriction_set_definition_id: The restriction set definition ID that the restriction set definition
@@ -1634,10 +1732,10 @@ def list_restriction_set_definition_versions(
         "exclude_previous_versions": exclude_previous_versions,
         "restriction_set_definition_id": restriction_set_definition_id,
     }
-    return api_request("get", "/v1/restriction-set-definition-versions", query_params)
+    return send_api_request("get", "/v1/restriction-set-definition-versions", query_params)
 
 
-def batch_get_restriction_set_definition_versions(ids=None) -> List[Any]:
+def batch_get_restriction_set_definition_versions(ids=None) -> Any:
     """
     :param ids: A list of the IDs of restriction set definition versions that are to be retrieved.
     Required; must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -1648,12 +1746,12 @@ def batch_get_restriction_set_definition_versions(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/restriction-set-definition-versions:batchGet", query_params)
+    return send_api_request("get", "/v1/restriction-set-definition-versions:batchGet", query_params)
 
 
 def list_restriction_set_definition_versions2(
     restriction_set_definition_id=None, exclude_previous_versions=None
-) -> List[Any]:
+) -> Any:
     """
     :param restriction_set_definition_id: The restriction set definition ID that the restriction
     set definition versions must belong to. If empty, all restriction set definitions are returned.
@@ -1666,26 +1764,28 @@ def list_restriction_set_definition_versions2(
     query_params = {
         "exclude_previous_versions": exclude_previous_versions,
     }
-    return api_request(
+    return send_api_request(
         "get",
         f"/v1/restriction-set-definition/{restriction_set_definition_id}/versions",
         query_params,
     )
 
 
-def list_restriction_set_definitions(all_pages=True, page_size=500) -> List[Any]:
+def list_restriction_set_definitions(all_pages=True, page_size=500) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of results to be retrieved. Required; non-zero; maximum 500.
     Required. Min value: 1. Max value: 500.
     """
 
-    return load_paginated_data("get", "/v1/restriction-set-definitions", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/restriction-set-definitions", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
 def list_restriction_sets(
     effective_timestamp=None, customer_ids=None, account_ids=None, payment_device_ids=None
-) -> List[Any]:
+) -> Any:
     """
     :param effective_timestamp: The time at which restriction sets apply.
     Any restriction sets that are not yet active or have already expired at this time will be excluded. Optional;
@@ -1712,10 +1812,10 @@ def list_restriction_sets(
         "account_ids": account_ids,
         "payment_device_ids": payment_device_ids,
     }
-    return api_request("get", "/v1/restriction-sets", query_params)
+    return send_api_request("get", "/v1/restriction-sets", query_params)
 
 
-def batch_get_restriction_sets(ids=None) -> List[Any]:
+def batch_get_restriction_sets(ids=None) -> Any:
     """
     :param ids: A list of the IDs of restriction sets that are to be retrieved. Required;
     must be non-empty. The 6.0 release will enforce a maximum number of IDs of 50. Required. Min count: 1.
@@ -1726,12 +1826,12 @@ def batch_get_restriction_sets(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/restriction-sets:batchGet", query_params)
+    return send_api_request("get", "/v1/restriction-sets:batchGet", query_params)
 
 
 def list_restrictions(
     effective_timestamp=None, customer_ids=None, account_ids=None, payment_device_ids=None
-) -> List[Any]:
+) -> Any:
     """
     :param effective_timestamp: The time at which restrictions apply. Any restrictions that are not yet active or
     have already expired at this time will be excluded. Optional; default is current time.
@@ -1758,7 +1858,7 @@ def list_restrictions(
         "account_ids": account_ids,
         "payment_device_ids": payment_device_ids,
     }
-    return api_request("get", "/v1/restrictions", query_params)
+    return send_api_request("get", "/v1/restrictions", query_params)
 
 
 def list_jobs(
@@ -1769,7 +1869,7 @@ def list_jobs(
     from_timestamp=None,
     to_timestamp=None,
     page_size=500,
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param schedule_id: The ID of the Schedule used to filter for associated Jobs. At least one of the schedule_id
@@ -1802,10 +1902,12 @@ def list_jobs(
         "from_timestamp": from_timestamp,
         "to_timestamp": to_timestamp,
     }
-    return load_paginated_data("get", "/v1/jobs", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/jobs", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_jobs(ids=None) -> List[Any]:
+def batch_get_jobs(ids=None) -> Any:
     """
     :param ids: The Job or Jobs to be retrieved using their Job IDs. Required. Min count: 1.
     """
@@ -1815,12 +1917,12 @@ def batch_get_jobs(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/jobs:batchGet", query_params)
+    return send_api_request("get", "/v1/jobs:batchGet", query_params)
 
 
 def list_schedules(
     all_pages=True, page_size=500, status=None, name_filter=None, resource=None
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of results to be listed. Required; must be non-zero. Required.
@@ -1842,10 +1944,12 @@ def list_schedules(
         "name_filter": name_filter,
         "resource": resource,
     }
-    return load_paginated_data("get", "/v1/schedules", query_params, page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/schedules", query_params, page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_schedules(ids=None) -> List[Any]:
+def batch_get_schedules(ids=None) -> Any:
     """
     :param ids: Maps the Schedule ID to the requested Schedules. Required. Min count: 1.
     """
@@ -1855,12 +1959,12 @@ def batch_get_schedules(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/schedules:batchGet", query_params)
+    return send_api_request("get", "/v1/schedules:batchGet", query_params)
 
 
 def list_supervisor_contract_versions(
     all_pages=True, supervisor_contract_id=None, fields_to_include=None, page_size=50
-) -> List[Any]:
+) -> Any:
     """
     :param all_pages: To get the all pages
     :param supervisor_contract_id: The Supervisor Contract ID to retrieve values for. Required.
@@ -1879,11 +1983,15 @@ def list_supervisor_contract_versions(
         "fields_to_include": fields_to_include,
     }
     return load_paginated_data(
-        "get", "/v1/supervisor-contract-versions", query_params, page_size, all_pages
+        "get",
+        "/v1/supervisor-contract-versions",
+        query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
-def batch_get_supervisor_contract_versions(ids=None, fields_to_include=None) -> List[Any]:
+def batch_get_supervisor_contract_versions(ids=None, fields_to_include=None) -> Any:
     """
     :param ids: List of IDs of the Supervisor Contract Versions to retrieve.
     :param fields_to_include: Additional fields to return; optional. Some Supervisor Contract Version fields are
@@ -1899,19 +2007,21 @@ def batch_get_supervisor_contract_versions(ids=None, fields_to_include=None) -> 
         "ids": ids,
         "fields_to_include": fields_to_include,
     }
-    return api_request("get", "/v1/supervisor-contract-versions:batchGet", query_params)
+    return send_api_request("get", "/v1/supervisor-contract-versions:batchGet", query_params)
 
 
-def list_supervisor_contracts(all_pages=True, page_size=50) -> List[Any]:
+def list_supervisor_contracts(all_pages=True, page_size=50) -> Any:
     """
     :param all_pages: To get the all pages
     :param page_size: The number of Supervisor Contracts to be retrieved. Required. Min value: 1. Max value: 50.
     """
 
-    return load_paginated_data("get", "/v1/supervisor-contracts", page_size, all_pages)
+    return load_paginated_data(
+        "get", "/v1/supervisor-contracts", page_size=page_size, fetch_all_pages=all_pages
+    )
 
 
-def batch_get_supervisor_contracts(ids=None) -> List[Any]:
+def batch_get_supervisor_contracts(ids=None) -> Any:
     """
     :param ids: List of IDs of the Supervisor Contracts to retrieve.
     """
@@ -1921,8 +2031,8 @@ def batch_get_supervisor_contracts(ids=None) -> List[Any]:
     query_params = {
         "ids": ids,
     }
-    return api_request("get", "/v1/supervisor-contracts:batchGet", query_params)
+    return send_api_request("get", "/v1/supervisor-contracts:batchGet", query_params)
 
 
-def get_vault_version() -> List[Any]:
-    return api_request("get", "/v1/vault-version")
+def get_vault_version() -> Any:
+    return send_api_request("get", "/v1/vault-version")

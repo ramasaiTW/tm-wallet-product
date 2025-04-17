@@ -1,6 +1,6 @@
 import json
 from typing import List, Any, Dict, Optional
-from tool_kit.helpers.core_api_helper import api_request
+from tool_kit.helpers.core_api_helper import send_api_request
 
 
 def create_account_schedule_tag(
@@ -12,7 +12,7 @@ def create_account_schedule_tag(
     override_start_timestamp: str = None,
     override_end_timestamp: str = None,
     test_pause_at_timestamp: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "account_schedule_tag": {
@@ -25,7 +25,7 @@ def create_account_schedule_tag(
             "test_pause_at_timestamp": test_pause_at_timestamp,
         },
     }
-    return api_request("post", "/v1/account-schedule-tags", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/account-schedule-tags", data=json.dumps(request_body))
 
 
 def create_account_migration(
@@ -34,7 +34,7 @@ def create_account_migration(
     from_product_version_ids: List[str] = None,
     to_product_version_id: str = None,
     schedule_migration_type: str = "SCHEDULE_MIGRATION_TYPE_RECREATE_ALL_SCHEDULES_AND_GROUPS",
-) -> List[Any]:
+) -> Any:
     if from_product_version_ids is None:
         from_product_version_ids = []
 
@@ -49,7 +49,7 @@ def create_account_migration(
             },
         },
     }
-    return api_request("post", "/v1/account-migrations", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/account-migrations", data=json.dumps(request_body))
 
 
 def create_account_update_batch(
@@ -63,7 +63,7 @@ def create_account_update_batch(
     instance_param_key: Optional[str] = None,
     instance_param_value: Optional[str] = None,
     invalid_account_update_handling_type: str = "INVALID_ACCOUNT_UPDATE_HANDLING_TYPE_FAIL_BATCH",
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "account_update_batch": {
@@ -87,7 +87,7 @@ def create_account_update_batch(
             "invalid_account_update_handling_type": invalid_account_update_handling_type
         },
     }
-    return api_request("post", "/v1/account-update-batches", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/account-update-batches", data=json.dumps(request_body))
 
 
 def create_account_update(
@@ -95,7 +95,7 @@ def create_account_update(
     update_id: str = None,
     account_id: str = None,
     instance_param_vals: Optional[Dict[str, Any]] = None,
-) -> List[Any]:
+) -> Any:
     if instance_param_vals is None:
         instance_param_vals = {}
 
@@ -107,7 +107,7 @@ def create_account_update(
             "instance_param_vals_update": {"instance_param_vals": instance_param_vals},
         },
     }
-    return api_request("post", "/v1/account-updates", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/account-updates", data=json.dumps(request_body))
 
 
 def create_account(
@@ -121,7 +121,7 @@ def create_account(
     stakeholder_ids: Optional[List[str]] = None,
     instance_param_vals: Optional[Dict[str, Any]] = None,
     details: Optional[Dict[str, Any]] = None,
-) -> List[Any]:
+) -> Any:
     if permitted_denominations is None:
         permitted_denominations = []
     if stakeholder_ids is None:
@@ -145,12 +145,12 @@ def create_account(
             "details": details,
         },
     }
-    return api_request("post", "/v1/accounts", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/accounts", data=json.dumps(request_body))
 
 
 def create_service_account(
     name: str = None, permissions: Optional[List[str]] = None, request_id: str = None
-) -> List[Any]:
+) -> Any:
     if permissions is None:
         permissions = []
 
@@ -158,7 +158,7 @@ def create_service_account(
         "service_account": {"name": name, "permissions": permissions},
         "request_id": request_id,
     }
-    return api_request("post", "/v1/service-accounts", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/service-accounts", data=json.dumps(request_body))
 
 
 def create_calendar(
@@ -169,7 +169,7 @@ def create_calendar(
     create_timestamp: str = None,
     display_name: str = None,
     description: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "calendar": {
@@ -181,7 +181,7 @@ def create_calendar(
             "description": description,
         },
     }
-    return api_request("post", "/v1/calendar", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/calendar", data=json.dumps(request_body))
 
 
 def create_calendar_event(
@@ -192,7 +192,7 @@ def create_calendar_event(
     is_active: bool = False,
     start_timestamp: str = None,
     end_timestamp: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "calendar_event": {
@@ -204,7 +204,7 @@ def create_calendar_event(
             "end_timestamp": end_timestamp,
         },
     }
-    return api_request("post", "/v1/calendar-event", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/calendar-event", data=json.dumps(request_body))
 
 
 def create_calendar_period_descriptor(
@@ -214,7 +214,7 @@ def create_calendar_period_descriptor(
     start_timestamp: str = None,
     resolution_unit: str = "TIME_UNIT_UNKNOWN",
     resolution_value: int = 0,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "calendar_period_descriptor": {
@@ -224,7 +224,7 @@ def create_calendar_period_descriptor(
             "resolution": {"unit": resolution_unit, "value": resolution_value},
         },
     }
-    return api_request("post", "/v1/calendar-period-descriptor", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/calendar-period-descriptor", data=json.dumps(request_body))
 
 
 def create_contract_module_version(
@@ -234,7 +234,7 @@ def create_contract_module_version(
     display_name: str = None,
     description: str = None,
     code: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "contract_module_version": {
@@ -245,12 +245,12 @@ def create_contract_module_version(
             "code": code,
         },
     }
-    return api_request("post", "/v1/contract-module-versions", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/contract-module-versions", data=json.dumps(request_body))
 
 
 def create_contract_module(
     request_id: str = None, module_id: str = None, display_name: str = None, description: str = None
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "contract_module": {
@@ -259,7 +259,7 @@ def create_contract_module(
             "description": description,
         },
     }
-    return api_request("post", "/v1/contract-modules", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/contract-modules", data=json.dumps(request_body))
 
 
 def create_smart_contract_module_versions_link(
@@ -267,7 +267,7 @@ def create_smart_contract_module_versions_link(
     link_id: str = None,
     smart_contract_version_id: str = None,
     alias_to_contract_module_version_id: Optional[Dict[str, str]] = None,
-) -> List[Any]:
+) -> Any:
     if alias_to_contract_module_version_id is None:
         alias_to_contract_module_version_id = {}
 
@@ -279,7 +279,7 @@ def create_smart_contract_module_versions_link(
             "alias_to_contract_module_version_id": alias_to_contract_module_version_id,
         },
     }
-    return api_request(
+    return send_api_request(
         "post", "/v1/smart-contract-module-versions-links", data=json.dumps(request_body)
     )
 
@@ -297,7 +297,7 @@ def simulate_contracts(
     existing_product_data_behaviour: Optional[Dict[str, Any]] = None,
     instructions: Optional[List[Dict[str, Any]]] = None,
     outputs: Optional[List[Dict[str, Any]]] = None,
-) -> List[Any]:
+) -> Any:
     if smart_contracts is None:
         smart_contracts = []
     if existing_smart_contracts is None:
@@ -333,7 +333,7 @@ def simulate_contracts(
         "instructions": instructions,
         "outputs": outputs,
     }
-    return api_request("post", "/v1/contracts:simulate", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/contracts:simulate", data=json.dumps(request_body))
 
 
 def create_customer_address(
@@ -350,7 +350,7 @@ def create_customer_address(
     start_timestamp: str = None,
     end_timestamp: str = None,
     customer_id: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "customer_address": {
@@ -368,7 +368,7 @@ def create_customer_address(
             "customer_id": customer_id,
         },
     }
-    return api_request("post", "/v1/customer-addresses", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/customer-addresses", data=json.dumps(request_body))
 
 
 def create_customer(
@@ -393,7 +393,7 @@ def create_customer(
     accessibility: str = None,
     external_customer_id: str = None,
     additional_details: Dict[str, str] = None,
-) -> List[Any]:
+) -> Any:
     if identifiers is None:
         identifiers = []
     if additional_details is None:
@@ -426,7 +426,7 @@ def create_customer(
             "additional_details": additional_details,
         },
     }
-    return api_request("post", "/v1/customers", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/customers", data=json.dumps(request_body))
 
 
 def search_customers(
@@ -438,7 +438,7 @@ def search_customers(
     match_type: str = None,
     page_size: str = None,
     page_token: str = None,
-) -> List[Any]:
+) -> Any:
     if statuses is None:
         statuses = []
     if email_identifiers is None:
@@ -460,13 +460,13 @@ def search_customers(
         "page_size": page_size,
         "page_token": page_token,
     }
-    return api_request("post", "/v1/customers:search", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/customers:search", data=json.dumps(request_body))
 
 
 def replay_journal_events(
     resource_type: str = "RESOURCE_TYPE_UNKNOWN",
     journal_events_to_replay: List[Dict[str, str]] = None,
-) -> List[Any]:
+) -> Any:
     if journal_events_to_replay is None:
         journal_events_to_replay = [{"event_identifier": "value1"}]
 
@@ -474,7 +474,7 @@ def replay_journal_events(
         "resource_type": resource_type,
         "journal_events_to_replay": journal_events_to_replay,
     }
-    return api_request("post", "/v1/journal-events:replay", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/journal-events:replay", data=json.dumps(request_body))
 
 
 def create_flag_definition(
@@ -484,7 +484,7 @@ def create_flag_definition(
     required_flag_level: str = "FLAG_LEVEL_UNKNOWN",
     flag_visibility: str = "FLAG_VISIBILITY_UNKNOWN",
     request_id: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "flag_definition": {
             "id": id,
@@ -495,7 +495,7 @@ def create_flag_definition(
         },
         "request_id": request_id,
     }
-    return api_request("post", "/v1/flag-definitions", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/flag-definitions", data=json.dumps(request_body))
 
 
 def create_flag(
@@ -505,7 +505,7 @@ def create_flag(
     expiry_timestamp: str = None,
     customer_id: str = None,
     request_id: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "flag": {
             "flag_definition_id": flag_definition_id,
@@ -516,7 +516,7 @@ def create_flag(
         },
         "request_id": request_id,
     }
-    return api_request("post", "/v1/flags", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/flags", data=json.dumps(request_body))
 
 
 def create_global_parameter_value(
@@ -524,7 +524,7 @@ def create_global_parameter_value(
     global_parameter_id: str = None,
     value: str = None,
     effective_timestamp: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "global_parameter_value": {
@@ -533,7 +533,7 @@ def create_global_parameter_value(
             "effective_timestamp": effective_timestamp,
         },
     }
-    return api_request("post", "/v1/global-parameter-values", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/global-parameter-values", data=json.dumps(request_body))
 
 
 def create_global_parameter(
@@ -546,7 +546,7 @@ def create_global_parameter(
     max_value: str = None,
     step: str = None,
     initial_value: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "global_parameter": {
@@ -562,7 +562,7 @@ def create_global_parameter(
         },
         "initial_value": initial_value,
     }
-    return api_request("post", "/v1/global-parameters", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/global-parameters", data=json.dumps(request_body))
 
 
 def create_internal_account(
@@ -572,7 +572,7 @@ def create_internal_account(
     permitted_denominations: List[str] = None,
     details: Dict[str, str] = None,
     tside: str = "TSIDE_UNKNOWN",
-) -> List[Any]:
+) -> Any:
     if permitted_denominations is None:
         permitted_denominations = []
     if details is None:
@@ -588,7 +588,7 @@ def create_internal_account(
         },
         "request_id": request_id,
     }
-    return api_request("post", "/v1/internal-accounts", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/internal-accounts", data=json.dumps(request_body))
 
 
 def create_parameter_value_hierarchy_node(
@@ -597,7 +597,7 @@ def create_parameter_value_hierarchy_node(
     name: str = None,
     parent_id: str = None,
     metadata: Optional[Dict[str, str]] = None,
-) -> List[Any]:
+) -> Any:
     if metadata is None:
         metadata = {}
 
@@ -610,7 +610,9 @@ def create_parameter_value_hierarchy_node(
             "metadata": metadata,
         },
     }
-    return api_request("post", "/v1/parameter-value-hierarchy-nodes", data=json.dumps(request_body))
+    return send_api_request(
+        "post", "/v1/parameter-value-hierarchy-nodes", data=json.dumps(request_body)
+    )
 
 
 def create_parameter_value(
@@ -621,7 +623,7 @@ def create_parameter_value(
     string_value: str = None,
     account_config_group_id: str = None,
     account_id: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "parameter_value": {
@@ -633,7 +635,7 @@ def create_parameter_value(
             "account_id": account_id,
         },
     }
-    return api_request("post", "/v1/parameter-values", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/parameter-values", data=json.dumps(request_body))
 
 
 def batch_create_parameter_values(
@@ -644,7 +646,7 @@ def batch_create_parameter_values(
     string_value: str = None,
     account_config_group_id: str = None,
     account_id: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "parameter_values": [
@@ -658,7 +660,9 @@ def batch_create_parameter_values(
             }
         ],
     }
-    return api_request("post", "/v1/parameter-values:batchCreate", data=json.dumps(request_body))
+    return send_api_request(
+        "post", "/v1/parameter-values:batchCreate", data=json.dumps(request_body)
+    )
 
 
 def create_parameter(
@@ -667,7 +671,7 @@ def create_parameter(
     min_length: int = 0,
     max_length: int = 0,
     metadata: Dict[str, str] = None,
-) -> List[Any]:
+) -> Any:
     if metadata is None:
         metadata = {}
 
@@ -681,7 +685,7 @@ def create_parameter(
             "metadata": metadata,
         },
     }
-    return api_request("post", "/v1/parameters", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/parameters", data=json.dumps(request_body))
 
 
 def create_payment_device_link(
@@ -691,7 +695,7 @@ def create_payment_device_link(
     payment_device_id: str = None,
     account_id: str = None,
     status: str = "PAYMENT_DEVICE_LINK_STATUS_UNKNOWN",
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "payment_device_link": {
             "id": id,
@@ -703,7 +707,7 @@ def create_payment_device_link(
         "request_id": request_id,
     }
 
-    return api_request("post", "/v1/payment-device-links", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/payment-device-links", data=json.dumps(request_body))
 
 
 def create_payment_device(
@@ -714,7 +718,7 @@ def create_payment_device(
     start_timestamp: str = "",
     end_timestamp: str = "",
     tags: List[str] = None,
-) -> List[Any]:
+) -> Any:
     if routing_info is None:
         routing_info = {}
     if tags is None:
@@ -731,7 +735,7 @@ def create_payment_device(
         },
         "request_id": request_id,
     }
-    return api_request("post", "/v1/payment-devices", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/payment-devices", data=json.dumps(request_body))
 
 
 def create_plan_migration(
@@ -740,7 +744,7 @@ def create_plan_migration(
     from_supervisor_contract_version_ids: List[str] = None,
     to_supervisor_contract_version_id: str = None,
     schedule_migration_type: str = "SCHEDULE_MIGRATION_TYPE_RECREATE_ALL_SCHEDULES_AND_GROUPS",
-) -> List[Any]:
+) -> Any:
     if from_supervisor_contract_version_ids is None:
         from_supervisor_contract_version_ids = []
 
@@ -756,7 +760,7 @@ def create_plan_migration(
         },
     }
 
-    return api_request("post", "/v1/plan-migrations", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/plan-migrations", data=json.dumps(request_body))
 
 
 def create_plan_update(
@@ -766,7 +770,7 @@ def create_plan_update(
     job_id: str = None,
     status: str = "PLAN_UPDATE_STATUS_UNKNOWN",
     account_id: str = None,
-) -> List[Any]:
+) -> Any:
     request_body: Dict[str, Any] = {
         "request_id": request_id,
         "plan_update": {
@@ -777,7 +781,7 @@ def create_plan_update(
             "associate_account_update": {"account_id": account_id},
         },
     }
-    return api_request("post", "/v1/plan-updates", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/plan-updates", data=json.dumps(request_body))
 
 
 def create_plan(
@@ -787,7 +791,7 @@ def create_plan(
     status: str = None,
     processing_group_id: str = None,
     details: dict = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "plan": {
@@ -798,7 +802,7 @@ def create_plan(
             "details": details,
         },
     }
-    return api_request("post", "/v1/plans", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/plans", data=json.dumps(request_body))
 
 
 def create_policy(
@@ -807,7 +811,7 @@ def create_policy(
     policy_schema_id: str = None,
     description: str = None,
     rego_source: str = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "policy": {
@@ -817,18 +821,20 @@ def create_policy(
             "rego_source": rego_source,
         },
     }
-    return api_request("post", "/v1/policies", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/policies", data=json.dumps(request_body))
 
 
 def republish_post_posting_failure(
     republish_type: str = None, contract_execution_behaviour: str = None, account_id: str = None
-) -> List[Any]:
+) -> Any:
     request_body = {
         "republish_type": republish_type,
         "contract_execution_behaviour": contract_execution_behaviour,
         "account_id": account_id,
     }
-    return api_request("post", "/v1/post-posting-failures:republish", data=json.dumps(request_body))
+    return send_api_request(
+        "post", "/v1/post-posting-failures:republish", data=json.dumps(request_body)
+    )
 
 
 def validate_create_posting_instruction_batch_request(
@@ -843,7 +849,7 @@ def validate_create_posting_instruction_batch_request(
     advice: bool = None,
     instruction_details: dict = None,
     batch_details: dict = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "posting_instruction_batch": {
@@ -865,7 +871,7 @@ def validate_create_posting_instruction_batch_request(
             "batch_details": batch_details,
         },
     }
-    return api_request(
+    return send_api_request(
         "post", "/v1/create-posting-instruction-batch:validate", data=json.dumps(request_body)
     )
 
@@ -887,7 +893,7 @@ def create_posting_instruction_batch(
     batch_details: dict = None,
     time_to_live: str = None,
     shard_key: str = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "dry_run": dry_run,
@@ -914,7 +920,9 @@ def create_posting_instruction_batch(
         "time_to_live": time_to_live,
         "shard_key": shard_key,
     }
-    return api_request("post", "/v1/posting-instruction-batches", data=json.dumps(request_body))
+    return send_api_request(
+        "post", "/v1/posting-instruction-batches", data=json.dumps(request_body)
+    )
 
 
 def create_posting_instruction_batch_async(
@@ -930,7 +938,7 @@ def create_posting_instruction_batch_async(
     instruction_details: dict = None,
     batch_details: dict = None,
     api_type: str = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "posting_instruction_batch": {
@@ -953,19 +961,19 @@ def create_posting_instruction_batch_async(
         },
         "api_type": api_type,
     }
-    return api_request(
+    return send_api_request(
         "post", "/v1/posting-instruction-batches:asyncCreate", data=json.dumps(request_body)
     )
 
 
 def create_postings_apiclient(
     request_id: str = None, postings_api_client_id: str = None, response_topic: str = None
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "postings_api_client": {"id": postings_api_client_id, "response_topic": response_topic},
     }
-    return api_request("post", "/v1/postings-api-clients", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/postings-api-clients", data=json.dumps(request_body))
 
 
 def create_processing_group(
@@ -973,7 +981,7 @@ def create_processing_group(
     processing_group_id: str = None,
     timezone: str = None,
     minimum_observation_timestamp: str = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "processing_group": {
@@ -982,7 +990,7 @@ def create_processing_group(
             "minimum_observation_timestamp": minimum_observation_timestamp,
         },
     }
-    return api_request("post", "/v1/processing-groups", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/processing-groups", data=json.dumps(request_body))
 
 
 def create_product_version(
@@ -997,7 +1005,7 @@ def create_product_version(
     product_id: str = None,
     supported_denominations: list = None,
     migration_strategy: str = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "product_version": {
@@ -1015,7 +1023,7 @@ def create_product_version(
         "migration_strategy": migration_strategy,
         "is_internal": True,
     }
-    return api_request("post", "/v1/product-versions", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/product-versions", data=json.dumps(request_body))
 
 
 def create_restriction_set_definition_version(
@@ -1023,7 +1031,7 @@ def create_restriction_set_definition_version(
     restriction_type=None,
     required_restriction_levels=None,
     request_id=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "restriction_set_definition_version": {
             "restriction_definitions": [
@@ -1036,7 +1044,7 @@ def create_restriction_set_definition_version(
         },
         "request_id": request_id,
     }
-    return api_request(
+    return send_api_request(
         "post", "/v1/restriction-set-definition-versions", data=json.dumps(request_body)
     )
 
@@ -1046,7 +1054,7 @@ def create_restriction_set_definition_version2(
     restriction_type=None,
     required_restriction_levels=None,
     request_id=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "restriction_set_definition_version": {
             "restriction_definitions": [
@@ -1059,7 +1067,7 @@ def create_restriction_set_definition_version2(
         },
         "request_id": request_id,
     }
-    return api_request(
+    return send_api_request(
         "post",
         f"/v1/restriction-set-definition/{restriction_set_definition_id}/versions",
         data=json.dumps(request_body),
@@ -1078,7 +1086,7 @@ def create_restriction_set(
     payment_device_id: str = None,
     effective_timestamp: str = None,
     expiry_timestamp: str = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "restriction_set": {
             "restriction_set_definition_id": restriction_set_definition_id,
@@ -1094,18 +1102,16 @@ def create_restriction_set(
         },
         "request_id": request_id,
     }
-    return api_request("post", "/v1/restriction-sets", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/restriction-sets", data=json.dumps(request_body))
 
 
-def republish_job(id=None) -> List[Any]:
-    return api_request("post", f"/v1/jobs/{id}:republish")
+def republish_job(id=None) -> Any:
+    return send_api_request("post", f"/v1/jobs/{id}:republish")
 
 
-def batch_republish_jobs(
-    ids: List[str] = None, target_status: str = "JOB_STATUS_PUBLISHED"
-) -> List[Any]:
+def batch_republish_jobs(ids: List[str] = None, target_status: str = "JOB_STATUS_PUBLISHED") -> Any:
     request_body = {"ids": ids, "target_status": target_status}
-    return api_request("post", "/v1/jobs:batchRepublish", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/jobs:batchRepublish", data=json.dumps(request_body))
 
 
 def create_schedule_tag(
@@ -1113,7 +1119,7 @@ def create_schedule_tag(
     schedule_tag_id: str = None,
     description: str = None,
     sends_scheduled_operation_reports: bool = True,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "schedule_tag": {
@@ -1122,7 +1128,7 @@ def create_schedule_tag(
             "sends_scheduled_operation_reports": sends_scheduled_operation_reports,
         },
     }
-    return api_request("post", "/v1/schedule-tags", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/schedule-tags", data=json.dumps(request_body))
 
 
 def create_supervisor_contract_version(
@@ -1132,7 +1138,7 @@ def create_supervisor_contract_version(
     display_name: str = None,
     description: str = None,
     code: str = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "supervisor_contract_version": {
@@ -1143,14 +1149,16 @@ def create_supervisor_contract_version(
             "code": code,
         },
     }
-    return api_request("post", "/v1/supervisor-contract-versions", data=json.dumps(request_body))
+    return send_api_request(
+        "post", "/v1/supervisor-contract-versions", data=json.dumps(request_body)
+    )
 
 
 def create_supervisor_contract(
     request_id: str = None, supervisor_contract_id: str = None, display_name: str = None
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "supervisor_contract": {"id": supervisor_contract_id, "display_name": display_name},
     }
-    return api_request("post", "/v1/supervisor-contracts", data=json.dumps(request_body))
+    return send_api_request("post", "/v1/supervisor-contracts", data=json.dumps(request_body))

@@ -1,6 +1,6 @@
 import json
-from typing import List, Any
-from tool_kit.helpers.core_api_helper import api_request
+from typing import Any
+from tool_kit.helpers.core_api_helper import send_api_request
 
 
 def update_account_schedule_tag(
@@ -12,7 +12,7 @@ def update_account_schedule_tag(
     test_pause_at_timestamp=None,
     processing_group_id=None,
     paths=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "account_schedule_tag": {
@@ -24,14 +24,14 @@ def update_account_schedule_tag(
         },
         "update_mask": {"paths": paths},
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/account-schedule-tags/{account_schedule_tag_id}", data=json.dumps(request_body)
     )
 
 
 def update_account_migration(
     account_migration_id=None, request_id=None, status=None, paths=None
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "account_migration": {
@@ -42,7 +42,7 @@ def update_account_migration(
         },
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/account-migrations/{account_migration_id}",
         data=json.dumps(request_body),
@@ -58,7 +58,7 @@ def update_account(
     restriction_set_ids=None,
     restriction_set_definition_ids=None,
     restriction_set_definition_version_ids=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "account_id": account_id,
         "account": {
@@ -79,7 +79,7 @@ def update_account(
         },
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/accounts/{account_id}",
         data=json.dumps(request_body),
@@ -91,7 +91,7 @@ def update_account_details(
     account_id=None,
     items_to_add=None,
     items_to_remove=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "account_id": account_id,
@@ -99,7 +99,7 @@ def update_account_details(
         "items_to_remove": items_to_remove,
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/accounts/{account_id}:updateDetails",
         data=json.dumps(request_body),
@@ -111,7 +111,7 @@ def update_service_account(
     status=None,
     paths=None,
     refresh_token=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "service_account.id": service_account_id,
         "service_account": {
@@ -125,7 +125,7 @@ def update_service_account(
         },
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/service-accounts/{service_account_id}",
         data=json.dumps(request_body),
@@ -137,13 +137,13 @@ def update_service_account_permissions(
     service_account_id=None,
     items_to_add=None,
     items_to_remove=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "items_to_add": items_to_add,
         "items_to_remove": items_to_remove,
     }
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/service-accounts/{service_account_id}:updatePermissions",
         data=json.dumps(request_body),
@@ -156,7 +156,7 @@ def update_calendar_event(
     name=None,
     is_active=None,
     paths=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "calendar_event": {
@@ -167,7 +167,7 @@ def update_calendar_event(
             "paths": paths,
         },
     }
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/calendar-event/{calendar_event_id}:updateDetails",
         data=json.dumps(request_body),
@@ -179,7 +179,7 @@ def update_bookkeeping_date(
     calender_id=None,
     date=None,
     paths=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "bookkeeping_date": {
@@ -190,7 +190,7 @@ def update_bookkeeping_date(
         },
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/calendar/bookkeeping-date/{calender_id}",
         data=json.dumps(request_body),
@@ -202,14 +202,14 @@ def change_current_calendar_period(
     calendar_id=None,
     action=None,
     action_timestamp=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "action": action,
         "action_timestamp": action_timestamp,
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/calendar/{calendar_id}/period/current:change",
         data=json.dumps(request_body),
@@ -223,7 +223,7 @@ def update_calendar(
     display_name=None,
     description=None,
     paths=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "calendar": {
@@ -236,7 +236,7 @@ def update_calendar(
         },
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/calendar/{calendar_id}:updateDetails",
         data=json.dumps(request_body),
@@ -258,7 +258,7 @@ def update_customer_address(
     start_timestamp=None,
     end_timestamp=None,
     paths=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "customer_address": {
@@ -279,7 +279,7 @@ def update_customer_address(
         },
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/customer-addresses/{customer_address_id}",
         data=json.dumps(request_body),
@@ -311,7 +311,7 @@ def update_customer(
     identifiers_type_username=None,
     identifiers_type_phone=None,
     paths=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "customer": {
@@ -348,7 +348,7 @@ def update_customer(
         },
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/customers/{customer_id}",
         data=json.dumps(request_body),
@@ -360,14 +360,14 @@ def update_customer_additional_details(
     customer_id: str = None,
     items_to_add: dict = None,
     items_to_remove: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "items_to_add": items_to_add,
         "items_to_remove": items_to_remove,
     }
 
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/customers/{customer_id}:updateAdditionalDetails",
         data=json.dumps(request_body),
@@ -379,13 +379,13 @@ def update_flag_definition(
     flag_definition_id: str = None,
     is_active: bool = None,
     paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "flag_definition": {"is_active": is_active},
         "request_id": request_id,
         "update_mask": {"paths": paths},
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/flag-definitions/{flag_definition_id}", data=json.dumps(request_body)
     )
 
@@ -396,13 +396,13 @@ def update_flag(
     description: str = None,
     is_active: bool = None,
     paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "flag": {"description": description, "is_active": is_active},
         "request_id": request_id,
         "update_mask": {"paths": paths},
     }
-    return api_request("put", f"/v1/flags/{flag_id}", data=json.dumps(request_body))
+    return send_api_request("put", f"/v1/flags/{flag_id}", data=json.dumps(request_body))
 
 
 def update_parameter_value_hierarchy_node(
@@ -411,13 +411,13 @@ def update_parameter_value_hierarchy_node(
     name: str = None,
     metadata: dict = None,
     paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "parameter_value_hierarchy_node": {"name": name, "metadata": metadata},
         "update_mask": {"paths": paths},
     }
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/parameter-value-hierarchy-nodes/{parameter_value_hierarchy_node_id}",
         data=json.dumps(request_body),
@@ -432,7 +432,7 @@ def update_parameter_value(
     paths: list = None,
     skip_pre_parameter_change_hook: bool = None,
     set_to_now: bool = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "parameter_value": {
@@ -445,7 +445,7 @@ def update_parameter_value(
         },
         "effective_to_timestamp_update_options": {"set_to_now": set_to_now},
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/parameter-values/{parameter_value_id}", data=json.dumps(request_body)
     )
 
@@ -455,13 +455,13 @@ def update_payment_device_link(
     request_id: str = None,
     status: str = "PAYMENT_DEVICE_LINK_STATUS_ACTIVE",
     paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "payment_device_link": {"status": status},
         "request_id": request_id,
         "update_mask": {"paths": paths},
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/payment-device-links/{payment_device_link_id}", data=json.dumps(request_body)
     )
 
@@ -474,7 +474,7 @@ def update_payment_device(
     restriction_set_ids: list = None,
     restriction_set_definition_ids: list = None,
     restriction_set_definition_version_ids: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "payment_device": {"status": status},
         "request_id": request_id,
@@ -488,7 +488,7 @@ def update_payment_device(
             }
         },
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/payment-devices/{payment_device_id}", data=json.dumps(request_body)
     )
 
@@ -499,13 +499,13 @@ def update_policy(
     description: str = None,
     rego_source: str = None,
     paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "policy": {"description": description, "rego_source": rego_source},
         "update_mask": {"paths": paths},
     }
-    return api_request("put", f"/v1/policies/{policy_id}", data=json.dumps(request_body))
+    return send_api_request("put", f"/v1/policies/{policy_id}", data=json.dumps(request_body))
 
 
 def update_postings_apiclient(
@@ -515,7 +515,7 @@ def update_postings_apiclient(
     response_topic: str = None,
     response_topic_low_priority: str = None,
     update_mask_paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "postings_api_client": {
@@ -527,7 +527,7 @@ def update_postings_apiclient(
         },
         "update_mask": {"paths": update_mask_paths or ["response_topic_low_priority"]},
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/postings-api-clients/{postings_api_client_id}", data=json.dumps(request_body)
     )
 
@@ -538,7 +538,7 @@ def update_processing_group(
     timezone: str = None,
     status: str = None,
     update_mask_paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "processing_group": {
@@ -550,7 +550,7 @@ def update_processing_group(
             "schedules_observe_balances_at_unpause_time": True
         },
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/processing-groups/{processing_group_id}", data=json.dumps(request_body)
     )
 
@@ -561,7 +561,7 @@ def update_product_version_params(
     name=None,
     value=None,
     effective_timestamp=None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "request_id": request_id,
         "items_to_add": [
@@ -579,7 +579,7 @@ def update_product_version_params(
             }
         ],
     }
-    return api_request(
+    return send_api_request(
         "put",
         f"/v1/product-versions/{product_version_id}:updateParams",
         data=json.dumps(request_body),
@@ -591,20 +591,20 @@ def update_restriction_set(
     request_id: str = None,
     is_active: bool = True,
     update_mask_paths: list = None,
-) -> List[Any]:
+) -> Any:
     request_body = {
         "restriction_set": {"is_active": is_active or True},
         "request_id": request_id,
         "update_mask": {"paths": update_mask_paths},
     }
-    return api_request(
+    return send_api_request(
         "put", f"/v1/restriction-sets/{restriction_set_id}", data=json.dumps(request_body)
     )
 
 
-def delete_post_posting_failures(pib_id=None) -> List[Any]:
+def delete_post_posting_failures(pib_id=None) -> Any:
     """
     :param pib_id: The unique identifier for this restriction set.
     """
 
-    return api_request("put", f"/v1/post-posting-failures/{pib_id}")
+    return send_api_request("put", f"/v1/post-posting-failures/{pib_id}")
