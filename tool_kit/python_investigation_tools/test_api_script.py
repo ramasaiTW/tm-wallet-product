@@ -42,10 +42,6 @@ def main() -> None:
     logger.info("Starting flags report generation")
     logger.info("Parsed Arguments: %s", args)
 
-    status_filter = args.status_filter.split(",") if args.status_filter else None
-    opening_timestamp_from = args.opening_timestamp_from
-    opening_timestamp_to = args.opening_timestamp_to
-
     flags = None
     try:
         flags = list_flags()

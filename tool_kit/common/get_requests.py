@@ -873,9 +873,7 @@ def list_flags(
     if effective_timestamp_range_to is None:
         effective_timestamp_range_to = ""
 
-    query_params = {
-
-    }
+    query_params = {}
     return load_paginated_data(
         "get", "/v1/flags", query_params, page_size=page_size, fetch_all_pages=all_pages
     )
