@@ -3,9 +3,9 @@ import os
 import logging
 import argparse
 
-from tool_kit.helpers.environment import initialize_environment
-from tool_kit.helpers.core_api_helper import setup_session_headers
-from tool_kit.common.get_requests import list_flags
+from helpers.environment import initialize_environment
+from helpers.core_api_helper import setup_session_headers
+from common.get_requests import list_flags
 
 # Set up logging
 logging.basicConfig(
