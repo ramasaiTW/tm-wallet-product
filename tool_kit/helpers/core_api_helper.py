@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, List, Optional
 import requests
-import config
+from helpers import config
 
 logger = logging.getLogger(__name__)
 session = requests.Session()
