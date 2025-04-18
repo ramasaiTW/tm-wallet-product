@@ -49,7 +49,7 @@ jobs:
 
   run-python-task:
     if: ${{ inputs.script-type == 'python' }}
-    name: Execute Python Investigation Script
+    name: Execute Python Investigation Tools
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
