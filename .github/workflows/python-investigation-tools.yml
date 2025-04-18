@@ -37,7 +37,7 @@ jobs:
     environment: ${{ inputs.environment }}
     env:
       CURL_COMMAND: ${{ inputs.command }}
-      AUTH_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+      TM_ACCESS_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
     defaults:
       run:
         shell: bash
@@ -45,7 +45,7 @@ jobs:
       - name: Execute the Curl Request
         run: |
           echo "Starting curl execution..."
-          eval "$CURL_COMMAND --header \"X-Auth-Token: $AUTH_TOKEN\""
+          eval "$CURL_COMMAND --header \"X-Auth-Token: $TM_ACCESS_TOKEN\""
 
   run-python-task:
     if: ${{ inputs.script-type == 'python' }}
@@ -56,7 +56,8 @@ jobs:
       SCRIPT_PARAMETERS: ${{ inputs.parameters }}
       SCRIPT_TASK: ${{ inputs.task }}
       ENVIRONMENT: ${{ inputs.environment }}
-      AUTH_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+      TM_ACCESS_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+      TM_CORE_API_URL: ${{ secrets.TM_CORE_API_URL }}
       PYTHONPATH: ./
     defaults:
       run:
