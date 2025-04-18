@@ -1,5 +1,5 @@
 name: Python Investigation Tools
-run-name: Executing ${{ inputs.script-type }} Script ${{ inputs.command || inputs.task }} in ${{ inputs.environment }} Environment
+run-name: Executing ${{ inputs.script-type }} script ${{ inputs.command || inputs.task }} in ${{ inputs.environment }} Environment
 
 on:
   workflow_dispatch:
