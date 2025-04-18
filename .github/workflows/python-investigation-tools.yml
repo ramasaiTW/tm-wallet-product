@@ -74,7 +74,7 @@ jobs:
       - name: Install Required Packages
         run: |
           echo "Installing Python dependencies..."
-          pip install -r ../requirements.txt
+          pip install -r requirements.txt
 
       - name: Run Investigation Python Script
         run: |
