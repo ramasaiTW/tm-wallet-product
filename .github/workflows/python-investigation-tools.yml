@@ -1,0 +1,82 @@
+name: API Investigation Toolkit
+run-name: Executing ${{ inputs.script-type }} Script ${{ inputs.command || inputs.task }} in ${{ inputs.environment }} Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      script-type:
+        description: 'Type of script to execute'
+        required: true
+        default: 'curl'
+        type: choice
+        options:
+          - curl
+          - python
+      command:
+        description: 'Curl command to execute (applicable only for curl)'
+        required: false
+        type: string
+      task:
+        description: 'Python investigation script to run (applicable only for python)'
+        required: false
+        type: string
+      parameters:
+        description: 'Input parameters for the Python script (max 65,535 characters)'
+        required: false
+        type: string
+      environment:
+        description: 'Target deployment environment'
+        required: true
+        type: environment
+
+jobs:
+  run-curl-command:
+    if: ${{ inputs.script-type == 'curl' }}
+    name: Execute Curl Command
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      CURL_COMMAND: ${{ inputs.command }}
+      AUTH_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Execute the Curl Request
+        run: |
+          echo "Starting curl execution..."
+          eval "$CURL_COMMAND --header \"X-Auth-Token: $AUTH_TOKEN\""
+
+  run-python-task:
+    if: ${{ inputs.script-type == 'python' }}
+    name: Execute Python Investigation Script
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      SCRIPT_PARAMETERS: ${{ inputs.parameters }}
+      SCRIPT_TASK: ${{ inputs.task }}
+      ENVIRONMENT: ${{ inputs.environment }}
+      AUTH_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+      PYTHONPATH: ./
+    defaults:
+      run:
+        shell: bash
+        working-directory: toolbox
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Required Packages
+        run: |
+          echo "Installing Python dependencies..."
+          pip install -r requirements.txt
+
+      - name: Run Investigation Python Script
+        run: |
+          echo "Executing Python investigation script: $SCRIPT_TASK"
+          python3 -m "python_investigation_tools.${SCRIPT_TASK}" "$SCRIPT_PARAMETERS"
