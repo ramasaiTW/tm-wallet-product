@@ -1,5 +1,5 @@
 name: Python Investigation Tools
-run-name: Executing ${{ inputs.script-type }} Script ${{ inputs.command || inputs.task }} in ${{ inputs.environment }} Environment
+run-name: Executing ${{ inputs.script-type }} script ${{ inputs.command || inputs.task }} in ${{ inputs.environment }} environment
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ on:
         required: false
         type: string
       task:
-        description: 'Python investigation script to run (applicable only for python)'
+        description: 'Python investigation tool to run (applicable only for python)'
         required: false
         type: string
       parameters:
@@ -37,7 +37,7 @@ jobs:
     environment: ${{ inputs.environment }}
     env:
       CURL_COMMAND: ${{ inputs.command }}
-      AUTH_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+      TM_ACCESS_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
     defaults:
       run:
         shell: bash
@@ -45,23 +45,24 @@ jobs:
       - name: Execute the Curl Request
         run: |
           echo "Starting curl execution..."
-          eval "$CURL_COMMAND --header \"X-Auth-Token: $AUTH_TOKEN\""
+          eval "$CURL_COMMAND --header \"X-Auth-Token: $TM_ACCESS_TOKEN\""
 
   run-python-task:
     if: ${{ inputs.script-type == 'python' }}
-    name: Execute Python Investigation Script
+    name: Execute Python Investigation Tools
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
       SCRIPT_PARAMETERS: ${{ inputs.parameters }}
       SCRIPT_TASK: ${{ inputs.task }}
       ENVIRONMENT: ${{ inputs.environment }}
-      AUTH_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+      TM_ACCESS_TOKEN: ${{ secrets.TM_ACCESS_TOKEN }}
+      TM_CORE_API_URL: ${{ secrets.TM_CORE_API_URL }}
       PYTHONPATH: ./
     defaults:
       run:
         shell: bash
-        working-directory: toolbox
+        working-directory: tool_kit
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -74,9 +75,9 @@ jobs:
       - name: Install Required Packages
         run: |
           echo "Installing Python dependencies..."
-          pip install -r ../requirements.txt
+          pip install -r requirements.txt
 
-      - name: Run Investigation Python Script
+      - name: Run Python investigation tool
         run: |
-          echo "Executing Python investigation script: $SCRIPT_TASK"
+          echo "Executing Python investigation tool: $SCRIPT_TASK"
           python3 -m "python_investigation_tools.${SCRIPT_TASK}" "$SCRIPT_PARAMETERS"

@@ -1,5 +1,5 @@
 import os
-import config
+from helpers import config
 
 
 def initialize_environment() -> str:

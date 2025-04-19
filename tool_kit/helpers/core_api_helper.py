@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, List, Optional
 import requests
-import config
+from helpers import config
 
 logger = logging.getLogger(__name__)
 session = requests.Session()
@@ -47,7 +47,7 @@ def send_api_request(
 def load_paginated_data(
     method: str,
     endpoint: str,
-    initial_params: Dict[str, Any] = None,
+    params: Dict[str, Any] = None,
     page_size: int = 50,
     fetch_all_pages: bool = True,
     max_results: int = 0,
@@ -55,7 +55,7 @@ def load_paginated_data(
     """Fetch paginated results from the API."""
     results: List[Any] = []
     next_page_token: str = ""
-    params = initial_params.copy()
+    params = params.copy()
 
     if max_results > 0:
         page_size = min(page_size, max_results)

@@ -1,11 +1,12 @@
 import sys
 import os
 import logging
-import argparse
 
-from tool_kit.helpers.environment import initialize_environment
-from tool_kit.helpers.core_api_helper import setup_session_headers
-from tool_kit.common.get_requests import list_flags
+# import argparse
+
+from helpers.environment import initialize_environment
+from helpers.core_api_helper import setup_session_headers
+from common.get_requests import list_flags
 
 # Set up logging
 logging.basicConfig(
@@ -16,31 +17,31 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Set up argument parser
-parser = argparse.ArgumentParser(description="Report on all accounts in the system.")
-parser.add_argument(
-    "--status_filter",
-    help="Comma-separated list of account statuses to filter by. "
-    "Defaults to ACCOUNT_STATUS_OPEN and ACCOUNT_STATUS_PENDING_CLOSURE.",
-)
-parser.add_argument(
-    "--opening_timestamp_from",
-    help="ISO timestamp. Report on all accounts opened from this time onwards.",
-)
-parser.add_argument(
-    "--opening_timestamp_to", help="ISO timestamp. Report on all accounts opened up to this time."
-)
+# parser = argparse.ArgumentParser(description="Report on all accounts in the system.")
+# parser.add_argument(
+#     "--status_filter",
+#     help="Comma-separated list of account statuses to filter by. "
+#     "Defaults to ACCOUNT_STATUS_OPEN and ACCOUNT_STATUS_PENDING_CLOSURE.",
+# )
+# parser.add_argument(
+#     "--opening_timestamp_from",
+#     help="ISO timestamp. Report on all accounts opened from this time onwards.",
+# )
+# parser.add_argument(
+#     "--opening_timestamp_to", help="ISO timestamp. Report on all accounts opened up to this time."
+# )
 
 
 def main() -> None:
     """Main function to run the account reporting tool."""
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
     # Initialize environment and session
     initialize_environment()
     setup_session_headers()
 
     logger.info("Starting flags report generation")
-    logger.info("Parsed Arguments: %s", args)
+    # logger.info("Parsed Arguments: %s", args)
 
     flags = None
     try:

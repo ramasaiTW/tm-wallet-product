@@ -1,6 +1,6 @@
 import json
 from typing import Any
-from tool_kit.helpers.core_api_helper import send_api_request
+from helpers.core_api_helper import send_api_request
 
 
 def update_account_schedule_tag(
