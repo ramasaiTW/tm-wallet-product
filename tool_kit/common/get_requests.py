@@ -9,7 +9,10 @@ def list_account_schedule_tags(all_pages=True, page_size=500) -> Any:
     """
 
     return load_paginated_data(
-        method="get", endpoint="/v1/account-schedule-tags", page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/account-schedule-tags",
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -23,7 +26,9 @@ def batch_get_account_schedule_tags(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/account-schedule-tags:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/account-schedule-tags:batchGet", params=query_params
+    )
 
 
 def list_account_migrations(all_pages=True, statuses=None, page_size=1000) -> Any:
@@ -57,7 +62,9 @@ def batch_get_account_migrations(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/account-migrations:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/account-migrations:batchGet", params=query_params
+    )
 
 
 def list_account_schedule_assocs(all_pages=True, account_id=None, page_size=500) -> Any:
@@ -119,7 +126,9 @@ def batch_get_account_update_batches(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/account-update-batches:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/account-update-batches:batchGet", params=query_params
+    )
 
 
 def list_account_updates(all_pages=True, account_id=None, statuses=None, page_size=1000) -> Any:
@@ -139,7 +148,11 @@ def list_account_updates(all_pages=True, account_id=None, statuses=None, page_si
         query_params["statuses"] = statuses
 
     return load_paginated_data(
-        method="get", endpoint="/v1/account-updates", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/account-updates",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -160,7 +173,9 @@ def batch_get_account_updates(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/account-updates:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/account-updates:batchGet", params=query_params
+    )
 
 
 def list_accounts(
@@ -198,7 +213,11 @@ def list_accounts(
         query_params["closing_timestamp_range.to"] = closing_timestamp_range_to
 
     return load_paginated_data(
-        method="get", endpoint="/v1/accounts", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/accounts",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -226,7 +245,9 @@ def get_account(
         query_params["fields_to_include"] = fields_to_include
 
     if instance_param_vals_effective_timestamp:
-        query_params["instance_param_vals_effective_timestamp"] = instance_param_vals_effective_timestamp
+        query_params[
+            "instance_param_vals_effective_timestamp"
+        ] = instance_param_vals_effective_timestamp
 
     return send_api_request(method="get", endpoint=f"/v1/accounts/{id}", params=query_params)
 
@@ -277,7 +298,11 @@ def list_service_accounts(all_pages=True, service_account_statuses=None, page_si
         query_params["service_account_statuses"] = service_account_statuses
 
     return load_paginated_data(
-        method="get", endpoint="/v1/service-accounts", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/service-accounts",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -298,7 +323,9 @@ def batch_get_service_accounts(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/service-accounts:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/service-accounts:batchGet", params=query_params
+    )
 
 
 def validate_token() -> Any:
@@ -323,7 +350,11 @@ def list_balances_live(
         query_params["account_addresses"] = account_addresses
 
     return load_paginated_data(
-        method="get", endpoint="/v1/balances/live", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/balances/live",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -415,7 +446,11 @@ def list_calendar_events(
         query_params["calendar_timestamp_range.to"] = calendar_timestamp_range_to
 
     return load_paginated_data(
-        method="get", endpoint="/v1/calendar-event", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/calendar-event",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -434,7 +469,9 @@ def batch_get_calendar_events(ids=None) -> Any:
 
     if ids:
         query_params["ids"] = ids
-    return send_api_request(method="get", endpoint="/v1/calendar-event:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/calendar-event:batchGet", params=query_params
+    )
 
 
 def get_bookkeeping_date(id=None) -> Any:
@@ -456,7 +493,9 @@ def calculate_calendar_period(calendar_id=None, timestamp=None) -> Any:
     if timestamp:
         query_params["timestamp"] = timestamp
 
-    return send_api_request(method="get", endpoint=f"/v1/calendar/{calendar_id}:calculatePeriod", params=query_params)
+    return send_api_request(
+        method="get", endpoint=f"/v1/calendar/{calendar_id}:calculatePeriod", params=query_params
+    )
 
 
 def get_calendar(id=None) -> Any:
@@ -482,7 +521,11 @@ def list_calendars(all_pages=True, page_size=10, order_by=None, name_pattern_mat
         query_params["name_pattern_match"] = name_pattern_match
 
     return load_paginated_data(
-        method="get", endpoint="/v1/calendars", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/calendars",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -560,7 +603,9 @@ def batch_get_contract_module_versions(ids=None, fields_to_include=None) -> Any:
     if fields_to_include:
         query_params["fields_to_include"] = fields_to_include
 
-    return send_api_request(method="get", endpoint="/v1/contract-module-versions:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/contract-module-versions:batchGet", params=query_params
+    )
 
 
 def list_contract_modules(all_pages=True, page_size=50) -> Any:
@@ -570,7 +615,10 @@ def list_contract_modules(all_pages=True, page_size=50) -> Any:
     """
 
     return load_paginated_data(
-        method="get", endpoint="/v1/contract-modules", page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/contract-modules",
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -583,7 +631,9 @@ def batch_get_contract_modules(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/contract-modules:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/contract-modules:batchGet", params=query_params
+    )
 
 
 def list_smart_contract_module_versions_links(
@@ -622,7 +672,9 @@ def batch_get_smart_contract_module_versions_links(ids=None) -> Any:
         query_params["ids"] = ids
 
     return send_api_request(
-        method="get", endpoint="/v1/smart-contract-module-versions-links:batchGet", params=query_params
+        method="get",
+        endpoint="/v1/smart-contract-module-versions-links:batchGet",
+        params=query_params,
     )
 
 
@@ -684,7 +736,11 @@ def list_customers(
         query_params["username_identifiers"] = username_identifiers
 
     return load_paginated_data(
-        method="get", endpoint="/v1/customers", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/customers",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -721,7 +777,9 @@ def get_derived_parameter_values(account_id=None, effective_timestamp=None) -> A
     if effective_timestamp:
         query_params["effective_timestamp"] = effective_timestamp
 
-    return send_api_request(method="get", endpoint="/v1/derived-parameter-values", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/derived-parameter-values", params=query_params
+    )
 
 
 def list_journal_events(all_pages=True, time_window=None, resource_type=None, page_size=100) -> Any:
@@ -740,7 +798,11 @@ def list_journal_events(all_pages=True, time_window=None, resource_type=None, pa
         query_params["resource_type"] = resource_type
 
     return load_paginated_data(
-        method="get", endpoint="/v1/journal-events", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/journal-events",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -757,7 +819,9 @@ def get_journal_events_checksum(time_window=None, resource_type=None) -> Any:
     if resource_type:
         query_params["resource_type"] = resource_type
 
-    return send_api_request(method="get", endpoint="/v1/journal-events:checksum", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/journal-events:checksum", params=query_params
+    )
 
 
 def list_flag_definitions(
@@ -790,7 +854,11 @@ def list_flag_definitions(
         query_params["include_inactive"] = include_inactive
 
     return load_paginated_data(
-        method="get", endpoint="/v1/flag-definitions", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/flag-definitions",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -804,7 +872,9 @@ def batch_get_flag_definitions(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/flag-definitions:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/flag-definitions:batchGet", params=query_params
+    )
 
 
 def list_flags(
@@ -842,7 +912,11 @@ def list_flags(
         query_params["effective_timestamp_range_to"] = effective_timestamp_range_to
 
     return load_paginated_data(
-        method="get", endpoint="/v1/flags", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/flags",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -893,7 +967,10 @@ def list_global_parameters(all_pages=True, page_size=100) -> Any:
     """
 
     return load_paginated_data(
-        method="get", endpoint="/v1/global-parameters", page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/global-parameters",
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -913,7 +990,9 @@ def batch_get_global_parameters(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/global-parameters:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/global-parameters:batchGet", params=query_params
+    )
 
 
 def list_internal_accounts(all_pages=True, view=None, page_size=1000) -> Any:
@@ -929,7 +1008,11 @@ def list_internal_accounts(all_pages=True, view=None, page_size=1000) -> Any:
         query_params["view"] = view
 
     return load_paginated_data(
-        method="get", endpoint="/v1/internal-accounts", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/internal-accounts",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -943,7 +1026,9 @@ def get_internal_account(id=None, view=None) -> Any:
     if view:
         query_params["view"] = view
 
-    return send_api_request(method="get", endpoint=f"/v1/internal-accounts/{id}", params=query_params)
+    return send_api_request(
+        method="get", endpoint=f"/v1/internal-accounts/{id}", params=query_params
+    )
 
 
 def batch_get_internal_accounts(ids=None, view=None) -> Any:
@@ -960,7 +1045,9 @@ def batch_get_internal_accounts(ids=None, view=None) -> Any:
     if view:
         query_params["view"] = view
 
-    return send_api_request(method="get", endpoint="/v1/internal-accounts:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/internal-accounts:batchGet", params=query_params
+    )
 
 
 def list_ledger_balances(
@@ -983,7 +1070,11 @@ def list_ledger_balances(
         query_params["ledger_timestamp"] = ledger_timestamp
 
     return load_paginated_data(
-        method="get", endpoint="/v1/ledger-balances", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/ledger-balances",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1036,7 +1127,9 @@ def batch_get_parameter_value_hierarchy_nodes(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/parameter-value-hierarchy-nodes:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/parameter-value-hierarchy-nodes:batchGet", params=query_params
+    )
 
 
 def list_parameter_values(
@@ -1078,7 +1171,11 @@ def list_parameter_values(
         query_params["effective_timestamp_range.to"] = effective_timestamp_range_to
 
     return load_paginated_data(
-        method="get", endpoint="/v1/parameter-values", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/parameter-values",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1091,7 +1188,9 @@ def batch_get_parameter_values(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/parameter-values:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/parameter-values:batchGet", params=query_params
+    )
 
 
 def list_parameters(all_pages=True, page_size=1000) -> Any:
@@ -1162,7 +1261,9 @@ def batch_get_payment_device_links(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/payment-device-links:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/payment-device-links:batchGet", params=query_params
+    )
 
 
 def batch_get_payment_devices(ids=None) -> Any:
@@ -1175,7 +1276,9 @@ def batch_get_payment_devices(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/payment-devices:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/payment-devices:batchGet", params=query_params
+    )
 
 
 def list_account_plan_assocs(
@@ -1227,7 +1330,9 @@ def batch_get_account_plan_assocs(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/account-plan-assocs:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/account-plan-assocs:batchGet", params=query_params
+    )
 
 
 def list_plan_migrations(all_pages=True, statuses=None, page_size=100) -> Any:
@@ -1242,7 +1347,11 @@ def list_plan_migrations(all_pages=True, statuses=None, page_size=100) -> Any:
         query_params["statuses"] = statuses
 
     return load_paginated_data(
-        method="get", endpoint="/v1/plan-migrations", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/plan-migrations",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1256,7 +1365,9 @@ def batch_get_plan_migrations(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/plan-migrations:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/plan-migrations:batchGet", params=query_params
+    )
 
 
 def list_plan_schedules(
@@ -1279,7 +1390,11 @@ def list_plan_schedules(
         query_params["include_disassociated"] = include_disassociated
 
     return load_paginated_data(
-        method="get", endpoint="/v1/plan-schedules", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/plan-schedules",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1307,7 +1422,11 @@ def list_plan_updates(
         query_params["statuses"] = statuses
 
     return load_paginated_data(
-        method="get", endpoint="/v1/plan-updates", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/plan-updates",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1356,7 +1475,11 @@ def list_policies(
         query_params["fields_to_include"] = fields_to_include
 
     return load_paginated_data(
-        method="get", endpoint="/v1/policies", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/policies",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1427,7 +1550,9 @@ def batch_get_post_posting_failures(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/post-posting-failures:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/post-posting-failures:batchGet", params=query_params
+    )
 
 
 def list_posting_instruction_batches(
@@ -1501,7 +1626,9 @@ def batch_get_async_operations(ids=None) -> Any:
         query_params["ids"] = ids
 
     return send_api_request(
-        method="get", endpoint="/v1/posting-instruction-batches/async-operations:batchGet", params=query_params
+        method="get",
+        endpoint="/v1/posting-instruction-batches/async-operations:batchGet",
+        params=query_params,
     )
 
 
@@ -1522,7 +1649,9 @@ def batch_get_posting_instruction_batches(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/posting-instruction-batches:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/posting-instruction-batches:batchGet", params=query_params
+    )
 
 
 def list_postings_apiclients(all_pages=True, page_size=10) -> Any:
@@ -1533,7 +1662,10 @@ def list_postings_apiclients(all_pages=True, page_size=10) -> Any:
     """
 
     return load_paginated_data(
-        method="get", endpoint="/v1/postings-api-clients", page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/postings-api-clients",
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1553,7 +1685,9 @@ def batch_get_postings_apiclients(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/postings-api-clients:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/postings-api-clients:batchGet", params=query_params
+    )
 
 
 def list_processing_groups(all_pages=True, page_size=100) -> Any:
@@ -1563,7 +1697,10 @@ def list_processing_groups(all_pages=True, page_size=100) -> Any:
     """
 
     return load_paginated_data(
-        method="get", endpoint="/v1/processing-groups", page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/processing-groups",
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1590,7 +1727,11 @@ def list_product_versions(all_pages=True, product_id=None, view=None, page_size=
         query_params["view"] = view
 
     return load_paginated_data(
-        method="get", endpoint="/v1/product-versions", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/product-versions",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1598,7 +1739,9 @@ def list_product_version_parameters_timeseries(product_version_id=None) -> Any:
     """
     :param product_version_id: The product version ID the parameter timeseries is to be retrieved for.
     """
-    return send_api_request(method="get", endpoint=f"/v1/product-versions/{product_version_id}:paramTimeseries")
+    return send_api_request(
+        method="get", endpoint=f"/v1/product-versions/{product_version_id}:paramTimeseries"
+    )
 
 
 def batch_get_product_versions(ids=None, view=None) -> Any:
@@ -1614,7 +1757,9 @@ def batch_get_product_versions(ids=None, view=None) -> Any:
     if view:
         query_params["view"] = view
 
-    return send_api_request(method="get", endpoint="/v1/product-versions:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/product-versions:batchGet", params=query_params
+    )
 
 
 def list_products(all_pages=True, include_internality=None, page_size=30) -> Any:
@@ -1629,7 +1774,11 @@ def list_products(all_pages=True, include_internality=None, page_size=30) -> Any
         query_params["include_internality"] = include_internality
 
     return load_paginated_data(
-        method="get", endpoint="/v1/products", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/products",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1661,7 +1810,9 @@ def list_restriction_set_definition_versions(
     if restriction_set_definition_id:
         query_params["restriction_set_definition_id"] = restriction_set_definition_id
 
-    return send_api_request(method="get", endpoint="/v1/restriction-set-definition-versions", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/restriction-set-definition-versions", params=query_params
+    )
 
 
 def batch_get_restriction_set_definition_versions(ids=None) -> Any:
@@ -1674,7 +1825,11 @@ def batch_get_restriction_set_definition_versions(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/restriction-set-definition-versions:batchGet", params=query_params)
+    return send_api_request(
+        method="get",
+        endpoint="/v1/restriction-set-definition-versions:batchGet",
+        params=query_params,
+    )
 
 
 def list_restriction_set_definition_versions2(
@@ -1706,7 +1861,10 @@ def list_restriction_set_definitions(all_pages=True, page_size=500) -> Any:
     """
 
     return load_paginated_data(
-        method="get", endpoint="/v1/restriction-set-definitions", page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/restriction-set-definitions",
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1751,7 +1909,9 @@ def batch_get_restriction_sets(ids=None) -> Any:
     if ids:
         query_params["ids"] = ids
 
-    return send_api_request(method="get", endpoint="/v1/restriction-sets:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/restriction-sets:batchGet", params=query_params
+    )
 
 
 def list_restrictions(
@@ -1826,7 +1986,11 @@ def list_jobs(
         query_params["to_timestamp"] = to_timestamp
 
     return load_paginated_data(
-        method="get", endpoint="/v1/jobs", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/jobs",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1866,7 +2030,11 @@ def list_schedules(
         query_params["resource"] = resource
 
     return load_paginated_data(
-        method="get", endpoint="/v1/schedules", params=query_params, page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/schedules",
+        params=query_params,
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1925,7 +2093,9 @@ def batch_get_supervisor_contract_versions(ids=None, fields_to_include=None) -> 
     if fields_to_include:
         query_params["fields_to_include"] = fields_to_include
 
-    return send_api_request(method="get", endpoint="/v1/supervisor-contract-versions:batchGet", params=query_params)
+    return send_api_request(
+        method="get", endpoint="/v1/supervisor-contract-versions:batchGet", params=query_params
+    )
 
 
 def list_supervisor_contracts(all_pages=True, page_size=50) -> Any:
@@ -1935,7 +2105,10 @@ def list_supervisor_contracts(all_pages=True, page_size=50) -> Any:
     """
 
     return load_paginated_data(
-        method="get", endpoint="/v1/supervisor-contracts", page_size=page_size, fetch_all_pages=all_pages
+        method="get",
+        endpoint="/v1/supervisor-contracts",
+        page_size=page_size,
+        fetch_all_pages=all_pages,
     )
 
 
@@ -1947,8 +2120,10 @@ def batch_get_supervisor_contracts(ids=None) -> Any:
 
     if ids:
         query_params["ids"] = ids
-        
-    return send_api_request(method="get", endpoint="/v1/supervisor-contracts:batchGet", params=query_params)
+
+    return send_api_request(
+        method="get", endpoint="/v1/supervisor-contracts:batchGet", params=query_params
+    )
 
 
 def get_vault_version() -> Any:
